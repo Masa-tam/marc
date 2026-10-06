@@ -9130,3 +9130,9 @@ DD-1512 defines PDRX version 2 in
 `docs/design/position-distance-rans-diagnostic.md`. This is an explicit private
 diagnostic version; version 1 remains readable and reproducible. No MARC
 algorithm ID, public stream representation or exchange inventory changes.
+### Native position-distance rANS descriptor boundary
+
+DD-1513 in `docs/design/lzss-position-rans-1m.md` defines a separate native
+sixteen-byte metadata prefix plus PDRX v2 compact model, bounded to 5110 bytes.
+It is an internal descriptor boundary, not an admitted stream identity.
+Existing entropy `4/3` and context variant identities are unchanged.

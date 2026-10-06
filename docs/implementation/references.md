@@ -11133,3 +11133,8 @@ implementation consulted for this experiment.
 Use repository-authored DD-1511, scalar diagnostic inverse, native verified
 PDOP exports and existing compact contextual model concepts. No external
 implementation or new external source consulted.
+### IR-1272: native position-distance rANS descriptor
+
+Use first-party DD-1512, the PDRX version 2 diagnostic and the existing
+repository little-endian and bounded rANS contracts. No external implementation
+source is consulted for DD-1513.

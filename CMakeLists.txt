@@ -179,6 +179,9 @@ set(MARC_SOURCES
     src/entropy/contextual_rans_decode_tables.cpp
     src/entropy/contextual_compact_model.cpp
     src/entropy/contextual_rans_format.cpp
+    src/entropy/position_rans_1m_format.cpp
+    src/entropy/position_rans_1m_decoder.cpp
+    src/entropy/position_rans_1m_encoder.cpp
     src/entropy/contextual_tans_format.cpp
     src/entropy/contextual_tans_encode_core.cpp
     src/entropy/contextual_tans_encoder.cpp
@@ -7579,6 +7582,17 @@ if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
 endif()
 
 # Finite DD-1511 diagnostic; no public codec or exchange inventory entry.
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_rans_1m_format_tests
+        tests/position_rans_1m_format_tests.cpp
+        src/entropy/position_rans_1m_format.cpp
+        src/entropy/position_rans_1m_decoder.cpp
+        src/entropy/position_rans_1m_encoder.cpp)
+    target_compile_features(marc_position_rans_1m_format_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_rans_1m_format_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_rans_1m_format COMMAND marc_position_rans_1m_format_tests)
+endif()
+
 if(MARC_BUILD_ENTROPY_DIAGNOSTICS AND TARGET marc_static)
     add_executable(marc_position_distance_rans_export tools/position_distance_rans_export.cpp)
     target_compile_features(marc_position_distance_rans_export PRIVATE cxx_std_20)
@@ -7589,6 +7603,12 @@ endif()
 if(MARC_BUILD_TESTS)
     find_package(Python3 COMPONENTS Interpreter QUIET)
     if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_rans_1m_format_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_1m_format_differential.py
+                $<TARGET_FILE:marc_position_rans_1m_format_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-rans-1m-format-differential)
+        set_tests_properties(marc_position_rans_1m_format_differential PROPERTIES TIMEOUT 120)
         add_test(NAME marc_position_distance_rans_diagnostic
             COMMAND ${Python3_EXECUTABLE} -B -X utf8
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_rans_diagnostic_tests.py)

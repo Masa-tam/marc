@@ -39334,3 +39334,21 @@ contextual rANS control. Similarity review is scoped to first-party design
 reuse and independently expressed compact mode selection/validation. No
 external implementation was consulted. Public completion, speed and process
 memory advantages are not asserted by this experiment.
+### CR-1687: native position-distance rANS scalar boundary
+
+2026-10-06; author/reviewer: Codex. Task: independently extend the first-party
+DD-1512 compact model into a native bounded descriptor, model builder,
+write-free payload measurement, reverse writer and forward reference decoder
+under DD-1513. References: IR-1272 and existing repository rANS arithmetic,
+little-endian helpers and position-distance context arrays. No external
+implementation source or copyleft tests were consulted. Similarity review
+finds shared integer rANS arithmetic and normalization rules with first-party
+contextual rANS, explicitly intentional reuse of this repository's contract.
+Separate new types preserve all old descriptor and public stream identities.
+
+Native regression and Python differential qualification pass for both tested
+compiler routes: 200 generated model sets and 200 generated decision sets,
+plus 12 retained pilot descriptor/payload pairs on each route. Native models
+and payloads are byte-identical to the diagnostic reference. No native speed,
+process peak, full-corpus, typed-token, outer frame, public lifecycle, CLI or
+exchange completion is claimed by these primitive tests.

@@ -22283,3 +22283,21 @@ noncanonical modes, unused mask bits, ordering, inferred frequency errors,
 truncation, contradictory counts and altered digests without destination
 changes. Requalify independently on each available Python environment and
 retain identical per-frame inputs and same-token contextual rANS controls.
+### TVG-1380: native position-distance rANS scalar core
+
+First-party PDRX v2 generates compact descriptor and payload fixtures from
+seed 1513. Two hundred independently generated model sets test descriptor
+reserialization; two hundred decision sequences test native normalization,
+write-free payload sizing, reverse encoding and forward decoding against
+Python bytes. Previously retained pilot exports, when available locally, add
+real token-derived distributions without modifying those artifacts. The
+mandatory regression does not require these optional local exports.
+
+Native cases cover the 22-byte empty descriptor and 5110-byte maximum,
+every descriptor truncation, mode/mask/count/limit errors and canonical
+single-symbol selection. Payload checks cover the hand-computed uniform
+decisions `[1,0]` at state `4*2^31+2048`, invalid boundary states, truncated
+renormalization, unused active contexts, exact decision counts and trailing
+payload. Failed descriptor operations retain destinations; failed decoder
+begin retains the previous decoder; failed reads retain symbol destinations.
+This qualifies internal primitives, not outer grammar or frame publication.

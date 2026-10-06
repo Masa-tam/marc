@@ -33369,3 +33369,10 @@ until measured. Preserve PDRX version 1 and add explicit version 2 with
 canonical single-symbol/dense/sparse model records. Keep normalization,
 decisions and payload bytes unchanged, isolating descriptor cost. First
 requalify the same-token pilot before broad corpus or public integration.
+### DD-1513: qualify the native compact descriptor before stream admission
+
+Define `docs/design/lzss-position-rans-1m.md` before implementation. Parse into
+fixed private storage, validate canonical mode selection and bounds, then
+commit the descriptor. Serialize through fixed staging so every failure leaves
+the caller's output and count unchanged. Existing codec identities stay intact;
+outer identity, lifecycle, CLI and exchange admission are subsequent work.
