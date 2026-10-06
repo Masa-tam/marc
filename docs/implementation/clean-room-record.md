@@ -39165,3 +39165,20 @@ one-byte output, aliases, overflow and exact/one-below contracts pass. A seeded
 10,000-run instrumented stream campaign reports no finding. Similarity review
 is scoped to repository-owned components; no legal guarantee or completed
 public sixty-four-MiB codec is claimed.
+
+
+### CR-1678: sixty-four-MiB exact dictionary qualification
+
+Date: 2026-10-06. Author/reviewer: Codex with repository checks.
+Task: exact reference/indexed/compact finite dictionary encoding for the
+reserved profile, with independent differential and failure-admission tests.
+References: IR-1264/DD-1505/TVG-1372 and current first-party dictionary helpers.
+No external implementation source is consulted. Review greedy nearest tie,
+overlap, strict record-cost eligibility, collision verification, monotonically
+decreasing links, every-position insertion and absence of heuristic cutoffs.
+Review explicit little-endian compact serialization, bounds, arithmetic,
+full-capacity ledger, aliases and private/public commit distinction.
+All earlier source bytes, formats, ABI and generic limits are preserved.
+Four native routes and three instrumented campaigns agree with independent
+oracles. Similarity review is scoped to repository-owned components. No legal
+guarantee or completed public sixty-four-MiB codec is claimed.

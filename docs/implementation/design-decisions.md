@@ -33197,3 +33197,27 @@ Exact admission succeeds, one-below refuses without consuming or publishing,
 and the old 512-MiB grant refuses. Generic limits remain unchanged; explicit
 test grants are not a public or CLI policy. This borrowed helper allocates no
 memory and does not implement the future owning/public callbacks.
+
+
+### DD-1505: sixty-four-MiB reference, exact index and private compact writer
+
+The finite dictionary reference tries distances in increasing order, chooses
+the longest match and retains the nearest equal-length match. Overlap uses
+the supplied raw bytes. Matches require length at least five because canonical
+record cost nine must be strictly less than twice the raw length. Valid wire
+lengths three and four remain decoder grammar, not encoder choices.
+
+The exact index uses 1,048,576 uint32 heads and one uint32 link per raw byte.
+Unsigned multiplicative hashing of three-byte keys selects a bucket; candidate
+keys are checked. Chains decrease in source position. Insert every consumed
+position, including match interiors. Window expiry and a proven nearest maximum
+match can stop traversal; no heuristic candidate limit is imposed.
+
+Typed output and metadata commit only after private parsing succeeds; any
+failure preserves their full bytes. Private scratch and index are discardable.
+The compact writer emits literal-two/match-nine byte records into private
+storage, bounded by twice raw size. A failed private write is not publishable.
+Its syntax reader preserves cursor and token on refusal; history validation
+belongs to the consumer. Queries charge full borrowed capacities, controls,
+declared retained owners and prior committed raw output with checked arithmetic.
+Generic limits and public/CLI policy remain unchanged.

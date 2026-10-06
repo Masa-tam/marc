@@ -204,3 +204,15 @@ retained bytes. Sixteen mathematical streams pass arbitrary split, starvation,
 delayed finish, sticky terminal and full two-frame one-byte output schedules on
 four native routes. Owning/public factories, dictionary encoders, CLI resource
 policy and archive-74 exchange remain pending.
+
+
+## Finite dictionary qualification (DD-1505)
+
+Exhaustive, exact indexed and private compact encoders now share the specified
+greedy longest/nearest parsing, strict length-five eligibility and overlap.
+Four native routes verify independent small cases and full-frame repetition
+and F-5/F-258 references, exact capacities, failure invariance and honest
+retained storage accounting. Private compact records are canonical byte
+serialization and bounded by 2R. This remains an internal finite helper;
+direct and compact entropy encoders, frame/stream ownership, public factories,
+CLI resource policy and archive-74 exchange remain pending.

@@ -11066,3 +11066,12 @@ contracts and the new sixty-four-MiB mathematical field/frame generators.
 Generate distinct headers and descriptors for independent whole streams.
 Regenerate the two literal hand payloads directly from the new model equations;
 their literal intervals remain unchanged. No external source is consulted.
+
+
+### IR-1264: sixty-four-MiB exact finite dictionary encoders
+
+Use IR-1260..IR-1263 and DD-1501 for the reserved sixty-four-MiB profile.
+Adapt the current first-party exhaustive, exact indexed and compact dictionary
+helpers. Independently select descending match length then nearest source in
+the test oracle, and serialize records explicitly in little-endian order.
+No external implementation source is consulted.

@@ -22105,3 +22105,29 @@ one-shot and split schedules, error positions, terminal states, output guards
 and failed-frame nonpublication with no finding; leak detection is disabled.
 Owning callback allocation failures and encoder/CLI/bundle qualification remain
 separate requirements of the active full goal.
+
+
+### TVG-1372: sixty-four-MiB dictionary differential and admission tests
+
+Compare exhaustive and indexed parsers to an independent descending-length,
+nearest-source oracle for small binary cases, all one-byte inputs, random and
+pattern inputs, short non-beneficial matches, ties, overlap, collisions,
+window expiry, reset and maximum match lengths. Verify every consumed position
+is inserted. Connect parsed tokens through the fifty-context mapper and Range
+coder and compare reconstructed raw bytes.
+
+Full 67,108,864-byte repetition has 260,113 tokens with final match length 225.
+Independent full-frame far references require distances F-5 and F-258. Compare
+compact bytes to explicit little-endian typed-token serialization, bound by
+2R, with unchanged tails. Check both typed capacities, complete ledgers,
+exact/one-below grants, overflow, aliases, invalid policy and immutable output
+and metadata on failure. Private compact writes are discardable on failure.
+
+The initial reference test retained two old far-distance expectation constants;
+the implementation returned F-5/F-258. Preserve the failed log and replace the
+expectations with calculations from raw extent, then rerun the full scope.
+Four native compiler/instrumentation routes pass five selected tests each.
+Three seeded 10,000-run whole-library ASan/UBSan campaigns cover reference,
+indexed and compact syntax/parse contracts with no finding; leaks are disabled.
+Finite-process peak measurement includes test oracle/retention buffers, and is
+not a throughput result or a public codec/CLI admission requirement.

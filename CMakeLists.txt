@@ -532,6 +532,9 @@ set(MARC_SOURCES
     src/frame/lzss_position_distance_64m_frame_decoder.cpp
     src/frame/lzss_position_distance_64m_compact_frame_decoder.cpp
     src/frame/lzss_position_distance_64m_stream_decoder.cpp
+    src/dictionary/lzss_position_distance_64m_reference.cpp
+    src/dictionary/lzss_position_distance_64m_indexed.cpp
+    src/dictionary/lzss_position_distance_64m_compact.cpp
     src/marc.cpp
 )
 
@@ -7434,4 +7437,25 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
                 --root ${CMAKE_CURRENT_BINARY_DIR}/position-distance-64m-stream)
         set_tests_properties(marc_position_distance_64m_stream_conformance PROPERTIES TIMEOUT 1200)
     endif()
+endif()
+
+if(MARC_BUILD_TESTS AND TARGET marc_static)
+    add_executable(marc_position_distance_64m_reference_tests tests/lzss_position_distance_64m_reference_tests.cpp)
+    target_compile_features(marc_position_distance_64m_reference_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_64m_reference_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_64m_reference_tests PRIVATE marc::static GTest::gtest_main)
+    add_test(NAME marc_position_distance_64m_reference COMMAND marc_position_distance_64m_reference_tests)
+    set_tests_properties(marc_position_distance_64m_reference PROPERTIES TIMEOUT 600)
+    add_executable(marc_position_distance_64m_indexed_tests tests/lzss_position_distance_64m_indexed_tests.cpp)
+    target_compile_features(marc_position_distance_64m_indexed_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_64m_indexed_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_64m_indexed_tests PRIVATE marc::static GTest::gtest_main)
+    add_test(NAME marc_position_distance_64m_indexed COMMAND marc_position_distance_64m_indexed_tests)
+    set_tests_properties(marc_position_distance_64m_indexed PROPERTIES TIMEOUT 600)
+    add_executable(marc_position_distance_64m_compact_tests tests/lzss_position_distance_64m_compact_tests.cpp)
+    target_compile_features(marc_position_distance_64m_compact_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_64m_compact_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_64m_compact_tests PRIVATE marc::static GTest::gtest_main)
+    add_test(NAME marc_position_distance_64m_compact COMMAND marc_position_distance_64m_compact_tests)
+    set_tests_properties(marc_position_distance_64m_compact PROPERTIES TIMEOUT 600)
 endif()
