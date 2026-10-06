@@ -11126,3 +11126,10 @@ implementation or vectors consulted.
 Use repository-authored DD-1318, DD-1511, the 1 MiB field cursor, scalar rANS
 arithmetic, normalization and entropy-backend contract. No external source or
 implementation consulted for this experiment.
+
+
+### IR-1271: compact position-distance rANS diagnostic references
+
+Use repository-authored DD-1511, scalar diagnostic inverse, native verified
+PDOP exports and existing compact contextual model concepts. No external
+implementation or new external source consulted.

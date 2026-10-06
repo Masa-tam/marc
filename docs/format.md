@@ -9122,3 +9122,11 @@ DD-1511's PDRX diagnostic (`docs/design/position-distance-rans-diagnostic.md`)
 defines a finite experimental container before its implementation. It is not
 a MARC stream, public codec variant or interoperability inventory entry.
 Existing format identities and public admission rules remain unchanged.
+
+
+### Private compact position-distance rANS diagnostic
+
+DD-1512 defines PDRX version 2 in
+`docs/design/position-distance-rans-diagnostic.md`. This is an explicit private
+diagnostic version; version 1 remains readable and reproducible. No MARC
+algorithm ID, public stream representation or exchange inventory changes.

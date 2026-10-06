@@ -22272,3 +22272,14 @@ re-encoding. Negative cases cover truncation, sizes, masks, records, coder state
 digest, trailing data and transactional destination invariance. Native corpus
 exports use one immutable token sequence per frame and retain separate
 minimum-match-three and minimum-match-five observations.
+
+
+### TVG-1379: compact diagnostic model selection and rejection
+
+Construct single-symbol, dense, sparse and equal-size selection vectors.
+Require version-1 and version-2 normalized frequencies, decisions and payloads
+to agree, including seeded tokens and all length/history edges. Reject
+noncanonical modes, unused mask bits, ordering, inferred frequency errors,
+truncation, contradictory counts and altered digests without destination
+changes. Requalify independently on each available Python environment and
+retain identical per-frame inputs and same-token contextual rANS controls.

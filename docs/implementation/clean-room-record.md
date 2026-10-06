@@ -39312,3 +39312,25 @@ limited first-frame result and unfavorable comparison with Dynamic Range.
 Similarity review covers first-party reuse and independently expressed Python
 forward inverse; no outside implementation consulted. This is not production
 codec completion or a throughput/memory qualification.
+
+
+### CR-1686: compact position-distance rANS diagnostic provenance
+
+Date: 2026-10-06. Author/reviewer: Codex automated implementation and review.
+User-directed contextual rANS compression comparison and independent speed/
+memory evaluation. References IR-1271/DD-1512/TVG-1379. Implement compact
+records independently using first-party format ideas; retain the scalar
+version-1 reference. No restricted or external codec implementation consulted.
+Compression gains, throughput, memory advantages and public qualification
+are not presumed before their corresponding evidence.
+
+
+CR-1686 qualification addendum: nine finite diagnostic regression groups pass
+in two interpreter environments. Twelve same-token compact frames retain
+prior frequencies/payload bytes and reproduce version-1 reference bytes. An
+independent consumer restores and re-encodes all twelve. BM-0213 accounts for
+equivalent non-model metadata and observes every sample smaller than its
+contextual rANS control. Similarity review is scoped to first-party design
+reuse and independently expressed compact mode selection/validation. No
+external implementation was consulted. Public completion, speed and process
+memory advantages are not asserted by this experiment.

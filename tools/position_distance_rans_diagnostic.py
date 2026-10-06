@@ -15,6 +15,7 @@ LOWER = 1 << 31
 TOTAL = 4096
 ALPHABETS = [2] * 3 + [256] * 9 + [9] * 3 + [21] * 9 + [2] * 20
 HEADER = struct.Struct('<4sBIIIII32s')
+DESCRIPTOR_PREFIX = struct.Struct('<IIBBHI')
 
 
 def require(condition, message):
@@ -129,6 +130,79 @@ def parse_models(data):
     return models
 
 
+def pack_models_compact(models):
+    mask = sum(1 << c for c, model in enumerate(models) if model)
+    data = bytearray(mask.to_bytes(6, 'little'))
+    for alphabet, model in zip(ALPHABETS, models):
+        if not model:
+            continue
+        require(sum(model.values()) == TOTAL and all(0 <= s < alphabet and f > 0
+                for s, f in model.items()), 'compact model')
+        items = sorted(model.items())
+        if len(items) == 1:
+            data += bytes((0, items[0][0]))
+        elif 1 + 2 * (alphabet - 1) <= 1 + 3 * len(items):
+            data.append(1)
+            for symbol in range(alphabet - 1):
+                data += struct.pack('<H', model.get(symbol, 0))
+        else:
+            data.append(2)
+            data += struct.pack('<H', len(items))
+            for symbol, frequency in items[:-1]:
+                data += struct.pack('<BH', symbol, frequency)
+            data.append(items[-1][0])
+    return bytes(data)
+
+
+def parse_models_compact(data):
+    require(6 <= len(data) <= 5094, 'compact model size')
+    mask = int.from_bytes(data[:6], 'little')
+    require(mask >> 44 == 0, 'compact mask')
+    models, cursor = [{} for _ in ALPHABETS], 6
+    for c, alphabet in enumerate(ALPHABETS):
+        if not (mask >> c) & 1:
+            continue
+        require(cursor < len(data), 'compact mode truncated')
+        mode = data[cursor]
+        cursor += 1
+        if mode == 0:
+            require(cursor < len(data), 'single truncated')
+            symbol = data[cursor]
+            cursor += 1
+            require(symbol < alphabet, 'single symbol')
+            models[c][symbol] = TOTAL
+        elif mode == 1:
+            extent = 2 * (alphabet - 1)
+            require(cursor + extent <= len(data), 'dense truncated')
+            frequencies = list(struct.unpack_from('<' + 'H' * (alphabet - 1), data, cursor))
+            cursor += extent
+            require(sum(frequencies) <= TOTAL, 'dense total')
+            frequencies.append(TOTAL - sum(frequencies))
+            models[c] = {s: f for s, f in enumerate(frequencies) if f}
+        elif mode == 2:
+            require(cursor + 2 <= len(data), 'sparse count truncated')
+            count, = struct.unpack_from('<H', data, cursor)
+            cursor += 2
+            require(2 <= count <= alphabet and cursor + 3 * (count - 1) + 1 <= len(data),
+                    'sparse extent')
+            previous, total = -1, 0
+            for _ in range(count - 1):
+                symbol, frequency = struct.unpack_from('<BH', data, cursor)
+                cursor += 3
+                require(previous < symbol < alphabet and 0 < frequency <= TOTAL, 'sparse record')
+                models[c][symbol] = frequency
+                previous, total = symbol, total + frequency
+            symbol = data[cursor]
+            cursor += 1
+            require(previous < symbol < alphabet and total < TOTAL, 'sparse final')
+            models[c][symbol] = TOTAL - total
+        else:
+            raise ValueError('unknown compact mode')
+    require(cursor == len(data), 'compact trailing')
+    require(pack_models_compact(models) == data, 'noncanonical compact model')
+    return models
+
+
 def intervals(models):
     tables = []
     for model in models:
@@ -197,14 +271,15 @@ class ForwardDecoder:
                 'terminal state/extent')
 
 
-def encode(tokens, raw_size):
+def encode(tokens, raw_size, version=1):
+    require(version in (1, 2), 'version')
     raw = reconstruct(tokens, raw_size)
     events = list(decisions(tokens))
     require(len(events) <= 32 * raw_size, 'decision limit')
     models = models_for(events)
-    model = pack_models(models)
+    model = pack_models(models) if version == 1 else pack_models_compact(models)
     payload = encode_events(events, models)
-    header = HEADER.pack(b'PDRX', 1, raw_size, len(tokens), len(events), len(model),
+    header = HEADER.pack(b'PDRX', version, raw_size, len(tokens), len(events), len(model),
                          len(payload), hashlib.sha256(raw).digest())
     return header + model + payload
 
@@ -212,11 +287,13 @@ def encode(tokens, raw_size):
 def decode(data):
     require(len(data) >= HEADER.size, 'header truncated')
     magic, version, size, count, dc, ms, ps, digest = HEADER.unpack_from(data)
-    require(magic == b'PDRX' and version == 1, 'identity')
+    require(magic == b'PDRX' and version in (1, 2), 'identity')
     require(size <= FRAME and count <= size and dc <= 32 * size, 'limits')
-    require(8 <= ms <= 7794 and 8 <= ps <= 8 + 2 * dc, 'extent limits')
+    minimum, maximum = (8, 7794) if version == 1 else (6, 5094)
+    require(minimum <= ms <= maximum and 8 <= ps <= 8 + 2 * dc, 'extent limits')
     require(len(data) == HEADER.size + ms + ps, 'extent')
-    models = parse_models(data[HEADER.size:HEADER.size + ms])
+    model_bytes = data[HEADER.size:HEADER.size + ms]
+    models = parse_models(model_bytes) if version == 1 else parse_models_compact(model_bytes)
     reader = ForwardDecoder(data[HEADER.size + ms:], models, dc)
     tokens, previous, literal = [], 0, None
     for _ in range(count):
@@ -238,7 +315,7 @@ def decode(data):
     reader.finish()
     raw = reconstruct(tokens, size)
     require(hashlib.sha256(raw).digest() == digest, 'digest')
-    require(encode(tokens, size) == data, 'noncanonical representation')
+    require(encode(tokens, size, version) == data, 'noncanonical representation')
     return raw, tokens
 
 
@@ -247,9 +324,20 @@ def decode_into(data, destination):
     destination[:] = raw
 
 
-def encode_into(tokens, size, destination):
-    result = encode(tokens, size)
+def encode_into(tokens, size, destination, version=1):
+    result = encode(tokens, size, version)
     destination[:] = result
+
+
+def diagnostic_descriptor(data):
+    """Derived comparison envelope; input must be a qualified PDRX container."""
+    require(len(data) >= HEADER.size, 'header truncated')
+    magic, version, _, _, decisions_count, model_size, payload_size, _ = HEADER.unpack_from(data)
+    require(magic == b'PDRX' and version in (1, 2), 'identity')
+    require(len(data) == HEADER.size + model_size + payload_size, 'extent')
+    prefix = DESCRIPTOR_PREFIX.pack(decisions_count, payload_size, 12, 0,
+                                    len(ALPHABETS), sum(ALPHABETS))
+    return prefix + data[HEADER.size:HEADER.size + model_size]
 
 
 def read_exports(path):
@@ -269,15 +357,18 @@ def read_exports(path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('export')
+    parser.add_argument('--model-version', type=int, choices=(1, 2), default=1)
     args = parser.parse_args()
     rows = []
     for raw, tokens, rs, cd, cp, minimum in read_exports(args.export):
-        wire = encode(tokens, len(raw))
+        wire = encode(tokens, len(raw), args.model_version)
         restored, decoded = decode(wire)
         require(restored == raw and decoded == tokens, 'differential failure')
         fields = HEADER.unpack_from(wire)
         rows.append(dict(raw=len(raw), tokens=len(tokens), minimum_match=minimum,
+                         model_version=args.model_version,
                          range_payload=rs, rans_model=fields[5], rans_payload=fields[6],
+                         rans_descriptor=len(diagnostic_descriptor(wire)),
                          diagnostic_container=len(wire), contextual_rans_model=cd,
                          contextual_rans_payload=cp, verified=True))
     print(json.dumps(rows, indent=2))

@@ -72,3 +72,45 @@ is registered as `marc_position_distance_rans_diagnostic` when an interpreter
 is available. Native baseline entropy block limits count decisions rather
 than raw bytes; the exporter uses a local 32 Mi-decision ceiling and 256 MiB
 aggregate ceiling without changing public defaults.
+
+
+## DD-1512 compact model extension
+
+The comparison baseline is contextual rANS with the same minimum-match-five
+tokens. Dynamic Range compression does not gate this extension. Future native
+throughput and directional peak memory must be measured separately; neither
+a Python timer nor a table entry count proves an algorithmic advantage.
+
+PDRX version 2 retains the 57-byte header, normalization and payload layout.
+Its model begins with a six-byte little-endian active-context mask; unused
+high four bits must be zero. Ascending active contexts have one mode byte:
+
+* Mode 0: one symbol u8, its frequency implicitly 4096.
+* Mode 1: u16 frequencies for alphabet symbols except the last; last frequency
+  is 4096 minus the preceding sum. Zeros are allowed.
+* Mode 2: nonzero count u16, then ascending observed symbols. All but the last
+  symbol have (symbol u8, frequency u16); last has only symbol u8 with frequency
+  inferred as 4096 minus the preceding sum.
+
+A single observed symbol always selects mode 0. Otherwise mode 1 costs
+1 + 2*(alphabet-1), mode 2 costs 1 + 3*nonzero_count; choose smaller, ties
+choose mode 1. Active models must sum to 4096. Sparse frequencies are positive.
+The parser reconstructs models privately, then reserializes and requires exact
+canonical equality, including mode choice. Empty model is a zero mask. Maximum
+model extent is 5094 bytes; all old raw/token/decision/payload bounds apply.
+The final canonical container check uses the received explicit version.
+
+`encode` defaults to version 1 to preserve previous diagnostic bytes. Select
+version 2 explicitly through its argument or CLI `--model-version 2`. Decode
+accepts both explicit versions. This diagnostic is still finite and private;
+no statement of streaming/public completion follows from model compaction.
+
+
+For same-token component comparisons, charge the same sixteen bytes of
+non-model entropy metadata that the existing contextual rANS descriptor
+contains. Materialize a derived diagnostic descriptor with prefix
+(decisions u32, payload size u32, table log u8=12, flags u8=0, context count
+u16=44, frequency entries u32=2566), then the PDRX model. This prefix is not
+added to PDRX bytes, whose header already carries sizes. Report its derived
+descriptor plus payload separately from both raw model bytes and container
+bytes. It remains a private measurement envelope, not public stream admission.

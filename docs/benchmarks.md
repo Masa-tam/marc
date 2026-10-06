@@ -10337,3 +10337,38 @@ Python diagnostic is not a native throughput benchmark. Peak memory, full
 corpus behavior, streaming lifecycle, production allocation refusals and
 public interchange are not qualified by this pilot. Existing guarantees
 and public formats are unchanged.
+
+
+## BM-0213: compact position-distance rANS model pilot
+
+DD-1512 applies the user-selected contextual rANS compression criterion;
+Dynamic Range compression is not an admission condition. Retain the same
+twelve first-one-MiB Silesia samples and minimum-match-five token sequences
+from BM-0212 (12,582,912 raw bytes). This is not a full-corpus or public archive
+result. The prior native-produced exports are hash checked against their
+qualified receipts before reuse.
+
+PDRX version 2 retains every normalized frequency and every payload byte from
+version 1. The old implementation from the prior source revision independently
+reproduces version-1 bytes. All twelve compact frames restore the raw bytes and
+tokens; a separate consumer also re-encodes every compact frame byte-for-byte.
+Single-symbol, dense and sparse records reduce model bytes from 53,473 to
+37,014 (-30.780%). A derived diagnostic descriptor adds sixteen metadata bytes
+per frame, matching the non-model metadata scope of existing contextual rANS.
+These derived descriptors are private measurement envelopes, not MARC frames.
+
+| Same-token components | Descriptor bytes | Payload bytes | Total bytes |
+|---|---:|---:|---:|
+| Position-distance rANS, compact | 37,206 | 4,730,718 | 4,767,924 |
+| Existing contextual rANS | 67,742 | 4,771,284 | 4,839,026 |
+
+The compact candidate is 1.469% smaller in aggregate, and all twelve individual
+samples are smaller. Outer stream/frame headers and hashes are excluded from
+both columns. No speed or peak-memory advantage follows from these size
+observations. Serialized model size is not process memory or decode-table
+workspace. The Python experiment is not a native throughput benchmark.
+Nine regression groups, including both versions, mode-cost ties, maximum model
+extent, malformed descriptions, seeded token sequences and output invariance,
+pass in two interpreter environments. Public codec/CLI/ABI and archive inventory
+remain unchanged. Broader corpus, native speed and directional resource
+measurements remain separate qualification steps.

@@ -33358,3 +33358,14 @@ minimum-match-three position-distance sequence separately from a shared
 minimum-match-five control usable by existing contextual rANS. Retain sparse
 model overhead in results, preserve transactional publication and all public
 formats, and do not assume compression improvement before measurement.
+
+
+### DD-1512: compact static models against the contextual rANS control
+
+The user selects contextual rANS as the compression comparator. Dynamic Range
+compression is not an admission criterion. Diagnose speed and memory
+independently; advantages for rANS/tANS speed or Huffman memory are hypotheses
+until measured. Preserve PDRX version 1 and add explicit version 2 with
+canonical single-symbol/dense/sparse model records. Keep normalization,
+decisions and payload bytes unchanged, isolating descriptor cost. First
+requalify the same-token pilot before broad corpus or public integration.
