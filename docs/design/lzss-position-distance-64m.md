@@ -216,3 +216,17 @@ retained storage accounting. Private compact records are canonical byte
 serialization and bounded by 2R. This remains an internal finite helper;
 direct and compact entropy encoders, frame/stream ownership, public factories,
 CLI resource policy and archive-74 exchange remain pending.
+
+
+## Finite entropy and frame qualification (DD-1506)
+
+Typed and compact inputs now feed direct Range encoding, retaining the separate
+operation-array reference. Three finite frame paths validate and finish every
+private intermediate before committing caller bytes/layout/written count.
+All twenty-nine payload vectors and independent full-window repetition and
+F-5/F-258 frame bytes agree on four native routes, with full-capacity admission
+and failure invariance. Encoder compact-prefix accounting does not lower the
+decoder's record floor. The large constexpr fixtures retain explicit literal
+extents and pass default and stricter syntax compilation.
+Owning stream, distinct public factories, measured CLI policy and archive-74
+exchange remain requirements of the active goal; this finite gate is internal.

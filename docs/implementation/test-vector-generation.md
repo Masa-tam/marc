@@ -22131,3 +22131,33 @@ Three seeded 10,000-run whole-library ASan/UBSan campaigns cover reference,
 indexed and compact syntax/parse contracts with no finding; leaks are disabled.
 Finite-process peak measurement includes test oracle/retention buffers, and is
 not a throughput result or a public codec/CLI admission requirement.
+
+
+### TVG-1373: sixty-four-MiB entropy/frame differential and publication checks
+
+Regenerate all twenty-nine semantic payload vectors independently, including
+full F-3/F-258 references, all length classes, distance contexts and rescaling.
+Compare typed-direct, compact, operation-array and mathematical byte results
+and token reconstruction. Preserve constexpr array initialization using
+literal_view with explicit extent N-1; verify default compilation and a
+separate 10,000-step syntax check without raising production compiler limits.
+
+Compare finite frame paths and reconstructed bytes on every single byte,
+patterns, random input, ties, partial and maximum frames. Include all full
+owner capacities, controls and retained reference/decoder buffers in exact
+admission, one-below refusal, aliases, overflow and late-failure preservation.
+Independently generate three full 67,108,864-byte whole-frame recipes:
+repetition and unique-prefix/zero-history/far F-5/F-258. Verify every frame
+byte, unchanged output tails and prior layout/written count on refusal. The
+old 512-MiB grant refuses the complete maximum compact encoder configuration;
+the explicit diagnostic grant admits it. Synthetic prefix-only counts use
+T=F, E=N=2F, encoder records 2F and decoder staging 3F. Preserve the initial
+failed test log and source where stale upper counts/context identity remained,
+then rerun after correcting the test alone.
+
+Four native routes pass five selected tests each. Four seeded 10,000-run
+whole-library ASan/UBSan campaigns cover typed/compact entropy and frame
+transactions, malformed syntax, capacities, deterministic replay and immutable
+publication with no finding; leak detection is disabled. Separate process
+measurement includes oracle and previous-frame owners and is not a CLI budget
+or throughput result. Owning/public/CLI/exchange qualification remains pending.

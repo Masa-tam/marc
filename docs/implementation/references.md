@@ -11075,3 +11075,12 @@ Adapt the current first-party exhaustive, exact indexed and compact dictionary
 helpers. Independently select descending match length then nearest source in
 the test oracle, and serialize records explicitly in little-endian order.
 No external implementation source is consulted.
+
+
+### IR-1265: sixty-four-MiB direct entropy and complete frame encoding
+
+Use IR-1260..IR-1264 and the current repository-owned thirty-two-MiB typed,
+compact and operation-array finite encoders. Regenerate every semantic token
+payload and complete-frame expectation from the independent sixty-four-MiB
+integer model and explicit little-endian frame equations. The older profiles
+provide semantic input recipes only. No external implementation is consulted.

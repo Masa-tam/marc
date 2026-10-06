@@ -39182,3 +39182,20 @@ All earlier source bytes, formats, ABI and generic limits are preserved.
 Four native routes and three instrumented campaigns agree with independent
 oracles. Similarity review is scoped to repository-owned components. No legal
 guarantee or completed public sixty-four-MiB codec is claimed.
+
+
+### CR-1679: sixty-four-MiB finite entropy and frame qualification
+
+Date: 2026-10-06. Author/reviewer: Codex with repository checks.
+Task: direct typed/compact entropy and three complete-frame encode paths with
+independent mathematical expectations and failure-preserving publication.
+References: IR-1265/DD-1506/TVG-1373 and current first-party finite components.
+No external implementation, copyleft source or external test suite is consulted.
+Review model layout, unchanged normalization, bounds, semantic history checks,
+canonical finish, explicit record reads, checked full-capacity ownership,
+aliases and final whole-frame commit. Preserve all prior implementation bytes,
+public ABI, global defaults and previous encoded formats.
+Six new production units agree with independently regenerated payload/frame
+bytes on four native routes. Four instrumented campaigns report no finding.
+Similarity review is scoped to repository-owned components; no legal guarantee
+or completed public sixty-four-MiB codec is claimed.

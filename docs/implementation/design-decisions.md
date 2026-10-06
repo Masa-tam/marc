@@ -33221,3 +33221,30 @@ Its syntax reader preserves cursor and token on refusal; history validation
 belongs to the consumer. Queries charge full borrowed capacities, controls,
 declared retained owners and prior committed raw output with checked arithmetic.
 Generic limits and public/CLI policy remain unchanged.
+
+
+### DD-1506: sixty-four-MiB payload and complete-frame transactions
+
+Traverse typed tokens or explicit compact records through the qualified field
+cursor and fifty-context, 2,632-frequency bank without materializing operation
+arrays. Retain the operation-array encoder as a comparison reference. Support
+wire lengths three/four, distance classes zero through twenty-six and grammar
+extra widths up to twenty-six. Enforce E<=min(2R,5T), N<=min(10R,36T),
+P<=min(2N+5,20R+5); keep normalization at 2^24 and canonical five-byte finish.
+
+Count and validate the complete stable input before writing private payload
+scratch. Publish payload and descriptor only after successful finish. Connect
+operation-array, typed-direct and compact paths to finite whole-frame encoding.
+Dictionary parsing, count agreement, entropy finish, prefix serialization and
+preflight precede one final complete-frame commit. Every failure preserves the
+whole caller output, layout and written count, with zero committed bytes.
+Every intermediate workspace is private and discardable.
+
+The separate compact encoder-prefix path requires at least 2T record capacity;
+the decoder prefix retains its min(3R,9T) staging floor and is never replaced
+by the encoder admission path. Prefix/query success proves neither payload
+validity nor publication eligibility. Charge all actual full capacities,
+concrete controls/helpers and separately retained owners with checked sums and
+full-region alias checks across phases; live owners do not disappear at logical
+phase boundaries. Test-only one-GiB grants for simultaneous maximum diagnostic
+owners do not select public or CLI policy. Generic defaults remain unchanged.
