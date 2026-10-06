@@ -39274,3 +39274,19 @@ These are local fixture observations with explicitly synthetic revisions;
 final clean-source production bindings and runtime publication are separate
 steps. Hosted CI and four external consumer reports remain maintainer-owned
 gates for the new revision. No external implementation was consulted.
+
+
+### CR-1684: sixty-four-MiB external evidence reconciliation
+
+Date: 2026-10-06. Author/reviewer: Codex automated evidence reconciliation.
+Source: maintainer-reported successful GitHub CI and four 74-archive external
+verifier reports at revision 55e24b9b4be9642e507846a161e8638aeb8e3ce9.
+IX-0064 records the consumer roles and closes the DD-1510/IX-0063 external
+gate for that revision. The last two reports use the same external producer
+with different consumers; they do not add a second independent producer.
+The agent did not independently inspect hosted CI or rerun external jobs.
+Existing local qualification and sealed artifacts remain separate evidence.
+This documentation-only reconciliation uses no external implementation,
+changes no algorithm or format, and claims no new performance measurement,
+release qualification or legal guarantee. Hosted success is not attributed
+to the subsequent documentation-only commit.

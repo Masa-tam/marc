@@ -1590,3 +1590,28 @@ These are local fixture observations with explicitly synthetic revisions;
 final clean-source production bindings and runtime publication are separate
 steps. Hosted CI and four external consumer reports remain maintainer-owned
 gates for the new revision. No external implementation was consulted.
+
+
+### IX-0064: maintainer-reported schema-64 external completion
+
+On 2026-10-06 the maintainer confirmed push and successful GitHub CI completion
+and supplied four successful 74-archive verifier reports, all at revision
+55e24b9b4be9642e507846a161e8638aeb8e3ce9.
+
+The reported consumer roles are the CI-produced Windows bundle consumed on
+an external Ubuntu consumer, the CI-produced Ubuntu bundle consumed on that
+consumer, an independently produced external bundle self-consumed, and that
+same external bundle consumed on Windows. The last two identical producer
+labels identify two consumer roles for one producer, not two independent
+producers. All four reports cover schema 64 / marc-cli-v64, including
+lzss-position-distance-dynamic-range-64m as the seventy-fourth archive.
+
+These maintainer-reported results close DD-1510/IX-0063's revision-specific
+hosted CI and four-route external exchange gate. They supersede the pending
+external status for this revision. The agent did not independently inspect
+the hosted CI run or rerun these external executions. The exchange fixture
+complements the separate full-window, resource, allocation-failure and
+failed-frame nonpublication evidence; it does not establish a new performance
+result. This evidence update changes no codec, format, ABI, limits, defaults,
+inventory or release state. Reported CI success applies to the revision above,
+not to a subsequent documentation-only commit.
