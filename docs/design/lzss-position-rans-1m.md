@@ -284,3 +284,9 @@ capacities; misuse becomes a sticky error. Existing Transform process/destroy
 functions apply. Direction is immutable. The decoder also caps the stream's
 declared frame size to configured capacity. Flush leaves bytes unchanged;
 ResetBlock is unsupported; ended calls return EndOfStream with zero counts.
+
+## DD-1525 canonical CLI spelling
+
+The implemented selector is `lzss-position-distance-rans-1m`. The former
+spelling in this chronological proposal is not a CLI alias. The
+position-distance grammar and rANS representation are unchanged.

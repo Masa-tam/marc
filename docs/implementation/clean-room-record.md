@@ -39449,3 +39449,12 @@ function. No external compression implementation or restricted source was
 consulted. No codec source, ABI, byte format, recipe, inventory or watchdog is
 changed. Source and observed qualification bindings remain in private evidence;
 local execution does not establish a hosted speedup or new external result.
+
+### CR-1694: position-distance rANS naming correction
+
+Date: 2026-10-07. Author/reviewer: Codex, under maintainer authorization.
+Task: establish the model family and align CLI spelling with Dynamic Range.
+DD-1525 uses first-party design, dispatch and tests (IR-1281). No external
+implementation was consulted. The maintainer requested removing the former
+unpublished name. Correct CLI/exchange names without an alias and leave
+codec source, public ABI and serialized stream representation unchanged.

@@ -22442,3 +22442,12 @@ configure-time CMake; use `set_tests_properties` in both contexts. Run the
 complete main suite with two slots using independently retained qualified
 executables, and retain start/end logs for overlap and resource-lock review.
 CI-specific wall time remains an observation of a subsequent hosted run.
+
+### TVG-1388: canonical selector and rejected unpublished name
+
+Exercise the canonical spelling at every existing CLI fixture boundary.
+Reject the former spelling for encode and decode without publishing output.
+Retain malformed-stream and protected-output checks. Verify schema 65 and
+all historical schemas, rejecting its former final codec name before launch.
+Compare renamed archives against the frozen unpublished bundle by mapping
+only its final filename; every archive must remain byte-identical.

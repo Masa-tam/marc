@@ -259,7 +259,7 @@ try {
         -SourceRevision ('0' * 40)
     $latest = Get-Content -LiteralPath (Join-Path $schema65 'manifest.json') -Raw | ConvertFrom-Json
     if ($latest.schema_version -ne 65 -or $latest.codec_set -ne 'marc-cli-v65' -or
-            @($latest.archives).Count -ne 75 -or $latest.archives[74].codec -ne 'lzss-position-rans-1m') {
+            @($latest.archives).Count -ne 75 -or $latest.archives[74].codec -ne 'lzss-position-distance-rans-1m') {
         throw 'Schema 65 must append exactly one position rANS archive'
     }
     for ($index = 0; $index -lt $schema64Profiles.Count; ++$index) {
@@ -832,7 +832,7 @@ try {
         -BundleDirectory $schema1 `
         -OutputDirectory (Join-Path $root 'verified1')
 
-    Write-Host 'Verified interoperability schemas 1 through 64'
+    Write-Host 'Verified interoperability schemas 1 through 65'
 } finally {
     if ([string]::IsNullOrEmpty($EvidenceDirectory) -and (Test-Path -LiteralPath $root)) {
         $resolvedRoot = [System.IO.Path]::GetFullPath($root)

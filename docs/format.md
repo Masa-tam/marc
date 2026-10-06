@@ -9144,3 +9144,10 @@ and 64-byte frame header followed by a canonical compact descriptor and scalar
 rANS payload. The private complete-frame boundary validates this additive
 representation. Existing contextual entropy `4/3` and Dynamic Range `3/2`
 admission remain unchanged. Public/CLI/exchange admission is later work.
+
+### DD-1525 CLI spelling correction
+
+The canonical CLI name is `lzss-position-distance-rans-1m`. The previous
+`lzss-position-rans-1m` spelling is not accepted. It selects the existing
+dictionary `2/9`, context `1/10` and entropy `4/4` representation. This is
+a spelling correction, with no format, model, limit or public ABI change.

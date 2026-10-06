@@ -2437,7 +2437,7 @@ void usage() {
                  "lzss-position-distance-dynamic-range-16m, "
                  "lzss-position-distance-dynamic-range-32m, "
                  "lzss-position-distance-dynamic-range-64m, "
-                 "lzss-position-rans-1m, lzss-contextual-rans, lzss-contextual-rans-1m, "
+                 "lzss-position-distance-rans-1m, lzss-contextual-rans, lzss-contextual-rans-1m, "
                  "lzss-contextual-rans-4m, lzss-contextual-rans-16m, "
                  "lzss-contextual-rans-64m, "
                  "lzss-contextual-tans, lzss-contextual-tans-1m, "
@@ -2539,7 +2539,7 @@ int main(const int argc, const char* const argv[]) {
             codec = Codec::lzss_contextual_rans;
         else if (name == "lzss-contextual-rans-1m")
             codec = Codec::lzss_contextual_rans_1m;
-        else if (name == "lzss-position-rans-1m")
+        else if (name == "lzss-position-distance-rans-1m")
             codec = Codec::lzss_position_rans_1m;
         else if (name == "lzss-contextual-rans-4m")
             codec = Codec::lzss_contextual_rans_4m;

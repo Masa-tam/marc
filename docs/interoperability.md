@@ -1634,3 +1634,12 @@ These local fixture manifests use explicitly synthetic revisions. Final commit
 bindings and fixed-runtime publication are separate steps. Hosted CI and four
 maintainer external routes for the new revision remain pending; old schema-64
 reports do not cover this new archive.
+
+### IX-0066: canonical position-distance rANS name before publication
+
+Schema 65 (`marc-cli-v65`) retains its 75-archive inventory and its first
+74 entries. Entry 75 and its filename are corrected to
+`lzss-position-distance-rans-1m` and
+`lzss-position-distance-rans-1m.marc` before publication. Archive bytes are
+unchanged. The earlier unpublished spelling is rejected during manifest
+admission, before launching a codec. Schemas 1 through 64 are unchanged.

@@ -11186,3 +11186,9 @@ project-level build concurrency and independent CTest scheduling:
 [COST](https://cmake.org/cmake/help/latest/prop_test/COST.html) and
 [RESOURCE_LOCK](https://cmake.org/cmake/help/latest/prop_test/RESOURCE_LOCK.html).
 These are build-system references, not codec implementation references.
+
+### IR-1281: position-distance rANS selector spelling
+
+Use the existing first-party DD-1513/DD-1515 design, exact format identity
+and CLI dispatch to establish the position-distance model family. No new
+external algorithm reference or implementation is required for this rename.

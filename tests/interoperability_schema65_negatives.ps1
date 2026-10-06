@@ -21,7 +21,7 @@ $baseline = Get-Content -LiteralPath (Join-Path $source 'manifest.json') -Raw | 
 if ($baseline.schema_version -ne 65 -or @($baseline.archives).Count -ne 75) {
     throw 'Negative tests require a complete schema-65 source bundle'
 }
-$cases = @('downgrade', 'codec-set', 'missing', 'duplicate', 'order', 'archive-hash',
+$cases = @('old-name', 'downgrade', 'codec-set', 'missing', 'duplicate', 'order', 'archive-hash',
     'archive-size', 'input-hash', 'identity-dictionary', 'identity-context', 'identity-context-count', 'header-truncated')
 foreach ($offset in @(4, 6, 12, 14, 16, 18, 80, 82, 84, 86, 96, 98)) {
     $cases += "identity-byte-$offset"
@@ -35,6 +35,10 @@ foreach ($case in $cases) {
     $manifest = Get-Content -LiteralPath $path -Raw | ConvertFrom-Json
     $expected = ''
     switch ($case) {
+        'old-name' {
+            $manifest.archives[74].codec = 'lzss-position-rans-1m'
+            $expected = 'Unknown or duplicate codec*'
+        }
         'downgrade' {
             $manifest.schema_version = 64; $manifest.codec_set = 'marc-cli-v64'
             $expected = 'Interoperability manifest must contain exactly 74 archives'

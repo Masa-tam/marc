@@ -33478,3 +33478,13 @@ after GoogleTest discovery, to the actual discovered cases. Preserve every
 command, inventory entry, individual watchdog and failure/publication contract.
 No boundary recipe is reduced or skipped. Trial actual parallel execution and
 verify generated CTest properties before attributing any CI speed improvement.
+
+### DD-1525: align position-distance rANS CLI spelling
+
+Use `lzss-position-distance-rans-1m` as the only accepted selector. The
+maintainer confirms the former spelling is unpublished and needs no alias.
+The dictionary and context family is position-distance in both rANS and
+Dynamic Range profiles; their entropy algorithms remain different. Preserve
+all stream bytes, APIs, limits and failure-publication contracts. Correct
+exchange schema 65 entry 75 in place before publication; preserve its first
+74 entries and the unchanged schemas 1 through 64.

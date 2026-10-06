@@ -183,7 +183,7 @@ $schema63Profiles = $schema62Profiles + @(
     'lzss-position-distance-dynamic-range-32m')
 $schema64Profiles = $schema63Profiles + @(
     'lzss-position-distance-dynamic-range-64m')
-$schema65Profiles = $schema64Profiles + @('lzss-position-rans-1m')
+$schema65Profiles = $schema64Profiles + @('lzss-position-distance-rans-1m')
 if ($manifest.schema_version -eq 1) {
     if ($null -ne $manifest.PSObject.Properties['codec_set']) {
         throw 'Schema 1 interoperability manifests must not declare a codec set'
@@ -665,7 +665,7 @@ foreach ($entry in $manifest.archives) {
             }
         }
     }
-    if ($codec -eq 'lzss-position-rans-1m') {
+    if ($codec -eq 'lzss-position-distance-rans-1m') {
         $archiveBytes = [byte[]]::new(112)
         $stream = [System.IO.File]::OpenRead($archivePath)
         try {

@@ -10,7 +10,7 @@ from pathlib import Path
 tool=Path(sys.argv[1]).resolve()
 stage=Path(sys.argv[2]).resolve()/('run-'+uuid.uuid4().hex)
 stage.mkdir(parents=True)
-codec='lzss-position-rans-1m'
+codec='lzss-position-distance-rans-1m'
 def invoke(mode,source,target,success=True,selected=codec):
     r=subprocess.run([str(tool),mode,'--codec',selected,str(source),str(target)],capture_output=True,timeout=180)
     assert (r.returncode==0)==success,(mode,source,r.returncode,r.stderr.decode(errors='replace'))
@@ -18,6 +18,9 @@ def invoke(mode,source,target,success=True,selected=codec):
         assert not target.exists() and not Path(str(target)+'.tmp').exists(),target
     return r
 
+usage=subprocess.run([str(tool)],capture_output=True,timeout=30)
+usage_text=(usage.stdout+usage.stderr).decode(errors='replace')
+assert codec in usage_text and 'lzss-position-rans-1m' not in usage_text
 receipts=[]
 for size in [0,1,256,1048575,1048576,1048577,2097169]:
     raw=bytes((i*31+i//251)&255 for i in range(size))
@@ -32,6 +35,8 @@ for size in [0,1,256,1048575,1048576,1048577,2097169]:
     # The old contextual parser and new parser must stay separate.
     invoke('decode',archive,stage/(str(size)+'.old.raw'),False,'lzss-contextual-rans-1m')
 
+invoke('encode',stage/'1.input',stage/'old-name.marc',False,'lzss-position-rans-1m')
+invoke('decode',stage/'1.marc',stage/'old-name.raw',False,'lzss-position-rans-1m')
 small=stage/'1.marc';wire=small.read_bytes()
 for index in range(len(wire)):
     source=stage/('cut-'+str(index)+'.marc'); source.write_bytes(wire[:index])

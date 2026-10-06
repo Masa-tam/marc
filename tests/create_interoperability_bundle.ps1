@@ -156,7 +156,7 @@ $profiles = @(
     'lzss-position-distance-dynamic-range-16m',
     'lzss-position-distance-dynamic-range-32m',
     'lzss-position-distance-dynamic-range-64m',
-    'lzss-position-rans-1m'
+    'lzss-position-distance-rans-1m'
 )
 $entries = @()
 foreach ($profile in $profiles) {
@@ -255,7 +255,7 @@ foreach ($profile in $profiles) {
             }
         }
     }
-    if ($profile -eq 'lzss-position-rans-1m') {
+    if ($profile -eq 'lzss-position-distance-rans-1m') {
         $archiveBytes = [System.IO.File]::ReadAllBytes($archivePath)
         if ($archiveBytes.Length -lt 112) { throw 'Position rANS archive header is truncated' }
         if ($archiveBytes[80] -ne 12 -or $archiveBytes[81] -ne 1 -or

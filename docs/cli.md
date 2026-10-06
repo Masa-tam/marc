@@ -815,7 +815,7 @@ experimental selection is separate from the unchanged 42-profile baseline
 table. Schema-64/archive-74 exchange registration is a subsequent gate.
 ## Position-distance rANS one-MiB selector
 
-Use explicit, case-sensitive `lzss-position-rans-1m` with encode or decode.
+Use explicit, case-sensitive `lzss-position-distance-rans-1m` with encode or decode.
 It selects dictionary `2/9`, context `1/10`, entropy `4/4`, a one-MiB frame and
 window, and fixed-five encoder eligibility. The decoder grammar includes
 lengths three/four. The owning API preflights raw, token, serialized, finder,
@@ -836,3 +836,7 @@ twelve full-corpus archives are smaller, with measured encode improvement,
 decode slowdown and increased process peaks. This qualifies the 64MiB capacity
 policy without making it an OS RSS limit or a universal speed claim. Schema 65
 adds this selector as archive 75 while retaining every old archive byte.
+
+DD-1525 corrects the spelling before publication. The previous
+`lzss-position-rans-1m` spelling is not accepted. Schema 65 uses the canonical
+name for archive 75 without changing its encoded bytes.
