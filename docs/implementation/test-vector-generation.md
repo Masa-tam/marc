@@ -22192,3 +22192,29 @@ frames. Count all live allocator receipts, retained collector capacity and
 diagnostic controls, and check old decoder grant refusal and exact/one-below
 workspace admission. Save encode/decode phase times separately; generation,
 collection and resource initialization remain included in those times.
+
+
+### TVG-1375: sixty-four-MiB public ABI, C clients and failure publication
+
+Compare encoder/decoder public calls on empty input, every single byte, random
+and patterned small input, arbitrary chunk schedules and one-byte output.
+Regenerate legal wire lengths three/four with the independent fifty-context
+integer oracle. Test unaligned byte workspaces, non-element-multiple capacities,
+metadata copy lifetime, aliases, reserved/version fields, exact/one-below grants,
+and fully charged excess backing. Test every initial and later candidate refusal
+with actual destruction and no leaked allocation receipts. Preserve prior
+published frames after a corrupt second frame and sticky terminal calls.
+
+Compare seven independent complete public streams on F-1/F/F+1/2F/2F+1 and far
+F-5/F-258; force one-byte output at F+1. Verify default compiler and instrumented
+routes, previous sixteen/thirty-two-MiB public regressions and three real C
+consumers. A separate shared-library C import client exercises both directions.
+Preserve all fifty-six old initializers and add exactly two distinct new ones.
+Check both bytes of little-endian variant/context fields in native C/C++ clients.
+One 10,000-run address/undefined-behavior campaign varies grants, ABI/configuration,
+data and schedules and checks complete public output. Leak detection is disabled;
+explicit allocator receipts and cleanup tests independently enforce destruction.
+Full public resource diagnostics include their collectors and retained controls;
+two seeded incompressible frames reproduce every raw byte and the qualified
+private stream's complete wire length. Phase times include generation, storage
+initialization and collection and are not isolated codec throughput.

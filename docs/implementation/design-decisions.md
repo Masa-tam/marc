@@ -33274,3 +33274,32 @@ unsupported, ended/error states sticky, and zero progress is never Progress.
 Late allocation failure may accompany already valid output but publishes no
 byte from the failed frame. Explicit diagnostic grants for full-window tests
 do not change generic limits or establish CLI memory policy.
+
+
+### DD-1508: distinct sixty-four-MiB public lifecycle and grants
+
+Append distinct encoder/decoder configuration, resource and buffer types and
+six C entry points; preserve every existing public declaration and initializer.
+Initializers set profile-specific fields and leave the remaining limits and
+capacities zero for explicit caller selection. Select dictionary 2/14, context
+1/15, entropy 3/2, fifty contexts and 2,632 frequency entries; keep ABI version.
+
+The encoder adapter has fixed receipts and a concrete exact-allocation delegate.
+Admit complete public/wrapper/allocator controls, declared call capacities,
+external retained owners, raw and index storage before initialization. Mark
+resource queries INITIAL_ONLY: candidates are admitted separately per frame,
+including the previously drained publication. Construction failures expose no
+header or handle. Copy configuration and retain immutable encode direction.
+
+The decoder uses five borrowed byte workspaces through transform destruction;
+copy metadata and retain immutable decode direction. Alignment is one and
+record_capacity_bytes is a byte capacity. Require at least 3*maximum-frame
+record backing for each token buffer, preserving legal wire lengths three/four.
+The byte workspaces contain no placement-constructed typed token objects.
+Mark decoder queries CAPACITY_ONLY: successful capacity admission validates no
+stream. Charge actual full spans and excess capacity before handle publication,
+public boundary/handle/helper controls and declared call/retained owners.
+Check all full-region aliases and arithmetic. Sticky terminals, partial buffers,
+canonical finish and complete-frame nonpublication survive the public boundary.
+Queries preserve complete result structures on failure; safe factory failures
+leave no handle. Diagnostic resource grants select neither global nor CLI policy.

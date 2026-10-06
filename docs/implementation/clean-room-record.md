@@ -39216,3 +39216,22 @@ Four native routes and an instrumented campaign report no failure or finding.
 Retain all prior source bytes, public APIs, defaults and encoded formats.
 Similarity review is scoped to first-party ownership patterns; no legal
 guarantee or completed public sixty-four-MiB codec is claimed.
+
+
+### CR-1681: sixty-four-MiB public extension qualification
+
+Date: 2026-10-06. Author/reviewer: Codex automated implementation and review.
+Task: expose distinct bounded sixty-four-MiB encoder/compact decoder factories
+without modifying prior APIs, defaults, formats or frame publication guarantees.
+References: IR-1267/DD-1508/TVG-1375 and current first-party public/finite components.
+No external implementation, copyleft source expression or imported tests used.
+Review concrete allocation delegation, full controls and live-generation grants,
+metadata lifetime, byte alignment, complete aliases, checked sums, copied
+configuration, exact mathematical bytes and final publication boundaries.
+Four native routes, old profile regressions, real static/shared C clients and
+an instrumented campaign report no failure or finding. Initial test expectations
+retained old IDs 13/14; preserve the failed evidence, correct tests to the
+specified 14/15, assert both bytes and fifty contexts, and requalify fully.
+Prior declarations and fifty-six initializer definitions remain unchanged;
+exactly two distinct new initializers are added. Similarity review is scoped
+to first-party code; no legal guarantee or completed CLI/exchange is claimed.

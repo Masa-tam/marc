@@ -11094,3 +11094,13 @@ references, together with the first-party seeded thirty-two-MiB resource
 diagnostic. Use the independently authored sixty-four-MiB integer model and
 explicit multi-frame layout for complete byte comparison. No external source,
 implementation, test suite or allocator wrapper is consulted.
+
+
+### IR-1267: sixty-four-MiB public factories and concrete ownership delegate
+
+Use IR-1260..IR-1266, the qualified sixty-four-MiB owning/borrowed transforms,
+and the current first-party thirty-two-MiB public adapter, concrete delegate,
+encoder factory and compact decoder factory. Use the independent integer
+oracle for generic wire lengths three/four and complete full-window streams.
+Extend the first-party seeded resource experiment through the public boundary.
+No external implementation or test suite consulted.

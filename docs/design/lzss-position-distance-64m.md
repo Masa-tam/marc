@@ -242,3 +242,18 @@ agree on four native routes, including far F-5/F-258 and late corrupt-frame
 nonpublication; small chunk schedules cover one-byte input and output.
 Distinct public factories, measured public/CLI resource policy and archive-74
 exchange remain required. Diagnostic full-owner grants leave defaults unchanged.
+
+
+## Public lifecycle qualification (DD-1508)
+
+Six distinct public entry points connect the qualified owning encoder and
+borrowed compact byte decoder. Metadata is copied, complete backing remains
+borrowed/charged through destruction, and every candidate generation is admitted
+before allocation. Initial queries guarantee initial storage only; decoder
+queries guarantee capacities only. Exact/one-below grants, every allocation
+refusal, unaligned generic short-wire records, sticky states and failed-frame
+nonpublication pass native and C boundary checks. Fifty-six prior initializers
+remain unchanged and two new ones are appended. Four routes, previous profile
+regressions and a shared C client qualify the lifecycle. Full seeded public
+resource experiments reproduce the private bytes without establishing CLI policy.
+Explicit CLI selection, measured CLI grants and archive-74 exchange remain required.

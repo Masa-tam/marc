@@ -9082,3 +9082,18 @@ Maximum normative payload/serialized-frame sizes are 1,342,177,285 and
 are not allocation-policy grants. Prior identities/bytes remain unchanged.
 No production parser, factory, CLI selector or exchange archive admits this
 reserved identity at the design stage; integration requires separate evidence.
+
+
+### Sixty-four-MiB position-distance public transforms
+
+DD-1508 exposes the DD-1501 reserved representation through distinct public
+factories without changing its bytes: Format 2.0 dictionary 2/14, context 1/15,
+entropy 3/2, fifty contexts and 2,632 frequency entries. Stream/frame resets,
+little-endian fields, canonical finish, match/distance/event/decision bounds
+and all malformed-input rules remain those specified above. Compact records
+are private staging and are not a wire representation. Generic wire matches
+of length three/four remain legal even though the encoder emits length at least
+five. Decoder admission retains min(3R,9T) and public worst-case 3R backing;
+encoder compact-prefix admission does not lower these decoder floors.
+Distinct public directions and complete-frame validation precede raw release.
+Previous formats and their public decoding/encoding paths remain unchanged.

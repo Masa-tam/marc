@@ -995,3 +995,34 @@ The distinct public entry points are
 `marc_lzss_position_distance_dynamic_range_32m_decoder_config_init()`,
 `marc_lzss_position_distance_dynamic_range_32m_decoder_workspace_requirements()`
 and `marc_lzss_position_distance_dynamic_range_32m_create_decoder()`.
+
+
+## Sixty-four-MiB position-distance public extension
+
+The distinct `marc_lzss_position_distance_dynamic_range_64m_*` lifecycle uses
+dictionary variant 14 and context variant 15 with fifty contexts. Encoder and
+decoder initializers set profile fields only; callers supply every remaining
+limit, external retained byte count and complete input/output call capacity.
+The default profile frame/window is 67,108,864 bytes, match lengths 3..258,
+and maximum range-model total 32,768. The frequency-bank limit must admit 2,632
+entries. Generic initializers and every previous public declaration are unchanged.
+
+`config_init`, `resource_requirements` and `create_encoder` select the compact
+owning encoder. Resource admission is INITIAL_ONLY; every candidate frame and
+all old/new generations are admitted again before allocation. A successful
+query does not guarantee later frames fit. `decoder_config_init`,
+`decoder_workspace_requirements` and `create_decoder` select the compact byte
+decoder with CAPACITY_ONLY queries. Borrow all five full byte capacities until
+transform destruction, even after draining; configuration and buffer metadata
+are copied. Token alignment is one and record_capacity_bytes is a byte count,
+not a typed element count. Both token buffers require at least three times the
+configured maximum frame bytes to admit generic wire lengths three/four.
+
+Failed queries preserve results. Invalid aliased output arguments are refused
+without unsafe writes; safe factory failures publish no handle. Encode/decode
+direction is immutable. Repeated terminal calls return the same terminal state
+with zero counts. Flush is neutral, ResetBlock unsupported, and EndInput is
+repeated on unconsumed final suffixes. No failed frame is released; an error call
+may include output from an earlier fully validated frame. Actual complete
+capacities, aliases, retained owners and controls are checked before publication.
+No generic memory default or CLI policy is changed by this API addition.
