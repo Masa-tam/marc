@@ -33459,3 +33459,22 @@ plus external/handle/call charges. Smaller frame capacity alone does not lower
 the caller's decision ceiling. This preserves global limit validation and
 makes creation at the reported minimum valid for that configuration. It does
 not allocate unused decision storage or change the default one-MiB path.
+### DD-1524: two-slot CI with early long tests and bounded overlap
+
+Enable project-level parallel builds for the main compiler job and installed
+package/consumer builds. Run both complete main CI suites with two CTest slots.
+Keep local preset defaults unchanged. Apply relative cost hints to the long
+CLI boundary, compatibility and selected dictionary-finder cases. Do not infer
+portable elapsed times from these hints. Named 16-, 32- and 64-MiB test groups
+share one resource lock, allowing smaller tests to overlap while preventing
+overlap among the named large-window groups. This is conservative scheduling,
+not a resident-memory guarantee or codec allocation policy.
+
+The historical compatibility suite also holds this lock because its complete
+inventory invokes large-window profiles even though its fixture input is small.
+
+Apply the same property function to configured tests and, through a test include
+after GoogleTest discovery, to the actual discovered cases. Preserve every
+command, inventory entry, individual watchdog and failure/publication contract.
+No boundary recipe is reduced or skipped. Trial actual parallel execution and
+verify generated CTest properties before attributing any CI speed improvement.

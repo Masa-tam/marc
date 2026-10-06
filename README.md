@@ -48,6 +48,16 @@ GoogleTest enumeration has its own timeout, separate from each CTest case.
 can list the complete test inventory; maintainers may override it with a
 positive integer at configure time.
 
+CI enables project-level parallel builds and runs the complete main test suites
+with two CTest slots. Long boundary and compatibility tests receive relative
+`COST` hints so they start early. Named 16-, 32- and 64-MiB test groups and the
+compatibility suite share the `marc_large_window` resource lock; smaller tests
+can use the other slot. The compatibility suite invokes large-window codecs.
+Scheduling properties also apply after GoogleTest's `PRE_TEST` discovery.
+These hints change no test coverage, watchdog, codec limit or stream bytes,
+and the lock is not a process-memory ceiling. The local presets keep their
+existing concurrency defaults; use `--parallel 2` to select parallel testing.
+
 ## Command-line tool
 
 Top-level builds produce a small `marc` executable that exercises the public C

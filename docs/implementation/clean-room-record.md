@@ -39438,3 +39438,14 @@ coverage. The correction reports the configured decision-policy floor as well
 as actual retained capacities. It alters no codec process or default one-MiB
 workspace. Original measurement binaries/source remain retained and identified
 separately from this resource-query correction.
+### CR-1693: CI project and test parallelism
+
+Date: 2026-10-07. Author/reviewer: Codex, under maintainer authorization.
+DD-1524 uses first-party CI logs and IR-1280's official build-system
+specifications. Independently configure project build parallelism, two CTest
+slots, relative scheduling hints and one lock for named large-window groups.
+Configure-time and PRE_TEST-discovered properties use the same first-party
+function. No external compression implementation or restricted source was
+consulted. No codec source, ABI, byte format, recipe, inventory or watchdog is
+changed. Source and observed qualification bindings remain in private evidence;
+local execution does not establish a hosted speedup or new external result.

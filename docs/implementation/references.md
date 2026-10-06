@@ -11177,3 +11177,12 @@ DD-1522 reuses the first-party independently generated 8193-byte fixture,
 manifest identity preflight, historical conversion and no-launch negative
 protocol. The added archive uses DD-1515's exact representation and DD-1520's
 public lifecycle. No external implementation or test suite was consulted.
+### IR-1280: build and test scheduler configuration
+
+Use the official CMake command-line and test-property specifications for
+project-level build concurrency and independent CTest scheduling:
+[build parallelism](https://cmake.org/cmake/help/latest/manual/cmake.1.html#build-a-project),
+[CTest parallelism](https://cmake.org/cmake/help/latest/manual/ctest.1.html#run-tests),
+[COST](https://cmake.org/cmake/help/latest/prop_test/COST.html) and
+[RESOURCE_LOCK](https://cmake.org/cmake/help/latest/prop_test/RESOURCE_LOCK.html).
+These are build-system references, not codec implementation references.

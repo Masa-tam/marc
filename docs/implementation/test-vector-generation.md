@@ -22431,3 +22431,14 @@ default ceilings: querying and creating at the reported minimum must succeed.
 This catches the mismatch between a small retained layout and an independently
 configured larger decision ceiling. No codec process or default one-MiB buffer
 size changes in this query-only correction.
+### TVG-1387: parallel test scheduling qualification
+
+Compare the generated complete CTest inventory before and after scheduling:
+names, commands and individual timeouts must remain equal after normalizing
+the intentionally separate build/evidence root. Inspect cost hints and resource
+locks for both configured CLI tests and discovered GoogleTest cases. Exercise
+CTest's actual include interpreter, which has a separate test registry from
+configure-time CMake; use `set_tests_properties` in both contexts. Run the
+complete main suite with two slots using independently retained qualified
+executables, and retain start/end logs for overlap and resource-lock review.
+CI-specific wall time remains an observation of a subsequent hosted run.

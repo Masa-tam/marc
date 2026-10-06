@@ -7815,3 +7815,13 @@ if(MARC_BUILD_TESTS)
         set_tests_properties(marc_position_distance_rans_diagnostic PROPERTIES TIMEOUT 120)
     endif()
 endif()
+
+if(MARC_BUILD_TESTS)
+    # Ordinary tests exist at configure time; PRE_TEST GoogleTest cases exist
+    # only after discovery, before CTest loads the remaining test definitions.
+    include(${CMAKE_CURRENT_SOURCE_DIR}/tests/test_scheduling.cmake)
+    get_property(marc_configured_tests DIRECTORY PROPERTY TESTS)
+    marc_apply_test_scheduling(${marc_configured_tests})
+    set_property(DIRECTORY APPEND PROPERTY TEST_INCLUDE_FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_scheduling.cmake)
+endif()
