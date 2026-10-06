@@ -230,3 +230,15 @@ decoder's record floor. The large constexpr fixtures retain explicit literal
 extents and pass default and stricter syntax compilation.
 Owning stream, distinct public factories, measured CLI policy and archive-74
 exchange remain requirements of the active goal; this finite gate is internal.
+
+
+## Owning encoder qualification (DD-1507)
+
+The compact publication owner and known-size owning stream now use exact
+bounded allocations and charge old/current/candidate capacities until actual
+destruction. Every allocation failure preserves existing publication and no
+failed frame drains. Independent full-window and two-frame boundary streams
+agree on four native routes, including far F-5/F-258 and late corrupt-frame
+nonpublication; small chunk schedules cover one-byte input and output.
+Distinct public factories, measured public/CLI resource policy and archive-74
+exchange remain required. Diagnostic full-owner grants leave defaults unchanged.

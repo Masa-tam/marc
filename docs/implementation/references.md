@@ -11084,3 +11084,13 @@ compact and operation-array finite encoders. Regenerate every semantic token
 payload and complete-frame expectation from the independent sixty-four-MiB
 integer model and explicit little-endian frame equations. The older profiles
 provide semantic input recipes only. No external implementation is consulted.
+
+
+### IR-1266: sixty-four-MiB compact publication owner and owning encoder
+
+Use IR-1260..IR-1265 and the current repository-owned thirty-two-MiB compact
+owner and known-size owning stream coordinator as first-party structural
+references, together with the first-party seeded thirty-two-MiB resource
+diagnostic. Use the independently authored sixty-four-MiB integer model and
+explicit multi-frame layout for complete byte comparison. No external source,
+implementation, test suite or allocator wrapper is consulted.

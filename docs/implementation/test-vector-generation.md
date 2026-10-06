@@ -22161,3 +22161,34 @@ transactions, malformed syntax, capacities, deterministic replay and immutable
 publication with no finding; leak detection is disabled. Separate process
 measurement includes oracle and previous-frame owners and is not a CLI budget
 or throughput result. Owning/public/CLI/exchange qualification remains pending.
+
+
+### TVG-1374: sixty-four-MiB owning stream and allocation lifetime checks
+
+Derive seven independent complete streams from closed repetition and far-match
+recipes: F-1, F, F+1, 2F, 2F+1, and full F with final distances F-5/F-258.
+Serialize variant IDs 14/15 and all fifty contexts explicitly; compare every
+encoded and decoded byte. Force one-byte output across the F+1 boundary and
+corrupt the second complete frame to check that only the prior raw frame drains.
+Keep all maximum raw/history and multi-frame sizes; test the old 512-MiB
+decoder grant refusal before a diagnostic grant and exact workspace admission.
+
+Verify every initial raw/index allocation refusal, every first compact owner
+candidate allocation refusal, every replacement candidate refusal, and every
+second-frame candidate refusal. Assert prior publication address, complete
+bytes, layout, length and pending state, exact live allocation release, retained
+old publication accounting, exact aggregate grants and one below. Exercise
+aliases, arithmetic overflow, size/payload policies, sticky terminal states,
+truncation, extra input, delayed explicit end, zero output, every one-byte value,
+small frame boundaries and arbitrary small input splits with one-byte output.
+Four native routes qualify unit and full-window independent conformance tests.
+One 10,000-run instrumented campaign varies allocation failures, budgets,
+chunk schedules and flags and independently reconstructs every published frame.
+An actual process peak/time diagnostic includes comparison owners, maximum
+borrowed decoder backing and collected streams; it is not isolated throughput
+or a public/CLI admission policy.
+Also generate and reconstruct every byte of two complete seeded incompressible
+frames. Count all live allocator receipts, retained collector capacity and
+diagnostic controls, and check old decoder grant refusal and exact/one-below
+workspace admission. Save encode/decode phase times separately; generation,
+collection and resource initialization remain included in those times.

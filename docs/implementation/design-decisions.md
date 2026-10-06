@@ -33248,3 +33248,29 @@ concrete controls/helpers and separately retained owners with checked sums and
 full-region alias checks across phases; live owners do not disappear at logical
 phase boundaries. Test-only one-GiB grants for simultaneous maximum diagnostic
 owners do not select public or CLI policy. Generic defaults remain unchanged.
+
+
+### DD-1507: sixty-four-MiB ownership and streaming publication
+
+Give a compact owner a trusted non-reentrant noexcept exact allocator with a
+stable complete control extent. Validate configuration and disjoint full
+regions, admit every prospective allocation with checked arithmetic, and keep
+the current publication live and charged while preparing a fresh candidate.
+Parse dictionary records once into private compact storage; finish direct
+entropy coding, serialize and preflight the complete prefix before committing
+the next whole frame. On any failure preserve the previous complete publication,
+layout, length and pending state. Destroy candidate allocations on failure;
+release temporary blocks and the replaced publication only after success.
+Acknowledging drain changes the pending flag, not the lifetime or capacity.
+
+The known-size owning encoder allocates bounded raw and index owners, emits
+the validated stream header, collects one frame, obtains a complete owner
+transaction, then drains that frame. Fixed receipts count one current and four
+candidate blocks including drained publications. Charge complete call spans,
+external retained capacities, allocator controls/working state, raw tail and
+all coordinator/helper controls. Empty streams allocate no raw/index arrays.
+EndInput applies to the unconsumed final suffix; Flush is neutral, ResetBlock
+unsupported, ended/error states sticky, and zero progress is never Progress.
+Late allocation failure may accompany already valid output but publishes no
+byte from the failed frame. Explicit diagnostic grants for full-window tests
+do not change generic limits or establish CLI memory policy.

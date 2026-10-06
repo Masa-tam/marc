@@ -39199,3 +39199,20 @@ Six new production units agree with independently regenerated payload/frame
 bytes on four native routes. Four instrumented campaigns report no finding.
 Similarity review is scoped to repository-owned components; no legal guarantee
 or completed public sixty-four-MiB codec is claimed.
+
+
+### CR-1680: sixty-four-MiB owning stream qualification
+
+Date: 2026-10-06. Author/reviewer: Codex automated implementation and review.
+Task: extend the qualified sixty-four-MiB compact frame transaction with a
+publication owner and a bounded known-size owning stream; preserve prior
+publication on every refusal and account for all simultaneous generations.
+References: IR-1266/DD-1507/TVG-1374 and the repository-owned finite components.
+No external implementation, copyleft expression or imported test suite used.
+Review allocator admission, stable full controls, region disjointness, checked
+capacity sums, private candidate cleanup, old/new lifetime, complete-frame
+commit, stream terminal states and direct mathematical byte agreement.
+Four native routes and an instrumented campaign report no failure or finding.
+Retain all prior source bytes, public APIs, defaults and encoded formats.
+Similarity review is scoped to first-party ownership patterns; no legal
+guarantee or completed public sixty-four-MiB codec is claimed.

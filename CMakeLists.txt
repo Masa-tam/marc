@@ -541,6 +541,8 @@ set(MARC_SOURCES
     src/frame/lzss_position_distance_64m_token_frame_encoder.cpp
     src/frame/lzss_position_distance_64m_compact_prefix.cpp
     src/frame/lzss_position_distance_64m_compact_frame_encoder.cpp
+    src/frame/lzss_position_distance_64m_compact_owner.cpp
+    src/frame/lzss_position_distance_64m_owned_stream_encoder.cpp
     src/marc.cpp
 )
 
@@ -7502,5 +7504,26 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
                 --tool $<TARGET_FILE:marc_position_distance_64m_frame_encode_conformance>
                 --root ${CMAKE_CURRENT_BINARY_DIR}/position-distance-64m-frame-encode-conformance)
         set_tests_properties(marc_position_distance_64m_frame_encode_conformance PROPERTIES TIMEOUT 1200)
+    endif()
+endif()
+
+if(MARC_BUILD_TESTS AND TARGET marc_static)
+    add_executable(marc_position_distance_64m_owned_tests tests/lzss_position_distance_64m_owned_tests.cpp)
+    target_compile_features(marc_position_distance_64m_owned_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_64m_owned_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_64m_owned_tests PRIVATE marc::static GTest::gtest_main)
+    add_test(NAME marc_position_distance_64m_owned COMMAND marc_position_distance_64m_owned_tests)
+    set_tests_properties(marc_position_distance_64m_owned PROPERTIES TIMEOUT 900)
+    find_package(Python3 COMPONENTS Interpreter QUIET)
+    if(Python3_Interpreter_FOUND)
+        add_executable(marc_position_distance_64m_owned_conformance tests/lzss_position_distance_64m_owned_conformance.cpp)
+        target_compile_features(marc_position_distance_64m_owned_conformance PRIVATE cxx_std_20)
+        target_include_directories(marc_position_distance_64m_owned_conformance PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_position_distance_64m_owned_conformance PRIVATE marc::static)
+        add_test(NAME marc_position_distance_64m_owned_conformance
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_position_distance_64m_owned_conformance.py
+                --tool $<TARGET_FILE:marc_position_distance_64m_owned_conformance>
+                --root ${CMAKE_CURRENT_BINARY_DIR}/position-distance-64m-owned-conformance)
+        set_tests_properties(marc_position_distance_64m_owned_conformance PROPERTIES TIMEOUT 1200)
     endif()
 endif()
