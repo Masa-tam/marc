@@ -39406,3 +39406,35 @@ archives, with fixed-five sizes smaller for every corpus member. Earlier
 fixed-three archives and qualified binaries are retained. No directional
 throughput or process-peak superiority is inferred from roundtrip runs.
 Public profile/API, CLI and exchange admission remain separate qualification.
+### CR-1691: public position rANS lifecycle and measurement
+
+2026-10-07; author/reviewer: Codex. IR-1277/1278 and DD-1520/1521 reuse the
+first-party owned frame lifecycle and C Transform contract. The task requires
+immutable direction, preallocation admission, unchanged failed query outputs,
+complete allocation cleanup, bounded call capacities, chunk-independent bytes
+and failed-frame withholding. CLI follows the existing private temporary-file
+publication contract. No external codec implementation was consulted.
+
+Similarity review identifies shared first-party ownership and status patterns,
+not imported third-party expression. TVG-1385 verifies C/C++ boundaries and CLI
+malformed streams. Independently qualified raw/archive receipts validate every
+byte in directional benchmarks and both compiler-route corpus executions.
+BM-0216 distinguishes complete profile timing, process peak and capacity-query
+scopes; it does not infer entropy-only speed or an unmeasured Huffman/tANS
+advantage. Local environment information remains in private evidence.
+### CR-1692: position rANS exchange profile admission
+
+2026-10-07; author/reviewer: Codex. IR-1279 and DD-1522 extend the first-party
+manifest/fixture protocol by one exact profile. Similarity review records
+intentional reuse of first-party schema-64 preflight and negative-test patterns,
+with independently selected new identity, parameter offsets and prefix bounds.
+No external code, naming scheme or test suite was consulted. Retain all old
+inventories, fixture bytes and generated evidence. TVG-1386 and IX-0065 cover
+three independent producers, self/cross consumers and zero-launch negatives.
+Hosted CI and maintainer external evidence are separate gates for a new commit.
+The final DD-1523 resource review independently reproduces a smaller-frame
+minimum-budget mismatch and adds both-direction exact-minimum regression
+coverage. The correction reports the configured decision-policy floor as well
+as actual retained capacities. It alters no codec process or default one-MiB
+workspace. Original measurement binaries/source remain retained and identified
+separately from this resource-query correction.

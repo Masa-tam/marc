@@ -10415,3 +10415,48 @@ throughput. Conservatively queried retained workspaces are approximately
 43.82 MiB for encoding and 31.07 MiB for decoding; these are configured
 representation capacities, not measured process peaks. Public lifecycle,
 native directional speed, process peak and CLI admission remain separate work.
+## BM-0216: public position rANS directional measurements
+
+Both public factory paths process all twelve members (211,938,580 raw bytes).
+Every produced byte agrees with the independently qualified complete archive
+or raw reference. Candidate complete archives remain 63,788,538 bytes versus
+65,190,535 for contextual rANS: 2.1506% smaller overall and smaller for every
+member. Dynamic Range compression ratio is not a qualification criterion.
+
+Measure one warmup and three fresh instances per member and direction. Sum
+each member's median. Codec timing includes workspace allocation, construction,
+process calls and destruction; it excludes file I/O and output comparison.
+
+| Measurement | Position rANS | Contextual rANS |
+|---|---:|---:|
+| Encode summed median seconds | 35.4457 | 44.6037 |
+| Encode raw MB/s | 5.98 | 4.75 |
+| Decode summed median seconds | 5.6492 | 4.6157 |
+| Decode raw MB/s | 37.52 | 45.92 |
+| Encode instrumented CLI process peak resident bytes | 33,574,912 | 25,214,976 |
+| Decode instrumented CLI process peak resident bytes | 20,209,664 | 19,628,032 |
+
+These observations show 20.53% less encode time and 22.39% more decode time.
+They compare complete profile paths, including dictionary search and token
+handling; they do not isolate entropy-coder-only performance.
+Peak resident values are maxima over separate instrumented CLI processes,
+which execute the actual CLI entry and verify complete file outputs. Their
+wall times include file I/O and are not the codec throughput figures above.
+The instrumentation uses a common static linkage for both profiles. These
+are local observations, not portable speed or memory guarantees. OS counters,
+process audit receipts, binary hashes and individual samples stay in private
+evidence. The audit is a snapshot, not a system-wide concurrency lock.
+
+Public default aggregate queries are 46,081,638 encode and 32,712,430 decode
+bytes, including declared 65,536-byte input/output capacities. The CLI adds
+a 65,536-byte retained-control reserve: 46,147,174 and 32,777,966 bytes. Both
+fit the 64MiB capacity policy. This admission counts retained codec/caller
+capacities and working allowances; it does not set an OS RSS ceiling. The
+contextual query covers caller workspaces, a different scope, so queried
+capacities must not be used for a comparative memory ratio. Huffman and tANS
+advantages remain separate hypotheses requiring their own measurements.
+The measured default one-MiB binaries precede DD-1523's query-only correction
+for smaller frame capacities. That correction changes the minimum reported
+admission budget when an independently configured decision ceiling is larger
+than the retained layout. It changes no default one-MiB buffer capacity or
+codec processing. The original measured binaries and source are retained.

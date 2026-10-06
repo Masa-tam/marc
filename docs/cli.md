@@ -813,3 +813,26 @@ accepted. Failed frames never publish, and pre-existing targets and temporary
 files are preserved. Only whole-stream success commits the output file. This
 experimental selection is separate from the unchanged 42-profile baseline
 table. Schema-64/archive-74 exchange registration is a subsequent gate.
+## Position-distance rANS one-MiB selector
+
+Use explicit, case-sensitive `lzss-position-rans-1m` with encode or decode.
+It selects dictionary `2/9`, context `1/10`, entropy `4/4`, a one-MiB frame and
+window, and fixed-five encoder eligibility. The decoder grammar includes
+lengths three/four. The owning API preflights raw, token, serialized, finder,
+working and CLI retained/call capacities against a 64MiB aggregate byte budget.
+Input/output chunks are 65,536 bytes; total raw is capped at one TiB, decisions
+at nine Mi per frame, payload at 18MiB+8 and frequencies at 2566. This is a
+codec capacity policy, not a process RSS promise. There is no automatic
+selection or memory-limit retry.
+
+The existing temporary-file contract applies: pre-existing outputs and
+temporary files remain intact; only whole-stream success commits a final file.
+Truncation, malformed models/states, contradictory parameters and trailing
+bytes fail without publishing the failed output. Existing selectors and the
+forty-two-profile baseline table retain their meanings. Exchange registration
+and measured directional speed/process peak are separate qualification gates.
+BM-0216 qualifies the complete public paths against contextual rANS: all
+twelve full-corpus archives are smaller, with measured encode improvement,
+decode slowdown and increased process peaks. This qualifies the 64MiB capacity
+policy without making it an OS RSS limit or a universal speed claim. Schema 65
+adds this selector as archive 75 while retaining every old archive byte.

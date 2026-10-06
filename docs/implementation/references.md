@@ -11160,3 +11160,20 @@ DD-1517 uses the first-party exact three/four/five-byte prefix finder, variant-9
 token candidate, DD-1515 frame encoder, DD-1516 borrowed decoder and checked
 workspace admission rules. Exhaustive matching remains the independent
 first-party token reference. No external implementation is consulted.
+### IR-1277: public position rANS owning boundary
+
+DD-1520 uses the qualified first-party owned lifecycle, shared C Transform
+handle and checked-capacity rules. CLI publication follows the repository's
+temporary-output contract. No external implementation is consulted.
+### IR-1278: native public throughput and resident-peak measurement
+
+DD-1521 uses first-party public factories, complete corpus archive receipts
+and the actual CLI entry. Operating-system resource counters are observational
+instrumentation, not entropy or dictionary implementation references. No
+external codec source was consulted.
+### IR-1279: position rANS exchange inventory admission
+
+DD-1522 reuses the first-party independently generated 8193-byte fixture,
+manifest identity preflight, historical conversion and no-launch negative
+protocol. The added archive uses DD-1515's exact representation and DD-1520's
+public lifecycle. No external implementation or test suite was consulted.

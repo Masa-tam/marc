@@ -22377,3 +22377,57 @@ All twelve corpus members are natively encoded and decoded under each policy;
 contextual-rANS CLI control archives independently roundtrip the same inputs.
 BM-0215 records their complete archive sizes. Fixed-five components additionally
 agree with all 207 independently qualified frame descriptors and payloads.
+### TVG-1385: public position rANS C boundary and CLI fixtures
+
+The public tests use independently generated small inputs and exact budgets,
+factory allocation faults, aliases, count/output guards, allocation-free
+process calls, sticky terminal states and whole/split encoding and decoding.
+Every encoder allocation and every decoder allocation is individually faulted
+and must be cleaned up. A later corrupted frame exposes only its earlier
+validated frame. A pure C translation unit exercises the additive ABI.
+
+CLI fixtures cover empty, one byte, alphabet, one-MiB-minus-one, exact one-MiB,
+one-MiB-plus-one and a three-frame final-short input. Every encoding is repeated
+and every raw output checked. The one-byte archive is truncated at every byte;
+identity, reserved/header, coder-state and trailing-byte mutations fail without
+publishing the target or leaving the created temporary file. Pre-existing
+outputs/temporary files retain their bytes. Old contextual and new position
+parsers reject each other's streams.
+
+Both compiler routes pass their public C/API/CLI tests and generate identical
+complete archives for every member of the twelve-file corpus. Every raw byte
+agrees with the independent source receipt. BM-0216 records separate direction
+and process-peak measurements. The permanent public fuzzer links the complete
+instrumented library, compares whole/split encoding, valid roundtrips and
+whole/split malformed, arbitrary and truncated input results. Seeds include
+512 one-byte frames, all byte values and independently seeded binary data.
+One-byte output is covered by permanent API tests; fuzzer calls also inject
+zero capacity and check sticky errors, committed-byte guards and error offsets.
+### TVG-1386: schema-65 position rANS exchange fixtures
+
+Retain the independently generated 8193-byte input recipe and all prior 74
+archive bytes; append only `lzss-position-rans-1m`. Three independently compiled
+public CLI producers must generate the same complete 75-archive inventory.
+Self-consumption and each of the six distinct producer/consumer pairs must
+restore raw bytes and deterministically reproduce each complete foreign
+archive. Historical manifests must retain their actual inventories and old
+compact selector conversion rather than relabeling the current inventory.
+
+Thirty-six schema-65 negatives test downgrade, codec set, omission, duplicate,
+order, input/archive hashes and sizes, truncated header, dictionary/context
+identity and both bytes of every selected identity/entropy-parameter field.
+Rehash changed files so header validation cannot rely only on checksums.
+Every rejected manifest must launch zero codecs and create zero output files.
+The new identity reader retains only its 112-byte prefix. Schema-64's thirty
+existing negatives remain unchanged. IX-0065 records local fixture outcomes;
+hosted CI and maintainer consumer reports are not inferred from those outcomes.
+The initial fully instrumented public campaign completes 10,000 inputs without
+an ASan/UBSan finding. It includes the explicit 512-frame seed; the driver's
+finite call bound accounts for outer-header expansion under one-byte output.
+The historical schema-compatibility campaign also passes, including genuine
+inventories through schema 65 and unchanged schema-64 negatives.
+DD-1523 additionally tests both directions with a one-byte frame and otherwise
+default ceilings: querying and creating at the reported minimum must succeed.
+This catches the mismatch between a small retained layout and an independently
+configured larger decision ceiling. No codec process or default one-MiB buffer
+size changes in this query-only correction.

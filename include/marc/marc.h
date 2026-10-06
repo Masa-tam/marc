@@ -2164,6 +2164,34 @@ MARC_API marc_status marc_lzss_position_distance_dynamic_range_64m_create_decode
 
 /* END sixty-four-MiB public extension */
 
+/* Owning position-distance rANS, dictionary 2/9, context 1/10, entropy 4/4.
+ * Fixed-five encoder; decoder accepts match lengths 3..258.
+ * Resource queries cover capacity budgets, not operating-system RSS. */
+typedef struct marc_lzss_position_rans_1m_config {
+    uint32_t struct_size, abi_version;
+    marc_direction direction;
+    uint32_t reserved;
+    uint64_t original_size;
+    uint32_t frame_size, reserved2;
+    uint64_t max_total_output_size, max_frame_size, max_block_size;
+    uint64_t max_compressed_payload_size, max_internal_buffered_bytes;
+    uint64_t max_lz_distance, max_lz_match_length, max_entropy_table_entries;
+    uint64_t max_expansion_ratio, expansion_slack;
+    uint64_t external_retained_bytes, input_capacity_bytes, output_capacity_bytes;
+} marc_lzss_position_rans_1m_config;
+typedef struct marc_lzss_position_rans_1m_resources {
+    uint32_t struct_size, abi_version;
+    uint64_t raw_bytes, token_bytes, serialized_bytes, finder_bytes;
+    uint64_t fixed_working_bytes, external_charge_bytes, minimum_aggregate_bytes;
+} marc_lzss_position_rans_1m_resources;
+MARC_API marc_status marc_lzss_position_rans_1m_config_init(
+    marc_direction direction, marc_lzss_position_rans_1m_config* config) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_position_rans_1m_resource_requirements(
+    const marc_lzss_position_rans_1m_config* config,
+    marc_lzss_position_rans_1m_resources* resources) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_position_rans_1m_create(
+    const marc_lzss_position_rans_1m_config* config, marc_transform** transform) MARC_NOEXCEPT;
+
 MARC_API marc_process_result marc_transform_process(
     marc_transform* transform, marc_const_buffer input, marc_buffer output,
     marc_process_flags flags) MARC_NOEXCEPT;

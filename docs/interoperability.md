@@ -1615,3 +1615,22 @@ failed-frame nonpublication evidence; it does not establish a new performance
 result. This evidence update changes no codec, format, ABI, limits, defaults,
 inventory or release state. Reported CI success applies to the revision above,
 not to a subsequent documentation-only commit.
+### IX-0065: Schema 65 position rANS exchange
+
+Schema 65 / `marc-cli-v65` contains 75 archives. Entry 75 is
+`lzss-position-rans-1m`, with exact `2/9 + 1/10 + 4/4` identity, log 12,
+scalar-state identifier 1, 44 contexts and 2566 frequency entries. The input
+recipe and first 74 entries remain unchanged. The new archive is 3014 bytes,
+SHA-256 `d17bf0e8491c62e3003489a97e089d702ea3e69f64a81a47b204275d3077dca8`.
+This small fixture does not exercise the complete one-MiB window; separate
+full-corpus, frame-boundary and malformed-lifecycle evidence remains required.
+
+Three independently built local CLI producers generate identical input and
+all 75 complete archive bytes. Each self-verifies and all six distinct cross
+pairs decode and deterministically re-encode every archive. All prior 74
+archives equal a separately frozen schema-64 production bundle. Each producer
+route rejects all 36 new negatives before any codec launch or output creation.
+These local fixture manifests use explicitly synthetic revisions. Final commit
+bindings and fixed-runtime publication are separate steps. Hosted CI and four
+maintainer external routes for the new revision remain pending; old schema-64
+reports do not cover this new archive.

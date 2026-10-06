@@ -1029,3 +1029,39 @@ No generic memory default or CLI policy is changed by this API addition.
 
 
 For the sixty-four-MiB public owning encoder, callers may conservatively admit complete candidates using initial_bytes + 2F + 4Pcap + 240, including the retained old publication and all new generations. This never discounts complete initial controls and does not change INITIAL_ONLY resource query semantics or public initializer defaults. The payload cap remains an explicit caller choice.
+## Position-distance rANS one-MiB owning profile
+
+`marc_lzss_position_rans_1m_config_init()`,
+`marc_lzss_position_rans_1m_resource_requirements()` and
+`marc_lzss_position_rans_1m_create()` select the additive `2/9 + 1/10 + 4/4`
+profile. Direction is selected once at initialization. Encoding requires the
+known original byte length and uses fixed-five match eligibility; decoding
+accepts lengths three through 258 and gets original size from the header.
+No caller-supplied workspace is borrowed. Resource queries cover all owned
+buffers, controls, the fixed working allowance, declared external retained
+bytes and input/output call capacities before allocation. Queried byte budgets
+are distinct from process RSS. Query refusal preserves results; safe create
+failure sets the handle to null. Config/output aliases are rejected unchanged.
+
+Default frame/window is one MiB, decision ceiling nine Mi symbols, payload
+ceiling 18MiB+8, frequency entries 2566 and aggregate capacity budget 64MiB.
+Default input/output call capacities are 65,536 bytes. Calls exceeding them
+fail without consuming or producing bytes. Callers can lower limits and add
+their own retained-byte charge. Transform process/destroy, split-buffer,
+unchanged Flush, unsupported ResetBlock, sticky error/completion and failed
+frame withholding contracts apply. No failed frame is published, while an
+earlier fully validated frame may appear on an error call. Existing profiles
+and ABI-1 structure definitions are unchanged. This adds one initializer to
+the public inventory without changing the forty-two-profile baseline table.
+For this profile `max_block_size` counts entropy decisions, while frame, payload,
+aggregate and call capacities count bytes; entropy entries count frequency
+entries. Queries include owner controls in the aggregate; the external charge
+also includes the C handle, boundary controls and bounded helper allowance.
+BM-0216 separately qualifies directional speed, measured process peaks and
+the full public/CLI capacity queries. The capacity policy is unchanged by OS
+peak observations. The profile is registered as schema-65 archive 75.
+The reported minimum admitted aggregate also covers the configured decision
+ceiling after external charges are subtracted. It may exceed the retained
+layout sum when frame capacity is lowered but the decision ceiling is kept.
+Creating with that reported minimum remains valid; lowering the ceiling can
+reduce the admitted minimum without changing the frame's wire representation.

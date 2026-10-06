@@ -75,6 +75,7 @@ $schema61 = Join-Path $root 'schema61'
 $schema62 = Join-Path $root 'schema62'
 $schema63 = Join-Path $root 'schema63'
 $schema64 = Join-Path $root 'schema64'
+$schema65 = Join-Path $root 'schema65'
 $schema60 = Join-Path $root 'schema60'
 $schema60Reordered = Join-Path $root 'schema60-reordered'
 $schema60Identity = Join-Path $root 'schema60-identity'
@@ -247,14 +248,30 @@ $schema60Profiles = $schema59Profiles + @('lzss-position-distance-dynamic-range-
 $schema61Profiles = $schema60Profiles + @('lzss-position-distance-dynamic-range-8m')
 $schema62Profiles = $schema61Profiles + @('lzss-position-distance-dynamic-range-16m')
 $schema63Profiles = $schema62Profiles + @('lzss-position-distance-dynamic-range-32m')
+$schema64Profiles = $schema63Profiles + @('lzss-position-distance-dynamic-range-64m')
 try {
     $null = New-Item -ItemType Directory -Path $root
     & (Join-Path $PSScriptRoot 'create_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -OutputDirectory $schema64 `
+        -OutputDirectory $schema65 `
         -Platform 'local-schema-test' `
         -Compiler 'local-schema-test' `
         -SourceRevision ('0' * 40)
+    $latest = Get-Content -LiteralPath (Join-Path $schema65 'manifest.json') -Raw | ConvertFrom-Json
+    if ($latest.schema_version -ne 65 -or $latest.codec_set -ne 'marc-cli-v65' -or
+            @($latest.archives).Count -ne 75 -or $latest.archives[74].codec -ne 'lzss-position-rans-1m') {
+        throw 'Schema 65 must append exactly one position rANS archive'
+    }
+    for ($index = 0; $index -lt $schema64Profiles.Count; ++$index) {
+        if ($latest.archives[$index].codec -ne $schema64Profiles[$index]) {
+            throw 'Schema 65 changed the frozen schema-64 prefix'
+        }
+    }
+    & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
+        -MarcCli $resolvedCli -BundleDirectory $schema65 -OutputDirectory (Join-Path $root 'verified65')
+    & (Join-Path $PSScriptRoot 'interoperability_schema65_negatives.ps1') `
+        -MarcCli $resolvedCli -BundleDirectory $schema65 -EvidenceDirectory (Join-Path $root 'schema65-negatives')
+    Convert-Bundle $schema65 $schema64 64 'marc-cli-v64' $schema64Profiles
     $latest = Get-Content -LiteralPath (Join-Path $schema64 'manifest.json') -Raw | ConvertFrom-Json
     if ($latest.schema_version -ne 64 -or $latest.codec_set -ne 'marc-cli-v64' -or
             @($latest.archives).Count -ne 74 -or

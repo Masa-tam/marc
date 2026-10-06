@@ -183,6 +183,7 @@ $schema63Profiles = $schema62Profiles + @(
     'lzss-position-distance-dynamic-range-32m')
 $schema64Profiles = $schema63Profiles + @(
     'lzss-position-distance-dynamic-range-64m')
+$schema65Profiles = $schema64Profiles + @('lzss-position-rans-1m')
 if ($manifest.schema_version -eq 1) {
     if ($null -ne $manifest.PSObject.Properties['codec_set']) {
         throw 'Schema 1 interoperability manifests must not declare a codec set'
@@ -503,6 +504,11 @@ if ($manifest.schema_version -eq 1) {
         throw "Unsupported interoperability codec set: $($manifest.codec_set)"
     }
     $expectedProfiles = $schema64Profiles
+} elseif ($manifest.schema_version -eq 65) {
+    if ([string]$manifest.codec_set -ne 'marc-cli-v65') {
+        throw "Unsupported interoperability codec set: $($manifest.codec_set)"
+    }
+    $expectedProfiles = $schema65Profiles
 } else {
     throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
 }
@@ -656,6 +662,29 @@ foreach ($entry in $manifest.archives) {
             if ($header[$field[0]] -ne $field[1] -or
                     $header[$field[0] + 1] -ne 0) {
                 throw '64 MiB position-distance archive does not carry exact identity 2.0: 2/14 + 1/15 + 3/2, fifty contexts'
+            }
+        }
+    }
+    if ($codec -eq 'lzss-position-rans-1m') {
+        $archiveBytes = [byte[]]::new(112)
+        $stream = [System.IO.File]::OpenRead($archivePath)
+        try {
+            $offset = 0
+            while ($offset -lt $archiveBytes.Length) {
+                $read = $stream.Read($archiveBytes, $offset, $archiveBytes.Length - $offset)
+                if ($read -eq 0) { throw 'Position rANS archive header is truncated' }
+                $offset += $read
+            }
+        } finally { $stream.Dispose() }
+        if ($archiveBytes[80] -ne 12 -or $archiveBytes[81] -ne 1 -or
+                $archiveBytes[84] -ne 6 -or $archiveBytes[85] -ne 10 -or
+                $archiveBytes[86] -ne 0 -or $archiveBytes[87] -ne 0) {
+            throw 'Position rANS archive does not carry exact identity parameters'
+        }
+        foreach ($field in @(@(4, 2), @(6, 0), @(12, 2), @(14, 9),
+                @(16, 4), @(18, 4), @(82, 44), @(96, 1), @(98, 10))) {
+            if ($archiveBytes[$field[0]] -ne $field[1] -or $archiveBytes[$field[0] + 1] -ne 0) {
+                throw 'Position rANS archive does not carry exact identity 2.0: 2/9 + 1/10 + 4/4, forty-four contexts'
             }
         }
     }

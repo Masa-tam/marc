@@ -33421,3 +33421,41 @@ for all twelve members at fixed-five eligibility. Make this the owner default
 and planned public encoder policy, while retaining private fixed-three tests.
 Dictionary variant 9 still admits lengths 3..258 on decoding. BM-0215 records
 the actual archive comparison; speed and measured process peak remain pending.
+### DD-1520: expose bounded owning position rANS factories
+
+Add ABI-compatible configuration, full resource query and immutable-direction
+factory for `lzss-position-rans-1m`. Charge the C boundary, handle, declared
+external retained bytes and input/output capacities before owned allocation.
+Reject calls larger than admitted capacities. Resource-query failure retains
+its destination; failed creation publishes no handle. CLI uses the same
+factory and existing whole-file temporary publication policy. Capacity budgets
+are distinct from observed process RSS; benchmark each separately.
+### DD-1521: measure direction and process peak on native public paths
+
+Time workspace allocation, factory construction, process calls and destruction
+separately by direction, excluding file I/O, output capture and byte comparisons.
+Use one warmup and three fresh-instance samples; every output byte must match
+an independently qualified complete archive/raw reference. The contextual
+control uses its actual public caller-workspace allocation path. Resource query
+scopes differ and must not be treated as interchangeable memory measurements.
+For process peak, instrument the actual CLI entry without a production output
+option and read native lifetime peak resident counters before process exit.
+The CLI measurement includes file I/O and must not be called codec throughput.
+### DD-1522: append the position rANS exchange identity
+
+Schema 65 / marc-cli-v65 appends only `lzss-position-rans-1m` to the frozen
+74-entry schema-64 prefix. Require exact 2/9 + 1/10 + 4/4 identity, log 12,
+scalar-state identifier 1, 44 contexts and 2566 frequency entries before any
+codec launch. Preserve actual historical inventories and the old compact-name
+conversion. Generated self/cross consumers must decode and deterministically
+re-encode every complete archive, with old bytes checked against a separately
+frozen prior bundle. Hosted CI and maintainer external reports remain separate
+revision-specific gates; do not attribute old reports to the new profile.
+### DD-1523: include configured decision admission in the minimum budget
+
+The resource query returns the minimum admitted aggregate budget, including
+the larger of the owned retained-layout sum and configured decision ceiling,
+plus external/handle/call charges. Smaller frame capacity alone does not lower
+the caller's decision ceiling. This preserves global limit validation and
+makes creation at the reported minimum valid for that configuration. It does
+not allocate unused decision storage or change the default one-MiB path.

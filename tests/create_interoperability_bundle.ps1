@@ -155,7 +155,8 @@ $profiles = @(
     'lzss-position-distance-dynamic-range-8m',
     'lzss-position-distance-dynamic-range-16m',
     'lzss-position-distance-dynamic-range-32m',
-    'lzss-position-distance-dynamic-range-64m'
+    'lzss-position-distance-dynamic-range-64m',
+    'lzss-position-rans-1m'
 )
 $entries = @()
 foreach ($profile in $profiles) {
@@ -251,6 +252,21 @@ foreach ($profile in $profiles) {
             if ($archiveBytes[$field[0]] -ne $field[1] -or
                     $archiveBytes[$field[0] + 1] -ne 0) {
                 throw '64 MiB position-distance archive does not carry exact identity 2.0: 2/14 + 1/15 + 3/2, fifty contexts'
+            }
+        }
+    }
+    if ($profile -eq 'lzss-position-rans-1m') {
+        $archiveBytes = [System.IO.File]::ReadAllBytes($archivePath)
+        if ($archiveBytes.Length -lt 112) { throw 'Position rANS archive header is truncated' }
+        if ($archiveBytes[80] -ne 12 -or $archiveBytes[81] -ne 1 -or
+                $archiveBytes[84] -ne 6 -or $archiveBytes[85] -ne 10 -or
+                $archiveBytes[86] -ne 0 -or $archiveBytes[87] -ne 0) {
+            throw 'Position rANS archive does not carry exact identity parameters'
+        }
+        foreach ($field in @(@(4, 2), @(6, 0), @(12, 2), @(14, 9),
+                @(16, 4), @(18, 4), @(82, 44), @(96, 1), @(98, 10))) {
+            if ($archiveBytes[$field[0]] -ne $field[1] -or $archiveBytes[$field[0] + 1] -ne 0) {
+                throw 'Position rANS archive does not carry exact identity 2.0: 2/9 + 1/10 + 4/4, forty-four contexts'
             }
         }
     }
@@ -514,8 +530,8 @@ foreach ($profile in $profiles) {
 }
 
 $manifest = [ordered]@{
-    schema_version = 64
-    codec_set = 'marc-cli-v64'
+    schema_version = 65
+    codec_set = 'marc-cli-v65'
     source_revision = $SourceRevision
     platform = $Platform
     compiler = $Compiler

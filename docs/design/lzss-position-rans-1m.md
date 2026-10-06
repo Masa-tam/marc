@@ -257,3 +257,30 @@ the minimum-three decoder grammar intact and does not use Dynamic Range
 compression as an admission criterion. No two-policy trial or adaptive choice
 is made in the production inner loop. Directional speed and measured process
 peak remain required before CLI resource/default qualification.
+## DD-1520 public owning C boundary
+
+`marc_lzss_position_rans_1m_config_init(direction, config)` initializes a
+separate additive ABI-1 configuration. The profile fixes dictionary 1MiB/3/258,
+entropy 4/4 and encoder eligibility five. Default frame capacity is 1MiB,
+decision ceiling 9Mi, payload ceiling 18MiB+8, frequency-entry ceiling 2566,
+total raw ceiling 1TiB and aggregate capacity budget 64MiB. Initial input and
+output call capacities are 65,536 bytes. Callers may lower limits or provide
+additional retained-byte charges. Original size is known on encoding;
+decoding takes it from the validated stream header. Capacity-budget admission
+does not promise an operating-system RSS ceiling.
+
+`marc_lzss_position_rans_1m_resource_requirements` returns complete raw, token,
+serialized, finder, fixed-call allowance, external charge and aggregate bytes
+for the selected direction before allocation. Failure leaves the destination
+unchanged. Charge declared external bytes and call capacities, the C handle,
+boundary object and bounded public helper allowance in addition to all owner
+storage. Overflow and too-small aggregate fail before allocation.
+
+`marc_lzss_position_rans_1m_create` publishes a handle only after successful
+owned allocation. Config/output-handle overlap is rejected without altering
+the aliased destination. Other create failures set the handle to null. Calls
+must not overlap the handle or boundary and must fit declared input/output
+capacities; misuse becomes a sticky error. Existing Transform process/destroy
+functions apply. Direction is immutable. The decoder also caps the stream's
+declared frame size to configured capacity. Flush leaves bytes unchanged;
+ResetBlock is unsupported; ended calls return EndOfStream with zero counts.
