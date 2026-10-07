@@ -11192,3 +11192,9 @@ These are build-system references, not codec implementation references.
 Use the existing first-party DD-1513/DD-1515 design, exact format identity
 and CLI dispatch to establish the position-distance model family. No new
 external algorithm reference or implementation is required for this rename.
+
+### IR-1282: 64KiB native position-distance rANS
+
+Use existing first-party 64KiB position-distance grammar, DD-1513 native
+rANS model/state rules and DD-1525 canonical naming. No external compression
+implementation is required or consulted for this extension.

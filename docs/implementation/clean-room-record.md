@@ -39471,3 +39471,14 @@ implementation is consulted; no codec source, format, ABI, test recipe,
 resource limit or scheduler setting changes. Public documentation contains
 no added local environment details. Later documentation commits require
 their own revision-specific CI result.
+
+### CR-1696: 64KiB position-distance rANS format and native core
+
+Date:2026-10-07. Author/reviewer:Codex, under maintainer authorization.
+Task:complete64KiB position-distance rANS from exact format through public
+CLI and exchange qualification, preserving existing artifacts and contracts.
+DD-1526 and IR-1282 use first-party grammar, format and native rANS sources.
+Adapt their bounded descriptor/entropy core for40 contexts and2522 entries,
+with a reserved-zero mask byte and separate entropy identity. No external
+implementation or restricted source is consulted. Each later qualification
+gate must be proven separately; native core progress is not public completion.

@@ -33488,3 +33488,12 @@ Dynamic Range profiles; their entropy algorithms remain different. Preserve
 all stream bytes, APIs, limits and failure-publication contracts. Correct
 exchange schema 65 entry 75 in place before publication; preserve its first
 74 entries and the unchanged schemas 1 through 64.
+
+### DD-1526: native 64KiB position-distance rANS extension
+
+Define the complete representation and lifecycle gates in
+`docs/design/lzss-position-distance-rans-64k.md` before implementation. Use
+40 contexts,2522 frequencies and distinct identity2/8+1/9+4/5. Existing1MiB
+bytes and ABI remain unchanged. Require validated private token/raw scratch
+before frame publication. Memory limits and test watchdogs require measured
+evidence; schema66/archive76 admission follows full public qualification.

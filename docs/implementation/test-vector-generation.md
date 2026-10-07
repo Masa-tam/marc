@@ -22451,3 +22451,13 @@ Retain malformed-stream and protected-output checks. Verify schema 65 and
 all historical schemas, rejecting its former final codec name before launch.
 Compare renamed archives against the frozen unpublished bundle by mapping
 only its final filename; every archive must remain byte-identical.
+
+### TVG-1389: 64KiB native rANS descriptor qualification
+
+Derive alphabets from the independently documented existing40-context layout.
+Generate finite sparse/dense/single-symbol models in Python, normalize them
+independently and serialize the reserved-zero sixth mask byte explicitly.
+Require native reserialization and reverse payload bytes to match Python,
+with success-only destination checks and malformed mask/model/state tests.
+This core qualification does not substitute for full lifecycle, memory,
+CLI, failed-frame and exchange qualification.

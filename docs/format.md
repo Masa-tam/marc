@@ -9151,3 +9151,11 @@ The canonical CLI name is `lzss-position-distance-rans-1m`. The previous
 `lzss-position-rans-1m` spelling is not accepted. It selects the existing
 dictionary `2/9`, context `1/10` and entropy `4/4` representation. This is
 a spelling correction, with no format, model, limit or public ABI change.
+
+### DD-1526 native position-distance rANS, 64KiB
+
+The complete new `2/8 + 1/9 + 4/5` representation, byte offsets, descriptor
+canonicalization, rANS states, count bounds and publication rules are defined
+in [the 64KiB profile](design/lzss-position-distance-rans-64k.md). Existing
+`2/9 + 1/10 + 4/4` and all previous representations remain unchanged.
+This definition alone does not admit a public CLI or exchange entry.
