@@ -1641,3 +1641,20 @@ inputs/output and malformed mutations; no sanitizer or invariant finding.
 Directed tests additionally cover late-frame quarantine and owner allocation
 rollback. This is private-layer evidence, not public factory/CLI fuzzing,
 release admission or exhaustive malformed-input coverage.
+
+## FZ-0081: full-literal 4MiB position-distance rANS public lifecycle
+
+Date: 2026-10-08. Descriptor and payload harnesses each complete 10,000
+ASan/UBSan runs seeded with 200 independently generated valid fixtures.
+Typed-token and stream harnesses each complete 10,000 runs. The public
+harness additionally completes 10,000 runs through the actual C factory,
+process dispatch and destruction in the fully instrumented production
+static library. No sanitizer or invariant finding occurs.
+
+The public harness compares whole and one-byte encoding, roundtrips bounded
+inputs, mutates and truncates streams, and compares whole versus split
+decode status, error position and committed bytes. It guards unused output
+tails, progress counts and sticky terminal states. Directed finite tests
+supplement this campaign with late-frame quarantine and allocation rollback.
+These campaigns do not establish exhaustive malformed-input coverage or
+exchange/release admission.

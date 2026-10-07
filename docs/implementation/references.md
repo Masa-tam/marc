@@ -11204,3 +11204,10 @@ implementation is required or consulted for this extension.
 
 Use first-party 4MiB position-distance field grammar and DD-1513 native
 rANS mathematical/model rules. No external compression source is consulted.
+
+
+### IR-1284: finer literal partition for private4MiB native rANS
+
+Use first-party contextual previous-literal partition mathematics, DD-1530
+state/model rules and BM-0219 independently reconstructed token counts.
+No external codec source is consulted.

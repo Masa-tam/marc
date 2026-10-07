@@ -850,3 +850,13 @@ separate selector and format. The capacity budget is 4MiB, including the
 declared CLI controls and call buffers. A complete file is committed through
 the existing temporary-output contract. Malformed streams cannot overwrite
 existing output or temporary files.
+
+
+## Four-MiB native position-distance rANS connection
+
+The explicit case-sensitive selector lzss-position-distance-rans-4m uses
+DD-1532's 2/10 + 1/16 + 4/7 format with16 previous-literal buckets. It retains
+known-size frames, strict trailing-data rejection, private failed-frame
+quarantine and the existing whole-file temporary commit contract.
+Default capacity budget192MiB is independent of OS process peaks.
+CLI boundary, process-peak and exchange admission checks remain pending.

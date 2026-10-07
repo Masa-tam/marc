@@ -39557,3 +39557,43 @@ by independent exact decoding and re-encoding, then estimate costs at
 higher frequency precision and finer literal partitions. Keep measured
 sizes distinct from estimates. No format change, public ABI/CLI admission,
 exchange entry or release similarity-review completion is inferred.
+
+
+### CR-1703: full-literal position-distance4MiB private trial task
+
+2026-10-08, Codex implementation; maintainer review pending. Task: test
+BM-0219's finer-literal-partition hypothesis through a distinct format
+and exact emitted archive measurements. Define DD-1532 before encoding.
+Adapt first-party DD-1530 reference while preserving it intact; references
+IR-1284. No third-party compression implementation consulted or copied.
+Finite correctness and release review remain pending.
+
+
+### CR-1704: full-literal4MiB public connection task
+
+2026-10-08, Codex implementation; maintainer review pending. Candidate
+DD-1532 passes independent model/token/frame/stream/owner checks and all
+twelve contextual size comparisons. Adapt existing first-party native
+factory and CLI ownership/temporary-commit patterns with distinct names.
+No external compression source consulted. Public lifecycle/CLI/resource
+peak and exchange verification remain pending; no release completion claim.
+
+
+### CR-1705: schema67 additive exchange task
+
+2026-10-08, Codex implementation; maintainer review pending. Extend the
+first-party schema66 producer/verifier/history/negative-preflight rules by
+one independently defined DD-1532 profile. Preserve all prior entries and
+header representations. No external compression reference is consulted.
+Actual revision-bound producer, history and cross-route results pending.
+
+### CR-1706: full-literal4MiB qualification review
+
+2026-10-08, Codex implementation/review; maintainer review pending. Inspect
+the independent54-context layout, high-nibble literal mapping, seven-byte
+mask, distinct2/10+1/16+4/7 identity, checked extents and success-only public
+resource query. First-party ownership/CLI adaptations preserve allocation
+rollback and failed-frame quarantine. No third-party compression source
+consulted or copied. TVG-1397, BM-0220 and FZ-0081 record actual finite
+qualification and measured tradeoffs. Schema67 revision-bound exchanges,
+historical conversion and final installed runtime remain pending.

@@ -1094,3 +1094,19 @@ sticky. Explicit arbitrary reset boundaries are not part of this variant.
 In this configuration, `max_block_size` counts entropy decisions; frame,
 payload, retained-buffer and call-buffer capacities are measured in bytes.
 `max_entropy_table_entries` counts normalized-frequency entries.
+
+
+## Owning four-MiB position-distance rANS
+
+marc_lzss_position_distance_rans_4m_config_init(),
+marc_lzss_position_distance_rans_4m_resource_requirements() and
+marc_lzss_position_distance_rans_4m_create() expose DD-1532's separate
+2/10 + 1/16 + 4/7 tuple. Maximum/default frame and window are4194304 bytes,
+fixed-five encoder and decoder grammar3..258. The default capacity budget
+is192MiB. Queries include owner, retained capacities,128KiB fixed working,
+caller input/output capacities and external controls. The budget floor is
+max(owned aggregate,declared maximum block)+external charge, not OS RSS.
+No allocation occurs during process; incomplete or failed frames remain
+private. Config/resources ABI sizes are136/64 on the supported64-bit ABI.
+Factory/config/stream direction and sticky terminal policies match the
+existing native rANS profiles. Final CLI/exchange qualification is pending.

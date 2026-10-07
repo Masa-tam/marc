@@ -33554,3 +33554,46 @@ not emitted sizes and do not justify changing an existing format. A wider
 literal partition, if adopted, needs its own exact context identity and
 qualification before encoder or decoder integration. Public API, CLI and
 exchange admission remain pending.
+
+
+### DD-1532: private full-literal 4MiB position-distance rANS trial
+
+Define the distinct 2/10 + 1/16 + 4/7 candidate in
+`docs/design/lzss-position-distance-rans-4m-full-literal.md` before coding.
+Retain DD-1530 and test whether16 previous-literal buckets repay the extra
+model records. Explicit54 contexts,4636 frequencies and a seven-byte mask
+prevent silently changing context1/11 or existing entropy variants.
+
+
+### DD-1533: connect the qualified full-literal 4MiB candidate
+
+Select DD-1532's 2/10 + 1/16 + 4/7 representation for the proposed
+lzss-position-distance-rans-4m interface after all twelve size comparisons
+beat contextual rANS4MiB. Preserve DD-1530 as a private reference. Separate
+marc_lzss_position_distance_rans_4m config/query/factory retains immutable
+direction, explicit call capacities, success-only query outputs and
+rollback. Query charges conservatively include128KiB fixed working space.
+Use a192MiB aggregate capacity budget in the provisional default: measured
+maximum-frame query is below that limit in both directions. This is not
+an OS peak claim; final CLI peak measurements and admission remain pending.
+
+
+### DD-1534: append the full-literal4MiB exchange entry
+
+Schema67/marc-cli-v67 appends archive77 lzss-position-distance-rans-4m,
+exact2/10+1/16+4/7 and54/4636 header parameters. Preserve all first76 entries
+and every older schema. Both producer and verifier check all112 header
+bytes before codec launch. Extend negative preflight and full historical
+conversion without weakening earlier checks or reinterpreting DD-1530.
+Final revision-bound exchange execution remains pending.
+
+### DD-1535: measured full-literal4MiB public memory policy
+
+Retain the192MiB capacity budget after BM-0220 verifies all twelve members.
+Maximum-frame CLI queries are181,483,145 encode and130,365,201 decode bytes;
+process peaks are separately measured, never substituted for admission.
+The candidate reduces every member relative to contextual rANS4MiB and
+improves aggregate encode time, with slower decode and larger process peaks.
+Do not imply that one entropy profile dominates every resource measure.
+Public lifecycle, ABI, CLI, previous-profile regressions and finite
+sanitizer checks pass; revision-bound exchange admission remains pending.

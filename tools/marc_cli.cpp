@@ -5,6 +5,7 @@
 #include "lzss_position_distance_64m_cli.hpp"
 #include "lzss_position_rans_1m_cli.hpp"
 #include "lzss_position_rans_64k_cli.hpp"
+#include "lzss_position_rans_4m_cli.hpp"
 
 #include <algorithm>
 #include <cstdint>
@@ -210,6 +211,7 @@ enum class Codec {
     lzss_contextual_rans_1m,
     lzss_position_rans_1m,
     lzss_position_rans_64k,
+    lzss_position_rans_4m,
     lzss_contextual_rans_4m,
     lzss_contextual_rans_16m,
     lzss_contextual_rans_64m,
@@ -1592,6 +1594,8 @@ bool process_file(const marc_direction direction,
         return marc_cli_32m::process_file(direction, source_size, source, sink);
     if (codec == Codec::lzss_position_distance_dynamic_range_64m)
         return marc_cli_64m::process_file(direction, source_size, source, sink);
+    if (codec == Codec::lzss_position_rans_4m)
+        return marc_cli_position_rans_4m::process_file(direction, source_size, source, sink);
     if (codec == Codec::lzss_position_rans_64k)
         return marc_cli_position_rans_64k::process_file(direction, source_size, source, sink);
     if (codec == Codec::lzss_position_rans_1m)
@@ -2441,7 +2445,7 @@ void usage() {
                  "lzss-position-distance-dynamic-range-16m, "
                  "lzss-position-distance-dynamic-range-32m, "
                  "lzss-position-distance-dynamic-range-64m, "
-                 "lzss-position-distance-rans, lzss-position-distance-rans-1m, lzss-contextual-rans, lzss-contextual-rans-1m, "
+                 "lzss-position-distance-rans, lzss-position-distance-rans-1m, lzss-position-distance-rans-4m, lzss-contextual-rans, lzss-contextual-rans-1m, "
                  "lzss-contextual-rans-4m, lzss-contextual-rans-16m, "
                  "lzss-contextual-rans-64m, "
                  "lzss-contextual-tans, lzss-contextual-tans-1m, "
@@ -2543,6 +2547,8 @@ int main(const int argc, const char* const argv[]) {
             codec = Codec::lzss_contextual_rans;
         else if (name == "lzss-contextual-rans-1m")
             codec = Codec::lzss_contextual_rans_1m;
+        else if (name == "lzss-position-distance-rans-4m")
+            codec = Codec::lzss_position_rans_4m;
         else if (name == "lzss-position-distance-rans")
             codec = Codec::lzss_position_rans_64k;
         else if (name == "lzss-position-distance-rans-1m")

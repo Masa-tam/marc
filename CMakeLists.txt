@@ -123,6 +123,15 @@ set(MARC_SOURCES
     src/frame/lzss_position_distance_workspace.cpp
     src/frame/lzss_position_distance_frame_streaming_encoder.cpp
     src/frame/lzss_contextual_rans_format.cpp
+    src/context/lzss_position_rans_4m_full_literal_tokens.cpp
+    src/frame/lzss_position_rans_4m_full_literal_c_factory.cpp
+    src/frame/lzss_position_rans_4m_full_literal_format.cpp
+    src/frame/lzss_position_rans_4m_full_literal_frame.cpp
+    src/frame/lzss_position_rans_4m_full_literal_owned.cpp
+    src/frame/lzss_position_rans_4m_full_literal_stream_decoder.cpp
+    src/entropy/position_rans_4m_full_literal_format.cpp
+    src/entropy/position_rans_4m_full_literal_decoder.cpp
+    src/entropy/position_rans_4m_full_literal_encoder.cpp
     src/context/lzss_position_rans_64k_tokens.cpp
     src/frame/lzss_position_rans_64k_c_factory.cpp
     src/frame/lzss_position_rans_64k_format.cpp
@@ -8129,4 +8138,140 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_include_directories(marc_fuzz_lzss_position_rans_4m_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzss_position_rans_4m_stream PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_4m_stream PRIVATE -fsanitize=fuzzer,address,undefined)
+endif()
+
+if(MARC_BUILD_TESTS)
+    foreach(component IN ITEMS format token frame stream_decoder owned)
+        add_executable(marc_position_rans_4m_full_literal_${component}_tests
+            tests/position_rans_4m_full_literal_${component}_tests.cpp
+            src/context/lzss_position_rans_4m_full_literal_tokens.cpp
+            src/context/lzss_short_length_escape.cpp
+            src/entropy/position_rans_4m_full_literal_format.cpp
+            src/entropy/position_rans_4m_full_literal_encoder.cpp
+            src/entropy/position_rans_4m_full_literal_decoder.cpp
+            src/dictionary/lzss_typed_token.cpp
+            src/dictionary/lzss_typed_reconstructor.cpp
+            src/dictionary/lzss_format.cpp
+            src/core/limits.cpp
+            src/frame/lzss_position_rans_4m_full_literal_format.cpp
+            src/frame/lzss_position_rans_4m_full_literal_frame.cpp
+            src/frame/lzss_position_rans_4m_full_literal_stream_decoder.cpp
+            src/frame/lzss_position_rans_4m_full_literal_owned.cpp
+            src/dictionary/lzss_position_distance_4m_five_prefix_candidate.cpp
+            src/dictionary/lzss_position_distance_4m_five_prefix_finder.cpp
+            src/frame/lzss_contextual_rans_format.cpp
+            src/context/lzss_field_context.cpp
+            src/entropy/contextual_rans_format.cpp
+            src/entropy/contextual_compact_model.cpp)
+        target_compile_features(marc_position_rans_4m_full_literal_${component}_tests PRIVATE cxx_std_20)
+        target_include_directories(marc_position_rans_4m_full_literal_${component}_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        add_test(NAME marc_position_rans_4m_full_literal_${component} COMMAND marc_position_rans_4m_full_literal_${component}_tests)
+    endforeach()
+endif()
+
+if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
+    foreach(component IN ITEMS format token frame stream)
+        if(component STREQUAL "stream")
+            set(test_component stream_decoder)
+        else()
+            set(test_component ${component})
+        endif()
+        add_test(NAME marc_position_rans_4m_full_literal_${component}_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_4m_full_literal_${component}_differential.py
+                $<TARGET_FILE:marc_position_rans_4m_full_literal_${test_component}_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-rans-4m-full-literal-${component}-differential)
+        set_tests_properties(marc_position_rans_4m_full_literal_${component}_differential PROPERTIES TIMEOUT 120)
+    endforeach()
+endif()
+
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_rans_4m_full_literal_api_tests tests/position_rans_4m_full_literal_api_tests.cpp)
+    target_compile_features(marc_position_rans_4m_full_literal_api_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_rans_4m_full_literal_api_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_rans_4m_full_literal_api_tests PRIVATE marc::static)
+    add_test(NAME marc_position_rans_4m_full_literal_api COMMAND marc_position_rans_4m_full_literal_api_tests)
+    add_executable(marc_position_rans_4m_full_literal_c_smoke tests/position_rans_4m_full_literal_c_smoke.c)
+    target_link_libraries(marc_position_rans_4m_full_literal_c_smoke PRIVATE marc::static)
+    add_test(NAME marc_position_rans_4m_full_literal_c_abi COMMAND marc_position_rans_4m_full_literal_c_smoke)
+    if(TARGET marc_shared)
+        add_executable(marc_position_rans_4m_full_literal_shared_smoke tests/position_rans_4m_full_literal_c_smoke.c)
+        target_link_libraries(marc_position_rans_4m_full_literal_shared_smoke PRIVATE marc::shared)
+        add_test(NAME marc_position_rans_4m_full_literal_shared_abi COMMAND marc_position_rans_4m_full_literal_shared_smoke)
+    endif()
+    if(MARC_BUILD_TOOLS AND Python3_Interpreter_FOUND)
+        add_test(NAME marc_cli_position_rans_4m
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_rans_4m.py
+                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-rans-4m)
+        set_tests_properties(marc_cli_position_rans_4m PROPERTIES TIMEOUT 300)
+    endif()
+endif()
+
+if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_executable(marc_fuzz_position_rans_4m_full_literal_descriptor
+        fuzz/position_rans_4m_full_literal_descriptor_fuzz.cpp
+        src/entropy/position_rans_4m_full_literal_format.cpp)
+    target_compile_features(marc_fuzz_position_rans_4m_full_literal_descriptor PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_position_rans_4m_full_literal_descriptor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_position_rans_4m_full_literal_descriptor PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_link_options(marc_fuzz_position_rans_4m_full_literal_descriptor PRIVATE -fsanitize=fuzzer,address,undefined)
+    add_executable(marc_fuzz_position_rans_4m_full_literal_payload
+        fuzz/position_rans_4m_full_literal_payload_fuzz.cpp
+        src/entropy/position_rans_4m_full_literal_format.cpp
+        src/entropy/position_rans_4m_full_literal_decoder.cpp)
+    target_compile_features(marc_fuzz_position_rans_4m_full_literal_payload PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_position_rans_4m_full_literal_payload PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_position_rans_4m_full_literal_payload PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_link_options(marc_fuzz_position_rans_4m_full_literal_payload PRIVATE -fsanitize=fuzzer,address,undefined)
+    add_executable(marc_fuzz_lzss_position_rans_4m_full_literal_tokens
+        fuzz/lzss_position_rans_4m_full_literal_tokens_fuzz.cpp
+        src/context/lzss_position_rans_4m_full_literal_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_rans_4m_full_literal_format.cpp
+        src/entropy/position_rans_4m_full_literal_encoder.cpp
+        src/entropy/position_rans_4m_full_literal_decoder.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_fuzz_lzss_position_rans_4m_full_literal_tokens PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_position_rans_4m_full_literal_tokens PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_position_rans_4m_full_literal_tokens PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_link_options(marc_fuzz_lzss_position_rans_4m_full_literal_tokens PRIVATE -fsanitize=fuzzer,address,undefined)
+    add_executable(marc_fuzz_lzss_position_rans_4m_full_literal_stream
+        fuzz/lzss_position_rans_4m_full_literal_stream_fuzz.cpp
+        src/frame/lzss_position_rans_4m_full_literal_stream_decoder.cpp
+        src/frame/lzss_position_rans_4m_full_literal_format.cpp
+        src/frame/lzss_position_rans_4m_full_literal_frame.cpp
+        src/context/lzss_position_rans_4m_full_literal_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_rans_4m_full_literal_format.cpp
+        src/entropy/position_rans_4m_full_literal_encoder.cpp
+        src/entropy/position_rans_4m_full_literal_decoder.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_typed_reconstructor.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_fuzz_lzss_position_rans_4m_full_literal_stream PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_position_rans_4m_full_literal_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_position_rans_4m_full_literal_stream PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_link_options(marc_fuzz_lzss_position_rans_4m_full_literal_stream PRIVATE -fsanitize=fuzzer,address,undefined)
+    add_executable(marc_fuzz_lzss_position_rans_4m_full_literal_public fuzz/lzss_position_rans_4m_full_literal_public_fuzz.cpp)
+    target_compile_features(marc_fuzz_lzss_position_rans_4m_full_literal_public PRIVATE cxx_std_20)
+    target_compile_options(marc_fuzz_lzss_position_rans_4m_full_literal_public PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_link_options(marc_fuzz_lzss_position_rans_4m_full_literal_public PRIVATE -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_lzss_position_rans_4m_full_literal_public PRIVATE marc::static)
+endif()
+
+if(MARC_BUILD_BENCHMARKS)
+    add_executable(marc_position_rans_4m_benchmark benchmarks/position_rans_4m_benchmark.cpp)
+    target_compile_features(marc_position_rans_4m_benchmark PRIVATE cxx_std_20)
+    target_link_libraries(marc_position_rans_4m_benchmark PRIVATE marc::static)
+    if(MARC_BUILD_TOOLS)
+        add_executable(marc_position_rans_4m_cli_resources benchmarks/position_rans_1m_cli_resources.cpp)
+        target_compile_features(marc_position_rans_4m_cli_resources PRIVATE cxx_std_20)
+        target_link_libraries(marc_position_rans_4m_cli_resources PRIVATE marc::static)
+        if(WIN32)
+            target_link_libraries(marc_position_rans_4m_cli_resources PRIVATE psapi)
+        endif()
+    endif()
 endif()

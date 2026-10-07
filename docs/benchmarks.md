@@ -10549,3 +10549,37 @@ actual encode/decode experiment are required to evaluate that hypothesis.
 Whole-file correctness calls and concurrent qualification are not directional
 throughput samples. Encode/decode medians, process peaks, public memory
 policy, CLI boundaries and exchange admission remain unmeasured/pending.
+
+## BM-0220: full-literal 4MiB position-distance rANS tradeoffs
+
+Date: 2026-10-08. DD-1532 complete archives total 61,312,055 bytes against
+62,479,170 contextual rANS4MiB bytes on twelve members totaling 211,938,580
+raw bytes: a 1.8680% reduction. Every member is smaller and reconstructs
+exactly. The full-literal candidate is 32,797 bytes larger overall than the
+retained DD-1530 candidate, but removes its ooffice regression: 3,022,789
+versus 3,028,821 contextual bytes. No Dynamic Range comparison is used.
+
+Measure each direction with one warmup and three fresh construction,
+allocation, processing and destruction samples; exclude file I/O and
+comparison from those timed calls. Alternate profile order between members
+and exclude other codec/build/test workloads. Sum member medians rather
+than selecting the fastest sample. Position/contextual encode totals are
+85.396404/119.360972 seconds (2.482/1.776 raw MB/s); decode totals are
+5.226282/4.262244 seconds (40.552/49.725 raw MB/s). Encode elapsed time falls
+28.4553%; decode elapsed time increases 22.6181%. Individual members differ;
+these observations do not promise universal speedups.
+
+The CLI source statically linked to the production library measures native
+process-lifetime peak working sets separately. Position/contextual maxima
+are 113,967,104/69,427,200 bytes for encode and 62,828,544/51,339,264 bytes
+for decode. These include process overhead and differ from capacity
+admission and from a shared CLI's module layout. Position query values
+including declared call buffers are 181,417,609/130,299,665 bytes. CLI
+controls add 65,536 bytes: 181,483,145/130,365,201, below the 192MiB default
+capacity budget. Contextual caller-workspace queries are 132,129,769 and
+114,017,257 bytes, a different accounting scope.
+
+Each of the 48 directional measurement rows verifies the exact output hash;
+all public candidate archives match the independent private qualification.
+Finite CLI boundaries and public API/ABI tests pass in two compiler
+implementations. Exchange/revision admission remains pending.

@@ -22522,3 +22522,43 @@ allocation failures, exact budget boundaries and no process allocations.
 Two compiler implementations pass these finite layers. Twelve whole corpus
 archives reconstruct their exact inputs; compression results are BM-0219.
 CLI, public C ABI and exchange validation remain pending.
+
+
+### TVG-1395: full-literal candidate independent fixtures
+
+Generate explicit54-context models and decisions using alphabets
+[2]*3+[256]*17+[9]*3+[23]*9+[2]*22. Independently map literals by previous
+high nibble, length contexts20..22, distance class23..31 and bits32..53.
+Use seed1532, seven-byte mask and metadata54/4636. Test exact payloads,
+canonical descriptor9241 maximum and reserved high mask bits, typed grammar,
+frame identity and late-frame nonpublication. Results pending execution.
+
+
+### TVG-1396: schema67 strict-header preflight refusals
+
+Retain a complete schema67 source with77 archives. Mutate manifest codec
+name/schema/set/order/count/hash/size/input hash and archive dictionary,
+context/count identity, truncation and each of112 stream-header bytes.
+Refresh archive hashes for identity mutations to reach the actual parser.
+A launch-guard script and empty output directory prove all125 refusals occur
+before codec launch/publication. Preserve the first76 source archives and
+changed evidence. Qualification pending execution.
+
+### TVG-1397: full-literal4MiB layer and public qualification
+
+Seed1532 independent fixtures qualify 200 model and200 payload cases,
+210 typed-token and210 frame cases, and21 streams containing60 frames.
+Exact bytes match in two compiler implementations. Nine finite layer
+targets pass, including the format differential retry after correcting a
+fixture assertion typo. Direct cursor tests additionally exercise preserved
+literal history across matches and the isolated maximum-distance endpoint.
+
+Public API, static C ABI, shared C ABI and CLI tests pass in both builds.
+Seven CLI input lengths cover0,1,256,F-1,F,F+1,2F+17 withF=4194304;
+determinism, reconstruction, malformed streams and protected output files
+are checked. Six additional targets cover the cursor and existing1MiB and
+64KiB API/ABI regressions. Full twelve-member public native archives match
+the private reference exactly. Directional samples and peaks are BM-0220;
+finite sanitizer campaigns are FZ-0081. Actual revision-bound exchange and
+whole historical conversion remain pending. The complete old test suite
+has not been rerun for this change.

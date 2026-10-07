@@ -1705,3 +1705,15 @@ CI log archive was supplied for this report; the agent did not independently
 inspect CI test counts or durations, or rerun the four external routes.
 No codec, format, ABI, default, limit or inventory changes. This result does
 not automatically qualify a later revision.
+
+
+## Schema67 four-MiB native position-distance rANS extension
+
+Schema67 and marc-cli-v67 append archive77 for the case-sensitive selector
+lzss-position-distance-rans-4m. The first76 entries retain their order and
+representations. Require exact tuple2/10+1/16+4/7,54 contexts,4636 frequencies,
+4194304-byte frame/window and known original size across all112 header bytes
+before launching a decoder. Unknown names, duplicate/order/hash/size errors,
+identity corruption and truncated headers must publish no output and launch
+no codec. Old schemas retain their respective inventories.
+Revision-bound producer/cross-path and historical qualification is pending.

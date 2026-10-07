@@ -2,7 +2,10 @@
 
 ## DD-1530 exact format and scope
 
-The selector is `lzss-position-distance-rans-4m`. Use dictionary `2/10`, context
+DD-1533 selects the separately defined full-literal candidate for the public
+selector; this reference is preserved for comparison and has no CLI binding.
+
+This retained private reduced-literal reference uses dictionary `2/10`, context
 `1/11` and new entropy `4/6`; existing `2/9 + 1/10 + 4/4` remains unchanged.
 The dictionary window is 4194304 bytes, minimum wire match length 3, maximum
 258, flags zero. Encoder eligibility defaults to fixed-five, as in the
