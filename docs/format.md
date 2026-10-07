@@ -9180,8 +9180,9 @@ does not admit a public CLI or exchange entry. Prior formats are unchanged.
 
 ### DD-1532: separately identified full-literal 4MiB rANS candidate
 
-The private tuple2/10 + 1/16 + 4/7 uses54 contexts,4636 frequency entries
+The separate tuple2/10 + 1/16 + 4/7 uses54 contexts,4636 frequency entries
 and a seven-byte active mask. Exact representation is in
 [the alternative profile](design/lzss-position-distance-rans-4m-full-literal.md).
 It preserves the six-byte DD-1530 candidate and all published formats.
-No public selector or exchange entry is admitted by this definition.
+DD-1533 selects it for lzss-position-distance-rans-4m; schema67 appends it
+as archive77. Local qualification is TVG-1397, BM-0220, FZ-0081 and IX-0070.

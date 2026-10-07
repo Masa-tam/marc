@@ -1,4 +1,4 @@
-# Private full-literal position-distance rANS, 4MiB
+# Full-literal position-distance rANS, 4MiB
 
 ## DD-1532 exact alternative format
 
@@ -33,8 +33,9 @@ is18F+9313; decisions<=min(33T,9F), payload<=18F+8 remain unchanged. Reserve128K
 model, descriptor and nested planning/validation temporaries. All count,
 size and aggregate bounds are checked before buffering or allocation.
 
-This is a diagnostic alternative, not public CLI/C ABI/exchange admission.
-The name lzss-position-distance-rans-4m remains a proposed public selector.
-Compare exact archives with the retained reduced-literal candidate and
-contextual rANS4MiB on every corpus member; determine actual sizes before
-choosing the representation. Arithmetic/model changes are not proposed.
+DD-1533 selects this representation for the public C API and case-sensitive
+selector lzss-position-distance-rans-4m. DD-1535 qualifies the192MiB capacity
+policy; BM-0220 records actual sizes, directional times and process peaks.
+Schema67 appends this profile as archive77; IX-0070 records local exchange
+qualification. The DD-1530 reduced-literal reference remains private and
+unchanged. Arithmetic/model changes are not proposed.

@@ -22562,3 +22562,13 @@ the private reference exactly. Directional samples and peaks are BM-0220;
 finite sanitizer campaigns are FZ-0081. Actual revision-bound exchange and
 whole historical conversion remain pending. The complete old test suite
 has not been rerun for this change.
+
+### TVG-1398: schema67 exchange and historical execution
+
+Actual implementation-revision bundles each contain77 archives and match
+across two compiler implementations. Verify both self and both cross routes;
+compare all first76 entries against their frozen schema66 sources. Each
+producer's125 negative preflights launches no codec and writes no output.
+The full synthetic schema1..67 history passes, including retained older
+refusal checks. IX-0070 records this separately from hosted CI and external
+maintainer verification. No prior bundle is modified.

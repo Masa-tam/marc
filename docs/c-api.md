@@ -1109,4 +1109,5 @@ max(owned aggregate,declared maximum block)+external charge, not OS RSS.
 No allocation occurs during process; incomplete or failed frames remain
 private. Config/resources ABI sizes are136/64 on the supported64-bit ABI.
 Factory/config/stream direction and sticky terminal policies match the
-existing native rANS profiles. Final CLI/exchange qualification is pending.
+existing native rANS profiles. TVG-1397 records public/ABI/CLI qualification;
+BM-0220 records directional samples and peaks, and IX-0070 local exchanges.

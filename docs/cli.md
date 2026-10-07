@@ -859,4 +859,6 @@ DD-1532's 2/10 + 1/16 + 4/7 format with16 previous-literal buckets. It retains
 known-size frames, strict trailing-data rejection, private failed-frame
 quarantine and the existing whole-file temporary commit contract.
 Default capacity budget192MiB is independent of OS process peaks.
-CLI boundary, process-peak and exchange admission checks remain pending.
+Seven boundary cases pass in both compiler implementations. BM-0220 records
+directional samples and separate process peaks; IX-0070 records local
+schema67 exchange qualification. Hosted CI/external results are separate.

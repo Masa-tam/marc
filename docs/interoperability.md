@@ -1716,4 +1716,21 @@ representations. Require exact tuple2/10+1/16+4/7,54 contexts,4636 frequencies,
 before launching a decoder. Unknown names, duplicate/order/hash/size errors,
 identity corruption and truncated headers must publish no output and launch
 no codec. Old schemas retain their respective inventories.
-Revision-bound producer/cross-path and historical qualification is pending.
+Local producer/cross-path and historical qualification is IX-0070.
+
+### IX-0070: schema67 local exchange qualification
+
+Date: 2026-10-08. Implementation revision
+`994587b609abc8074ace0d4a16907fa428cb4c62`.
+Two compiler implementations produce and self-verify77 archives; each
+consumer also decodes the other producer's complete bundle. All77 archive
+bytes match across compilers. Both producers preserve every byte of the
+first76 entries in the frozen schema66 bundles.
+
+Both producers'125 new negative cases reject before codec launch, with no
+output publication. The complete schema1..67 conversion/verification suite
+passes, including the existing historical negative checks. That synthetic
+history suite uses its explicit zero revision marker; it is distinct from
+the actual implementation-revision bundles above. All earlier artifacts
+are retained. Hosted CI and maintainer-run external routes for this new
+revision remain unreported; previous schema66 successes do not qualify it.

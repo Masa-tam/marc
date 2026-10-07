@@ -39597,3 +39597,15 @@ rollback and failed-frame quarantine. No third-party compression source
 consulted or copied. TVG-1397, BM-0220 and FZ-0081 record actual finite
 qualification and measured tradeoffs. Schema67 revision-bound exchanges,
 historical conversion and final installed runtime remain pending.
+
+### CR-1707: full-literal4MiB local admission review
+
+2026-10-08, Codex review; maintainer review pending. Review first-party
+layout, cursor, explicit serialization, normalization and framing changes
+against DD-1532 and the independently generated fixtures. Tuple reservations
+are distinct; existing implementations and archive representations remain
+unchanged. No external compression implementation consulted. TVG-1398 and
+IX-0070 qualify revision-bound exchanges, frozen prefix and historical
+refusals. Failed-frame nonpublication and success-only destination contracts
+remain covered by directed and sanitizer tests. This records the independent
+implementation process, not a legal guarantee or hosted/external CI result.
