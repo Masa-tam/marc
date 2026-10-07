@@ -1643,3 +1643,26 @@ Schema 65 (`marc-cli-v65`) retains its 75-archive inventory and its first
 `lzss-position-distance-rans-1m.marc` before publication. Archive bytes are
 unchanged. The earlier unpublished spelling is rejected during manifest
 admission, before launching a codec. Schemas 1 through 64 are unchanged.
+
+### IX-0067: maintainer-reported schema-65 external completion
+
+Date: 2026-10-07. Verified revision:
+`c17ed4351160eff3f9046d43d0fa9b60bac32f34`.
+
+The maintainer reports hosted CI success and four successful external routes,
+each verifying all 75 archives: CI-produced Windows archives consumed by
+Ubuntu, CI-produced Ubuntu archives consumed by Ubuntu, an independently
+produced Ubuntu bundle consumed by its producer, and that Ubuntu bundle
+consumed by Windows. The two final reports carry the same producer label
+because they consume the same bundle through different execution routes.
+These reports cover schema 65 / `marc-cli-v65`, with the canonical
+`lzss-position-distance-rans-1m` archive as entry 75.
+
+The agent inspected the maintainer-supplied CI log archive: both main jobs
+pass all 4211 tests; all four installed static/shared package jobs pass both
+consumer tests. Checkout records bind all six jobs to the revision above.
+The agent did not rerun or independently observe the four external routes.
+This closes the revision-specific hosted CI and external exchange gates
+previously pending in IX-0065/IX-0066. BM-0217 records observed CI durations.
+It changes no codec, format, ABI, limits, defaults, inventory or release state.
+This success does not apply automatically to a later documentation commit.

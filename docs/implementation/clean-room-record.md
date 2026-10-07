@@ -39458,3 +39458,16 @@ DD-1525 uses first-party design, dispatch and tests (IR-1281). No external
 implementation was consulted. The maintainer requested removing the former
 unpublished name. Correct CLI/exchange names without an alias and leave
 codec source, public ABI and serialized stream representation unchanged.
+
+### CR-1695: hosted CI and external exchange evidence update
+
+Date: 2026-10-07. Author/reviewer: Codex, under maintainer authorization.
+IX-0067 records maintainer-reported four-route exchange success at revision
+c17ed4351160eff3f9046d43d0fa9b60bac32f34. Independently inspect supplied
+hosted job logs for checkout bindings, test results and step timestamps;
+BM-0217 compares their observed durations with retained prior log analysis.
+External route executions remain maintainer-reported. No external codec
+implementation is consulted; no codec source, format, ABI, test recipe,
+resource limit or scheduler setting changes. Public documentation contains
+no added local environment details. Later documentation commits require
+their own revision-specific CI result.

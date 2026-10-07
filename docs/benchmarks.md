@@ -10460,3 +10460,40 @@ for smaller frame capacities. That correction changes the minimum reported
 admission budget when an independently configured decision ceiling is larger
 than the retained layout. It changes no default one-MiB buffer capacity or
 codec processing. The original measured binaries and source are retained.
+
+## BM-0217: observed hosted CI duration after parallel scheduling
+
+Date: 2026-10-07. Current observed revision:
+`c17ed4351160eff3f9046d43d0fa9b60bac32f34`; previous observed revision:
+`55e24b9b4be9642e507846a161e8638aeb8e3ce9`. DD-1524 introduces project
+build parallelism, two CTest slots, long-test scheduling hints and the shared
+large-window resource lock. Maintainer-supplied downloaded job logs provide
+the observations below. Durations are minutes.
+
+| Job / interval | Previous | Current |
+| --- | ---: | ---: |
+| Windows main job log span | 100.62 | 56.59 |
+| Windows main build step interval | 30.26 | 16.42 |
+| Windows main CTest reported wall time | 69.56 | 39.57 |
+| Ubuntu main job log span | 52.57 | 50.07 |
+| Ubuntu main build step interval | 9.19 | 12.97 |
+| Ubuntu main CTest reported wall time | 43.20 | 36.89 |
+
+Windows main job duration falls by approximately 43.8%, or 44.03 minutes.
+The observed span from the earliest of the six job logs to the latest end
+is 56.60 minutes, excluding workflow queue time. Build intervals run from
+the build-step start to the next step's start; CTest times use its explicit
+real-time summary. Log spans include job setup and cleanup.
+
+Both current main jobs pass 4211 tests, compared with 4198 previously. The
+four installed-package jobs each pass both consumer tests. All six current
+checkout records identify the current revision above, with no logged job
+errors. The longest current individual test remains the 64-MiB CLI boundary
+test: 1399.78 seconds on Windows and 1173.79 seconds on Ubuntu.
+
+These are two hosted observations, with different source revisions and
+runner conditions, rather than a controlled isolation of scheduler changes.
+The shorter Windows build and both shorter test intervals support the
+practical benefit of parallel scheduling; the Ubuntu build interval rises.
+No portable speedup, compiler throughput, codec throughput, compression ratio
+or resident-memory result is inferred from these CI times.
