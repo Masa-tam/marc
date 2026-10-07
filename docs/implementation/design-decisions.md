@@ -33528,3 +33528,29 @@ and memory. Append archive76 and leave every previous byte and inventory
 unchanged. Inspect the complete112-byte header before launching any codec.
 Keep all125 negative cases while reusing one private fixture to avoid copying
 all75 unchanged archives per mutation. Retain the changed per-case evidence.
+
+
+### DD-1530: additive 4MiB native position-distance rANS format
+
+Define 2/10 + 1/11 + 4/6 with46 contexts,2588 frequency entries and
+4194304-byte maximum frame/window in
+`docs/design/lzss-position-distance-rans-4m.md`. Preserve
+prior identities; bound decisions by min(33T,9F) and descriptors by5152.
+Private entropy-core qualification precedes public ownership and admission.
+
+
+### DD-1531: qualify the private 4MiB bridge before public admission
+
+Keep DD-1530 as a private candidate while testing model, typed token, frame,
+streaming and owned layers. Failure-preserving public destinations remain
+separate from discard-on-error token/raw scratch. The owned resource query
+charges 18F+5224 serialized bytes plus raw, token, finder and fixed working
+storage. Do not select a public default until process peaks are measured.
+
+The complete corpus has one compression regression despite an overall
+reduction. Independently decode and re-encode that member's exact payload
+before estimating normalization or literal-partition costs. Estimates are
+not emitted sizes and do not justify changing an existing format. A wider
+literal partition, if adopted, needs its own exact context identity and
+qualification before encoder or decoder integration. Public API, CLI and
+exchange admission remain pending.

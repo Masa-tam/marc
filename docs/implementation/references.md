@@ -11198,3 +11198,9 @@ external algorithm reference or implementation is required for this rename.
 Use existing first-party 64KiB position-distance grammar, DD-1513 native
 rANS model/state rules and DD-1525 canonical naming. No external compression
 implementation is required or consulted for this extension.
+
+
+### IR-1283: 4MiB native position-distance rANS
+
+Use first-party 4MiB position-distance field grammar and DD-1513 native
+rANS mathematical/model rules. No external compression source is consulted.

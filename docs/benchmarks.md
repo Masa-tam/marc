@@ -10527,3 +10527,25 @@ Measured complete CLI regression times are 15.65 seconds and 13.88 seconds
 in the two qualified builds; its watchdog is 300 seconds. Finite differential
 model/token/frame/stream tests retain full boundary coverage and use 120-second
 watchdogs. These timings do not promise the same latency on other systems.
+
+
+## BM-0219: private 4MiB native position-distance rANS size qualification
+
+Date: 2026-10-08. Compare DD-1530 fixed-five complete archives against
+contextual rANS4MiB on twelve corpus members totaling211,938,580 raw bytes.
+All candidate and control archives reconstruct their inputs. Position
+archives total61,279,258 bytes versus62,479,170 contextual bytes, a1.9205%
+reduction. Eleven members shrink; ooffice is3,029,554 versus3,028,821 bytes
+(+733 bytes). Do not claim every member improves or public admission.
+
+Independent decoding and exact re-encoding of ooffice verify the diagnostic
+input. Higher normalized totals8192/16384/32768 estimate89.42/111.07/116.63
+bytes of improvement after model-size accounting; these are modeled cost
+estimates, not emitted archives. A sixteen-bucket previous-literal
+partition estimates6,767.23 bytes of improvement after its additional
+model records, before any new profile-mask overhead. A distinct format and
+actual encode/decode experiment are required to evaluate that hypothesis.
+
+Whole-file correctness calls and concurrent qualification are not directional
+throughput samples. Encode/decode medians, process peaks, public memory
+policy, CLI boundaries and exchange admission remain unmeasured/pending.

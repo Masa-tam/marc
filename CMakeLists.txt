@@ -7942,3 +7942,191 @@ if(MARC_BUILD_TESTS)
     set_property(DIRECTORY APPEND PROPERTY TEST_INCLUDE_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_scheduling.cmake)
 endif()
+
+if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_executable(marc_fuzz_position_rans_4m_descriptor
+        fuzz/position_rans_4m_descriptor_fuzz.cpp
+        src/entropy/position_rans_4m_format.cpp)
+    target_compile_features(marc_fuzz_position_rans_4m_descriptor PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_position_rans_4m_descriptor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_position_rans_4m_descriptor PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_link_options(marc_fuzz_position_rans_4m_descriptor PRIVATE -fsanitize=fuzzer,address,undefined)
+endif()
+
+if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_executable(marc_fuzz_position_rans_4m_payload
+        fuzz/position_rans_4m_payload_fuzz.cpp
+        src/entropy/position_rans_4m_format.cpp
+        src/entropy/position_rans_4m_decoder.cpp)
+    target_compile_features(marc_fuzz_position_rans_4m_payload PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_position_rans_4m_payload PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_position_rans_4m_payload PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_link_options(marc_fuzz_position_rans_4m_payload PRIVATE -fsanitize=fuzzer,address,undefined)
+endif()
+
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_rans_4m_format_tests
+        tests/position_rans_4m_format_tests.cpp
+        src/entropy/position_rans_4m_format.cpp
+        src/entropy/position_rans_4m_decoder.cpp
+        src/entropy/position_rans_4m_encoder.cpp)
+    target_compile_features(marc_position_rans_4m_format_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_rans_4m_format_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_rans_4m_format COMMAND marc_position_rans_4m_format_tests)
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_rans_4m_format_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_4m_format_differential.py
+                $<TARGET_FILE:marc_position_rans_4m_format_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-rans-4m-format-differential)
+        # This first finite model suite is timed during qualification. Lifecycle
+        # and CLI watchdogs require their own measurements before admission.
+        set_tests_properties(marc_position_rans_4m_format_differential PROPERTIES TIMEOUT 120)
+    endif()
+endif()
+
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_rans_4m_token_tests
+        tests/position_rans_4m_token_tests.cpp
+        src/context/lzss_position_rans_4m_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_rans_4m_format.cpp
+        src/entropy/position_rans_4m_encoder.cpp
+        src/entropy/position_rans_4m_decoder.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_typed_reconstructor.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_rans_4m_token_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_rans_4m_token_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_rans_4m_tokens COMMAND marc_position_rans_4m_token_tests)
+    add_library(marc_position_rans_4m_fuzz_compile_smoke OBJECT
+        fuzz/lzss_position_rans_4m_tokens_fuzz.cpp)
+    target_compile_features(marc_position_rans_4m_fuzz_compile_smoke PRIVATE cxx_std_20)
+    target_include_directories(marc_position_rans_4m_fuzz_compile_smoke PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_rans_4m_token_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_4m_token_differential.py
+                $<TARGET_FILE:marc_position_rans_4m_token_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-rans-4m-token-differential)
+        set_tests_properties(marc_position_rans_4m_token_differential PROPERTIES TIMEOUT 120)
+    endif()
+endif()
+
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_rans_4m_frame_tests
+        tests/position_rans_4m_frame_tests.cpp
+        src/frame/lzss_position_rans_4m_format.cpp
+        src/frame/lzss_position_rans_4m_frame.cpp
+        src/context/lzss_position_rans_4m_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_rans_4m_format.cpp
+        src/entropy/position_rans_4m_encoder.cpp
+        src/entropy/position_rans_4m_decoder.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_typed_reconstructor.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp
+        src/frame/lzss_contextual_rans_format.cpp
+        src/context/lzss_field_context.cpp
+        src/entropy/contextual_rans_format.cpp
+        src/entropy/contextual_compact_model.cpp)
+    target_compile_features(marc_position_rans_4m_frame_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_rans_4m_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_rans_4m_frames COMMAND marc_position_rans_4m_frame_tests)
+    add_executable(marc_position_rans_4m_stream_decoder_tests
+        tests/position_rans_4m_stream_decoder_tests.cpp
+        src/frame/lzss_position_rans_4m_stream_decoder.cpp
+        src/frame/lzss_position_rans_4m_format.cpp
+        src/frame/lzss_position_rans_4m_frame.cpp
+        src/context/lzss_position_rans_4m_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_rans_4m_format.cpp
+        src/entropy/position_rans_4m_encoder.cpp
+        src/entropy/position_rans_4m_decoder.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_typed_reconstructor.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_rans_4m_stream_decoder_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_rans_4m_stream_decoder_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_rans_4m_stream_decoder COMMAND marc_position_rans_4m_stream_decoder_tests)
+    if(Python3_Interpreter_FOUND)
+        foreach(component IN ITEMS frame stream)
+            if(component STREQUAL "stream")
+                set(test_component stream_decoder)
+            else()
+                set(test_component ${component})
+            endif()
+            add_test(NAME marc_position_rans_4m_${component}_differential
+                COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                    ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_4m_${component}_differential.py
+                    $<TARGET_FILE:marc_position_rans_4m_${test_component}_tests>
+                    ${CMAKE_CURRENT_BINARY_DIR}/position-rans-4m-${component}-differential)
+            set_tests_properties(marc_position_rans_4m_${component}_differential PROPERTIES TIMEOUT 120)
+        endforeach()
+    endif()
+endif()
+
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_rans_4m_owned_tests
+        tests/position_rans_4m_owned_tests.cpp
+        src/frame/lzss_position_rans_4m_owned.cpp
+        src/frame/lzss_position_rans_4m_stream_decoder.cpp
+        src/frame/lzss_position_rans_4m_format.cpp
+        src/frame/lzss_position_rans_4m_frame.cpp
+        src/context/lzss_position_rans_4m_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_rans_4m_format.cpp
+        src/entropy/position_rans_4m_encoder.cpp
+        src/entropy/position_rans_4m_decoder.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_typed_reconstructor.cpp
+        src/dictionary/lzss_format.cpp
+        src/dictionary/lzss_position_distance_4m_five_prefix_candidate.cpp
+        src/dictionary/lzss_position_distance_4m_five_prefix_finder.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_rans_4m_owned_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_rans_4m_owned_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_rans_4m_owned COMMAND marc_position_rans_4m_owned_tests)
+endif()
+
+if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_executable(marc_fuzz_lzss_position_rans_4m_tokens
+        fuzz/lzss_position_rans_4m_tokens_fuzz.cpp
+        src/context/lzss_position_rans_4m_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_rans_4m_format.cpp
+        src/entropy/position_rans_4m_encoder.cpp
+        src/entropy/position_rans_4m_decoder.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_fuzz_lzss_position_rans_4m_tokens PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_position_rans_4m_tokens PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_position_rans_4m_tokens PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_link_options(marc_fuzz_lzss_position_rans_4m_tokens PRIVATE -fsanitize=fuzzer,address,undefined)
+endif()
+
+if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_executable(marc_fuzz_lzss_position_rans_4m_stream
+        fuzz/lzss_position_rans_4m_stream_fuzz.cpp
+        src/frame/lzss_position_rans_4m_stream_decoder.cpp
+        src/frame/lzss_position_rans_4m_format.cpp
+        src/frame/lzss_position_rans_4m_frame.cpp
+        src/context/lzss_position_rans_4m_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_rans_4m_format.cpp
+        src/entropy/position_rans_4m_encoder.cpp
+        src/entropy/position_rans_4m_decoder.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_typed_reconstructor.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_fuzz_lzss_position_rans_4m_stream PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_position_rans_4m_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_position_rans_4m_stream PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_link_options(marc_fuzz_lzss_position_rans_4m_stream PRIVATE -fsanitize=fuzzer,address,undefined)
+endif()

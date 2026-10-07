@@ -39530,3 +39530,30 @@ log inspection, fresh external execution, test count or duration is claimed.
 No implementation, algorithm reference, generated table or stream format
 changes. No external implementation was consulted and no new similarity
 review is implied by this documentation-only update.
+
+
+### CR-1701: 4MiB native position-distance rANS implementation task
+
+2026-10-08, Codex implementation; maintainer review pending. Task: extend
+first-party native rANS to the existing4MiB field grammar, defining exact
+2/10 + 1/11 + 4/6 format before encoding, with independent mathematical
+fixtures and preserved failure invariants. References IR-1283 and DD-1530;
+no external compression implementation consulted or translated. First-party
+1MiB scalar arithmetic is adapted with explicit46/2588 model bounds and
+reserved-mask validation. Core tests and release similarity review pending.
+
+
+### CR-1702: private 4MiB native rANS qualification and size diagnosis
+
+2026-10-08, Codex implementation and finite comparison; maintainer review
+pending. Adapt only the repository's first-party native arithmetic and
+private 4MiB field/finder primitives. Independent Python fixtures match
+canonical models, payload bytes, token reconstruction and frame layouts.
+The parser, token, frame, streaming and owner tests pass; sanitizer campaigns
+are FZ-0080. No third-party codec source was consulted.
+
+BM-0219 finds one small complete-archive regression. Diagnose that member
+by independent exact decoding and re-encoding, then estimate costs at
+higher frequency precision and finer literal partitions. Keep measured
+sizes distinct from estimates. No format change, public ABI/CLI admission,
+exchange entry or release similarity-review completion is inferred.

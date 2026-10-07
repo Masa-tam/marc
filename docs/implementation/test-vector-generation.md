@@ -22496,3 +22496,29 @@ bytes, updating the manifest hash and length, and require refusal before codec
 launch. Inventory/order/duplicates/schema downgrade/hash/size/input/old-name
 mutations plus explicit identity/truncation cases total125 negatives. Retain
 per-case changed manifests/archives and zero-output/launch receipts.
+
+
+### TVG-1393: 4MiB native rANS independent model and payload fixtures
+
+Generate200 compact models and200 modeled/uniform decision sequences with
+fixed seed1530 and explicit alphabets [2]*3+[256]*9+[9]*3+[23]*9+[2]*22.
+Use a private instance of the first-party mathematical Python oracle; do
+not reinterpret existing smaller-window corpus fixtures. Compare canonical
+descriptors, normalized frequencies, exact payload bytes and decoded symbols.
+Include dense maximum-size, truncation, reserved-mask, wrong-identity,
+invalid-state and unchanged-destination checks in native tests. Results
+are recorded in TVG-1394; public admission remains pending.
+
+
+### TVG-1394: private 4MiB frame, streaming and ownership qualification
+
+The DD-1530 candidate passes200 model and200 decision fixtures,210 token
+fixtures and210 independently serialized frame fixtures. Twenty-one stream
+fixtures contain60 data frames and exercise split input/output. Native
+checks cover every single-byte value, all wire match lengths, descriptor
+truncation, guards, sticky errors, alias rejection and a bad later frame
+that publishes only the preceding validated frame. Ownership checks cover
+allocation failures, exact budget boundaries and no process allocations.
+Two compiler implementations pass these finite layers. Twelve whole corpus
+archives reconstruct their exact inputs; compression results are BM-0219.
+CLI, public C ABI and exchange validation remain pending.

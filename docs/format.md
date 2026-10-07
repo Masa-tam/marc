@@ -9167,3 +9167,12 @@ a separate public config/query/factory. The new profile retains known-size
 fixed frames, private failed-frame quarantine and success-only destinations.
 Schema66 appends archive76; no existing representation changes. The separate
 one-MiB name and `2/9 + 1/10 + 4/4` format remain unchanged.
+
+
+### DD-1530: 4MiB native position-distance rANS definition
+
+The additive identity 2/10 + 1/11 + 4/6 is defined in
+[the exact 4MiB profile](design/lzss-position-distance-rans-4m.md).
+It uses46 contexts,2588 frequencies, a six-byte active mask with top two
+bits reserved, and unchanged scalar rANS arithmetic. This definition alone
+does not admit a public CLI or exchange entry. Prior formats are unchanged.

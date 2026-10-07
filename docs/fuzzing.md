@@ -1629,3 +1629,15 @@ an additional 1,000-run campaign (seed 1528) for full-alphabet and
 Directed frame/API tests additionally verify late-frame nonpublication and
 allocation rollback. These finite campaigns do not establish exhaustive
 malformed-input coverage.
+
+
+## FZ-0080: private 4MiB native position-distance rANS layers
+
+Date: 2026-10-08. ASan/UBSan descriptor and payload harnesses each complete
+10,000 unseeded runs and10,000 additional runs seeded from200 independent
+valid fixtures. Valid seeds reach canonical model and symbol decoding paths.
+Typed-token and streaming harnesses each complete10,000 runs, with bounded
+inputs/output and malformed mutations; no sanitizer or invariant finding.
+Directed tests additionally cover late-frame quarantine and owner allocation
+rollback. This is private-layer evidence, not public factory/CLI fuzzing,
+release admission or exhaustive malformed-input coverage.
