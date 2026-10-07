@@ -10497,3 +10497,33 @@ The shorter Windows build and both shorter test intervals support the
 practical benefit of parallel scheduling; the Ubuntu build interval rises.
 No portable speedup, compiler throughput, codec throughput, compression ratio
 or resident-memory result is inferred from these CI times.
+
+## BM-0218: native 64KiB position-distance rANS admission
+
+Date: 2026-10-07. Compare complete native archives against the existing
+64KiB contextual rANS selector on all twelve established corpus members,
+211,938,580 raw bytes. Fixed-five eligibility and outer headers are included.
+Position-distance totals 76,166,383 bytes versus 81,200,856 contextual bytes
+(-6.2000%); every member is smaller. Native and Clang archives are identical.
+Dynamic Range compression ratio is not an admission threshold.
+
+One warmup and three fresh allocation/factory/process/destruction samples
+per member and direction exclude file I/O and output comparisons. Summed
+member medians are 18.308810/17.502807 seconds for position/contextual encode
+and 7.020111/6.270068 seconds for decode: position elapsed time increases
+4.6050%/11.9623%. These are measured tradeoffs, not a universal speedup.
+
+The instrumented CLI source, statically linked to the production library,
+reports native process-lifetime peak working sets. Maximum encode peaks are
+6,922,240/6,737,920 bytes; decode peaks are 5,922,816/6,684,672 bytes, in the
+same profile order. This counter includes process overhead and differs from
+capacity admission or the installed shared CLI's module layout. Candidate
+queries including call buffers but excluding the additional CLI controls
+are 2,762,258/2,238,106 bytes; contextual caller-workspace queries are
+2,433,929/2,409,353 bytes and cover a different resource scope. The candidate
+CLI adds a 65,536-byte control allowance and uses a 4MiB capacity budget.
+
+Measured complete CLI regression times are 15.65 seconds and 13.88 seconds
+in the two qualified builds; its watchdog is 300 seconds. Finite differential
+model/token/frame/stream tests retain full boundary coverage and use 120-second
+watchdogs. These timings do not promise the same latency on other systems.

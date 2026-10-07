@@ -840,3 +840,13 @@ adds this selector as archive 75 while retaining every old archive byte.
 DD-1525 corrects the spelling before publication. The previous
 `lzss-position-rans-1m` spelling is not accepted. Schema 65 uses the canonical
 name for archive 75 without changing its encoded bytes.
+
+## 64KiB position-distance rANS selector
+
+`lzss-position-distance-rans` selects the native 64KiB profile described in
+[its design](design/lzss-position-distance-rans-64k.md). It uses forty contexts
+and scalar byte-renormalized rANS; `lzss-position-distance-rans-1m` remains a
+separate selector and format. The capacity budget is 4MiB, including the
+declared CLI controls and call buffers. A complete file is committed through
+the existing temporary-output contract. Malformed streams cannot overwrite
+existing output or temporary files.

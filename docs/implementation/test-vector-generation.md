@@ -22461,3 +22461,38 @@ Require native reserialization and reverse payload bytes to match Python,
 with success-only destination checks and malformed mask/model/state tests.
 This core qualification does not substitute for full lifecycle, memory,
 CLI, failed-frame and exchange qualification.
+
+### TVG-1390: 64KiB token/frame/stream and ownership
+
+Generate200 independent Python token sequences plus10 full-frame distance
+cases,210 exact-frame fixtures and21 split-I/O streams containing60 frames.
+The Python oracle uses explicit40-context alphabets and65536-byte frame/window
+limits. Do not replay1MiB pilot fixtures as64KiB evidence. Exercise all wire
+match lengths, malformed frames, prefix admission, overlap, short output,
+sticky errors, allocation rollback and failed later-frame nonpublication.
+Check the2522-entry frequency limit at2521, not the previous2565 boundary.
+
+### TVG-1391: native 64KiB rANS public and CLI regressions
+
+Adapt independently authored first-party one-MiB lifecycle tests to the
+forty-context profile and new public API, keeping the former tests unchanged.
+Check exact-budget construction, one-byte-less refusal before allocation,
+every allocation fault, query/create aliases, zero steady-state allocations,
+zero output capacity, one-byte calls, sticky error/end states and a failed
+second frame with only the first frame published. C smoke verifies identity
+2/8+4/5 in the actual public stream. CLI tests cover empty, one byte, all byte
+values, 65,535/65,536/65,537/131,089 bytes, deterministic archives, every
+truncation of the one-byte archive, header/state/trailing mutations and
+retention of existing final and temporary files.
+
+### TVG-1392: schema66 strict header and frozen-prefix exchange
+
+Generate the existing first-party bounded exchange fixture using the public
+selector, append archive76, and compare the first75 complete archives with
+the frozen schema65 bundle. Construct the expected112-byte stream header by
+explicit little-endian shifts, known fixture length and independently recorded
+identity/parameters; every remaining byte is zero. Flip each of112 header
+bytes, updating the manifest hash and length, and require refusal before codec
+launch. Inventory/order/duplicates/schema downgrade/hash/size/input/old-name
+mutations plus explicit identity/truncation cases total125 negatives. Retain
+per-case changed manifests/archives and zero-output/launch receipts.

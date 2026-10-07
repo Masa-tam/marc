@@ -9159,3 +9159,11 @@ canonicalization, rANS states, count bounds and publication rules are defined
 in [the 64KiB profile](design/lzss-position-distance-rans-64k.md). Existing
 `2/9 + 1/10 + 4/4` and all previous representations remain unchanged.
 This definition alone does not admit a public CLI or exchange entry.
+
+### DD-1528/1529 public 64KiB native rANS admission
+
+`lzss-position-distance-rans` exposes the exact DD-1526 representation via
+a separate public config/query/factory. The new profile retains known-size
+fixed frames, private failed-frame quarantine and success-only destinations.
+Schema66 appends archive76; no existing representation changes. The separate
+one-MiB name and `2/9 + 1/10 + 4/4` format remain unchanged.

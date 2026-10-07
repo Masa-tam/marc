@@ -17,6 +17,9 @@ navigate chronological development records.
 
 ## Experimental design
 
+- [Native 64KiB position-distance rANS](design/lzss-position-distance-rans-64k.md):
+  exact stream/model representation, public resources and qualification gates.
+
 - [64-KiB LZSS Contextual compression-ratio study](design/lzss-contextual-ratio-64k.md):
   frozen `mozilla` baseline, short-match hypothesis, and staged full-corpus
   admission gates without changing existing stream bytes.

@@ -39482,3 +39482,39 @@ Adapt their bounded descriptor/entropy core for40 contexts and2522 entries,
 with a reserved-zero mask byte and separate entropy identity. No external
 implementation or restricted source is consulted. Each later qualification
 gate must be proven separately; native core progress is not public completion.
+
+### CR-1697: 64KiB token, frame and owning lifecycle
+
+Date:2026-10-07. Author/reviewer:Codex, under maintainer authorization.
+DD-1527 independently adapts the first-party native lifecycle with the
+existing64KiB field cursor and indexed dictionary parser. It corrects draft
+flag wording to the inspected reference zero-flags/implicit-reset envelope.
+No restricted implementation is consulted. TVG-1390 uses separately generated
+Python token and complete-byte fixtures. Existing1MiB sources remain intact.
+Public memory, CLI, corpus, fuzz and exchange completion remain separate gates.
+
+### CR-1698: 64KiB native rANS public lifecycle and CLI
+
+Date: 2026-10-07. Author/reviewer: Codex. Task: expose the first-party native
+64KiB token/frame/owning implementation through a separate public config,
+query and factory, connect the existing protected CLI file lifecycle, and
+measure resources against the established contextual rANS policy. References
+are the repository's qualified one-MiB native rANS and 64KiB dictionary and
+context primitives. No external implementation or copyleft source consulted.
+The direction and failed-frame publication contract remain unchanged. Compare
+independent mathematical fixtures, ABI and mutation tests; comparison with
+prior first-party code confirms explicit profile separation. This records
+the independent process, not a legal guarantee.
+
+### CR-1699: native 64KiB public and exchange qualification
+
+Date: 2026-10-07. Author/reviewer: Codex. Independently extend first-party
+schema65 tooling with a separate76th entry and exact112-byte little-endian
+header validation. Preserve the historical conversion chain and complete
+125-case negative coverage. Reuse a private mutable last-entry fixture while
+retaining each mutation, avoiding repeated copies of unchanged prefix files.
+Use twelve raw-hash-bound corpus inputs, exact native/Clang archive equality,
+separate throughput/process-peak measurement and sanitizer/public lifecycle
+tests. No third-party implementation, table or test suite is consulted.
+Similarity review finds only intentional first-party reuse with separate
+profile identities; it does not provide a legal guarantee.

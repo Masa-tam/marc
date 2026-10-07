@@ -1958,3 +1958,12 @@ appends only `lzss-contextual-adaptive-huffman-64m` as archive 67. Its exact
 composition is dictionary `2/6`, field context `1/5`, and Adaptive Huffman
 `1/2`. Generation and verification use the public CLI lifecycle and retain
 every earlier archive byte and position.
+
+## Native position-distance rANS profiles
+
+The typed-token extensions `lzss-position-distance-rans` (64KiB,
+`2/8 + 1/9 + 4/5`) and `lzss-position-distance-rans-1m` (one MiB,
+`2/9 + 1/10 + 4/4`) are separately available through CLI and owning C APIs.
+They supplement the baseline byte-stream matrix. The 64KiB profile reduces
+complete corpus archives against contextual rANS with measured speed/memory
+tradeoffs (BM-0218); neither profile implies a universal performance advantage.

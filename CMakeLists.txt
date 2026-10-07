@@ -123,6 +123,12 @@ set(MARC_SOURCES
     src/frame/lzss_position_distance_workspace.cpp
     src/frame/lzss_position_distance_frame_streaming_encoder.cpp
     src/frame/lzss_contextual_rans_format.cpp
+    src/context/lzss_position_rans_64k_tokens.cpp
+    src/frame/lzss_position_rans_64k_c_factory.cpp
+    src/frame/lzss_position_rans_64k_format.cpp
+    src/frame/lzss_position_rans_64k_frame.cpp
+    src/frame/lzss_position_rans_64k_owned.cpp
+    src/frame/lzss_position_rans_64k_stream_decoder.cpp
     src/frame/lzss_position_rans_1m_format.cpp
     src/frame/lzss_position_rans_1m_frame.cpp
     src/frame/lzss_position_rans_1m_stream_decoder.cpp
@@ -1312,6 +1318,19 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
     target_link_libraries(marc_position_distance_1m_five_prefix_allocation_tests PRIVATE marc::static)
     add_test(NAME marc_position_distance_1m_five_prefix_allocation
         COMMAND marc_position_distance_1m_five_prefix_allocation_tests)
+endif()
+if(MARC_BUILD_BENCHMARKS AND TARGET marc_static)
+    add_executable(marc_position_rans_64k_benchmark benchmarks/position_rans_64k_benchmark.cpp)
+    target_compile_features(marc_position_rans_64k_benchmark PRIVATE cxx_std_20)
+    target_link_libraries(marc_position_rans_64k_benchmark PRIVATE marc::static)
+    if(MARC_BUILD_TOOLS)
+        add_executable(marc_position_rans_64k_cli_resources benchmarks/position_rans_1m_cli_resources.cpp)
+        target_compile_features(marc_position_rans_64k_cli_resources PRIVATE cxx_std_20)
+        target_link_libraries(marc_position_rans_64k_cli_resources PRIVATE marc::static)
+        if(WIN32)
+            target_link_libraries(marc_position_rans_64k_cli_resources PRIVATE psapi)
+        endif()
+    endif()
 endif()
 if(MARC_BUILD_BENCHMARKS)
     if(TARGET marc_static)
@@ -3010,6 +3029,11 @@ if(MARC_BUILD_FUZZERS)
     target_compile_options(marc_fuzz_lzss_position_rans_1m_public PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_1m_public PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_rans_1m_public PRIVATE marc::static)
+    add_executable(marc_fuzz_lzss_position_rans_64k_public fuzz/lzss_position_rans_64k_public_fuzz.cpp)
+    target_compile_features(marc_fuzz_lzss_position_rans_64k_public PRIVATE cxx_std_20)
+    target_compile_options(marc_fuzz_lzss_position_rans_64k_public PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_link_options(marc_fuzz_lzss_position_rans_64k_public PRIVATE -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_lzss_position_rans_64k_public PRIVATE marc::static)
     add_executable(marc_fuzz_lzss_position_distance_4m_public fuzz/lzss_position_distance_4m_public_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_position_distance_4m_public PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_distance_4m_public PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -7649,6 +7673,12 @@ if(MARC_BUILD_TESTS)
     target_compile_features(marc_position_rans_1m_owned_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_rans_1m_owned_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_rans_1m_owned COMMAND marc_position_rans_1m_owned_tests)
+    if(MARC_BUILD_TOOLS AND Python3_Interpreter_FOUND)
+        add_test(NAME marc_cli_position_rans_64k
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_rans_64k.py
+                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-rans-64k)
+        set_tests_properties(marc_cli_position_rans_64k PROPERTIES TIMEOUT 300)
+    endif()
     add_executable(marc_position_rans_1m_api_tests tests/position_rans_1m_api_tests.cpp)
     target_compile_features(marc_position_rans_1m_api_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_rans_1m_api_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -7657,6 +7687,20 @@ if(MARC_BUILD_TESTS)
     add_executable(marc_position_rans_1m_c_smoke tests/position_rans_1m_c_smoke.c)
     target_link_libraries(marc_position_rans_1m_c_smoke PRIVATE marc::static)
     add_test(NAME marc_position_rans_1m_c_abi COMMAND marc_position_rans_1m_c_smoke)
+    add_executable(marc_position_rans_64k_api_tests tests/position_rans_64k_api_tests.cpp)
+    target_compile_features(marc_position_rans_64k_api_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_rans_64k_api_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_rans_64k_api_tests PRIVATE marc::static)
+    add_test(NAME marc_position_rans_64k_api COMMAND marc_position_rans_64k_api_tests)
+    add_executable(marc_position_rans_64k_c_smoke tests/position_rans_64k_c_smoke.c)
+    target_link_libraries(marc_position_rans_64k_c_smoke PRIVATE marc::static)
+    add_test(NAME marc_position_rans_64k_c_abi COMMAND marc_position_rans_64k_c_smoke)
+    if(TARGET marc_shared)
+        add_executable(marc_position_rans_64k_shared_smoke tests/position_rans_64k_c_smoke.c)
+        target_link_libraries(marc_position_rans_64k_shared_smoke PRIVATE marc::shared)
+        add_test(NAME marc_position_rans_64k_shared_abi COMMAND marc_position_rans_64k_shared_smoke)
+    endif()
+
     add_library(marc_position_rans_1m_public_fuzz_compile_smoke OBJECT
         fuzz/lzss_position_rans_1m_public_fuzz.cpp)
     target_compile_features(marc_position_rans_1m_public_fuzz_compile_smoke PRIVATE cxx_std_20)
@@ -7859,6 +7903,34 @@ if(MARC_BUILD_TESTS)
         # and CLI watchdogs require their own measurements before admission.
         set_tests_properties(marc_position_rans_64k_format_differential PROPERTIES TIMEOUT 120)
     endif()
+endif()
+
+if(MARC_BUILD_TESTS)
+    foreach(component IN ITEMS token frame stream_decoder owned)
+        add_executable(marc_position_rans_64k_${component}_tests
+            tests/position_rans_64k_${component}_tests.cpp)
+        target_compile_features(marc_position_rans_64k_${component}_tests PRIVATE cxx_std_20)
+        target_include_directories(marc_position_rans_64k_${component}_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_position_rans_64k_${component}_tests PRIVATE marc::static)
+        add_test(NAME marc_position_rans_64k_${component}
+            COMMAND marc_position_rans_64k_${component}_tests)
+    endforeach()
+endif()
+
+if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
+    foreach(component IN ITEMS token frame stream)
+        if(component STREQUAL "stream")
+            set(test_component stream_decoder)
+        else()
+            set(test_component ${component})
+        endif()
+        add_test(NAME marc_position_rans_64k_${component}_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_64k_${component}_differential.py
+                $<TARGET_FILE:marc_position_rans_64k_${test_component}_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-rans-64k-${component}-differential)
+        set_tests_properties(marc_position_rans_64k_${component}_differential PROPERTIES TIMEOUT 120)
+    endforeach()
 endif()
 
 if(MARC_BUILD_TESTS)

@@ -33497,3 +33497,34 @@ Define the complete representation and lifecycle gates in
 bytes and ABI remain unchanged. Require validated private token/raw scratch
 before frame publication. Memory limits and test watchdogs require measured
 evidence; schema66/archive76 admission follows full public qualification.
+
+### DD-1527: 64KiB native frame and owning lifecycle
+
+Connect the qualified core to the existing40-context field cursor and
+64KiB indexed short-length-escape parser. Use private token/raw scratch and
+known-size frames; frame flags remain zero with implicit per-frame resets,
+as in the reference native rANS envelope. This corrects DD-1526 draft wording
+that described explicit reset/final flags; no existing representation changes.
+Use measured query capacities and process peaks before final public memory
+policy. All old selectors and schema inventories remain unchanged until
+new public and exchange gates pass.
+
+### DD-1528: 64KiB native rANS public resource admission
+
+Add a separate config/query/factory and canonical CLI selector
+`lzss-position-distance-rans`. Measured x64 full-frame requirements with CLI
+controls and both declared buffers are 2,827,794 encode and 2,303,642 decode
+bytes. Choose a 4MiB default capacity budget; do not present it as an RSS
+ceiling. Preserve prior ABI and selector behavior. Boundaries, allocation
+rollback, capacity refusal, chunk determinism and late-frame nonpublication
+remain required.
+
+### DD-1529: schema66 and explicit measurement tradeoffs
+
+Admit the 64KiB profile because every corpus member is smaller than contextual
+rANS, with complete archive aggregate reduction6.2000%. Directional timings
+show slower encode/decode; report this tradeoff separately from compression
+and memory. Append archive76 and leave every previous byte and inventory
+unchanged. Inspect the complete112-byte header before launching any codec.
+Keep all125 negative cases while reusing one private fixture to avoid copying
+all75 unchanged archives per mutation. Retain the changed per-case evidence.

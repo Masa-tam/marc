@@ -60,8 +60,9 @@ Context parameters: offsets96/98 are1/9, offset100 is0; all reserved bytes zero.
 Empty input is exactly the stream header. Unknown sizes and auto-detection are
 not introduced. The 1MiB identity and this identity are mutually rejected.
 
-Frame magic occupies0..3, header extent64 at4, flags at6 are dictionary/model
-reset1 plus final2 exactly when the frame reaches known original size.
+Frame magic occupies0..3, header extent64 at4, flags at6 are zero. Dictionary
+and model reset at every frame implicitly, matching the existing native
+rANS envelope; completion follows the known original size and frame counts.
 Sequence u64 at8 is monotonic from zero. Raw, token, event and decision counts
 are u32 at16,20,24,28; payload, descriptor, side-data and trailer sizes are
 u32 at32,36,40,44. Side-data, trailer and offsets48..63 are zero. Descriptor
@@ -98,3 +99,14 @@ archive76; schema65's 75-entry order and all archive bytes remain unchanged.
 Historical manifest admission, strict profile identity and zero codec/output
 negative admission tests remain required. Existing generated artifacts are
 retained; local environment evidence stays outside public documentation.
+
+## Measured public resource policy
+
+The public API names are `marc_lzss_position_distance_rans_config_init`,
+`marc_lzss_position_distance_rans_resource_requirements` and
+`marc_lzss_position_distance_rans_create`. Use a 4MiB default capacity budget.
+At the full frame size with two 65,536-byte call buffers and a separate
+65,536-byte CLI control allowance, x64 aggregate queries are 2,827,794 encode
+and 2,303,642 decode bytes. This admission includes retained capacities and
+public controls, rather than an OS process-memory guarantee. The old one-MiB
+API/defaults are unchanged.

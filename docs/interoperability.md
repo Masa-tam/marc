@@ -1666,3 +1666,21 @@ This closes the revision-specific hosted CI and external exchange gates
 previously pending in IX-0065/IX-0066. BM-0217 records observed CI durations.
 It changes no codec, format, ABI, limits, defaults, inventory or release state.
 This success does not apply automatically to a later documentation commit.
+
+### IX-0068: schema66 native 64KiB position-distance rANS
+
+Schema66 (`marc-cli-v66`) appends only `lzss-position-distance-rans` as
+archive76 after the frozen schema65 order. Dictionary/context/entropy identity
+is `2/8 + 1/9 + 4/5`, frame/window 65,536 bytes, forty contexts and 2522
+frequencies. Generation checks exact identity and immediate roundtrip;
+verification checks every stream-header byte, including original-size binding
+and reserved zeros, before codec launch. Old schemas1..65 remain accepted.
+
+Compatibility reconstructs schema65 by removing only archive76, then follows
+the unchanged historical chain. All first75 native archive bytes match the
+frozen bundle. The complete schema1..66 suite passes, including125 new
+manifest/inventory/hash/size/identity/header negatives that launch no codec
+and publish no files. New negative cases reuse one private fixture and retain
+each changed manifest/archive, preserving source and prior archives.
+Actual revision-bound bundles and maintainer-hosted CI/external reports must
+be recorded separately; older external successes do not qualify this schema.

@@ -1614,3 +1614,18 @@ The actual harness and reachable helpers are freshly built with libFuzzer and ad
 Date: 2026-10-05. Four control bytes followed by at most 64 raw bytes select memory/ABI/reserved configuration refusals, call chunks, output capacities, decoder workspace aliases and late payload corruption. Actual public factory/process/destruction calls exercise a fully instrumented production library. Successful streams reconstruct every byte; rejected construction leaves no handle; any encoder failure has at most the fixed header published. A corrupted single frame produces zero raw bytes. Check committed counts, unused output tails and sticky error state.
 
 Complete 1,000 libFuzzer runs, seed 1486, maximum input length 68 and per-input timeout ten, without crash, timeout, sanitizer or invariant finding. Address/undefined-behavior instrumentation covers the production library and harness; leak detection is disabled. Directed multiple-frame/allocation/alias tests and separate full-size native public experiments supplement this bounded campaign. CLI and exchange integration remain pending.
+
+## FZ-0079: 64KiB native position-distance rANS public lifecycle
+
+The new public harness exercises factory/process/destruction in a fully
+instrumented production static library. Compare whole and one-byte encode,
+roundtrip arbitrary bytes, mutate model/header/payload state, truncate and
+compare whole versus split decode status, position and published bytes.
+Guard output tails and require stable terminal states and progress counts.
+The descriptor/payload mathematical harnesses each complete 10,000 runs.
+The public ASan/UBSan campaign completes 10,000 runs (seed 3661313838), with
+an additional 1,000-run campaign (seed 1528) for full-alphabet and
+512-byte inputs.
+Directed frame/API tests additionally verify late-frame nonpublication and
+allocation rollback. These finite campaigns do not establish exhaustive
+malformed-input coverage.

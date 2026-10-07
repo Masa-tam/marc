@@ -1065,3 +1065,32 @@ ceiling after external charges are subtracted. It may exceed the retained
 layout sum when frame capacity is lowered but the decision ceiling is kept.
 Creating with that reported minimum remains valid; lowering the ceiling can
 reduce the admitted minimum without changing the frame's wire representation.
+
+## 64KiB position-distance native rANS
+
+`marc_lzss_position_distance_rans_config_init()`,
+`marc_lzss_position_distance_rans_resource_requirements()` and
+`marc_lzss_position_distance_rans_create()` select `2/8 + 1/9 + 4/5`.
+The direction is immutable; encode requires known original size. Default
+window/frame is 65,536 bytes, match eligibility five, accepted match lengths
+three through 258, model entries 2522, decision limit 589,824 and payload
+limit 1,179,656 bytes. The aggregate capacity budget is 4MiB, with 65,536-byte
+input/output call capacities. Resource queries include owned capacities and
+declared caller buffers; they do not limit OS RSS. With an additional
+65,536-byte CLI control allowance the x64 query is 2,827,794 bytes for encode
+and 2,303,642 bytes for decode. ABI config/resources sizes are 136/64 bytes.
+
+Insufficient budgets reject before allocation and preserve query destinations.
+Safe factory refusal returns a null handle; aliased outputs remain unchanged.
+Process does not allocate, accepts partial buffers and retains sticky terminal
+errors. Failed frames remain private; earlier validated frames may be returned.
+The separate one-MiB public API and every existing configuration remain intact.
+
+For this fixed-frame profile, `Flush` drains representable bytes without
+closing a partial frame. `ResetBlock` and unknown process flags return
+`MARC_STATUS_UNSUPPORTED`, consuming and producing nothing; the error is
+sticky. Explicit arbitrary reset boundaries are not part of this variant.
+
+In this configuration, `max_block_size` counts entropy decisions; frame,
+payload, retained-buffer and call-buffer capacities are measured in bytes.
+`max_entropy_table_entries` counts normalized-frequency entries.

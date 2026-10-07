@@ -1690,7 +1690,7 @@ foreach(stale_position_distance_contract IN ITEMS
         message(FATAL_ERROR "Stale position-distance status: ${stale_position_distance_contract}")
     endif()
 endforeach()
-math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 3 + 2 + 2 + 2 + 2 + 1")
+math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 3 + 2 + 2 + 2 + 2 + 2")
 foreach(one_mib_contract IN ITEMS
         "marc_lzss_position_distance_dynamic_range_1m_config_init()"
         "marc_lzss_position_distance_dynamic_range_1m_workspace_requirements()"
@@ -1733,12 +1733,21 @@ foreach(eight_mib_decoder_contract IN ITEMS
         message(FATAL_ERROR "Missing 8 MiB decoder C API contract: ${eight_mib_decoder_contract}")
     endif()
 endforeach()
+foreach(rans_64k_contract IN ITEMS
+        "marc_lzss_position_distance_rans_config_init()"
+        "marc_lzss_position_distance_rans_resource_requirements()"
+        "marc_lzss_position_distance_rans_create()" "4MiB")
+    string(FIND "${c_api_content}" "${rans_64k_contract}" rans_64k_offset)
+    if(rans_64k_offset EQUAL -1)
+        message(FATAL_ERROR "Missing 64KiB native rANS API contract: ${rans_64k_contract}")
+    endif()
+endforeach()
 if(NOT c_api_profile_count EQUAL expected_c_api_profile_count)
     message(FATAL_ERROR
         "C API initializer count ${c_api_profile_count} must contain the "
         "${cli_profile_count} CLI profiles plus five experimental profiles "
         "and three existing public position-distance families plus "
-        "two separate eight-MiB, two separate sixteen-MiB and two separate thirty-two-MiB and two separate sixty-four-MiB direction initializers plus the owning position rANS initializer")
+        "two separate eight-MiB, two separate sixteen-MiB and two separate thirty-two-MiB and two separate sixty-four-MiB direction initializers plus two owning position rANS initializers")
 endif()
 list(FILTER c_api_config_initializers INCLUDE REGEX
     "marc_lzss_contextual_(dynamic_range|rans|tans|adaptive_huffman|blocked_huffman)_config_init")
