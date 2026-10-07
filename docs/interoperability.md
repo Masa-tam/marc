@@ -1684,3 +1684,24 @@ and publish no files. New negative cases reuse one private fixture and retain
 each changed manifest/archive, preserving source and prior archives.
 Actual revision-bound bundles and maintainer-hosted CI/external reports must
 be recorded separately; older external successes do not qualify this schema.
+
+### IX-0069: maintainer-reported schema66 external completion
+
+Date: 2026-10-08. Verified revision:
+`15a8fae6872947191d19718ae056f7f07f5c9001`.
+
+The maintainer reports a successful push and hosted CI, followed by four
+successful external routes, each verifying all 76 archives: CI-produced
+Windows and default Ubuntu compiler bundles consumed by Ubuntu, and an
+independently produced Ubuntu Clang bundle consumed by its producer and by
+Windows. The final two reports share a producer label because their consumers
+differ. They are four route results covering schema66 / `marc-cli-v66`,
+including `lzss-position-distance-rans` as archive76.
+
+These maintainer reports close the revision-specific hosted CI and external
+exchange gates left pending in IX-0068. The agent checked the reported revision
+against its existing qualification receipt and unchanged sources/runtime. No
+CI log archive was supplied for this report; the agent did not independently
+inspect CI test counts or durations, or rerun the four external routes.
+No codec, format, ABI, default, limit or inventory changes. This result does
+not automatically qualify a later revision.
