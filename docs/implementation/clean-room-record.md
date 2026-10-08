@@ -39720,3 +39720,17 @@ scripts run against the f63cf327 public runtime snapshot; final committed-
 source metadata and fixed-runtime qualification remain pending. No external
 codec source consulted, hosted/external81 success or full-goal completion
 claimed. Other three window profiles remain pending.
+
+### CR-1718: committed-source eight-MiB qualification closure
+
+2026-10-08, Codex implementation/review; maintainer review pending. IX-0073
+records the final revision-bound two-producer self/cross exchange and frozen
+prefix. The fixed runtime passes four public targets and all twelve corpus
+members against independently qualified candidate bytes; the other compiler
+agrees. Retain the prior runtime and every earlier trial, failure and receipt.
+BM-0222, FZ-0082/0083 and IX-0072 provide the previously completed measured,
+instrumented and historical gates. No external codec source consulted.
+This closes only eight-MiB local qualification. Sixteen/thirty-two/sixty-four
+MiB and the final81-archive gate remain pending; no push, hosted CI or new
+maintainer external validation is claimed. Use passing local milestones for
+subsequent commits instead of waiting for the entire family.

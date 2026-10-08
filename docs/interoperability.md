@@ -1782,3 +1782,19 @@ f63cf327 public runtime snapshot; final committed-source metadata and fixed
 runtime replacement follow. No local third compiler family, new hosted CI
 or maintainer external validation is claimed. The remaining16/32/64MiB and
 final81-archive gates are pending.
+
+## IX-0073: committed-source eight-MiB local qualification
+
+Date: 2026-10-08. Fresh schema68 bundles bind implementation revision
+6f7987f104695fafaeb14e4c19b9465686eae653 and the actual qualified executables.
+Two compiler producers pass both self and cross consumers; all78 archives
+match and the first77 remain identical to the frozen schema67 controls.
+The final fixed-path CLI passes the public lifecycle/static/shared ABI/CLI
+targets and all twelve complete corpus members, matching the independent
+candidate and the other compiler's public CLI byte for byte.
+Previous runtime files are retained and their copied hashes checked.
+IX-0072's125 refusal cases per producer and history1..68 remain qualified;
+no new hosted CI or maintainer external result is claimed. Eight-MiB local
+qualification is complete. The16/32/64MiB profiles and final81-archive audit
+remain pending, so the full four-window goal stays active. Local milestone
+commits do not require completion of the other windows; push does.
