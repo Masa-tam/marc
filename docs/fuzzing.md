@@ -1700,3 +1700,24 @@ Preserve output guards, transactional destinations, private scratch discard,
 failed-frame quarantine, strict termination and immutable terminal states.
 Instrumented process RSS is not a normal-build peak. Full corpus/directional
 measurements, final public capacity and schema69 remain separate gates.
+
+
+## FZ-0085: thirty-two-MiB position-distance rANS campaigns
+
+Date: 2026-10-09. Complete10,000 runs each with seed1548 for descriptor,
+scalar payload, typed tokens, split stream and public owning C lifecycle.
+Start from201 independently qualified descriptor seeds and224 decision
+fixtures including the frozen vectors and maximum9305-byte descriptor.
+ASan/UBSan instrument the public production static library as well as
+entry points; verify compiler commands for the C factory, owner, stream,
+token decoder and shared typed-token validator. No sanitizer or invariant
+finding occurs. Private token/stream limits explicitly allow33554432-byte
+LZ distances; the bounded stream scratch uses20*512+9377 bytes and a5120
+decision limit. Token descriptor capacity is9305 bytes.
+
+Check transactional failure destinations, private scratch discard, output
+guards, split-call equivalence, immutable terminal states and failed-frame
+quarantine. Small-frame campaigns do not replace full-window directed
+boundary tests. Instrumented RSS does not qualify normal-build peaks or
+the public default. Full matched corpus/isolated measurements and schema70
+remain separate unfinished gates.

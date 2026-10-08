@@ -10682,3 +10682,24 @@ for decode; they exclude separate caller/control charges. Neither query
 scope is RSS. Verify all output hashes, sample counts, tool hashes and
 full-group query ranges before admitting768MiB. Final fixed-runtime and
 commit metadata qualification,32/64MiB and final81-archive gates remain pending.
+
+
+## BM-0225: thirty-two-MiB measurement infrastructure qualification
+
+Date: 2026-10-09. Adapt the repository's sixteen-MiB public C API
+benchmark and fresh-process resource driver for the thirty-two-MiB
+position-distance rANS family. The matched control uses the existing
+64MiB contextual profile with physical frame and window33554432 bytes;
+a256-byte roundtrip probe verifies its actual tuple2/6+1/5+4/3 and the
+candidate tuple2/13+1/19+4/10. No public contextual32MiB selector is added.
+
+All four profile/direction benchmark modes verify exact expected output
+with one warmup and three recorded samples. These smoke runs overlap
+other correctness work and do not qualify speed or process peaks. The
+resource driver uses fresh processes, bounded65536-byte IO and separate
+query scopes for candidate owner/calls/controls and contextual caller
+workspaces. Queries are capacity accounting, not RSS. Full twelve-member
+matched compression, isolated directional samples and normal-build
+process peaks remain pending; the1536MiB public capacity is still a trial.
+FZ-0085 qualifies the instrumented campaign separately. Schema70,64MiB
+and final81-archive qualification remain unfinished.

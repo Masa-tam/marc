@@ -39929,3 +39929,26 @@ remaining checker edit, with the failure record retained. Existing artifacts
 and qualified runtimes remain intact. Commit milestone3 independently;
 full corpus/contextual comparison, measurements/fuzz, schema70,64MiB and
 final81/push/hostedCI/external gates remain pending.
+
+
+### CR-1732: thirty-two-MiB benchmark and fuzz infrastructure checkpoint
+
+2026-10-09, Codex implementation/review; maintainer review pending. Task:
+adapt first-party sixteen-MiB benchmark/resource drivers and five fuzz
+entries to the already qualified thirty-two-MiB private/public pipeline.
+No external implementation consulted. Update distance limits and exact
+descriptor/serialized capacities without altering existing codec formats.
+BM-0225 qualifies four benchmark smoke modes and actual matched-control
+identity/roundtrip. FZ-0085 completes five10k ASan/UBSan campaigns with
+production static-library instrumentation, not entry-only instrumentation.
+
+Clang public CLI roundtrips pass for all twelve frozen raw members. Full
+matched native/control comparison and isolated normal-build speed/peak
+measurements remain unfinished. Keep1536MiB as a trial capacity and do not
+infer default admission from small probes. A local probe script initially
+read the six header identity fields in physical order while comparing
+semantic order; correct the probe ordering and retain the first record.
+No codec change was required. Preserve prior artifacts and qualified
+runtimes. Commit this passing infrastructure checkpoint independently;
+remaining measurement, schema70,64MiB and final81/hostedCI/external gates
+are explicit and no push is performed.
