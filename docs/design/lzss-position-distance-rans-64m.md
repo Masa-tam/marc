@@ -64,3 +64,36 @@ the frozen mathematical fixtures and the maximal descriptor, against the
 native parser, scalar encoder and decoder. Token/frame/stream/owning
 integration and failed-frame quarantine require the following checkpoint;
 passing this finite core alone does not complete milestone2.
+
+## DD-1553: private token, frame, stream and owning integration
+
+Typed-token variant14 admits the64MiB short-length grammar and leaves older
+variants unchanged. The field cursor uses27 distance classes and rejects
+nonzero residual in class26. Ordinary token and frame destinations are
+transactional. The separate private scratch operation decodes tokens in
+one pass and may retain a prefix on failure; its owner discards that scratch.
+Raw reconstruction follows successful token validation. Stream draining
+begins only after complete frame validation, preserving failed-frame
+quarantine, including a later failure after an earlier successful frame.
+
+The owning encoder uses the first-party five-prefix nearest-longest finder
+with eligibility3 or5; later public integration fixes5. MaximumF private
+queries are3020826222 bytes encode and2214733558 decode. Serialized capacity
+is1342186678 bytes and finder capacity806092800 bytes. These are checked
+capacities, not process peaks. The4GiB private test allowance is not a public
+default; public admission requires actual directional measurements.
+
+TVG-1416 exercises independent token/frame bytes, split-stream reset
+boundaries, fixed-five owning bytes, allocation rollback, pointer overlap,
+limits and late failure quarantine. API/CLI, full contextual corpus
+comparison, measured public defaults/resources, instrumented fuzz and
+schema71/final81 remain unfinished. Local passing checkpoints are committed
+without waiting for later stages or the other windows.
+
+Both native builds pass all nine private integration/regression tests.
+Independent token/frame differentials each pass211 cases; split-stream
+checks pass22 streams/62 frames, including the full-window-to-short-reset
+transition. Fixed-five owning bytes match forF+1 input and two automatic
+frames. Fixture bytes and private resource queries agree across builds.
+This completes private milestone2 only; the later public and final gates
+listed above remain unfinished.

@@ -22814,3 +22814,17 @@ cover every truncation, reserved mask bits, contradictory prior identities,
 limits, noncanonical records, invalid states and counts, unused contexts,
 payload extent and failed parse/serialize/begin/read destination invariants.
 This checkpoint does not qualify token/frame publication or public APIs.
+
+### TVG-1416: sixty-four-MiB private token/frame/owning differentials
+
+Date: 2026-10-09. Independently generate200 bounded token sequences and11
+full-window distance fixtures for token and frame byte comparisons. Include
+reachable distanceF-3/length3 and distanceF-258/length258, maximum grammar
+fields and full-window capacity. Generate split whole streams including a
+maximum frame followed by a short reset frame. Independently specify the
+fixed-five nearest-longest token sequence for uniformF+1 input and compare
+two automatic frames to the owning codec. Native directed tests check
+malformed headers/payloads, ordinary destination invariants, discarded
+failed private scratch, failed-frame quarantine, split buffers, overlap,
+limits, allocation rollback and absence of process allocations. Preserve
+all fixtures in unique directories. These tests admit no public default.

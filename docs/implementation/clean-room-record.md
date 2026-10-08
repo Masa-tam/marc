@@ -40052,3 +40052,16 @@ implementation or restricted source consulted. Reverse output remains
 private scratch. Commit the passing finite-core checkpoint separately;
 token/frame/stream/owner and failed-frame publication qualification remain
 unfinished, as do API/CLI, full corpus/resources, fuzz and schema71/final81.
+
+### CR-1740: sixty-four-MiB private token/frame/owning integration
+
+2026-10-09, Codex implementation/review; maintainer review pending. Task:
+adapt first-party thirty-two-MiB field/token/frame/stream/owning components
+to DD-1552/1553's64MiB tuple and checked capacities. Add only typed-token
+variant14; preserve earlier variant behavior, ordinary destination commits,
+private failed-scratch discard and failed-frame quarantine. The first-party
+five-prefix finder retains nearest-longest matching and bounded state.
+TVG-1416 independently checks token/frame/owning bytes and split/reset,
+late failure, allocation and overlap contracts. No external implementation
+or restricted source consulted. Public API/CLI, full corpus/measurement/
+default admission, instrumented fuzz and schema71/final81 remain pending.

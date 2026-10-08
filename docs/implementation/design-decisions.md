@@ -33809,3 +33809,22 @@ header, compact records, decision mapping and scalar inverse before
 production implementation. Keep private/public differential and failure
 invariants, measured defaults, corpus, fuzz and schema71 as later gates.
 Commit this passing milestone locally without waiting for other milestones.
+
+### DD-1553: sixty-four-MiB private token/frame/stream integration
+
+Add internal short-length typed-token variant14 with maximum distance64MiB;
+retain all earlier variants unchanged. Connect DD-1552's finite scalar core
+through the field cursor, token adapter, bounded frame parser, streaming
+decoder and owning fixed-five candidate. Private grammar permits lengths
+3..258 and the finder can select eligibility3 or5; later public encoding
+will fix5. Account min(36T,10F) decisions,20F+8 payload and20F+9398 complete
+serialized capacity. Check owner, raw/token/serialized/finder capacities
+and separate128KiB working allowance before allocation. Allocation failures
+roll back; steady-state process calls allocate nothing.
+
+Ordinary token/frame destinations commit only on success. Single-pass
+private token scratch may contain a failed prefix and must be discarded.
+Reconstruct raw bytes only after complete token validation; drain a frame
+only after complete frame validation. An earlier successful frame may have
+been published when a later frame fails. This private checkpoint admits no
+public API, CLI selector, exchange entry or public memory default.

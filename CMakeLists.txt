@@ -8862,3 +8862,83 @@ if(MARC_BUILD_TESTS)
         set_tests_properties(marc_position_rans_64m_full_literal_format_differential PROPERTIES TIMEOUT 120)
     endif()
 endif()
+
+# DD-1553 private sixty-four-MiB token/frame/owning qualification.
+if(MARC_BUILD_TESTS)
+    foreach(component IN ITEMS token frame stream_decoder owned)
+        add_executable(marc_position_rans_64m_full_literal_${component}_tests
+            tests/position_rans_64m_full_literal_${component}_tests.cpp
+            src/context/lzss_position_rans_64m_full_literal_tokens.cpp
+            src/context/lzss_short_length_escape.cpp
+            src/entropy/position_rans_64m_full_literal_format.cpp
+            src/entropy/position_rans_64m_full_literal_encoder.cpp
+            src/entropy/position_rans_64m_full_literal_decoder.cpp
+            src/dictionary/lzss_typed_token.cpp
+            src/dictionary/lzss_typed_reconstructor.cpp
+            src/dictionary/lzss_format.cpp
+            src/core/limits.cpp
+            src/context/lzss_field_context.cpp
+            src/frame/lzss_position_rans_64m_full_literal_format.cpp
+            src/frame/lzss_position_rans_64m_full_literal_frame.cpp
+            src/frame/lzss_position_rans_64m_full_literal_stream_decoder.cpp
+            src/frame/lzss_position_rans_64m_full_literal_owned.cpp
+            src/dictionary/lzss_position_distance_64m_five_prefix_candidate.cpp
+            src/dictionary/lzss_position_distance_64m_five_prefix_finder.cpp
+            src/frame/lzss_contextual_rans_format.cpp
+            src/entropy/contextual_rans_format.cpp
+            src/entropy/contextual_compact_model.cpp)
+        target_compile_features(marc_position_rans_64m_full_literal_${component}_tests PRIVATE cxx_std_20)
+        target_include_directories(marc_position_rans_64m_full_literal_${component}_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        add_test(NAME marc_position_rans_64m_full_literal_${component}
+            COMMAND marc_position_rans_64m_full_literal_${component}_tests)
+        if(Python3_Interpreter_FOUND AND component STREQUAL "token")
+            add_test(NAME marc_position_rans_64m_full_literal_${component}_differential
+                COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                    ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_64m_full_literal_${component}_differential.py
+                    $<TARGET_FILE:marc_position_rans_64m_full_literal_${component}_tests>
+                    ${CMAKE_CURRENT_BINARY_DIR}/position-rans-64m-full-literal-${component}-differential)
+            set_tests_properties(marc_position_rans_64m_full_literal_${component}_differential PROPERTIES TIMEOUT 120)
+        endif()
+    endforeach()
+    if(Python3_Interpreter_FOUND)
+        foreach(component IN ITEMS frame stream)
+            if(component STREQUAL "stream")
+                set(test_component stream_decoder)
+            else()
+                set(test_component ${component})
+            endif()
+            add_test(NAME marc_position_rans_64m_full_literal_${component}_differential
+                COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                    ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_64m_full_literal_${component}_differential.py
+                    $<TARGET_FILE:marc_position_rans_64m_full_literal_${test_component}_tests>
+                    ${CMAKE_CURRENT_BINARY_DIR}/position-rans-64m-full-literal-${component}-differential)
+            set_tests_properties(marc_position_rans_64m_full_literal_${component}_differential PROPERTIES TIMEOUT 120)
+        endforeach()
+    endif()
+endif()
+
+if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
+    add_test(NAME marc_position_rans_64m_full_literal_owned_differential
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_64m_full_literal_owned_differential.py
+            $<TARGET_FILE:marc_position_rans_64m_full_literal_owned_tests>
+            ${CMAKE_CURRENT_BINARY_DIR}/position-rans-64m-full-literal-owned-differential)
+    set_tests_properties(marc_position_rans_64m_full_literal_owned_differential PROPERTIES TIMEOUT 120)
+endif()
+
+if(MARC_BUILD_TESTS)
+    set_tests_properties(
+        marc_position_rans_64m_full_literal_token
+        marc_position_rans_64m_full_literal_frame
+        marc_position_rans_64m_full_literal_stream_decoder
+        marc_position_rans_64m_full_literal_owned
+        PROPERTIES RESOURCE_LOCK marc_large_window)
+    if(Python3_Interpreter_FOUND)
+        set_tests_properties(
+            marc_position_rans_64m_full_literal_token_differential
+            marc_position_rans_64m_full_literal_frame_differential
+            marc_position_rans_64m_full_literal_stream_differential
+            marc_position_rans_64m_full_literal_owned_differential
+            PROPERTIES RESOURCE_LOCK marc_large_window)
+    endif()
+endif()
