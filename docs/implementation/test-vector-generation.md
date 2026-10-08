@@ -22759,3 +22759,16 @@ against the new library. Maximum65536-byte declared calls and65536-byte
 external/control queries give1,511,077,577 encode and1,107,638,097 decode,
 inside the1536MiB trial. Full corpus/contextual comparison, isolated
 speed/normal peaks/default review, sanitizer and schema70 remain pending.
+
+
+### TVG-1412: thirty-two-MiB measurement-driver full-frame regression
+
+Date: 2026-10-09. Independently construct33554433 zero bytes, requiring
+one full32MiB frame and a final one-byte frame. Exercise position and
+matched contextual profiles through fresh public resource-driver encode
+and decode, then through benchmark encode/decode with1warm3. Verify raw
+roundtrip, expected output bytes and exact physical32MiB/header identities.
+The case detects the contextual full-frame workspace-query refusal caused
+by accidentally retaining16MiB profile decision/payload limits. Test
+artifacts use unique directories and are preserved. This regression does
+not qualify corpus compression, isolated timings, peaks or default admission.

@@ -10703,3 +10703,14 @@ matched compression, isolated directional samples and normal-build
 process peaks remain pending; the1536MiB public capacity is still a trial.
 FZ-0085 qualifies the instrumented campaign separately. Schema70,64MiB
 and final81-archive qualification remain unfinished.
+
+
+BM-0225 follow-up: the full-frame contextual control requires8 decisions
+per raw byte and a16*frame+8 payload bound, inherited from its actual
+64MiB profile. The initial16MiB-derived7/14 bounds passed the256-byte
+probe but rejected the full-frame workspace query on the mozilla member.
+Correct both measurement drivers to8/16 while retaining physical32MiB
+frame/window and the same codec tuple. TVG-1412 verifies full-frame plus
+final-byte resource and benchmark roundtrips; full corpus comparison and
+isolated measurements remain pending. No prior smoke result is promoted
+to full-corpus evidence.

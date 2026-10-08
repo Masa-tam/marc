@@ -67,8 +67,8 @@ int main(int argc,char** argv) {
         if (status) return 4;
         config.frame_size=config.window_size=33554432;
         config.max_frame_size=config.max_lz_distance=33554432;
-        config.max_block_size=7*UINT64_C(33554432);
-        config.max_compressed_payload_size=14*UINT64_C(33554432)+8;
+        config.max_block_size=8*UINT64_C(33554432);
+        config.max_compressed_payload_size=16*UINT64_C(33554432)+8;
         config.original_size=size;
         marc_workspace_requirements resources{};
         status=marc_lzss_contextual_rans_workspace_requirements(&config,&resources);

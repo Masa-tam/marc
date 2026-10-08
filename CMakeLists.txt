@@ -8755,6 +8755,17 @@ if(MARC_BUILD_TESTS)
 endif()
 
 # Thirty-two-MiB benchmark and fully instrumented fuzz infrastructure.
+if(MARC_BUILD_TESTS AND MARC_BUILD_BENCHMARKS AND Python3_Interpreter_FOUND)
+    add_test(NAME marc_position_rans_32m_benchmark_boundaries
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_32m_benchmark_boundaries.py
+            $<TARGET_FILE:marc_position_rans_32m_benchmark>
+            $<TARGET_FILE:marc_position_rans_32m_resources>
+            ${CMAKE_CURRENT_BINARY_DIR}/position-rans-32m-benchmark-boundaries)
+    set_tests_properties(marc_position_rans_32m_benchmark_boundaries PROPERTIES
+        TIMEOUT 300 RESOURCE_LOCK marc_large_window)
+endif()
+
 if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_executable(marc_fuzz_position_rans_32m_full_literal_descriptor
         fuzz/position_rans_32m_full_literal_descriptor_fuzz.cpp

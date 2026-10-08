@@ -42,8 +42,8 @@ bool measure(bool position,marc_direction direction,const std::vector<std::uint8
         if (s!=MARC_STATUS_OK) return false;
         control.frame_size=control.window_size=33554432;
         control.max_frame_size=control.max_lz_distance=33554432;
-        control.max_block_size=7*UINT64_C(33554432);
-        control.max_compressed_payload_size=14*UINT64_C(33554432)+8;
+        control.max_block_size=8*UINT64_C(33554432);
+        control.max_compressed_payload_size=16*UINT64_C(33554432)+8;
         control.original_size=input.size();
         s=marc_lzss_contextual_rans_workspace_requirements(&control,&workspace);
         retained=workspace.primary_bytes+workspace.secondary_bytes+workspace.views_bytes;

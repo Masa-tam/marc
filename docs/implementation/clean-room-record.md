@@ -39952,3 +39952,18 @@ No codec change was required. Preserve prior artifacts and qualified
 runtimes. Commit this passing infrastructure checkpoint independently;
 remaining measurement, schema70,64MiB and final81/hostedCI/external gates
 are explicit and no push is performed.
+
+
+### CR-1733: correct full-frame contextual measurement limits
+
+2026-10-09, Codex implementation/review; maintainer review pending. Task:
+investigate the native32MiB matched-control mozilla encode refusal. The
+resource driver returned4 before payload publication. Inspection of the
+repository's contextual64MiB profile confirms8 decisions/raw byte and
+16 payload bytes/raw byte; the adapted drivers incorrectly retained7/14
+from the16MiB profile. Correct both drivers without changing production
+codec code or stream representations. Preserve failed corpus/output files
+and old driver sources/executables. TVG-1412 full-frame-plus-byte regression
+passes all four benchmark/resource modes. Retry the full matched corpus
+in a fresh directory; comparison and isolated measurements remain pending.
+No external implementation consulted and no agent push.
