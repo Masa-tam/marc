@@ -1883,3 +1883,25 @@ and every archive body are verified unchanged. BM-0227 supplies the full
 FZ-0085 supplies five fully instrumented10000-run campaigns. Thirty-two-MiB
 is locally complete. Sixty-four-MiB, final81-archive qualification and
 maintainer push/hosted CI/external four-route validation remain pending.
+
+## IX-0078: schema71 sixty-four-MiB position-distance rANS extension
+
+Schema71/codec-set `marc-cli-v71` appends `lzss-position-distance-rans-64m`
+as archive81. Its first80 entries retain schema70 order, including the frozen
+first77. The verifier retains schema1 through70 dispatch and checks the new
+112-byte stream header before invoking any codec. The new identity is
+dictionary2/14, entropy4/11, context1/20, frame/window67108864 bytes,
+58 contexts and4680 frequencies; all other bytes retain the exact canonical
+header rules, including the manifest's original length.
+
+The historical harness derives schema70 from the schema71 first80 prefix
+before continuing its earlier history checks. The new125-case manifest
+negative suite must reject every changed manifest/header before codec launch
+and output publication. This extension is prepared, not exchange-qualified:
+script parsing and the two identity helpers pass the actual valid header and
+114 rejection cases each (112 changed bytes, truncation and wrong original
+length). These helper checks do not prove manifest admission, archive-prefix
+preservation, bundle generation or self/cross decoding. Full schema71 negative,
+history1..71, both producer bundles, two self and two cross routes and final
+source/runtime bindings remain pending. Maintainer push, hosted CI and external
+four-route validation remain separate gates.

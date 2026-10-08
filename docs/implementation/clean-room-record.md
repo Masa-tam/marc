@@ -40097,3 +40097,22 @@ FZ-0086 completes10000 runs per target with seed1552 and no sanitizer/crash
 finding. All425 original seeds remain hash-identical. Both normal builds
 pass TVG-1418 and produce identical boundary archives; these concurrent
 infrastructure observations do not qualify isolated performance or peaks.
+
+### CR-1743: additive sixty-four-MiB exchange preparation
+
+2026-10-09, Codex implementation/review; maintainer review pending. Task:
+adapt the first-party schema70 creator, verifier, historical harness and
+125-case negative suite to append exactly one64MiB position-distance rANS
+profile as schema71/archive81. Derive exact identity bytes from DD-1552's
+documented format. Preserve historical dispatch and all preceding profile
+entries; retain the prelaunch validation and no-output-on-refusal contracts.
+No external implementation or restricted source consulted.
+
+IX-0078 records the prepared extension. All four scripts parse; both new
+identity helpers accept an actual independently checked archive header and
+reject112 single-byte mutations, a truncated header and a wrong original
+length. These are helper checks only. Real bundle generation,125 prelaunch
+negatives per producer, history1..71, frozen-prefix byte preservation and
+two self/two cross routes remain unfinished. Full64MiB corpus, isolated
+measurements and capacity admission also remain pending; this preparation
+does not claim local profile completion or authorize agent push.
