@@ -39666,6 +39666,16 @@ directional speed/actual peaks, sanitizer records, final defaults and
 exchange gates are pending in this checkpoint;
 the four-window goal remains active.
 
+### CR-1714: late-declared test scheduling review
+
+2026-10-08, Codex implementation; maintainer review pending. Existing
+first-party CMake scheduling executes before later standalone targets.
+DD-1540 defers ordinary scheduling until all declarations exist, retaining
+the established named large-window resource lock and GoogleTest include.
+No external compression source consulted. Both configured builds preserve
+the historical resource lock/cost; expanded trace confirms later8MiB tests
+are included after declaration. Checks run after isolated timing finishes.
+
 ### CR-1715: eight-MiB benchmark and sanitizer infrastructure
 
 2026-10-08, Codex implementation/review; maintainer review pending. Adapt

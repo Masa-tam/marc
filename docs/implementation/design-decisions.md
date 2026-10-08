@@ -33637,6 +33637,19 @@ fits this grant. Final default admission requires directional process
 peak measurements and the public query; this is not an RSS ceiling.
 Preserve65536-byte CLI I/O capacities and whole-file temporary commit.
 
+### DD-1540: apply scheduling after every test declaration
+
+New profile targets appear after the original configure-time scheduling
+call. Defer ordinary-test scheduling to the end of the directory so the
+existing named16/32/64MiB and interoperability resource lock includes later
+declarations. Preserve the GoogleTest discovery-time include and existing
+costs, concurrency policy and timeouts. This fixes application order;
+future profile budgets and watchdog changes still require measurement.
+Both configured builds retain the historical resource lock and cost.
+Expanded configure trace confirms that later8MiB targets reach end-of-
+directory scheduling after their declarations. No individual test timeout
+or execution policy changes.
+
 ### DD-1541: eight-MiB capacity admission after public measurements
 
 BM-0222 qualifies full twelve-member public C API output, directional

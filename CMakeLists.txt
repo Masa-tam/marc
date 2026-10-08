@@ -7957,8 +7957,12 @@ if(MARC_BUILD_TESTS)
     # Ordinary tests exist at configure time; PRE_TEST GoogleTest cases exist
     # only after discovery, before CTest loads the remaining test definitions.
     include(${CMAKE_CURRENT_SOURCE_DIR}/tests/test_scheduling.cmake)
-    get_property(marc_configured_tests DIRECTORY PROPERTY TESTS)
-    marc_apply_test_scheduling(${marc_configured_tests})
+    function(marc_schedule_configured_tests)
+        get_property(marc_configured_tests DIRECTORY PROPERTY TESTS)
+        marc_apply_test_scheduling(${marc_configured_tests})
+    endfunction()
+    # Include standalone tests declared later in this directory as well.
+    cmake_language(DEFER CALL marc_schedule_configured_tests)
     set_property(DIRECTORY APPEND PROPERTY TEST_INCLUDE_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_scheduling.cmake)
 endif()
