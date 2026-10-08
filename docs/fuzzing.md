@@ -1658,3 +1658,30 @@ tails, progress counts and sticky terminal states. Directed finite tests
 supplement this campaign with late-frame quarantine and allocation rollback.
 These campaigns do not establish exhaustive malformed-input coverage or
 exchange/release admission.
+
+## FZ-0082: private eight-MiB native rANS layers
+
+Date: 2026-10-08. Descriptor and payload ASan/UBSan harnesses each complete
+10,000 runs seeded from200 independent valid fixtures, seed1536. Typed-token
+and split-stream harnesses each complete10,000 runs with the same explicit
+seed. All reachable private helper sources are instrumented; no sanitizer
+or invariant finding occurs. Descriptor limits include the full9F count
+ceiling so maximum-count valid seeds reach canonical model validation.
+
+Check unchanged failed descriptor/symbol destinations, canonical model
+reserialization, bounded payload parsing, reconstructed tokens and whole
+versus split stream status/positions/publication. Directed finite tests
+separately cover maximum-frame distance recipes, late-frame quarantine and
+allocation rollback. This is private-layer evidence; public C factory/CLI
+fuzz qualification and exhaustive malformed coverage are not claimed.
+
+## FZ-0083: eight-MiB public owning C boundary
+
+Date: 2026-10-08. The public owning C factory and all reachable production
+sources are built with ASan/UBSan. Complete10,000 runs with seed1536 and no
+sanitizer or invariant finding. Compare whole and split output/status/error
+positions; check immutable ended/error states, output guards, varied zero
+capacities, Flush, arbitrary input splits and final-input handling. Directed
+TVG-1401 tests separately check resource-query failure destinations and
+allocation rollback. This campaign does not claim exhaustive malformed
+coverage, final memory-default admission or exchange qualification.

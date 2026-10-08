@@ -39665,3 +39665,17 @@ contracts. No external codec source consulted. Public corpus byte evidence,
 directional speed/actual peaks, sanitizer records, final defaults and
 exchange gates are pending in this checkpoint;
 the four-window goal remains active.
+
+### CR-1715: eight-MiB benchmark and sanitizer infrastructure
+
+2026-10-08, Codex implementation/review; maintainer review pending. Adapt
+first-party4MiB timing and sanitizer harnesses to the separate8MiB profile.
+FZ-0082/0083 record four private and one fully instrumented public10,000-run
+campaigns with no finding. Native timing/resource drivers build and verify
+both directions against frozen candidate and window/frame-matched contextual
+archives. Fresh allocation/factory/process/destruction timing excludes file
+I/O and comparisons; the separate streaming C API driver records process
+lifetime peak memory. These scopes are explicitly distinct. Complete12-member
+timing/peak aggregation, final capacity admission and exchange execution
+remain pending in this infrastructure checkpoint. No external codec source
+consulted; the four-window goal remains active.
