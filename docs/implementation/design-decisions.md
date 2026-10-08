@@ -33730,3 +33730,13 @@ independent directional timing, normal streaming process peaks and the
 corresponding physical16MiB contextual control. No numeric default, format
 or parser-policy change; update only current qualification descriptions.
 Final runtime/exchange closure and32/64MiB/final81 remain separate gates.
+### DD-1547: include native large-window CLI suffixes in scheduling
+
+The existing large-window lock condition matched an internal16m/32m/64m
+name segment but missed native CLI test names ending with that suffix.
+Accept either end of name or a following underscore. Preserve existing
+costs, timeouts, coverage and the eight-MiB policy. A focused configure
+fixture proves the previous policy misses the16MiB CLI and the corrected
+policy locks all three native CLI suffixes and ordinary large-profile
+segments. Actual configured sixteen-MiB CLI metadata carries the lock;
+public API/static/shared ABI/CLI tests pass in both compiler builds.

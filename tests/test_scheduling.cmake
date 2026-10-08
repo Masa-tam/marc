@@ -18,7 +18,7 @@ function(marc_apply_test_scheduling)
 
         # Serialize named large-window groups, allowing smaller tests to use
         # the other slot. This is a conservative policy, not an RSS ceiling.
-        if(marc_test MATCHES "^marc_.*_(16m|32m|64m)_"
+        if(marc_test MATCHES "^marc_.*_(16m|32m|64m)($|_)"
                 OR marc_test MATCHES "SixteenMiB|ThirtyTwoMiB|SixtyFourMiB"
                 OR marc_test STREQUAL "marc_interoperability_schema_compatibility")
             set_tests_properties("${marc_test}" PROPERTIES

@@ -39845,3 +39845,13 @@ All prior generated artifacts remain preserved. Commit measured results
 locally while final sixteen-MiB runtime/exchange closure,32/64MiB and
 final81-archive qualification remain pending. No push or new external
 validation is claimed.
+### CR-1726: native large-window CLI scheduling correction
+
+2026-10-09, Codex implementation/review; maintainer review pending. Extend
+the first-party test scheduling name condition to include native16/32/64MiB
+CLI suffixes as well as existing inner name segments. DD-1547's focused
+fixture fails the old suffix case and passes all eight corrected policy
+cases; actual configured16MiB CLI metadata includes the existing lock.
+Both public API/ABI/CLI groups pass. No codec, cost, timeout or coverage
+change; no external implementation consulted. Current runtime corpus and
+final exchange closure,32/64MiB and final81 gates remain unfinished.
