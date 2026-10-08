@@ -39982,3 +39982,18 @@ history1..70. No external implementation consulted. Commit this passing
 local exchange milestone while full corpus/isolated measurements/default
 admission remain unfinished. Final committed-source/runtime80 qualification,
 64MiB/final81 and maintainer push/hostedCI/external gates remain pending.
+
+
+### CR-1735: complete thirty-two-MiB matched compression checkpoint
+
+2026-10-09, Codex implementation/review; maintainer review pending. Task:
+finish the twelve-member matched32MiB corpus after correcting the
+contextual control's inherited decision/payload bounds. Verify independent
+private/native versus public/Clang archive equality and all raw roundtrips.
+BM-0226 records59597025 candidate bytes versus60783907 contextual bytes;
+all twelve members improve. Preserve earlier failed outputs and every
+source/evidence record. No production codec modification or external
+implementation consultation was required. Commit this passing compression
+checkpoint independently while isolated speed/normal peaks, default
+admission and final runtime/source80 qualification remain unfinished.
+64MiB/final81 and maintainer push/hostedCI/external gates remain separate.

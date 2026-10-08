@@ -10714,3 +10714,23 @@ frame/window and the same codec tuple. TVG-1412 verifies full-frame plus
 final-byte resource and benchmark roundtrips; full corpus comparison and
 isolated measurements remain pending. No prior smoke result is promoted
 to full-corpus evidence.
+
+
+## BM-0226: full thirty-two-MiB matched corpus compression checkpoint
+
+Date: 2026-10-09. Complete exact roundtrips for all twelve frozen corpus
+members,211938580 raw bytes, using the thirty-two-MiB private fixed-five
+encoder and public decoder. All twelve candidate archives are byte-identical
+to the Clang public CLI outputs. The matched contextual control uses the
+existing64MiB profile with physical32MiB frame/window and8/16 conservative
+decision/payload limits; every actual header has2/6+1/5+4/3. The candidate
+identity is2/13+1/19+4/10. No contextual32MiB public selector is invented.
+
+Candidate archives total59597025 bytes versus60783907 contextual bytes,
+a1.952625388% reduction. Every member is smaller. Verify archive hashes,
+raw hashes, decoded bytes and group totals before recording this result.
+These correctness runs overlapped other validation work, so their elapsed
+times and process counters do not qualify speed or peaks. Isolated48-row
+directional1warm3 measurements, fresh public driver peaks and1536MiB trial
+admission remain pending. Final fixed-runtime/source80 qualification,
+64MiB/final81 and maintainer push/hostedCI/external gates remain unfinished.
