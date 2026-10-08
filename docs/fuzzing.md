@@ -1721,3 +1721,23 @@ quarantine. Small-frame campaigns do not replace full-window directed
 boundary tests. Instrumented RSS does not qualify normal-build peaks or
 the public default. Full matched corpus/isolated measurements and schema70
 remain separate unfinished gates.
+
+## FZ-0086: sixty-four-MiB position-distance rANS campaigns
+
+Date: 2026-10-09. Five first-party bounded targets cover descriptor, scalar payload, token,
+stream and public owning API paths. Each completes10000 runs with seed1552
+under ASan/UBSan, with no sanitizer finding or saved crash artifact. All568
+static-library compile commands and all five entries are verified instrumented,
+including public factory, owner, token/frame validators and entropy kernel.
+Descriptor/payload seeds retain201 validated independent descriptors and224
+decision fixtures, including24 frozen payload fixtures and maximal9326-byte
+descriptor. The descriptor input cap9327 includes one trailing byte; payload
+inputs cap32768 and the other bounded targets cap4096. Token private payload
+capacity9224 follows36 decisions per token for128 tokens, plus final state.
+
+Check ordinary failure destinations, discarded private scratch, guarded
+output, split-call equivalence, immutable terminal states and failed-frame
+quarantine. These small-frame campaigns complement full-window directed
+tests; they do not replace them. Instrumented RSS is not a normal-build
+peak or capacity-default qualification. Full matched corpus, isolated
+directional/normal-resource measurements and schema71/final81 remain pending.

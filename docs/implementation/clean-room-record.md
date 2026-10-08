@@ -40078,3 +40078,22 @@ measurements. TVG-1417 checks lifecycle/static/shared ABI/CLI boundaries.
 No external implementation or restricted source consulted. Full corpus,
 measured defaults/resources, instrumented fuzz and schema71/final81 remain
 unfinished; this local milestone does not authorize agent push.
+
+### CR-1742: sixty-four-MiB benchmark and instrumented fuzz infrastructure
+
+2026-10-09, Codex implementation/review; maintainer review pending. Task:
+adapt first-party32MiB public benchmark/resource drivers with the corrected
+contextual8F/16F+8 bounds to physical64MiB. Add the fullF+1 independent
+boundary regression and five bounded fuzz entries. Verify all static-library
+compile commands and the five entries include ASan/UBSan, retaining the
+public factory/owner/validator/parser/kernel instrumentation. Copy validated
+independent201 descriptors and224 decision fixtures as seeds, preserving
+their source evidence. No external implementation or restricted source
+consulted. BM-0228/TVG-1418 cover driver infrastructure; full matched corpus,
+isolated measurements, capacity admission and schema71/final81 remain
+unfinished and are committed in later checkpoints.
+
+FZ-0086 completes10000 runs per target with seed1552 and no sanitizer/crash
+finding. All425 original seeds remain hash-identical. Both normal builds
+pass TVG-1418 and produce identical boundary archives; these concurrent
+infrastructure observations do not qualify isolated performance or peaks.

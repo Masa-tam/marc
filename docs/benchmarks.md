@@ -10777,3 +10777,20 @@ is RSS. All candidate queries fit the unchanged 1536MiB capacity grant;
 DD-1551 admits that default after full-workload qualification. Final fixed
 runtime and source80 exchange qualification, 64MiB/final81 and maintainer
 push/hostedCI/external gates remain pending.
+
+## BM-0228: sixty-four-MiB public measurement infrastructure
+
+The first-party public benchmark/resource drivers compare DD-1554's
+position-distance profile with the existing64MiB contextual rANS profile,
+both at physical67108864-byte frame/window. The contextual control retains
+8F decisions and16F+8 payload allowance; do not inherit smaller-window
+decision bounds. Independent fullF+1 zero-input boundary checks verify both
+drivers in encode/decode and exact header identity before corpus work.
+
+Benchmark timing includes fresh factory/allocation/process/destruction for
+one warmup and three samples; file I/O and byte comparison are excluded.
+The separate fresh normal-build resource process streams65536-byte calls,
+records the process-lifetime peak, retains declared/control query scopes
+and verifies every committed output. Sanitizer peaks are not normal peaks.
+This infrastructure checkpoint does not qualify full corpus compression,
+isolated directional timings, normal peaks or3072MiB capacity admission.

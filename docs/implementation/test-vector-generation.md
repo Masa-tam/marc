@@ -22841,3 +22841,14 @@ from contextual streams. Independently truncate the complete short archive
 and mutate metadata/state/trailing bytes; all failures publish no output
 or temporary file. Preserve existing output/temporary destinations. These
 tests do not qualify corpus compression, measured defaults, fuzz or exchange.
+
+### TVG-1418: sixty-four-MiB measurement-driver boundary regression
+
+Date: 2026-10-09. Independently constructF+1 zero bytes, making one full
+64MiB frame and one final byte. Exercise position and matched contextual
+profiles through fresh public resource-driver encode/decode, then benchmark
+encode/decode with one warmup/three samples. Verify exact raw restoration,
+expected output bytes and physical64MiB identities2/14+1/20+4/11 and
+2/6+1/5+4/3. The contextual control uses its existing64MiB profile with
+8F decisions/16F+8 payload. Preserve artifacts in unique directories.
+Concurrent infrastructure checks are not isolated performance evidence.
