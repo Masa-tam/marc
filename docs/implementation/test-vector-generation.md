@@ -22700,3 +22700,16 @@ canonical header bytes; no case launches a codec or publishes output.
 Synthetic zero-revision history1..69 passes, preserving earlier refusal
 campaigns. Final committed-source metadata, fixed-runtime qualification and
 isolated measured defaults remain subsequent gates.
+
+### TVG-1408: independently generated thirty-two-MiB rANS vectors
+
+Freeze24 mathematical decision fixtures, an empty112-byte header, empty
+24-byte descriptor/eight-byte state and maximum9305-byte dense descriptor.
+Directed checks cover the highest valid57th mask bit and rejection of
+all seven reserved high bits, length3..258, literal buckets/history,
+isolated distance class25 with zero residual, and class24 boundaries.
+Record reachable F-3/3 and F-258/258 recipes separately from isolated
+field grammar. Independent compact reparse and forward scalar inversion
+verify terminal state and exact extent. Seed1548 provides200 bounded
+model and200 payload cases. These tests exercise no production codec;
+native and failure guarantees are later milestone2 work.

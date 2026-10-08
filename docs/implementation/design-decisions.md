@@ -33740,3 +33740,14 @@ fixture proves the previous policy misses the16MiB CLI and the corrected
 policy locks all three native CLI suffixes and ordinary large-profile
 segments. Actual configured sixteen-MiB CLI metadata carries the lock;
 public API/static/shared ABI/CLI tests pass in both compiler builds.
+
+### DD-1548: thirty-two-MiB definition and vector milestone
+
+The definition in docs/design/lzss-position-distance-rans-32m.md fixes
+2/13+1/19+4/10,57 contexts4669 frequencies, eight mask bytes, records at24
+and the seven reserved high mask bits. Maximum descriptor is9305 bytes;
+serialized frame capacity is20F+9377. Freeze independent mathematical
+vectors and test canonical record/state inversion before native coding.
+This milestone does not admit public APIs, a CLI selector or memory default.
+Native differential/failure tests, public integration, measurements/fuzz
+and schema70 remain later separately committed milestones.

@@ -9194,3 +9194,12 @@ reserves2/11+1/17+4/8,2/12+1/18+4/9,2/13+1/19+4/10 and2/14+1/20+4/11.
 These are additive8/16/32/64MiB representations. Descriptor masks and
 decision/payload bounds are window-specific. Existing tuples, CLI selectors
 and exchange inventories remain unchanged until each profile qualifies.
+
+### DD-1548: thirty-two-MiB position-distance rANS definition
+
+[The exact thirty-two-MiB definition](design/lzss-position-distance-rans-32m.md)
+specifies the additive2/13+1/19+4/10 representation with57 contexts,
+4669 frequencies, eight mask bytes, records at24 and maximum9305-byte
+descriptor. Retain DD-1532 scalar/model/framing rules and failed-frame
+quarantine. This format/vector milestone alone admits no public API, CLI
+or exchange entry. Existing profiles and representations are unchanged.

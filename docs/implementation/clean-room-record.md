@@ -39869,3 +39869,15 @@ this closure; no external implementation consulted. Preserve failed script
 startup records and distinguish corrected retries. Commit this passing
 profile closure without waiting for32/64MiB. Those profiles, final81-archive
 qualification, maintainer push, hosted CI and external routes remain pending.
+
+### CR-1728: thirty-two-MiB format and independent vectors
+
+2026-10-09, Codex implementation/review; maintainer review pending. Use
+first-party scalar rANS mathematics and field layout per IR-1287/DD-1548.
+Independently freeze TVG-1408's24 decisions, empty header/state, maximum
+descriptor and reachable-frame recipes. A separate compact parser checks
+all reserved mask bits and200 seeded models/payloads. No external codec
+source consulted. Existing profiles and generated artifacts remain intact.
+Commit passing format/vector tests locally while native encoder/decoder,
+differential/failure guarantees, public API/CLI, measured resources/fuzz
+and schema70 remain pending. The64MiB and final81 gates also remain pending.

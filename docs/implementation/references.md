@@ -11226,3 +11226,11 @@ DD-1542 alphabet/mask/bound derivation. The bounded Python oracle adapts
 the existing first-party eight-MiB field mapping; compact record parsing
 and directed expectations are independently written from the format.
 No external compression implementation is consulted.
+
+### IR-1287: thirty-two-MiB independent mathematical vectors
+
+Use first-party DD-1532/1536 scalar rANS mathematics and DD-1548's explicit
+alphabet, eight-byte mask and checked capacity derivation. Adapt the existing
+independent sixteen-MiB field oracle; retain a separately written forward
+compact parser and directed byte expectations. No external compression
+implementation or restricted source is consulted.
