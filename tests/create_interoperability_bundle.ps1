@@ -101,6 +101,26 @@ function Assert-PositionRans16mHeader([byte[]]$Bytes, [uint64]$OriginalBytes) {
     }
 }
 
+function Assert-PositionRans32mHeader([byte[]]$Bytes, [uint64]$OriginalBytes) {
+    if ($Bytes.Length -lt 112) { throw '32 MiB position rANS archive header is truncated' }
+    $expected = [byte[]]::new(112)
+    [System.Text.Encoding]::ASCII.GetBytes('MARC').CopyTo($expected, 0)
+    foreach ($field in @(@(4,2,2), @(6,2,0), @(8,2,64), @(10,2,1),
+            @(12,2,2), @(14,2,13), @(16,2,4), @(18,2,10), @(20,4,33554432),
+            @(28,4,16), @(32,4,16), @(40,8,$OriginalBytes), @(48,4,16),
+            @(64,4,33554432), @(68,4,3), @(72,4,258), @(80,1,12), @(81,1,1),
+            @(82,2,57), @(84,4,4669), @(96,2,1), @(98,2,19))) {
+        for ($index = 0; $index -lt $field[1]; ++$index) {
+            $expected[$field[0] + $index] = [byte](([uint64]$field[2] -shr (8 * $index)) -band 255)
+        }
+    }
+    for ($index = 0; $index -lt 112; ++$index) {
+        if ($Bytes[$index] -ne $expected[$index]) {
+            throw '32 MiB position rANS archive does not carry exact identity and parameters'
+        }
+    }
+}
+
 
 
 function Get-Sha256([string]$Path) {
@@ -244,7 +264,8 @@ $profiles = @(
     'lzss-position-distance-rans',
     'lzss-position-distance-rans-4m',
     'lzss-position-distance-rans-8m',
-    'lzss-position-distance-rans-16m'
+    'lzss-position-distance-rans-16m',
+    'lzss-position-distance-rans-32m'
 )
 $entries = @()
 foreach ($profile in $profiles) {
@@ -348,6 +369,9 @@ foreach ($profile in $profiles) {
     }
     if ($profile -eq 'lzss-position-distance-rans-16m') {
         Assert-PositionRans16mHeader ([System.IO.File]::ReadAllBytes($archivePath)) ([uint64]$fixture.Length)
+    }
+    if ($profile -eq 'lzss-position-distance-rans-32m') {
+        Assert-PositionRans32mHeader ([System.IO.File]::ReadAllBytes($archivePath)) ([uint64]$fixture.Length)
     }
     if ($profile -eq 'lzss-position-distance-rans-4m') {
         Assert-PositionRans4mHeader ([System.IO.File]::ReadAllBytes($archivePath)) ([uint64]$fixture.Length)
@@ -630,8 +654,8 @@ foreach ($profile in $profiles) {
 }
 
 $manifest = [ordered]@{
-    schema_version = 69
-    codec_set = 'marc-cli-v69'
+    schema_version = 70
+    codec_set = 'marc-cli-v70'
     source_revision = $SourceRevision
     platform = $Platform
     compiler = $Compiler

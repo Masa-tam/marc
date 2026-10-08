@@ -39967,3 +39967,18 @@ and old driver sources/executables. TVG-1412 full-frame-plus-byte regression
 passes all four benchmark/resource modes. Retry the full matched corpus
 in a fresh directory; comparison and isolated measurements remain pending.
 No external implementation consulted and no agent push.
+
+
+### CR-1734: additive schema70 local exchange qualification
+
+2026-10-09, Codex implementation/review; maintainer review pending. Task:
+extend the first-party exchange producer, complete-manifest preflight
+consumer and historical fixtures for the already specified thirty-two-MiB
+position-distance rANS format. Add80th archive without changing previous
+79 archive bytes or schema definitions. Preserve all prior generated
+evidence. IX-0076 and TVG-1413 qualify exact header identity, two self/two
+cross local routes,125 prelaunch refusals per producer and synthetic
+history1..70. No external implementation consulted. Commit this passing
+local exchange milestone while full corpus/isolated measurements/default
+admission remain unfinished. Final committed-source/runtime80 qualification,
+64MiB/final81 and maintainer push/hostedCI/external gates remain pending.

@@ -1842,3 +1842,26 @@ are recorded separately. No hosted CI or maintainer external result for
 this revision is claimed. The32/64MiB profiles and final81-archive audit
 remain pending. Passing milestones are committed locally; completing all
 four profiles remains a condition before push.
+
+
+## IX-0076: schema70 thirty-two-MiB position-distance rANS exchange
+
+Date: 2026-10-09. Schema70/codec-set marc-cli-v70 appends one archive for
+lzss-position-distance-rans-32m, producing80 archives. Preserve all first79
+entries in schema69 order and exact bytes, including the earlier frozen77.
+The appended112-byte stream header must carry exact2/13+1/19+4/10,
+frame/window33554432,57 contexts and4669 normalized frequency entries.
+Construct an independently specified complete header and compare all112
+bytes, including reserved bytes and declared original size, before codec
+launch. The rest of the manifest admission rules remain unchanged.
+
+Two local producer/compiler bundles agree in all80 archive bytes and
+retain the qualified schema69 prefix. Two self and two cross consumers
+pass. Each producer's125 negative cases reject before codec launch or
+output publication, including mutation of each header byte. The synthetic
+revision history test verifies schemas1 through70 and previous negative
+fixtures; synthetic history is not an external producer/revision claim.
+Full32MiB corpus/isolated measurements, public capacity admission and
+final committed-source/runtime qualification remain pending. This is a
+local milestone5 checkpoint.64MiB/final81 and maintainer push, hostedCI
+and external four-route checks remain separate unfinished gates.

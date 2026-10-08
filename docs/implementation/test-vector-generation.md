@@ -22772,3 +22772,19 @@ The case detects the contextual full-frame workspace-query refusal caused
 by accidentally retaining16MiB profile decision/payload limits. Test
 artifacts use unique directories and are preserved. This regression does
 not qualify corpus compression, isolated timings, peaks or default admission.
+
+
+### TVG-1413: schema70 append and exact-header admission fixtures
+
+Date: 2026-10-09. Retain the first-party8193-byte exchange raw fixture.
+Append only the thirty-two-MiB rANS profile, preserving the first79 codec
+entries and archive bytes. Build the expected112-byte header from
+explicit little-endian fields2/13+1/19+4/10, physical32MiB,57/4669 and
+original fixture size; unspecified/reserved bytes remain zero. Mutate
+every header byte independently, updating archive hashes so the admission
+check reaches the actual header comparison. Also test aliases, downgrade,
+wrong codec-set, missing/duplicate/reordered entries, hashes, sizes and
+truncation. All125 cases per producer fail with zero codec launches and
+zero published output files. Verify schema1..70 history, previous negative
+fixtures, two local self and two cross consumers and exact compiler bytes.
+These fixtures do not qualify normal peaks, default grants or external CI.
