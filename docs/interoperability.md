@@ -1754,3 +1754,31 @@ the existing local completion receipt. No CI log archive was supplied for
 this report; CI counts/durations were not independently inspected, and the
 external routes were not rerun by the agent. No codec, representation,
 limit or inventory changes. This does not qualify a later revision.
+
+## Schema68 eight-MiB native position-distance rANS extension
+
+Schema68 and marc-cli-v68 append archive78 for the case-sensitive selector
+lzss-position-distance-rans-8m. The first77 entries retain their order and
+representations. Require exact tuple2/11+1/17+4/8,55 contexts,4647 frequencies,
+8388608-byte frame/window and known original size across all112 header bytes
+before launching a decoder. Unknown names, duplicate/order/hash/size errors,
+identity corruption and truncated headers must publish no output and launch
+no codec. Old schemas retain their respective inventories. Two local
+compiler producers pass two self/two cross routes, all78 archive bytes agree,
+first77 equal the frozen schema67 controls, and both125 preflight refusal
+campaigns and complete history1..68 pass. Final source-bound metadata and
+fixed-runtime qualification follow this milestone; hosted CI and external
+routes for the final81 inventory are not claimed.
+
+## IX-0072: schema68 local exchange and historical qualification
+
+Date: 2026-10-08. Two local compiler producers verify78 archives each on
+self and cross consumers; every emitted archive matches across compilers.
+All first77 archives equal frozen schema67 bytes. Both125 strict-header
+negative campaigns reject before codec launch and publish no output.
+Synthetic zero-revision history1..68 passes, including retained earlier
+refusal cases. Source-hashed exchange scripts are exercised with the
+f63cf327 public runtime snapshot; final committed-source metadata and fixed
+runtime replacement follow. No local third compiler family, new hosted CI
+or maintainer external validation is claimed. The remaining16/32/64MiB and
+final81-archive gates are pending.

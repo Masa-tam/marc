@@ -33637,6 +33637,18 @@ fits this grant. Final default admission requires directional process
 peak measurements and the public query; this is not an RSS ceiling.
 Preserve65536-byte CLI I/O capacities and whole-file temporary commit.
 
+### DD-1539: append the eight-MiB exchange entry
+
+Schema68/marc-cli-v68 appends archive78 lzss-position-distance-rans-8m,
+exact2/11+1/17+4/8 with55 contexts and4647 frequencies. Preserve the first77
+entries and every older schema. Producer and verifier validate all112 stream
+header bytes, including8388608-byte frame/window and original size, before
+launch. Extend strict negative preflight and historical conversion without
+changing earlier inventories. Two local producers pass self/cross decode,
+125 preflight refusals each, frozen-first77 and full history1..68. Final
+source-bound exchange metadata and fixed-runtime qualification follow this
+local schema milestone; hosted CI/external81-route gates remain separate.
+
 ### DD-1540: apply scheduling after every test declaration
 
 New profile targets appear after the original configure-time scheduling

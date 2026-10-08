@@ -39666,6 +39666,14 @@ directional speed/actual peaks, sanitizer records, final defaults and
 exchange gates are pending in this checkpoint;
 the four-window goal remains active.
 
+### CR-1713: schema68 additive exchange task
+
+2026-10-08, Codex implementation; maintainer review pending. Extend the
+first-party schema67 producer/verifier/history/negative-preflight rules by
+one independently defined DD-1536 profile. Preserve all prior entries and
+header representations. No external compression reference is consulted.
+Actual revision-bound producer, historical and cross-route results pending.
+
 ### CR-1714: late-declared test scheduling review
 
 2026-10-08, Codex implementation; maintainer review pending. Existing
@@ -39700,3 +39708,15 @@ Control encoder query varies with known input length; qualify the range from
 all48 rows and retain the initial first-member summary as superseded.
 No external codec source consulted. Schema68/historical/fixed-runtime and
 the16/32/64MiB profiles remain pending; no full-goal completion or push claim.
+
+### CR-1717: schema68 local compatibility review
+
+2026-10-08, Codex implementation/review; maintainer review pending. IX-0072
+and TVG-1402 qualify first-party additive schema68 generation, exact112-byte
+header preflight,125 no-launch/no-output refusals per producer, frozen-first77
+equality, all78 cross-compiler bytes, two self/two cross routes and complete
+history1..68. Preserve every historical parser/inventory. Source-hashed
+scripts run against the f63cf327 public runtime snapshot; final committed-
+source metadata and fixed-runtime qualification remain pending. No external
+codec source consulted, hosted/external81 success or full-goal completion
+claimed. Other three window profiles remain pending.

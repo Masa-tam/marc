@@ -22620,3 +22620,14 @@ The maximum public lifecycle query reports361,838,238 bytes encode and
 260,388,646 decode with its declared call/control charges. Capacity queries
 are not process peaks. Full public corpus comparison, measured direction
 costs, final default admission and schema68 exchanges remain separate gates.
+
+### TVG-1402: schema68 strict-header preflight refusals
+
+Retain a complete schema68 source with78 archives. Mutate manifest codec
+name/schema/set/order/count/hash/size/input hash and archive dictionary,
+context/count identity, truncation and each of112 stream-header bytes.
+Refresh archive hashes for identity mutations to reach the actual parser.
+A launch-guard script and empty output directory prove125 refusals each in
+two local runs before codec launch/publication. Preserve the first77 source
+archives and changed evidence. Both full78 inventories match across the
+compiler outputs; two self and two cross routes and history1..68 pass.
