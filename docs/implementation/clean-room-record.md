@@ -39609,3 +39609,12 @@ IX-0070 qualify revision-bound exchanges, frozen prefix and historical
 refusals. Failed-frame nonpublication and success-only destination contracts
 remain covered by directed and sanitizer tests. This records the independent
 implementation process, not a legal guarantee or hosted/external CI result.
+
+### CR-1708: schema67 maintainer external evidence reconciliation
+
+2026-10-08, Codex evidence reconciliation. Record the maintainer's hosted
+CI success and four77-archive route reports for80fb9be3 in IX-0071, matched
+to the existing local completion revision and runtime hashes. No new
+algorithm implementation or external reference is introduced. No CI log
+archive inspected and no external rerun claimed. Implementation, formats,
+limits and previous artifacts remain unchanged.

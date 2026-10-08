@@ -1734,3 +1734,23 @@ history suite uses its explicit zero revision marker; it is distinct from
 the actual implementation-revision bundles above. All earlier artifacts
 are retained. Hosted CI and maintainer-run external routes for this new
 revision remain unreported; previous schema66 successes do not qualify it.
+
+### IX-0071: maintainer-reported schema67 external completion
+
+Date: 2026-10-08. Verified revision:
+`80fb9be34bf50c565b54185d5d3f7655e07d2b61`.
+
+The maintainer reports a successful push and hosted CI, followed by four
+successful external routes, each verifying all77 archives: CI-produced
+Windows and default Ubuntu compiler bundles consumed by Ubuntu, and an
+independently produced Ubuntu Clang bundle consumed by its producer and by
+Windows. The duplicate Clang producer label represents two consumers.
+These reports cover schema67/marc-cli-v67, including archive77
+lzss-position-distance-rans-4m.
+
+The reports close the revision-specific hosted CI and external gates after
+IX-0070. The agent matched the reported revision and unchanged runtime to
+the existing local completion receipt. No CI log archive was supplied for
+this report; CI counts/durations were not independently inspected, and the
+external routes were not rerun by the agent. No codec, representation,
+limit or inventory changes. This does not qualify a later revision.
