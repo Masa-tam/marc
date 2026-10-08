@@ -39881,3 +39881,17 @@ source consulted. Existing profiles and generated artifacts remain intact.
 Commit passing format/vector tests locally while native encoder/decoder,
 differential/failure guarantees, public API/CLI, measured resources/fuzz
 and schema70 remain pending. The64MiB and final81 gates also remain pending.
+
+### CR-1729: thirty-two-MiB private finite entropy core
+
+2026-10-09, Codex implementation/review; maintainer review pending. Task:
+adapt the first-party sixteen-MiB finite scalar core to DD-1548's explicit
+57/4669 layout, eight-byte mask/record offset24, strict reserved-bit checks
+and independent frozen vectors, preserving transactional destinations and
+stable errors. No external implementation consulted. Static offset assertions
+caught an overbroad task-script replacement of the literal alphabet; restore
+256 and constrain the substitution before successful native/differential
+validation. TVG-1409 and old sixteen-MiB core tests pass. Preserve initial
+failed build evidence. Commit this passing checkpoint within milestone2;
+token/frame/owning integration, failed-frame publication tests, public API/
+CLI, full measurements/fuzz and schema70 remain pending, as do64MiB/final81.

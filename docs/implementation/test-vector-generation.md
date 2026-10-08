@@ -22713,3 +22713,16 @@ field grammar. Independent compact reparse and forward scalar inversion
 verify terminal state and exact extent. Seed1548 provides200 bounded
 model and200 payload cases. These tests exercise no production codec;
 native and failure guarantees are later milestone2 work.
+
+### TVG-1409: thirty-two-MiB finite entropy-core differential checkpoint
+
+The native scalar core reproduces200 independently normalized models and
+payloads, reserializes200 descriptors and matches24 frozen decision fixtures
+plus the maximum9305-byte dense descriptor. Negative tests reject all
+seven reserved high mask bits with empty and active models, every maximum-
+descriptor truncation, old identities and noncanonical records. Check
+unchanged parser destinations/serializer counts, failed-begin decoder state,
+failed-read symbols, sticky errors, terminal state/extent and explicit
+resource bounds. Existing sixteen-MiB finite-core regression passes.
+Token/frame/owning and publication guarantees remain separate subsequent
+milestone2 checks; no public or performance claim follows from these tests.

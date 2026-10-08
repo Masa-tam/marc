@@ -46,3 +46,23 @@ and schema70 are later milestones. Existing representations are unchanged.
 See [the family definition](lzss-position-distance-rans-large-windows.md),
 [the retained scalar rules](lzss-position-distance-rans-4m-full-literal.md)
 and [the format](../format.md).
+
+## Private finite entropy-core checkpoint
+
+The separately named descriptor validator, normalized model builder,
+reverse scalar encoder and forward decoder implement DD-1548's layout.
+Static checks fix residual start4619/end4669,57 alphabets and58 offsets.
+Records start at24 and every reserved high bit of byte23 is rejected before
+model interpretation; the highest defined bit remains valid.
+Independent native differentials qualify200 descriptor reserializations,
+200 normalized model/payload inversions, all24 frozen decision fixtures
+and the maximum9305-byte descriptor. Native tests cover every truncation
+of that descriptor, canonical records, destination/count invariants,
+failed-begin state preservation, unchanged failed-read symbols, terminal
+state/extent and sticky errors. Existing sixteen-MiB finite-core tests pass.
+An initial adaptation error in the literal alphabet was detected by static
+offset assertions, corrected and followed by successful validation.
+Only standalone private test targets use this code. Typed-token integration,
+frame quarantine and owning allocation lifecycle remain pending, so this is
+a checkpoint within milestone2. Public/CLI, measured/fuzz and schema70 gates
+remain pending; no memory default or current public runtime changes here.
