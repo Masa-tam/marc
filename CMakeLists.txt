@@ -8440,3 +8440,10 @@ if(MARC_BUILD_BENCHMARKS)
         target_link_libraries(marc_position_rans_8m_resources PRIVATE psapi)
     endif()
 endif()
+
+if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
+    add_test(NAME marc_position_rans_16m_full_literal_vectors
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_16m_full_literal_vectors.py)
+    set_tests_properties(marc_position_rans_16m_full_literal_vectors PROPERTIES TIMEOUT 60)
+endif()

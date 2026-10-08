@@ -22631,3 +22631,18 @@ A launch-guard script and empty output directory prove125 refusals each in
 two local runs before codec launch/publication. Preserve the first77 source
 archives and changed evidence. Both full78 inventories match across the
 compiler outputs; two self and two cross routes and history1..68 pass.
+
+### TVG-1403: independently generated sixteen-MiB rANS vectors
+
+Generate24 isolated positive decision fixtures with a first-party Python
+mathematical oracle, plus empty112-byte stream header and maximum9283-byte
+dense descriptor. Freeze the descriptor and payload bytes in JSON. Directed
+checks include the valid highest of56 mask bits, all literal buckets,
+literal history retained across matches, length boundaries3..258, and
+distance class24 with zero residual. Reachable F-3/F-258 frame recipes are
+recorded separately from history-free isolated distance events.
+Reparse compact models independently and invert scalar rANS transitions,
+checking terminal state and exact payload extent. Two hundred seeded model
+records and two hundred seeded event payloads supplement the fixed fixtures.
+This is a format/vector qualification, not a native codec, malformed-input,
+failure-publication, performance or memory-admission result.

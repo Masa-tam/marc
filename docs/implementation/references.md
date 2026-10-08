@@ -11218,3 +11218,11 @@ Use first-party DD-1532 scalar/model mathematics, its sixteen previous-
 literal buckets, and the existing8/16/32/64MiB position-distance dictionary
 grammars. Derive decision/payload bounds independently as DD-1536. No
 external compression implementation is consulted for these extensions.
+
+### IR-1286: sixteen-MiB independent mathematical vectors
+
+Use first-party DD-1532/1536 scalar rANS mathematics and the explicit
+DD-1542 alphabet/mask/bound derivation. The bounded Python oracle adapts
+the existing first-party eight-MiB field mapping; compact record parsing
+and directed expectations are independently written from the format.
+No external compression implementation is consulted.

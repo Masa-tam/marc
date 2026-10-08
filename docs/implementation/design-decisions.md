@@ -33672,3 +33672,13 @@ input/output calls. The grant is a checked accounting limit, not an OS RSS
 ceiling. Do not infer defaults or speed for other windows from this result.
 Public lifecycle/ABI/CLI and sanitizer gates are qualified; schema68
 exchange/historical qualification and fixed-runtime replacement are pending.
+
+### DD-1542: sixteen-MiB definition and vector milestone
+
+The [sixteen-MiB definition](../design/lzss-position-distance-rans-16m.md)
+fixes tuple2/12+1/18+4/9,56 contexts4658 frequencies, all seven mask bytes
+usable,9283-byte maximum descriptor and20F+9355 serialized capacity.
+Commit independently generated, byte-frozen mathematical vectors before
+native encoder/decoder work. Native differential/failed-frame tests, public
+API/CLI, measured defaults and schema69 remain later local milestones.
+Do not wait for those gates or the other windows to commit passing vectors.

@@ -39734,3 +39734,21 @@ This closes only eight-MiB local qualification. Sixteen/thirty-two/sixty-four
 MiB and the final81-archive gate remain pending; no push, hosted CI or new
 maintainer external validation is claimed. Use passing local milestones for
 subsequent commits instead of waiting for the entire family.
+
+### CR-1719: sixteen-MiB format and independent-vector milestone
+
+2026-10-08, Codex implementation/review; maintainer review pending. IR-1286,
+DD-1542 and TVG-1403 derive the explicit sixteen-MiB format substitutions
+and bounded positive vectors from first-party scalar rANS mathematics.
+Adapt first-party field mapping; write a separate compact-record parser
+and directed mask/state/bound expectations. No production encoder/decoder
+or public API/CLI is introduced at this milestone. Those implementations,
+native differential/failure tests, fuzzing, measurements/defaults and
+schema69 remain pending. No external codec source consulted or full-family
+completion claimed. Commit passing vector work independently of those gates.
+
+Both local interpreter/CTest configurations pass the exact frozen vectors
+and200 model/200 payload checks. Initial comparison used Python tuples
+against JSON-decoded lists; compare deterministic serialized JSON instead
+and rerun both affected tests. Frozen bytes and mathematical events remain
+unchanged; no production code was involved.
