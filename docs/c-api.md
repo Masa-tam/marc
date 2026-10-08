@@ -1121,7 +1121,7 @@ tuple. Default/maximum frame and window are8388608 bytes; fixed-five
 encoding and decoder grammar3..258 remain distinct. ABI config/resources
 sizes are136/64 on the supported64-bit ABI. Queries charge owner, retained
 capacities,128KiB fixed working, declared call buffers and external controls.
-Provisional384MiB capacity admission requires final public measurements;
-it is not OS RSS. TVG-1401 qualifies lifecycle/CLI. Public sanitizer records,
-directional peaks and exchange checks remain separate qualification steps.
+DD-1541 retains384MiB checked capacity after BM-0222 public measurements;
+it is not OS RSS. TVG-1401 qualifies lifecycle/CLI and FZ-0083 the public
+sanitizer campaign. Exchange and fixed-runtime checks remain pending.
 Existing families and their serialized bytes are unchanged.

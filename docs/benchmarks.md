@@ -10600,3 +10600,32 @@ bytes for encode/decode. They do not include public C/CLI controls or
 declare OS process peaks. Whole-file correctness calls are not isolated
 directional throughput samples. Public resource defaults, speed and peak
 measurements, lifecycle/CLI and schema68 exchanges remain pending.
+
+## BM-0222: eight-MiB public directional and peak-resource qualification
+
+Date: 2026-10-08. Full twelve-member corpus,211,938,580 raw bytes. All public
+native driver archives equal the private gold and reconstruct exactly; the
+second compiler's public CLI archives also match. Window/frame-matched
+contextual controls retain2/5+1/4+4/3 with both sizes8388608. Candidate and
+control totals remain60,383,616 and61,560,309 bytes; all twelve smaller.
+
+One warmup and three fresh allocation/factory/process/destruction samples
+per direction/member, excluding file I/O and comparisons. Alternate profile
+order by member. Sum of member medians: encode168.1928503 versus214.3113137
+seconds (-21.51938%); decode5.2902279 versus4.2780746 (+23.65908%). These are
+elapsed-time differences, not compression comparison with Dynamic Range.
+
+Separate streaming public C API drivers with bounded65536-byte calls record
+process-lifetime peaks, including I/O: encode220,606,464 versus154,984,448
+bytes; decode119,136,256 versus120,053,760. This is the driver scope, not a
+claim about every CLI process or worst-case RSS. Native selected-process
+snapshots before/after are empty; no other codec/build run is launched during
+the campaign. Snapshots do not provide a system-wide lock.
+
+Candidate maximum owner/call/control queries361,838,238/260,388,646 fit the
+384MiB grant. Control caller-workspace encode queries vary with known input
+length:167,810,057..262,153,225; decode227,263,497. Control figures exclude
+declared external call/control objects. Preserve scopes rather than equating
+these queries with RSS. Correct the initial first-member capacity summary
+using all48 retained rows; retain the initial summary as superseded evidence.
+Final exchange/historical and remaining-window qualification are pending.

@@ -33636,3 +33636,14 @@ the measured private maximum query plus declared call/control charges
 fits this grant. Final default admission requires directional process
 peak measurements and the public query; this is not an RSS ceiling.
 Preserve65536-byte CLI I/O capacities and whole-file temporary commit.
+
+### DD-1541: eight-MiB capacity admission after public measurements
+
+BM-0222 qualifies full twelve-member public C API output, directional
+medians and separate process peaks. Maximum owner/call/control capacity
+queries are361,838,238 bytes encode and260,388,646 decode, below384MiB.
+Retain384MiB as the default configured capacity grant and65536-byte CLI
+input/output calls. The grant is a checked accounting limit, not an OS RSS
+ceiling. Do not infer defaults or speed for other windows from this result.
+Public lifecycle/ABI/CLI and sanitizer gates are qualified; schema68
+exchange/historical qualification and fixed-runtime replacement are pending.

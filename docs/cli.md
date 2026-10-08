@@ -868,7 +868,7 @@ schema67 exchange qualification. Hosted CI/external results are separate.
 The explicit selector lzss-position-distance-rans-8m uses DD-1536's
 2/11+1/17+4/8 known-size format. It retains65536-byte input/output calls,
 strict termination and private failed-frame quarantine, and whole-file
-temporary commit. DD-1538's384MiB capacity grant is provisional until public
-resource and peak qualification. TVG-1401 qualifies the seven CLI boundary
+temporary commit. DD-1541's384MiB checked capacity grant is admitted after
+BM-0222 public resource and peak qualification. TVG-1401 qualifies the seven CLI boundary
 cases in two builds. Schema68 exchanges remain pending; no previous selector
 or archive representation changes.

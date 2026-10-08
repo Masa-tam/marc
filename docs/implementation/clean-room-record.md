@@ -39679,3 +39679,14 @@ lifetime peak memory. These scopes are explicitly distinct. Complete12-member
 timing/peak aggregation, final capacity admission and exchange execution
 remain pending in this infrastructure checkpoint. No external codec source
 consulted; the four-window goal remains active.
+
+### CR-1716: eight-MiB public measurement and capacity review
+
+2026-10-08, Codex implementation/review; maintainer review pending. BM-0222
+records complete12-member native public outputs, independent compiler CLI
+agreement, isolated directional medians and separately scoped process peaks.
+DD-1541 admits384MiB checked capacity without claiming an RSS ceiling.
+Control encoder query varies with known input length; qualify the range from
+all48 rows and retain the initial first-member summary as superseded.
+No external codec source consulted. Schema68/historical/fixed-runtime and
+the16/32/64MiB profiles remain pending; no full-goal completion or push claim.
