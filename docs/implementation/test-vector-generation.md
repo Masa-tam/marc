@@ -22604,3 +22604,19 @@ The native nine-target suite takes51.72 seconds and the second build30.85;
 the differential tests individually remain below15 seconds in these runs.
 Retain120-second differential watchdogs for this window. Public integration,
 whole corpus size/directional measurements, fuzz and exchange remain pending.
+
+### TVG-1401: eight-MiB public lifecycle and CLI boundaries
+
+Two compiler implementations pass the public C API, static C ABI, shared C
+ABI and CLI targets. The CLI checks lengths0,1,256,F-1,F,F+1 and2F+17 with
+F=8388608, deterministic archives and strict malformed-file refusal with
+temporary-file commit. Existing64KiB,1MiB and4MiB public API regressions
+and documentation checks pass in both builds. The first C ABI runs retained
+the4MiB header expectations; correct those test assertions to dictionary11,
+entropy8 and context17, then rerun the two affected targets successfully.
+No production change was needed for that test correction.
+
+The maximum public lifecycle query reports361,838,238 bytes encode and
+260,388,646 decode with its declared call/control charges. Capacity queries
+are not process peaks. Full public corpus comparison, measured direction
+costs, final default admission and schema68 exchanges remain separate gates.

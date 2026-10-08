@@ -33623,3 +33623,16 @@ emitted header and exact reconstruction before using comparison evidence.
 Retain their existing context grammar/format identity and record it with
 the matching physical window/frame parameters. Never substitute the larger
 profile's default window or claim a new public contextual selector.
+
+### DD-1538: connect the qualified private eight-MiB representation
+
+BM-0221 verifies all twelve candidate archives are smaller than the
+window/frame-matched contextual control. Connect a distinct owning
+marc_lzss_position_distance_rans_8m family and explicit selector
+lzss-position-distance-rans-8m with immutable direction, success-only
+resource queries, allocation rollback and private failed-frame staging.
+Use384MiB as a provisional capacity grant for integration experiments:
+the measured private maximum query plus declared call/control charges
+fits this grant. Final default admission requires directional process
+peak measurements and the public query; this is not an RSS ceiling.
+Preserve65536-byte CLI I/O capacities and whole-file temporary commit.

@@ -39641,3 +39641,27 @@ TVG-1399..1400 record independent fixtures, quarantine and allocation tests
 in two compiler implementations. No external codec source consulted. Whole
 corpus, public admission/resources, fuzz and exchanges remain pending; the
 four-window objective is not complete.
+
+### CR-1711: eight-MiB public connection and resource task
+
+2026-10-08, Codex implementation; maintainer review pending. BM-0221
+qualifies all twelve private archives against window/frame-matched
+contextual C API controls. Sanitizer qualification is recorded separately.
+Adapt first-party4MiB C boundary and CLI temporary-commit patterns to the
+distinct8MiB family. Explicitly adjust full-frame boundary tests and tuple
+assertions rather than silently retaining smaller-window recipes. No
+external compression source consulted. Public lifecycle/fuzz, directional
+peaks, final defaults and schema68 admission remain pending.
+
+### CR-1712: eight-MiB public verification checkpoint
+
+2026-10-08, Codex implementation/review; maintainer review pending. TVG-1401
+records two-build C API/static/shared ABI/CLI and prior-profile regressions.
+A copied C ABI
+test retained the old4MiB identity, corrected to the independently defined
+8MiB tuple and successfully rerun without changing production code. Review
+success-only outputs and failed-frame staging against first-party4MiB
+contracts. No external codec source consulted. Public corpus byte evidence,
+directional speed/actual peaks, sanitizer records, final defaults and
+exchange gates are pending in this checkpoint;
+the four-window goal remains active.

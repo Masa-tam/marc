@@ -1111,3 +1111,17 @@ private. Config/resources ABI sizes are136/64 on the supported64-bit ABI.
 Factory/config/stream direction and sticky terminal policies match the
 existing native rANS profiles. TVG-1397 records public/ABI/CLI qualification;
 BM-0220 records directional samples and peaks, and IX-0070 local exchanges.
+
+## Owning eight-MiB position-distance rANS trial
+
+DD-1538 connects marc_lzss_position_distance_rans_8m_config_init(),
+marc_lzss_position_distance_rans_8m_resource_requirements() and
+marc_lzss_position_distance_rans_8m_create() to the separate2/11+1/17+4/8
+tuple. Default/maximum frame and window are8388608 bytes; fixed-five
+encoding and decoder grammar3..258 remain distinct. ABI config/resources
+sizes are136/64 on the supported64-bit ABI. Queries charge owner, retained
+capacities,128KiB fixed working, declared call buffers and external controls.
+Provisional384MiB capacity admission requires final public measurements;
+it is not OS RSS. TVG-1401 qualifies lifecycle/CLI. Public sanitizer records,
+directional peaks and exchange checks remain separate qualification steps.
+Existing families and their serialized bytes are unchanged.

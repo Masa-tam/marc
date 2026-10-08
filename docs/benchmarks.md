@@ -10583,3 +10583,20 @@ Each of the 48 directional measurement rows verifies the exact output hash;
 all public candidate archives match the independent private qualification.
 Finite CLI boundaries and public API/ABI tests pass in two compiler
 implementations. Exchange/revision admission remains pending.
+
+## BM-0221: private eight-MiB native rANS complete-corpus comparison
+
+Date: 2026-10-08. All twelve corpus members totaling211,938,580 raw bytes
+reconstruct exactly. The fixed-five8MiB candidate totals60,383,616 archive
+bytes against61,560,309 contextual bytes (1.9114% smaller); every member
+is smaller.
+The contextual control uses existing tuple2/5+1/4+4/3 through its C API,
+with both window and frame explicitly8388608. Validate those emitted
+header fields and reconstruction; no public contextual8MiB selector is
+claimed. The candidate tuple is2/11+1/17+4/8.
+
+Private owner maximum-frame capacity queries are361,637,422/260,187,830
+bytes for encode/decode. They do not include public C/CLI controls or
+declare OS process peaks. Whole-file correctness calls are not isolated
+directional throughput samples. Public resource defaults, speed and peak
+measurements, lifecycle/CLI and schema68 exchanges remain pending.
