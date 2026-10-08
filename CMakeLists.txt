@@ -8842,3 +8842,23 @@ if(MARC_BUILD_BENCHMARKS)
         target_link_libraries(marc_position_rans_32m_resources PRIVATE psapi)
     endif()
 endif()
+# DD-1552 private finite sixty-four-MiB entropy core, without public admission.
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_rans_64m_full_literal_format_tests
+        tests/position_rans_64m_full_literal_format_tests.cpp
+        src/entropy/position_rans_64m_full_literal_format.cpp
+        src/entropy/position_rans_64m_full_literal_encoder.cpp
+        src/entropy/position_rans_64m_full_literal_decoder.cpp)
+    target_compile_features(marc_position_rans_64m_full_literal_format_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_rans_64m_full_literal_format_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_rans_64m_full_literal_format
+        COMMAND marc_position_rans_64m_full_literal_format_tests)
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_rans_64m_full_literal_format_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_64m_full_literal_format_differential.py
+                $<TARGET_FILE:marc_position_rans_64m_full_literal_format_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-rans-64m-full-literal-format-differential)
+        set_tests_properties(marc_position_rans_64m_full_literal_format_differential PROPERTIES TIMEOUT 120)
+    endif()
+endif()

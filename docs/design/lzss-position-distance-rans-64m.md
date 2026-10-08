@@ -47,3 +47,20 @@ and schema71 are later milestones. Existing representations are unchanged.
 See [the family definition](lzss-position-distance-rans-large-windows.md),
 [the retained scalar rules](lzss-position-distance-rans-4m-full-literal.md)
 and [the format](../format.md).
+
+## Private finite entropy-core checkpoint
+
+The fixed context layout, bounded canonical descriptor parser/serializer,
+reverse scalar encoder and forward decoder implement DD-1552's geometry.
+Descriptor parse and serialization commit caller destinations only after
+success. Failed decoder initialization preserves the preceding decoder,
+and a failed symbol read preserves its output argument. Reverse encoding
+writes only explicitly private scratch; it supplies no frame publication.
+Limits are checked before descriptor use. No public factory, CLI selector,
+owning resource default or exchange entry is added by this checkpoint.
+
+TVG-1415 compares independent generated models and payloads, including
+the frozen mathematical fixtures and the maximal descriptor, against the
+native parser, scalar encoder and decoder. Token/frame/stream/owning
+integration and failed-frame quarantine require the following checkpoint;
+passing this finite core alone does not complete milestone2.

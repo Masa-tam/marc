@@ -22801,3 +22801,16 @@ state and payload extent. Seed1552 supplies200 models and200 payload checks.
 Isolated maximum distance is grammar-only; reachable frame recipes remain
 separate. No production codec is invoked. Native differential/failed-frame
 guarantees, API/CLI, full corpus/resources, fuzz and schema71 remain pending.
+
+### TVG-1415: sixty-four-MiB finite scalar-core differentials
+
+Date: 2026-10-09. Seed1552 generates200 bounded compact models and200
+decision payloads independently from DD-1552/IR-1288 first-party mathematics.
+Native parsing must reserialize model bytes exactly; native normalization
+and reverse encoding must match independent payloads before forward decoding
+every decision and checking the terminal state. Include all24 frozen
+fixtures and the9326-byte maximum descriptor. Directed negative cases
+cover every truncation, reserved mask bits, contradictory prior identities,
+limits, noncanonical records, invalid states and counts, unused contexts,
+payload extent and failed parse/serialize/begin/read destination invariants.
+This checkpoint does not qualify token/frame publication or public APIs.

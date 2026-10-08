@@ -40040,3 +40040,15 @@ production differential/failure guarantees, public API/CLI, corpus/resource
 qualification, instrumented fuzz, schema71 and final81 remain pending.
 The full four-window goal remains active; user push/CI/external gates follow
 all profiles' local completion, not individual milestone commits.
+
+### CR-1739: sixty-four-MiB private finite scalar core
+
+2026-10-09, Codex implementation/review; maintainer review pending. Task:
+adapt the first-party thirty-two-MiB finite scalar core to DD-1552's explicit
+58-context4680-frequency layout, retaining canonical records and checked
+integer arithmetic. Independently compare native model/payload bytes using
+TVG-1415; test limits, malformed input and destination invariants. No external
+implementation or restricted source consulted. Reverse output remains
+private scratch. Commit the passing finite-core checkpoint separately;
+token/frame/stream/owner and failed-frame publication qualification remain
+unfinished, as do API/CLI, full corpus/resources, fuzz and schema71/final81.
