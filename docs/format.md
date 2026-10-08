@@ -9186,3 +9186,11 @@ and a seven-byte active mask. Exact representation is in
 It preserves the six-byte DD-1530 candidate and all published formats.
 DD-1533 selects it for lzss-position-distance-rans-4m; schema67 appends it
 as archive77. Local qualification is TVG-1397, BM-0220, FZ-0081 and IX-0070.
+
+### DD-1536: reserved large-window native rANS representations
+
+[The exact family definition](design/lzss-position-distance-rans-large-windows.md)
+reserves2/11+1/17+4/8,2/12+1/18+4/9,2/13+1/19+4/10 and2/14+1/20+4/11.
+These are additive8/16/32/64MiB representations. Descriptor masks and
+decision/payload bounds are window-specific. Existing tuples, CLI selectors
+and exchange inventories remain unchanged until each profile qualifies.

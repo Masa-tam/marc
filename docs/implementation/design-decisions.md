@@ -33597,3 +33597,29 @@ improves aggregate encode time, with slower decode and larger process peaks.
 Do not imply that one entropy profile dominates every resource measure.
 Public lifecycle, ABI, CLI, previous-profile regressions and finite
 sanitizer checks pass; revision-bound exchange admission remains pending.
+
+### DD-1536: large-window native position-distance rANS reservations
+
+Define the four additive tuples, masks, counts, decision and payload ceilings
+in `docs/design/lzss-position-distance-rans-large-windows.md` before coding.
+Retain old representations and explicit failed-frame quarantine. Qualify
+each window sequentially against its contextual rANS control; measure
+resources and scheduling before selecting defaults. Schema68..71 extend
+the existing inventory to81 archives, preserving all prior entries.
+
+### DD-1537: private eight-MiB frame and ownership qualification
+
+Implement DD-1536's8MiB tuple as separate finite frame, split-stream and
+owning helpers. Extend the first-party fixed-five finder to the bounded
+8MiB history while retaining nearest-distance ties; typed decoding still
+accepts grammar lengths3..258. Reserve18F+9334 serialized bytes, rawF,
+token capacityF and128KiB fixed working. Caller admission remains explicit;
+private test grants do not select a public default or establish process RSS.
+
+There are no public contextual rANS8MiB/32MiB selectors. For those control
+experiments configure the existing16MiB/64MiB contextual formats through
+their C API with window and frame both reduced to8MiB/32MiB. Check the
+emitted header and exact reconstruction before using comparison evidence.
+Retain their existing context grammar/format identity and record it with
+the matching physical window/frame parameters. Never substitute the larger
+profile's default window or claim a new public contextual selector.

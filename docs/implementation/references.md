@@ -11211,3 +11211,10 @@ rANS mathematical/model rules. No external compression source is consulted.
 Use first-party contextual previous-literal partition mathematics, DD-1530
 state/model rules and BM-0219 independently reconstructed token counts.
 No external codec source is consulted.
+
+### IR-1285: large-window native position-distance rANS family
+
+Use first-party DD-1532 scalar/model mathematics, its sixteen previous-
+literal buckets, and the existing8/16/32/64MiB position-distance dictionary
+grammars. Derive decision/payload bounds independently as DD-1536. No
+external compression implementation is consulted for these extensions.

@@ -22572,3 +22572,35 @@ producer's125 negative preflights launches no codec and writes no output.
 The full synthetic schema1..67 history passes, including retained older
 refusal checks. IX-0070 records this separately from hosted CI and external
 maintainer verification. No prior bundle is modified.
+
+### TVG-1399: eight-MiB native rANS independent core fixtures
+
+Seed1536 generates200 explicit55-context models and200 decision payloads
+using alphabets[2]*3+[256]*17+[9]*3+[24]*9+[2]*23. Independently serialize
+the seven-byte mask, canonical compact records and scalar state bytes.
+Generate200 token sequences and ten reachable full-frame distance cases,
+includingF-3, forF=8388608. Compare exact normalization, payloads, decoded
+tokens and reconstruction against first-party mathematical oracles.
+Directed tests cover isolated class23/residual-zero, high-nibble history
+across matches, reserved mask bit55, old4MiB descriptor refusal, unchanged
+failure destinations and discard-on-error token scratch. Execution pending;
+this is not public API, stream or exchange qualification.
+
+### TVG-1400: eight-MiB private frame and owner qualification
+
+Two compiler implementations pass nine finite model/token/frame/stream/
+owner targets:200 models,200 decision payloads,210 token fixtures,210 frame
+fixtures and21 streams containing60 frames. Exact bytes and reconstruction
+agree with independent Python serialization; directed tests verify
+late-frame nonpublication, unchanged destinations, allocation rollback,
+exact budget floors and no process allocations. Old4MiB token regression
+passes. An additional200 independently scanned nearest-longest fixed-five
+dictionary cases compare tiny raw inputs against the extended finder.
+
+Maximum8MiB private owner capacity queries are361,637,422 bytes encode and
+260,187,830 decode. These include private ownership/working capacity and
+are not public C API/CLI queries, actual process peaks or a selected default.
+The native nine-target suite takes51.72 seconds and the second build30.85;
+the differential tests individually remain below15 seconds in these runs.
+Retain120-second differential watchdogs for this window. Public integration,
+whole corpus size/directional measurements, fuzz and exchange remain pending.

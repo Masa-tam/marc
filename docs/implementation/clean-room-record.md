@@ -39618,3 +39618,26 @@ to the existing local completion revision and runtime hashes. No new
 algorithm implementation or external reference is introduced. No CI log
 archive inspected and no external rerun claimed. Implementation, formats,
 limits and previous artifacts remain unchanged.
+
+### CR-1709: large-window native rANS extension task
+
+2026-10-08, Codex implementation; maintainer review pending. Task: extend
+the first-party native position-distance rANS profile sequentially to8,
+16,32,64MiB, preserving old bytes and failed-frame privacy. Define DD-1536
+before implementation. References IR-1285; no third-party compression code
+consulted or copied. Actual implementation/tests/resources/public exchange
+qualification remain pending for each window. No release completion claim.
+
+### CR-1710: eight-MiB private qualification review
+
+2026-10-08, Codex implementation/review; maintainer review pending. Extend
+first-party4MiB native layout, cursor, compact model, finite frame, split
+decoder and owner into distinct8MiB helpers. Review55-context offsets,
+reserved mask bit55, tuple2/11+1/17+4/8, descriptor9262 and serialized
+18F+9334 bounds. Add typed dictionary variant11 without changing previous
+variant behavior. Existing fixed-five nearest-longest parsing is extended
+within the bounded8MiB history and independently checked on200 finite cases.
+TVG-1399..1400 record independent fixtures, quarantine and allocation tests
+in two compiler implementations. No external codec source consulted. Whole
+corpus, public admission/resources, fuzz and exchanges remain pending; the
+four-window objective is not complete.

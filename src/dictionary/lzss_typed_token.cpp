@@ -8,10 +8,12 @@ constexpr bool short_length_variant(const LzssTypedTokenVariant variant) noexcep
     return variant == LzssTypedTokenVariant::field_context_64k_short_match
         || variant == LzssTypedTokenVariant::field_context_64k_short_length_escape
         || variant == LzssTypedTokenVariant::field_context_1m_short_length_escape
-        || variant == LzssTypedTokenVariant::field_context_4m_short_length_escape;
+        || variant == LzssTypedTokenVariant::field_context_4m_short_length_escape
+        || variant == LzssTypedTokenVariant::field_context_8m_short_length_escape;
 }
 constexpr std::uint32_t short_window_limit(const LzssTypedTokenVariant variant) noexcept {
-    return variant == LzssTypedTokenVariant::field_context_4m_short_length_escape
+    return variant == LzssTypedTokenVariant::field_context_8m_short_length_escape
+        ? 8388608U : variant == LzssTypedTokenVariant::field_context_4m_short_length_escape
         ? 4194304U : variant == LzssTypedTokenVariant::field_context_1m_short_length_escape
         ? 1048576U : 65536U;
 }
