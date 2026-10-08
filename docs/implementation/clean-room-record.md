@@ -40134,3 +40134,19 @@ native/second compiler archive equality, isolated directional timing and
 normal peaks, capacity admission, schema71/final81 and final source/runtime
 qualification remain unfinished. This checkpoint does not claim overall
 profile completion or hosted/external verification.
+
+### CR-1745: sixty-four-MiB public twelve-member byte equivalence
+
+2026-10-09, Codex validation/review; maintainer review pending. Task: run the
+existing public CLI on both normal builds for all twelve original corpus
+members. Preserve the private gold and every prior artifact; check actual
+archive bytes, restored raw lengths/SHA-256, exact profile/window headers and
+bound runtime/source hashes. No external implementation or restricted source
+consulted. Both complete campaigns return success. All twelve archives agree
+between private and both public encoders, and all restored outputs agree with
+the original inputs. BM-0230 records this independent local checkpoint.
+
+The result does not qualify isolated directional timing, normal peaks or
+the3072MiB capacity trial. Schema71/81 exchange, final source/runtime and
+maintainer push/hosted CI/external four-route checks also remain unfinished;
+the whole four-profile goal remains active.

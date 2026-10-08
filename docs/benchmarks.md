@@ -10815,3 +10815,20 @@ compiler full-corpus archive equality, isolated48-row measurements, capacity
 admission, schema71 exchange and final source/runtime qualification remain
 unfinished. Maintainer push, hosted CI and external four-route verification
 remain separate gates.
+
+## BM-0230: sixty-four-MiB public full-corpus byte equivalence
+
+Both normal public CLI builds complete the same twelve-member workload used
+by BM-0229. Each archive is byte-for-byte identical to the private fixed-five
+baseline and to the other public build. All restored raw lengths and SHA-256
+digests match the original inputs. Actual headers retain dictionary2/14,
+entropy4/11, context1/20 and physical67108864-byte frames/windows.
+
+The full three-way comparison retains all source/runtime and input/output
+bindings. The211938580 raw bytes produce59366141 position-distance bytes;
+the matched contextual control remains60568740 bytes, with every member
+smaller. This is public correctness and deterministic output qualification,
+not isolated throughput or peak-memory measurement. The isolated48-row
+one-warmup/three-sample campaign, normal process peaks,3072MiB capacity
+admission, schema71 exchange and final source/runtime qualification remain
+unfinished. Maintainer push, hosted CI and external four routes remain pending.
