@@ -114,3 +114,17 @@ failed-frame quarantine. This qualification changes no wire format or
 numeric initialization. The local schema70/80 exchange checkpoint remains
 separate from final fixed-runtime/source80 qualification. Those final gates,
 64MiB/final81 and maintainer push/hostedCI/external validation remain pending.
+
+## Final local qualification
+
+IX-0077 closes the remaining local source/runtime gate at implementation
+revision7c66f0258f3980af43509f2c670065b30dc3708e. Both qualified public
+runtimes reproduce the independent private archive bytes for all twelve
+members and restore every input. Both builds pass public API/static C ABI/
+shared C ABI/CLI tests. The source-bound80-archive exchange passes two local
+self and two local cross routes while preserving the exact79-archive prefix.
+Earlier negative/history evidence is retained after unchanged-script and
+archive verification, rather than claimed as a new run. Together with
+BM-0227 and FZ-0085 this completes all five32MiB local milestones. The
+four-window goal remains active:64MiB, final81 and maintainer push/hosted CI/
+external four-route validation are unfinished.

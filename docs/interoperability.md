@@ -1865,3 +1865,21 @@ Full32MiB corpus/isolated measurements, public capacity admission and
 final committed-source/runtime qualification remain pending. This is a
 local milestone5 checkpoint.64MiB/final81 and maintainer push, hostedCI
 and external four-route checks remain separate unfinished gates.
+
+### IX-0077: thirty-two-MiB final local qualification
+
+The implementation at revision 7c66f0258f3980af43509f2c670065b30dc3708e
+passes the final full twelve-member corpus on both qualified runtimes,
+with archive bytes equal to the independent private results and every raw
+roundtrip verified. Public API, static C ABI, shared C ABI and CLI tests
+pass on both builds. Schema70 contains exactly80 archives; its first79
+archives remain byte-for-byte unchanged. Both producer bundles pass two
+local self routes and two local cross routes with source/runtime bindings.
+
+The earlier125 prelaunch negative cases per producer and synthetic
+history1..70 evidence are retained, not rerun: the tested schema scripts
+and every archive body are verified unchanged. BM-0227 supplies the full
+48-row measurements and admits the unchanged1536MiB capacity default;
+FZ-0085 supplies five fully instrumented10000-run campaigns. Thirty-two-MiB
+is locally complete. Sixty-four-MiB, final81-archive qualification and
+maintainer push/hosted CI/external four-route validation remain pending.

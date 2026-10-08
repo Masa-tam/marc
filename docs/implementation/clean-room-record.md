@@ -40012,3 +40012,17 @@ was consulted; numeric defaults and wire/parser behavior remain unchanged.
 Commit this passing measurement checkpoint independently. Final qualified
 fixed runtime/source80 exchange, 64MiB/final81 and maintainer push/hostedCI/
 external gates remain unfinished; no agent push.
+
+### CR-1737: thirty-two-MiB final local closure
+
+2026-10-09, Codex implementation/review; maintainer review pending. Task:
+bind the final public runtimes and source revision to full twelve-member
+archive/roundtrip equality and schema70/80 local exchange qualification.
+IX-0077 records the two self and two cross routes and unchanged79-archive
+prefix. Retain earlier125 negatives per producer and history1..70 evidence
+only after verifying unchanged tested scripts and archive bodies; do not
+describe these retained checks as newly executed. BM-0227 and FZ-0085
+complete measured capacity and instrumented fuzz requirements. Independent
+first-party validators and evidence checks were used; no external
+implementation was consulted. Commit this passing local closure separately.
+The64MiB/final81 and maintainer push/hosted CI/external gates remain pending.
