@@ -891,6 +891,17 @@ The case-sensitive selector lzss-position-distance-rans-32m uses DD-1548's
 2/13+1/19+4/10 known-size framing with33554432-byte frame/window maximum.
 DD-1550 retains65536-byte calls, fixed-five encoding, strict termination,
 failed-frame quarantine and whole-file temporary commit. The1536MiB checked
+capacity grant is admitted by DD-1551 after BM-0227 public resource/peak
+qualification. IX-0077 closes local schema70/80 source/runtime verification.
+Earlier selectors and representations remain unchanged. Maintainer push,
+hosted CI and external routes remain separate gates.
+
+## Sixty-four-MiB native position-distance rANS
+
+The case-sensitive selector lzss-position-distance-rans-64m uses DD-1552's
+2/14+1/20+4/11 known-size framing with67108864-byte frame/window maximum.
+DD-1554 retains65536-byte calls, fixed-five encoding, strict termination,
+failed-frame quarantine and whole-file temporary commit. The3072MiB checked
 capacity trial is pending actual public resource/peak review. Earlier
 selectors and representations remain unchanged. Full contextual corpus,
-measured resources, instrumented fuzz and schema70 are later milestones.
+measured resources, instrumented fuzz and schema71 are later milestones.

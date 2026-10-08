@@ -1151,10 +1151,24 @@ marc_lzss_position_distance_rans_32m_create() for2/13+1/19+4/10.
 Maximum frame/window is33554432 bytes; config/resources retain136/64-byte
 layouts on the supported64-bit ABI. Direction remains immutable. Checked
 queries include retained owning buffers,128KiB fixed working, declared calls
-and external controls before allocation. The1536MiB capacity grant is a
-trial based on private queries; final admission requires actual public
-resource and directional measurements. It is not an RSS limit. Public
+and external controls before allocation. DD-1551 admits the1536MiB capacity
+grant after BM-0227 actual public resource and directional measurements.
+It is not an RSS limit. Public
 encoding uses fixed-five parsing, while decoding accepts grammar3..258.
 Ordinary destinations commit only on success; failed private token scratch
-is discarded and failed frames never drain. Full corpus, measured resources,
-fuzzing and schema70 remain subsequent qualification gates.
+is discarded and failed frames never drain. IX-0077 closes local schema70/80
+qualification; hosted CI and maintainer external routes remain separate.
+
+## Sixty-four-MiB native position-distance rANS
+
+The additive marc_lzss_position_distance_rans_64m_config/resources types
+are136/64 bytes. marc_lzss_position_distance_rans_64m_config_init(),
+marc_lzss_position_distance_rans_64m_resource_requirements() and
+marc_lzss_position_distance_rans_64m_create() retain the
+owning transform lifecycle and immutable direction. DD-1554's3072MiB
+checked capacity trial accounts for private owner capacities, public working
+allowance, external retained controls and declared input/output capacities.
+This is not a process RSS ceiling or measured default admission. Encoding
+uses fixed-five matching, while the format accepts lengths3..258. Ordinary
+destinations commit on success; failed private token scratch is discarded
+and failed frames are never drained. Earlier APIs remain unchanged.

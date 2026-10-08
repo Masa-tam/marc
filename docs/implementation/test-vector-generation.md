@@ -22828,3 +22828,16 @@ malformed headers/payloads, ordinary destination invariants, discarded
 failed private scratch, failed-frame quarantine, split buffers, overlap,
 limits, allocation rollback and absence of process allocations. Preserve
 all fixtures in unique directories. These tests admit no public default.
+
+### TVG-1417: sixty-four-MiB public lifecycle, ABI and CLI fixtures
+
+Date: 2026-10-09. Exercise config/resource/create/process/destroy,136/64-byte
+ABI layouts, one-byte calls, immutable direction and canonical initialization.
+Check invalid parameters/flags, query destination invariants, overlap,
+capacity refusal and terminal behavior. Static and shared C consumers verify
+the empty112-byte header. CLI lengths0,1,256,F-1,F,F+1,2F+17 verify exact
+identity2/14+1/20+4/11, deterministic bytes, strict roundtrips and separation
+from contextual streams. Independently truncate the complete short archive
+and mutate metadata/state/trailing bytes; all failures publish no output
+or temporary file. Preserve existing output/temporary destinations. These
+tests do not qualify corpus compression, measured defaults, fuzz or exchange.

@@ -97,3 +97,28 @@ transition. Fixed-five owning bytes match forF+1 input and two automatic
 frames. Fixture bytes and private resource queries agree across builds.
 This completes private milestone2 only; the later public and final gates
 listed above remain unfinished.
+
+## DD-1554: public API and CLI capacity trial
+
+The public136/64-byte config/resource types expose canonical initialization,
+preallocation queries and immutable-direction creation. Public matching
+fixes eligibility5. Retain allocation rollback, ordinary success-only
+destinations, private failed-scratch discard and failed-frame quarantine.
+The canonical CLI selector is lzss-position-distance-rans-64m, with65536-byte
+calls and whole-file temporary commit. A3072MiB capacity trial is distinct
+from process peaks and awaits actual directional/resource admission.
+
+With65536-byte input/output calls and65536 external retained controls,
+public queries are3021027038 bytes encode and2214934374 decode. The trial
+grant is3221225472 bytes. This query fit does not substitute for measured
+peaks, full corpus comparison, sanitizer qualification or final admission.
+TVG-1417 covers lifecycle, static/shared ABI and CLI boundaries; subsequent
+benchmark/fuzz and schema71/final81 gates remain unfinished.
+
+Both builds pass all four public API/static C ABI/shared C ABI/CLI tests,
+and all six earlier position-distance rANS API regressions. Seven CLI
+boundary archives are identical across builds; all212 truncations of the
+short archive, metadata/state/trailing mutations and retained destination
+cases pass. Exact public query rows also agree across builds. This completes
+public milestone3 only; capacity admission and final qualification remain
+pending as stated above.

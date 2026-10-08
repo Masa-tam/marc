@@ -40065,3 +40065,16 @@ TVG-1416 independently checks token/frame/owning bytes and split/reset,
 late failure, allocation and overlap contracts. No external implementation
 or restricted source consulted. Public API/CLI, full corpus/measurement/
 default admission, instrumented fuzz and schema71/final81 remain pending.
+
+### CR-1741: sixty-four-MiB public API and CLI integration
+
+2026-10-09, Codex implementation/review; maintainer review pending. Task:
+connect DD-1553's first-party private owner through additive136/64-byte
+config/resource types and canonical factories. Adapt the first-party public
+boundary and CLI with fixed-five encoding, declared capacities, rollback,
+failed scratch discard, frame quarantine and whole-file temporary commit.
+DD-1554 uses a3072MiB capacity trial pending exact queries and actual public
+measurements. TVG-1417 checks lifecycle/static/shared ABI/CLI boundaries.
+No external implementation or restricted source consulted. Full corpus,
+measured defaults/resources, instrumented fuzz and schema71/final81 remain
+unfinished; this local milestone does not authorize agent push.

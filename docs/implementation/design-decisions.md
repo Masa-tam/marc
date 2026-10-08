@@ -33828,3 +33828,19 @@ Reconstruct raw bytes only after complete token validation; drain a frame
 only after complete frame validation. An earlier successful frame may have
 been published when a later frame fails. This private checkpoint admits no
 public API, CLI selector, exchange entry or public memory default.
+
+### DD-1554: sixty-four-MiB public API and CLI capacity trial
+
+Expose additive136-byte config and64-byte resources structs, canonical
+initialization, preallocation resource queries and immutable-direction
+factories for DD-1553. Charge owner, retained capacities, fixed working,
+declared call buffers and external controls before allocation. Private
+maximum-frame queries3020826222/2214733558 bytes justify a3072MiB capacity
+trial, subject to exact public-query validation and later actual public
+directional/peak qualification. It is not an OS RSS ceiling. Public encoding
+uses fixed-five eligibility and grammar lengths3..258. Preserve success-only
+query/destination commits, allocation rollback, failed private-scratch
+discard and failed-frame quarantine. The case-sensitive CLI selector is
+lzss-position-distance-rans-64m with65536-byte calls, strict profile identity
+and whole-file temporary-file commit. Full corpus, measurements, instrumented
+fuzz and schema71 remain later local gates before the maintainer pushes.

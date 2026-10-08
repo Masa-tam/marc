@@ -158,6 +158,17 @@ set(MARC_SOURCES
     src/entropy/position_rans_32m_full_literal_decoder.cpp
     src/dictionary/lzss_position_distance_32m_five_prefix_candidate.cpp
     src/dictionary/lzss_position_distance_32m_five_prefix_finder.cpp
+    src/frame/lzss_position_rans_64m_full_literal_c_factory.cpp
+    src/frame/lzss_position_rans_64m_full_literal_format.cpp
+    src/frame/lzss_position_rans_64m_full_literal_frame.cpp
+    src/frame/lzss_position_rans_64m_full_literal_stream_decoder.cpp
+    src/frame/lzss_position_rans_64m_full_literal_owned.cpp
+    src/context/lzss_position_rans_64m_full_literal_tokens.cpp
+    src/entropy/position_rans_64m_full_literal_format.cpp
+    src/entropy/position_rans_64m_full_literal_encoder.cpp
+    src/entropy/position_rans_64m_full_literal_decoder.cpp
+    src/dictionary/lzss_position_distance_64m_five_prefix_candidate.cpp
+    src/dictionary/lzss_position_distance_64m_five_prefix_finder.cpp
     src/frame/lzss_position_rans_4m_full_literal_format.cpp
     src/frame/lzss_position_rans_4m_full_literal_frame.cpp
     src/frame/lzss_position_rans_4m_full_literal_owned.cpp
@@ -8940,5 +8951,34 @@ if(MARC_BUILD_TESTS)
             marc_position_rans_64m_full_literal_stream_differential
             marc_position_rans_64m_full_literal_owned_differential
             PROPERTIES RESOURCE_LOCK marc_large_window)
+    endif()
+endif()
+
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_rans_64m_full_literal_api_tests tests/position_rans_64m_full_literal_api_tests.cpp)
+    target_compile_features(marc_position_rans_64m_full_literal_api_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_rans_64m_full_literal_api_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_rans_64m_full_literal_api_tests PRIVATE marc::static)
+    add_test(NAME marc_position_rans_64m_full_literal_api COMMAND marc_position_rans_64m_full_literal_api_tests)
+    add_executable(marc_position_rans_64m_full_literal_c_smoke tests/position_rans_64m_full_literal_c_smoke.c)
+    target_link_libraries(marc_position_rans_64m_full_literal_c_smoke PRIVATE marc::static)
+    add_test(NAME marc_position_rans_64m_full_literal_c_abi COMMAND marc_position_rans_64m_full_literal_c_smoke)
+    if(TARGET marc_shared)
+        add_executable(marc_position_rans_64m_full_literal_shared_smoke tests/position_rans_64m_full_literal_c_smoke.c)
+        target_link_libraries(marc_position_rans_64m_full_literal_shared_smoke PRIVATE marc::shared)
+        add_test(NAME marc_position_rans_64m_full_literal_shared_abi COMMAND marc_position_rans_64m_full_literal_shared_smoke)
+    endif()
+    if(MARC_BUILD_TOOLS AND Python3_Interpreter_FOUND)
+        add_test(NAME marc_cli_position_rans_64m
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_rans_64m.py
+                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-rans-64m)
+        set_tests_properties(marc_cli_position_rans_64m PROPERTIES TIMEOUT 300)
+    endif()
+endif()
+
+if(MARC_BUILD_TESTS)
+    set_tests_properties(marc_position_rans_64m_full_literal_api PROPERTIES RESOURCE_LOCK marc_large_window)
+    if(MARC_BUILD_TOOLS AND Python3_Interpreter_FOUND)
+        set_tests_properties(marc_cli_position_rans_64m PROPERTIES RESOURCE_LOCK marc_large_window)
     endif()
 endif()
