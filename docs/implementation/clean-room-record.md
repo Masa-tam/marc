@@ -39769,3 +39769,24 @@ No external codec source consulted. This is part of milestone2, whose
 typed-token/frame/owning integration and failed-frame quarantine tests remain
 pending, followed by public, measured, fuzz and schema69 milestones. Neither
 the sixteen-MiB profile nor the full four-window goal is complete.
+
+### CR-1721: private sixteen-MiB token/frame/owning qualification
+
+2026-10-08, Codex implementation/review; maintainer review pending. Adapt
+first-party eight-MiB field cursor, token bridge, framing, quarantine and
+owning components to DD-1542/1543, including explicit34T/10F decision and
+20F+9355 serialized bounds. Extend internal typed-token validation additively
+for variant12; preserve existing variants. Retain the existing five-prefix
+reference policy and independently test nearest-longest selection.
+TVG-1405 qualifies token/frame/split-stream bytes and failure contracts in
+two compiler builds. Private capacity queries are755902019/553789131 atF,
+not OS peaks; public admission remains pending. Initial tests raised block
+limits to160MiB while retaining128MiB test grants, correctly rejected by
+configuration validation. Align private test grants, retain failed logs,
+and stop the frame-test helper immediately after unexpected encode failure
+to avoid subsequently indexing an empty test buffer. A harness segmentation
+fault in that initial run is not a production decoder crash. Both affected
+test groups pass after correction. No external codec source consulted.
+Commit the completed private milestone now; public API/CLI, measurements,
+fuzzing, schema69 and the other two large windows remain pending. No push
+or full-family completion claimed.

@@ -33682,3 +33682,15 @@ Commit independently generated, byte-frozen mathematical vectors before
 native encoder/decoder work. Native differential/failed-frame tests, public
 API/CLI, measured defaults and schema69 remain later local milestones.
 Do not wait for those gates or the other windows to commit passing vectors.
+
+### DD-1543: private sixteen-MiB token/frame/owning integration
+
+Use the separately defined16MiB field cursor, entropy core, known-size
+framing and owning lifecycle with internal short-length typed variant12.
+Keep transactional output and discard-on-failure private scratch contracts
+distinct, and enter stream draining only after complete frame validation.
+Retain nearest-longest fixed-five parsing. Test independent token/frame/
+split-stream bytes, both reachable maximum-distance recipes, late failure,
+quarantine, allocation rollback and exact capacities before local commit.
+Private1GiB test grants do not admit a public default. Public, measured,
+sanitizer and schema69 milestones remain pending.

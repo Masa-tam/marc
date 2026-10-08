@@ -22659,3 +22659,20 @@ symbol invariants, strict truncation/final state/extent, canonical records
 and checked limits. Retain existing eight-MiB finite core regression checks.
 This remains a private finite entropy checkpoint; token/frame/owning failure
 contracts, public paths, fuzzing, corpus/resources and schema69 are pending.
+
+### TVG-1405: private sixteen-MiB token/frame/stream differential tests
+
+Each of two compiler builds compares211 token fixtures and211 frame
+fixtures with an independent mathematical encoder and raw reconstruction:
+200 generated sequences plus11 full16MiB cases. Include reachable final
+distanceF-3/length3 andF-258/length258 separately from isolated class24
+grammar. Twenty-one independently serialized streams contain60 frames;
+test arbitrary splits, output starvation, truncation and late-frame errors.
+Unit checks retain unchanged transactional output, discardable private
+single-pass scratch, no failed-frame publication, overlapping-buffer refusal,
+exact allocation budgets, rollback and no process allocation. The owning
+finder also matches independently written nearest-longest exhaustive search
+for200 tiny cases and emits reference bytes across chunking patterns.
+Retest the affected shared typed-token validator through the existing8MiB
+token unit target in both builds. Public C ABI/CLI, measured resources,
+sanitizer and bundle validation are subsequent milestones.

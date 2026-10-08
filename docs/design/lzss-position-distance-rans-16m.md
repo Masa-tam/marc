@@ -58,3 +58,33 @@ canonical records, strict final state/extent and sticky errors.
 Only standalone private test targets use this code. Typed-token integration,
 frame quarantine, owning allocation lifecycle and every public/measured/
 fuzz/exchange gate remain pending; this does not complete milestone2.
+
+## DD-1543: private token, frame and owning integration
+
+Add internal short-length typed-token variant12 with maximum distanceF;
+existing variant numbers and behavior remain unchanged. The separate field
+cursor uses distance alphabet25 and rejects nonzero residuals in class24.
+The token layer keeps two explicit destinations: ordinary transactional
+output is committed only after validation; private scratch is decoded in
+one pass and must be discarded on failure. Frame reconstruction happens
+only after successful token validation, and incremental stream draining
+starts only after the complete frame has passed all checks.
+
+The owning encoder retains the first-party five-prefix nearest-longest
+finder and fixed-five public parsing policy. Independent tiny exhaustive
+search checks cover200 cases; owning chunk tests compare the canonical
+reference archive. Allocation rollback, exact resource floors and no
+steady-state process allocation are tested separately. The private test
+grant is1GiB, not an admitted public default. Maximum-frame queries give
+755,902,019 bytes encode and553,789,131 decode; they are reserved capacities,
+not process peaks or throughput evidence. Serialized capacity is335,553,675
+bytes and finder capacity202,113,024 bytes atF.
+
+Independent token and frame differentials each include200 generated cases
+and11 full-window cases, including reachable distanceF-3/length3 and
+distanceF-258/length258. Split-stream fixtures cover21 streams and60 frames.
+Native tests also cover late terminal-state failure, failed-frame quarantine,
+unchanged transactional destinations, overlap, limits and lifecycle cleanup.
+This completes the private implementation milestone only. Public API/CLI,
+full corpus/contextual comparison, measured memory/defaults, sanitizer fuzz
+and schema69 remain later milestones; the full four-window goal is active.
