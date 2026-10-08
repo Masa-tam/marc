@@ -33675,7 +33675,7 @@ exchange/historical qualification and fixed-runtime replacement are pending.
 
 ### DD-1542: sixteen-MiB definition and vector milestone
 
-The [sixteen-MiB definition](../design/lzss-position-distance-rans-16m.md)
+The sixteen-MiB definition in `docs/design/lzss-position-distance-rans-16m.md`
 fixes tuple2/12+1/18+4/9,56 contexts4658 frequencies, all seven mask bytes
 usable,9283-byte maximum descriptor and20F+9355 serialized capacity.
 Commit independently generated, byte-frozen mathematical vectors before
