@@ -10629,3 +10629,18 @@ declared external call/control objects. Preserve scopes rather than equating
 these queries with RSS. Correct the initial first-member capacity summary
 using all48 retained rows; retain the initial summary as superseded evidence.
 Final exchange/historical and remaining-window qualification are pending.
+
+## BM-0223: sixteen-MiB public measurement infrastructure
+
+Provide separate first-party directional timing and streaming process-counter
+drivers for the owning position-distance API and existing contextual16MiB
+profile. Actual header/roundtrip probes confirm both frame/window16777216;
+control identity remains2/5+1/4+4/3, candidate2/12+1/18+4/9.
+Timing includes fresh allocation/factory/process/destruction and excludes
+file IO/comparison, with one warmup and three samples. Process counters use
+a separate fresh driver process including bounded65536-byte calls and IO.
+Caller-workspace control queries and owning candidate queries have different
+accounting scopes; neither is OS RSS. Full twelve-member corpus comparison,
+idle isolated samples/peaks and final768MiB capacity admission are pending.
+Probe timings/counters obtained during other verification are not qualified
+performance evidence. Commit the infrastructure separately from those gates.

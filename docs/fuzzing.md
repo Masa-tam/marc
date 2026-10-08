@@ -1685,3 +1685,18 @@ capacities, Flush, arbitrary input splits and final-input handling. Directed
 TVG-1401 tests separately check resource-query failure destinations and
 allocation rollback. This campaign does not claim exhaustive malformed
 coverage, final memory-default admission or exchange qualification.
+
+## FZ-0084: sixteen-MiB native position-distance rANS campaigns
+
+Date: 2026-10-08. Complete10,000 runs each with seed1544 for descriptor,
+scalar payload, typed tokens, split stream and public owning C lifecycle.
+Use201 independently qualified descriptor seeds and224 decision/payload
+seeds, including the frozen vectors. Instrument all production static
+library sources reachable through the public C boundary with ASan/UBSan;
+verify compiler commands for the C factory, owning/stream/token components
+and shared typed-token validator. No sanitizer or invariant finding occurs.
+Stream scratch uses20*512+9355 bytes and a5120-decision private bound.
+Preserve output guards, transactional destinations, private scratch discard,
+failed-frame quarantine, strict termination and immutable terminal states.
+Instrumented process RSS is not a normal-build peak. Full corpus/directional
+measurements, final public capacity and schema69 remain separate gates.

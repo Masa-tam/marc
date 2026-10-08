@@ -8556,3 +8556,76 @@ if(MARC_BUILD_TESTS)
         set_tests_properties(marc_cli_position_rans_16m PROPERTIES TIMEOUT 300)
     endif()
 endif()
+
+if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_executable(marc_fuzz_position_rans_16m_full_literal_descriptor
+        fuzz/position_rans_16m_full_literal_descriptor_fuzz.cpp
+        src/entropy/position_rans_16m_full_literal_format.cpp)
+    target_compile_features(marc_fuzz_position_rans_16m_full_literal_descriptor PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_position_rans_16m_full_literal_descriptor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_position_rans_16m_full_literal_descriptor PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_link_options(marc_fuzz_position_rans_16m_full_literal_descriptor PRIVATE -fsanitize=fuzzer,address,undefined)
+    add_executable(marc_fuzz_position_rans_16m_full_literal_payload
+        fuzz/position_rans_16m_full_literal_payload_fuzz.cpp
+        src/entropy/position_rans_16m_full_literal_format.cpp
+        src/entropy/position_rans_16m_full_literal_decoder.cpp)
+    target_compile_features(marc_fuzz_position_rans_16m_full_literal_payload PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_position_rans_16m_full_literal_payload PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_position_rans_16m_full_literal_payload PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_link_options(marc_fuzz_position_rans_16m_full_literal_payload PRIVATE -fsanitize=fuzzer,address,undefined)
+    add_executable(marc_fuzz_lzss_position_rans_16m_full_literal_tokens
+        fuzz/lzss_position_rans_16m_full_literal_tokens_fuzz.cpp
+        src/context/lzss_position_rans_16m_full_literal_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_rans_16m_full_literal_format.cpp
+        src/entropy/position_rans_16m_full_literal_encoder.cpp
+        src/entropy/position_rans_16m_full_literal_decoder.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_fuzz_lzss_position_rans_16m_full_literal_tokens PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_position_rans_16m_full_literal_tokens PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_position_rans_16m_full_literal_tokens PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_link_options(marc_fuzz_lzss_position_rans_16m_full_literal_tokens PRIVATE -fsanitize=fuzzer,address,undefined)
+    add_executable(marc_fuzz_lzss_position_rans_16m_full_literal_stream
+        fuzz/lzss_position_rans_16m_full_literal_stream_fuzz.cpp
+        src/frame/lzss_position_rans_16m_full_literal_stream_decoder.cpp
+        src/frame/lzss_position_rans_16m_full_literal_format.cpp
+        src/frame/lzss_position_rans_16m_full_literal_frame.cpp
+        src/context/lzss_position_rans_16m_full_literal_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_rans_16m_full_literal_format.cpp
+        src/entropy/position_rans_16m_full_literal_encoder.cpp
+        src/entropy/position_rans_16m_full_literal_decoder.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_typed_reconstructor.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_fuzz_lzss_position_rans_16m_full_literal_stream PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_position_rans_16m_full_literal_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_position_rans_16m_full_literal_stream PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_link_options(marc_fuzz_lzss_position_rans_16m_full_literal_stream PRIVATE -fsanitize=fuzzer,address,undefined)
+endif()
+
+if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_executable(marc_fuzz_lzss_position_rans_16m_full_literal_public fuzz/lzss_position_rans_16m_full_literal_public_fuzz.cpp)
+    target_compile_features(marc_fuzz_lzss_position_rans_16m_full_literal_public PRIVATE cxx_std_20)
+    target_compile_options(marc_fuzz_lzss_position_rans_16m_full_literal_public PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_link_options(marc_fuzz_lzss_position_rans_16m_full_literal_public PRIVATE -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_lzss_position_rans_16m_full_literal_public PRIVATE marc::static)
+endif()
+
+if(MARC_BUILD_BENCHMARKS)
+    add_executable(marc_position_rans_16m_benchmark benchmarks/position_rans_16m_benchmark.cpp)
+    target_compile_features(marc_position_rans_16m_benchmark PRIVATE cxx_std_20)
+    target_link_libraries(marc_position_rans_16m_benchmark PRIVATE marc::static)
+endif()
+
+if(MARC_BUILD_BENCHMARKS)
+    add_executable(marc_position_rans_16m_resources benchmarks/position_rans_16m_resources.cpp)
+    target_compile_features(marc_position_rans_16m_resources PRIVATE cxx_std_20)
+    target_link_libraries(marc_position_rans_16m_resources PRIVATE marc::static)
+    if(WIN32)
+        target_link_libraries(marc_position_rans_16m_resources PRIVATE psapi)
+    endif()
+endif()

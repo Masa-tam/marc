@@ -39804,3 +39804,17 @@ No external codec source consulted. Fixed qualified runtime replacement,
 full corpus/contextual comparison, measured default admission, sanitizer,
 schema69 and the other large windows remain pending. No speed/OS peak,
 hosted CI, external exchange or full-family completion is claimed here.
+
+### CR-1723: sixteen-MiB benchmark and sanitizer infrastructure milestone
+
+2026-10-08, Codex implementation/review; maintainer review pending. Adapt
+first-party eight-MiB directional/counter drivers and five bounded fuzz
+entries to the sixteen-MiB owning profile. BM-0223 verifies physical16MiB
+control/candidate headers and roundtrips without qualifying concurrent
+probe timings. FZ-0084 completes five10k ASan/UBSan campaigns with main
+production static instrumentation and independent descriptor/payload seeds.
+Correct stream-fuzz private capacity/bound to20*512+9355 and5120 decisions
+before its campaign. No external codec source consulted. Full twelve-member
+native/control comparison is in progress; isolated measured defaults/peaks,
+schema69 and other-window completion remain pending. Commit passing tools
+and campaigns now rather than waiting for the remaining measurements.
