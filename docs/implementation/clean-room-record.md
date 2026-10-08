@@ -40026,3 +40026,17 @@ complete measured capacity and instrumented fuzz requirements. Independent
 first-party validators and evidence checks were used; no external
 implementation was consulted. Commit this passing local closure separately.
 The64MiB/final81 and maintainer push/hosted CI/external gates remain pending.
+
+### CR-1738: sixty-four-MiB independent format/vector milestone
+
+2026-10-09, Codex implementation/review; maintainer review pending. Task:
+promote the preserved independent first-party sixty-four-MiB mathematical
+draft to DD-1552/IR-1288/TVG-1414 before production implementation. Derive
+58 contexts,4680 frequencies, the mask/record geometry and checked bounds
+from DD-1536. Freeze24 fixtures and verify200 seeded models/200 payloads
+with seed1552. No external implementation or restricted source consulted.
+This local milestone supplies format and independent mathematics only;
+production differential/failure guarantees, public API/CLI, corpus/resource
+qualification, instrumented fuzz, schema71 and final81 remain pending.
+The full four-window goal remains active; user push/CI/external gates follow
+all profiles' local completion, not individual milestone commits.

@@ -33796,3 +33796,16 @@ and shorter aggregate encode time, with longer aggregate decode time.
 No numeric default, wire representation or parsing policy changes.
 Final fixed-runtime/source80 qualification, 64MiB/final81 and maintainer
 push/hostedCI/external gates remain separately unfinished.
+
+### DD-1552: freeze sixty-four-MiB format and independent vectors first
+
+Use the explicit tuple2/14+1/20+4/11 and geometry defined in the
+sixty-four-MiB design document.
+Extend the first-party full-literal scalar model to58 contexts/4680
+frequencies, with26 residual-bit contexts and27 distance classes. The
+eight-byte mask has two valid bits in its last byte, records begin at24,
+and the maximum descriptor is9326 bytes. Independently verify the empty
+header, compact records, decision mapping and scalar inverse before
+production implementation. Keep private/public differential and failure
+invariants, measured defaults, corpus, fuzz and schema71 as later gates.
+Commit this passing milestone locally without waiting for other milestones.

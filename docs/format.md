@@ -9203,3 +9203,12 @@ specifies the additive2/13+1/19+4/10 representation with57 contexts,
 descriptor. Retain DD-1532 scalar/model/framing rules and failed-frame
 quarantine. This format/vector milestone alone admits no public API, CLI
 or exchange entry. Existing profiles and representations are unchanged.
+
+### DD-1552: sixty-four-MiB position-distance rANS definition
+
+[The exact sixty-four-MiB definition](design/lzss-position-distance-rans-64m.md)
+specifies the additive2/14+1/20+4/11 representation with58 contexts,
+4680 frequencies, eight mask bytes, records at24 and maximum9326-byte
+descriptor. Retain DD-1532 scalar/model/framing rules and failed-frame
+quarantine. This format/vector milestone alone admits no public API, CLI
+or exchange entry. Existing profiles and representations are unchanged.

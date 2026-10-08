@@ -22788,3 +22788,16 @@ truncation. All125 cases per producer fail with zero codec launches and
 zero published output files. Verify schema1..70 history, previous negative
 fixtures, two local self and two cross consumers and exact compiler bytes.
 These fixtures do not qualify normal peaks, default grants or external CI.
+
+### TVG-1414: sixty-four-MiB independent format mathematics
+
+Date: 2026-10-09. The bounded first-party Python oracle freezes24 positive
+decision fixtures, the112-byte empty stream header, empty descriptor/state
+and maximal9326-byte dense descriptor. Exercise all literal buckets, literal
+history across matches, length and isolated distance-class transitions,
+highest valid mask bit and all six reserved mask bits. A separate forward
+compact parser and scalar inverse verify exact records, decisions, terminal
+state and payload extent. Seed1552 supplies200 models and200 payload checks.
+Isolated maximum distance is grammar-only; reachable frame recipes remain
+separate. No production codec is invoked. Native differential/failed-frame
+guarantees, API/CLI, full corpus/resources, fuzz and schema71 remain pending.

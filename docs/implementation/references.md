@@ -11234,3 +11234,11 @@ alphabet, eight-byte mask and checked capacity derivation. Adapt the existing
 independent sixteen-MiB field oracle; retain a separately written forward
 compact parser and directed byte expectations. No external compression
 implementation or restricted source is consulted.
+
+### IR-1288: sixty-four-MiB independent mathematical vectors
+
+Use first-party DD-1532/1536 scalar rANS mathematics and DD-1552's explicit
+alphabet, eight-byte mask and checked capacity derivation. Adapt the existing
+independent thirty-two-MiB field oracle; retain a separately written forward
+compact parser and directed byte expectations. No external compression
+implementation or restricted source is consulted.
