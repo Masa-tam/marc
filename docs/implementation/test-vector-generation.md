@@ -22689,3 +22689,14 @@ and retest existing64KiB/1MiB/4MiB/8MiB owning API consumers against the new
 library. Maximum declared-call/control queries are756102835 bytes encode
 and553989947 decode;768MiB remains provisional pending full public corpus,
 directional/peak measurements, sanitizer and schema69 qualification.
+
+### TVG-1407: sixteen-MiB additive bundle and preflight qualification
+
+Two compiler producers emit identical79-archive schema69 bundles; both
+self and cross consumers verify their complete inventories. Every first78
+archive equals the frozen schema68 bytes. Each producer passes125 independent
+manifest/header refusal cases, including every one-byte mutation of the112
+canonical header bytes; no case launches a codec or publishes output.
+Synthetic zero-revision history1..69 passes, preserving earlier refusal
+campaigns. Final committed-source metadata, fixed-runtime qualification and
+isolated measured defaults remain subsequent gates.

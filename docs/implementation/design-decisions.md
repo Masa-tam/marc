@@ -33706,3 +33706,14 @@ final public admission requires actual directional and peak measurements.
 Test static/shared C ABI, boundary calls, strict errors, output invariants
 and CLI temporary-file commit before local public-connection commit.
 Later corpus, measured defaults, fuzz and schema69 remain pending.
+
+### DD-1545: append the sixteen-MiB exchange entry
+
+Schema69/marc-cli-v69 appends archive79 lzss-position-distance-rans-16m.
+Require exact2/12+1/18+4/9,56 contexts,4658 frequencies and16777216-byte
+frame/window, known original size and all112 canonical header bytes before
+launch. Preserve all first78 archive bytes and the earlier schema inventories.
+Extend independent strict preflight refusals and history conversion through69.
+This exchange milestone is independent of unfinished directional resource
+measurements, final source-bound metadata and fixed-runtime qualification.
+The full32/64MiB and final81-archive gates remain pending.

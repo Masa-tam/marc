@@ -1798,3 +1798,28 @@ no new hosted CI or maintainer external result is claimed. Eight-MiB local
 qualification is complete. The16/32/64MiB profiles and final81-archive audit
 remain pending, so the full four-window goal stays active. Local milestone
 commits do not require completion of the other windows; push does.
+
+## Schema69 sixteen-MiB native position-distance rANS extension
+
+Schema69 and marc-cli-v69 append archive79 for the case-sensitive selector
+lzss-position-distance-rans-16m. The first78 entries retain their order and
+representations. Require exact tuple2/12+1/18+4/9,56 contexts,4658 frequencies,
+16777216-byte frame/window and known original size across all112 header bytes
+before decoder launch. Reject unknown names, duplicates, order/hash/size
+errors, identity corruption and truncated headers without codec launch or
+output publication. Earlier schemas retain their respective inventories.
+Final committed-source exchange and fixed-runtime qualification are separate
+gates; no new hosted CI or maintainer external result is claimed here.
+
+## IX-0074: schema69 local exchange and historical qualification
+
+Date: 2026-10-08. Two local compiler producers pass two self and two cross
+consumers for79 archives. All archive bytes agree; the frozen first78
+remain exact. Both125 preflight refusal campaigns reject before codec
+launch and publish no output. Synthetic zero-revision history1..69 and
+earlier refusal cases pass. Source-hashed exchange scripts are exercised
+with the022e294b public runtime snapshot. Final committed-source metadata,
+fixed-runtime replacement and isolated directional/peak/default admission
+remain pending. No new hosted CI or maintainer external result is claimed.
+The32/64MiB and final81-archive gates remain pending; commit this passing
+exchange milestone locally without waiting for the other profiles.

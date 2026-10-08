@@ -39818,3 +39818,16 @@ before its campaign. No external codec source consulted. Full twelve-member
 native/control comparison is in progress; isolated measured defaults/peaks,
 schema69 and other-window completion remain pending. Commit passing tools
 and campaigns now rather than waiting for the remaining measurements.
+
+### CR-1724: sixteen-MiB additive exchange milestone
+
+2026-10-08, Codex implementation/review; maintainer review pending. Extend
+first-party producer, verifier, independent strict-preflight cases and
+historical conversion with schema69's sixteen-MiB position-distance rANS
+entry. DD-1545/TVG-1407/IX-0074 qualify79 matching compiler archives, frozen
+first78 bytes, two self/two cross routes,125 refusals per producer and
+history1..69. Earlier schemas and generated artifacts remain preserved.
+No external codec source consulted. Source-hashed trial metadata precedes
+final committed-source/fixed-runtime qualification. Isolated measurements
+and32/64MiB/final81 gates remain unfinished; local commit now follows the
+maintainer's explicit milestone policy.
