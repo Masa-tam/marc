@@ -872,3 +872,13 @@ temporary commit. DD-1541's384MiB checked capacity grant is admitted after
 BM-0222 public resource and peak qualification. TVG-1401 qualifies the seven CLI boundary
 cases in two builds. Schema68 exchanges remain pending; no previous selector
 or archive representation changes.
+
+## Sixteen-MiB native position-distance rANS trial
+
+The explicit selector lzss-position-distance-rans-16m uses DD-1542's
+2/12+1/18+4/9 known-size framing with16777216-byte frame/window maximum.
+Retain65536-byte calls, fixed-five encoding, strict termination, failed-frame
+quarantine and whole-file temporary commit. DD-1544's768MiB checked grant
+is provisional until public resource/peak measurements. Public boundary
+qualification, sanitizer campaigns and schema69 exchanges are separate
+milestones. Existing selectors and archive representations remain unchanged.

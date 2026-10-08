@@ -33694,3 +33694,15 @@ split-stream bytes, both reachable maximum-distance recipes, late failure,
 quarantine, allocation rollback and exact capacities before local commit.
 Private1GiB test grants do not admit a public default. Public, measured,
 sanitizer and schema69 milestones remain pending.
+
+### DD-1544: owning sixteen-MiB C API and CLI trial
+
+Expose only the canonical sixteen-MiB position-distance rANS family and
+selector through its existing private owning encoder/decoder. Preserve
+136/64-byte config/resource layouts, immutable direction, budget-before-
+allocation and declared call/external charges. Private maximum-frame
+queries755902019/553789131 bytes justify a provisional768MiB trial grant;
+final public admission requires actual directional and peak measurements.
+Test static/shared C ABI, boundary calls, strict errors, output invariants
+and CLI temporary-file commit before local public-connection commit.
+Later corpus, measured defaults, fuzz and schema69 remain pending.

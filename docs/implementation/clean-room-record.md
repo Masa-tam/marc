@@ -39790,3 +39790,17 @@ test groups pass after correction. No external codec source consulted.
 Commit the completed private milestone now; public API/CLI, measurements,
 fuzzing, schema69 and the other two large windows remain pending. No push
 or full-family completion claimed.
+
+### CR-1722: sixteen-MiB public connection milestone
+
+2026-10-08, Codex implementation/review; maintainer review pending. Extend
+first-party eight-MiB owning C boundary and bounded CLI adapter separately
+for DD-1544's sixteen-MiB tuple, explicit10F/20F+8 limits and provisional
+768MiB checked capacity. TVG-1406 records lifecycle/static/shared ABI/CLI
+checks and rebuilt prior owning API regression targets in two compiler
+builds. Adjust the documentation initializer inventory from four to five
+owning rANS families; retain the earlier inventory-check failure log.
+No external codec source consulted. Fixed qualified runtime replacement,
+full corpus/contextual comparison, measured default admission, sanitizer,
+schema69 and the other large windows remain pending. No speed/OS peak,
+hosted CI, external exchange or full-family completion is claimed here.

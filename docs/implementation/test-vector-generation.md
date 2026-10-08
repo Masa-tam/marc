@@ -22676,3 +22676,16 @@ for200 tiny cases and emits reference bytes across chunking patterns.
 Retest the affected shared typed-token validator through the existing8MiB
 token unit target in both builds. Public C ABI/CLI, measured resources,
 sanitizer and bundle validation are subsequent milestones.
+
+### TVG-1406: sixteen-MiB public API, ABI and CLI qualification
+
+Both compiler builds pass owning public lifecycle, static C ABI, shared
+C ABI and CLI targets. Preserve136/64-byte ABI layouts and success-only
+destination/factory outputs, validate exact resource floors and call limits.
+CLI lengths0,1,256,F-1,F,F+1 and2F+17 withF=16777216 roundtrip with deterministic
+bytes and tuple2/12+1/18+4/9. Strict truncation/identity/terminal/trailing
+failures preserve existing output and temporary-file protections. Rebuild
+and retest existing64KiB/1MiB/4MiB/8MiB owning API consumers against the new
+library. Maximum declared-call/control queries are756102835 bytes encode
+and553989947 decode;768MiB remains provisional pending full public corpus,
+directional/peak measurements, sanitizer and schema69 qualification.

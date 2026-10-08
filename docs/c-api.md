@@ -1125,3 +1125,18 @@ DD-1541 retains384MiB checked capacity after BM-0222 public measurements;
 it is not OS RSS. TVG-1401 qualifies lifecycle/CLI and FZ-0083 the public
 sanitizer campaign. Exchange and fixed-runtime checks remain pending.
 Existing families and their serialized bytes are unchanged.
+
+## Owning sixteen-MiB position-distance rANS trial
+
+DD-1544 adds marc_lzss_position_distance_rans_16m_config_init(),
+marc_lzss_position_distance_rans_16m_resource_requirements() and
+marc_lzss_position_distance_rans_16m_create() for tuple2/12+1/18+4/9.
+Maximum frame/window is16777216 bytes; config/resources retain136/64-byte
+layouts on the supported64-bit ABI. Direction is immutable and queries
+charge the owning buffers, fixed working, declared calls and external
+controls before allocation. The trial capacity grant is768MiB based on
+checked private requirements; its final admission awaits public measurements.
+It is not an RSS ceiling. Preserve success-only destination commits,
+discard-on-failure private token scratch and failed-frame quarantine.
+Public lifecycle/ABI/CLI qualification and later measured/fuzz/schema69
+gates are recorded separately; no full-profile completion is implied.
