@@ -33717,3 +33717,16 @@ Extend independent strict preflight refusals and history conversion through69.
 This exchange milestone is independent of unfinished directional resource
 measurements, final source-bound metadata and fixed-runtime qualification.
 The full32/64MiB and final81-archive gates remain pending.
+
+### DD-1546: admit the measured sixteen-MiB capacity default
+
+Retain768MiB (805306368 bytes) after complete twelve-member public
+measurement and golden-byte qualification. With65536-byte declared input/
+output calls and65536 external/control bytes, maximum queries remain
+756102835 encode and553989947 decode, below the grant. Preserve owner,
+retained capacities and fixed-working accounting; process peaks have a
+separate scope and this budget is not an RSS ceiling. BM-0224 records
+independent directional timing, normal streaming process peaks and the
+corresponding physical16MiB contextual control. No numeric default, format
+or parser-policy change; update only current qualification descriptions.
+Final runtime/exchange closure and32/64MiB/final81 remain separate gates.

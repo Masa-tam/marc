@@ -39831,3 +39831,17 @@ No external codec source consulted. Source-hashed trial metadata precedes
 final committed-source/fixed-runtime qualification. Isolated measurements
 and32/64MiB/final81 gates remain unfinished; local commit now follows the
 maintainer's explicit milestone policy.
+
+### CR-1725: measured sixteen-MiB capacity admission milestone
+
+2026-10-09, Codex implementation/review; maintainer review pending. BM-0224
+qualifies all twelve native/private/public/control archives and all48
+isolated directional rows, output hashes, one warmup/three samples, normal
+streaming public process peaks and declared capacity accounting. DD-1546
+retains the existing768MiB numeric default with no format or parser change.
+Update current API/CLI/header descriptions; eight-MiB descriptions reflect
+its already completed IX-0073 closure. No external codec source consulted.
+All prior generated artifacts remain preserved. Commit measured results
+locally while final sixteen-MiB runtime/exchange closure,32/64MiB and
+final81-archive qualification remain pending. No push or new external
+validation is claimed.

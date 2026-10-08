@@ -863,22 +863,22 @@ Seven boundary cases pass in both compiler implementations. BM-0220 records
 directional samples and separate process peaks; IX-0070 records local
 schema67 exchange qualification. Hosted CI/external results are separate.
 
-## Eight-MiB native position-distance rANS trial
+## Eight-MiB native position-distance rANS
 
 The explicit selector lzss-position-distance-rans-8m uses DD-1536's
 2/11+1/17+4/8 known-size format. It retains65536-byte input/output calls,
 strict termination and private failed-frame quarantine, and whole-file
 temporary commit. DD-1541's384MiB checked capacity grant is admitted after
 BM-0222 public resource and peak qualification. TVG-1401 qualifies the seven CLI boundary
-cases in two builds. Schema68 exchanges remain pending; no previous selector
-or archive representation changes.
+cases in two builds. IX-0073 qualifies schema68 exchanges and the fixed runtime; no previous
+selector or archive representation changes.
 
-## Sixteen-MiB native position-distance rANS trial
+## Sixteen-MiB native position-distance rANS
 
 The explicit selector lzss-position-distance-rans-16m uses DD-1542's
 2/12+1/18+4/9 known-size framing with16777216-byte frame/window maximum.
 Retain65536-byte calls, fixed-five encoding, strict termination, failed-frame
-quarantine and whole-file temporary commit. DD-1544's768MiB checked grant
-is provisional until public resource/peak measurements. Public boundary
-qualification, sanitizer campaigns and schema69 exchanges are separate
-milestones. Existing selectors and archive representations remain unchanged.
+quarantine and whole-file temporary commit. DD-1546 retains768MiB after
+BM-0224 public resource/peak measurements. Boundary qualification, five
+sanitizer campaigns and the schema69 exchange milestone pass. Final runtime
+and commit metadata qualification remain pending. Existing selectors and archive representations remain unchanged.

@@ -10644,3 +10644,41 @@ accounting scopes; neither is OS RSS. Full twelve-member corpus comparison,
 idle isolated samples/peaks and final768MiB capacity admission are pending.
 Probe timings/counters obtained during other verification are not qualified
 performance evidence. Commit the infrastructure separately from those gates.
+
+## BM-0224: complete sixteen-MiB public directional and resource qualification
+
+Date: 2026-10-09. All twelve complete corpus members total211938580 raw
+bytes. Position-distance produces59906094 bytes versus
+61091765 for the actual physical16MiB frame/window contextual
+control (-1.9408033145%), and every member is smaller. Independent private
+encoder archives and the other compiler's public CLI agree byte for byte;
+all reconstructed raw hashes agree. Candidate tuple2/12+1/18+4/9 and
+control2/5+1/4+4/3 retain separate representations.
+
+Forty-eight directional rows use one warmup and three fresh-instance
+samples. Sum each member's median; timing includes allocation, factory,
+process and destruction and excludes file IO and comparisons. A separate
+fresh streaming public C API driver measures the process lifetime peak,
+including bounded65536-byte calls and IO. Sanitizer peaks are not used.
+
+| Profile | Direction | Sum of medians, seconds | Process peak, bytes |
+| --- | --- | ---: | ---: |
+| position | encode | 288.217598500 | 432476160 |
+| position | decode | 5.390303600 | 230334464 |
+| contextual | encode | 356.001102500 | 299741184 |
+| contextual | decode | 4.172054200 | 231292928 |
+
+Position time changes relative to contextual are
+-19.040251146% encode and
+29.200229470% decode. These describe the
+complete measured workload rather than universal throughput. Candidate
+driver queries include owner, calls and controls:756102835/553989947 bytes.
+Benchmark queries omit the separate65536 external charge:
+756037299/553924411 bytes.
+Contextual caller-workspace queries range
+167810057..522200073
+for encode and453755913..453755913
+for decode; they exclude separate caller/control charges. Neither query
+scope is RSS. Verify all output hashes, sample counts, tool hashes and
+full-group query ranges before admitting768MiB. Final fixed-runtime and
+commit metadata qualification,32/64MiB and final81-archive gates remain pending.

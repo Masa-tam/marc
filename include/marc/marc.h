@@ -2248,7 +2248,7 @@ MARC_API marc_status marc_lzss_position_distance_rans_4m_resource_requirements(
 MARC_API marc_status marc_lzss_position_distance_rans_4m_create(
     const marc_lzss_position_distance_rans_4m_config* config, marc_transform** transform) MARC_NOEXCEPT;
 
-/* DD-1538 eight-MiB trial; capacity default remains under qualification. */
+/* DD-1541 eight-MiB owning profile; declared capacity default is 384 MiB. */
 typedef struct marc_lzss_position_distance_rans_8m_config {
     uint32_t struct_size, abi_version;
     marc_direction direction;
@@ -2274,7 +2274,7 @@ MARC_API marc_status marc_lzss_position_distance_rans_8m_resource_requirements(
 MARC_API marc_status marc_lzss_position_distance_rans_8m_create(
     const marc_lzss_position_distance_rans_8m_config* config, marc_transform** transform) MARC_NOEXCEPT;
 
-/* DD-1544 sixteen-MiB trial; capacity default remains under qualification. */
+/* DD-1546 sixteen-MiB owning profile; declared capacity default is 768 MiB. */
 typedef struct marc_lzss_position_distance_rans_16m_config {
     uint32_t struct_size, abi_version;
     marc_direction direction;

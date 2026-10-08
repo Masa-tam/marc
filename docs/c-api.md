@@ -1112,7 +1112,7 @@ Factory/config/stream direction and sticky terminal policies match the
 existing native rANS profiles. TVG-1397 records public/ABI/CLI qualification;
 BM-0220 records directional samples and peaks, and IX-0070 local exchanges.
 
-## Owning eight-MiB position-distance rANS trial
+## Owning eight-MiB position-distance rANS
 
 DD-1538 connects marc_lzss_position_distance_rans_8m_config_init(),
 marc_lzss_position_distance_rans_8m_resource_requirements() and
@@ -1123,10 +1123,10 @@ sizes are136/64 on the supported64-bit ABI. Queries charge owner, retained
 capacities,128KiB fixed working, declared call buffers and external controls.
 DD-1541 retains384MiB checked capacity after BM-0222 public measurements;
 it is not OS RSS. TVG-1401 qualifies lifecycle/CLI and FZ-0083 the public
-sanitizer campaign. Exchange and fixed-runtime checks remain pending.
+sanitizer campaign. IX-0073 qualifies exchange and fixed-runtime checks.
 Existing families and their serialized bytes are unchanged.
 
-## Owning sixteen-MiB position-distance rANS trial
+## Owning sixteen-MiB position-distance rANS
 
 DD-1544 adds marc_lzss_position_distance_rans_16m_config_init(),
 marc_lzss_position_distance_rans_16m_resource_requirements() and
@@ -1134,9 +1134,10 @@ marc_lzss_position_distance_rans_16m_create() for tuple2/12+1/18+4/9.
 Maximum frame/window is16777216 bytes; config/resources retain136/64-byte
 layouts on the supported64-bit ABI. Direction is immutable and queries
 charge the owning buffers, fixed working, declared calls and external
-controls before allocation. The trial capacity grant is768MiB based on
-checked private requirements; its final admission awaits public measurements.
+controls before allocation. DD-1546 admits the768MiB capacity grant after BM-0224
+complete public directional and resource measurements.
 It is not an RSS ceiling. Preserve success-only destination commits,
 discard-on-failure private token scratch and failed-frame quarantine.
-Public lifecycle/ABI/CLI qualification and later measured/fuzz/schema69
-gates are recorded separately; no full-profile completion is implied.
+TVG-1406 qualifies lifecycle/ABI/CLI, FZ-0084 the five sanitizer campaigns
+and IX-0074 the schema69 milestone. Final runtime and commit metadata
+qualification remain pending; no full-profile completion is implied.
