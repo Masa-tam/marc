@@ -1139,5 +1139,22 @@ complete public directional and resource measurements.
 It is not an RSS ceiling. Preserve success-only destination commits,
 discard-on-failure private token scratch and failed-frame quarantine.
 TVG-1406 qualifies lifecycle/ABI/CLI, FZ-0084 the five sanitizer campaigns
-and IX-0074 the schema69 milestone. Final runtime and commit metadata
-qualification remain pending; no full-profile completion is implied.
+and IX-0074 the schema69 milestone. IX-0075 qualifies committed-source
+local exchange and current runtimes; no new hosted CI or external result
+is claimed.
+
+## Owning thirty-two-MiB position-distance rANS
+
+DD-1550 adds marc_lzss_position_distance_rans_32m_config_init(),
+marc_lzss_position_distance_rans_32m_resource_requirements() and
+marc_lzss_position_distance_rans_32m_create() for2/13+1/19+4/10.
+Maximum frame/window is33554432 bytes; config/resources retain136/64-byte
+layouts on the supported64-bit ABI. Direction remains immutable. Checked
+queries include retained owning buffers,128KiB fixed working, declared calls
+and external controls before allocation. The1536MiB capacity grant is a
+trial based on private queries; final admission requires actual public
+resource and directional measurements. It is not an RSS limit. Public
+encoding uses fixed-five parsing, while decoding accepts grammar3..258.
+Ordinary destinations commit only on success; failed private token scratch
+is discarded and failed frames never drain. Full corpus, measured resources,
+fuzzing and schema70 remain subsequent qualification gates.

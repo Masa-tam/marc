@@ -880,5 +880,17 @@ The explicit selector lzss-position-distance-rans-16m uses DD-1542's
 Retain65536-byte calls, fixed-five encoding, strict termination, failed-frame
 quarantine and whole-file temporary commit. DD-1546 retains768MiB after
 BM-0224 public resource/peak measurements. Boundary qualification, five
-sanitizer campaigns and the schema69 exchange milestone pass. Final runtime
-and commit metadata qualification remain pending. Existing selectors and archive representations remain unchanged.
+sanitizer campaigns and the schema69 exchange milestone pass. IX-0075
+qualifies local current-runtime and committed-source exchange closure.
+Existing selectors and archive representations remain unchanged; hosted CI
+and maintainer external results are separate.
+
+## Thirty-two-MiB native position-distance rANS
+
+The case-sensitive selector lzss-position-distance-rans-32m uses DD-1548's
+2/13+1/19+4/10 known-size framing with33554432-byte frame/window maximum.
+DD-1550 retains65536-byte calls, fixed-five encoding, strict termination,
+failed-frame quarantine and whole-file temporary commit. The1536MiB checked
+capacity trial is pending actual public resource/peak review. Earlier
+selectors and representations remain unchanged. Full contextual corpus,
+measured resources, instrumented fuzz and schema70 are later milestones.

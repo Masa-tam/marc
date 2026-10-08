@@ -39911,3 +39911,21 @@ allowances do not admit a public default. Existing generated artifacts and
 qualified public runtimes remain intact. This local commit completes only
 the private milestone2. Public API/CLI, matched corpus/measurements/fuzz,
 schema70,64MiB and final81/push/hostedCI/external gates remain unfinished.
+
+### CR-1731: owning thirty-two-MiB C API and CLI trial
+
+2026-10-09, Codex implementation/review; maintainer review pending. Task:
+connect DD-1549's first-party private owner through an additive136/64-byte
+C API family and canonical selector, preserving existing representations
+and failed-output guarantees. Public encoding retains fixed-five eligibility.
+No external implementation consulted. TVG-1411 public lifecycle/ABI/CLI
+and five previous owning API regressions pass in both compiler builds.
+Public resource queries fit the1536MiB capacity trial; do not call this a
+measured default or RSS limit. Update documentation initializer inventory
+from five to six owning families and correct current sixteen-MiB closure
+wording using IX-0075. An adaptation-script text-decoding startup error
+occurred before codec execution; explicit UTF-8 correction completed the
+remaining checker edit, with the failure record retained. Existing artifacts
+and qualified runtimes remain intact. Commit milestone3 independently;
+full corpus/contextual comparison, measurements/fuzz, schema70,64MiB and
+final81/push/hostedCI/external gates remain pending.

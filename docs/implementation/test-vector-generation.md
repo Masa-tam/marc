@@ -22743,3 +22743,19 @@ allocation rollback, exact resource floors and no process allocation.
 Rebuild shared typed-token validation with its additive variant13 and rerun
 sixteen-MiB token/frame/stream/owning regressions. Private2GiB grants are not
 public defaults; corpus measurements, public API/CLI, fuzz and schema70 remain.
+
+### TVG-1411: owning thirty-two-MiB C API and CLI connection
+
+Public API/static C ABI/shared C ABI/CLI targets pass in both compiler
+builds, preserving136/64-byte layouts. Test budget-before-allocation,
+rollback, immutable direction, declared call limits, stable terminal/error
+results and success-only destination/query commits. Seven CLI cases cover
+0,1,256,F-1,F,F+1 and2F+17 withF=33554432, deterministic archive bytes,
+exact2/13+1/19+4/10 identity and roundtrip. Every truncation of the small
+archive and strict identity/reserved/state/trailing failures refuse output;
+existing destination and temporary-file protections remain intact.
+Rebuild and pass existing64KiB/1MiB/4MiB/8MiB/16MiB owning API consumers
+against the new library. Maximum65536-byte declared calls and65536-byte
+external/control queries give1,511,077,577 encode and1,107,638,097 decode,
+inside the1536MiB trial. Full corpus/contextual comparison, isolated
+speed/normal peaks/default review, sanitizer and schema70 remain pending.

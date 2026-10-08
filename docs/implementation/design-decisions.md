@@ -33766,3 +33766,19 @@ Validate exact workspace floors, allocation rollback, overlap, immutable
 direction and no process allocation; independently compare token/frame and
 split-stream bytes, including both reachable full-window distance recipes.
 Private2GiB test grants are not an admitted public memory default.
+
+### DD-1550: owning thirty-two-MiB C API and CLI trial
+
+Expose the canonical thirty-two-MiB position-distance rANS family through
+its qualified private owner, retaining136/64-byte config/resource layouts
+and immutable direction. Charge owner, retained capacities, fixed working,
+declared call buffers and external controls before allocation. Private
+maximum-frame queries1,510,876,761/1,107,437,281 bytes justify a1536MiB
+capacity trial, subject to exact public-query validation and later actual
+public directional/peak qualification. It is not an OS RSS ceiling.
+Public encoding uses fixed-five eligibility and grammar lengths3..258.
+Preserve success-only query/destination commits, allocation rollback,
+private failed-scratch discard and failed-frame quarantine. CLI uses65536-
+byte calls, strict profile identity and whole-file temporary-file commit.
+Public lifecycle/static/shared ABI/CLI tests precede this milestone commit;
+full corpus, measured defaults, instrumented fuzz and schema70 follow.
