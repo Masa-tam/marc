@@ -1823,3 +1823,22 @@ fixed-runtime replacement and isolated directional/peak/default admission
 remain pending. No new hosted CI or maintainer external result is claimed.
 The32/64MiB and final81-archive gates remain pending; commit this passing
 exchange milestone locally without waiting for the other profiles.
+
+## IX-0075: sixteen-MiB committed-source local closure
+
+Date: 2026-10-09. The qualified current public runtimes reproduce all twelve
+corpus archives byte for byte and restore their exact raw inputs. Schema69
+bundles at implementation revision3ed53384fff1baeda7ac95e746679f0a0fd6e300
+pass two local self and two local cross routes for79 archives. All79
+producer outputs agree and the first78 remain equal to the qualified
+schema68 inventory. Exchange script hashes and archive bytes remain equal
+to IX-0074's125-refusal and history1..69 evidence; those records are retained.
+Public API/static and shared ABI/CLI tests pass with the current runtimes.
+BM-0224's48 isolated directional rows, resource/default review and five
+fully instrumented10000-run fuzz campaigns complete the sixteen-MiB local
+gates. Earlier artifacts are preserved. Initial exchange script startup
+failures occurred before codec launch and were corrected; successful retries
+are recorded separately. No hosted CI or maintainer external result for
+this revision is claimed. The32/64MiB profiles and final81-archive audit
+remain pending. Passing milestones are committed locally; completing all
+four profiles remains a condition before push.

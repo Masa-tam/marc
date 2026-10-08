@@ -39855,3 +39855,17 @@ cases; actual configured16MiB CLI metadata includes the existing lock.
 Both public API/ABI/CLI groups pass. No codec, cost, timeout or coverage
 change; no external implementation consulted. Current runtime corpus and
 final exchange closure,32/64MiB and final81 gates remain unfinished.
+
+### CR-1727: sixteen-MiB local qualification closure
+
+2026-10-09, Codex implementation/review; maintainer review pending. IX-0075
+binds current public runtimes to full twelve-member corpus equality and
+committed-source schema69 exchange. Two self/two cross consumers pass79
+archives with the frozen78-entry prefix preserved. Earlier refusal/history
+results remain applicable to unchanged exchange scripts and archive bytes.
+BM-0224 and the five instrumented fuzz campaigns complete the profile's
+local validation. No codec representation or parsing policy changes in
+this closure; no external implementation consulted. Preserve failed script
+startup records and distinguish corrected retries. Commit this passing
+profile closure without waiting for32/64MiB. Those profiles, final81-archive
+qualification, maintainer push, hosted CI and external routes remain pending.
