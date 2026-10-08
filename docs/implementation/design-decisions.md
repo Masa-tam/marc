@@ -33751,3 +33751,18 @@ vectors and test canonical record/state inversion before native coding.
 This milestone does not admit public APIs, a CLI selector or memory default.
 Native differential/failure tests, public integration, measurements/fuzz
 and schema70 remain later separately committed milestones.
+
+### DD-1549: private thirty-two-MiB token, frame and owning integration
+
+Connect DD-1548's separately identified field cursor and finite scalar core
+to typed-token short-length variant13 without changing existing variant12.
+The distance alphabet is26; class25 permits only zero residual. Keep ordinary
+transactional decode output separate from private one-pass scratch that is
+discarded after failure. Reconstruct raw bytes only after successful token
+validation, and drain incremental output only after the whole frame passes.
+Retain first-party nearest-longest five-prefix search with deterministic
+tie breaking and private eligibility3/5. Public integration will select5.
+Validate exact workspace floors, allocation rollback, overlap, immutable
+direction and no process allocation; independently compare token/frame and
+split-stream bytes, including both reachable full-window distance recipes.
+Private2GiB test grants are not an admitted public memory default.

@@ -39895,3 +39895,19 @@ validation. TVG-1409 and old sixteen-MiB core tests pass. Preserve initial
 failed build evidence. Commit this passing checkpoint within milestone2;
 token/frame/owning integration, failed-frame publication tests, public API/
 CLI, full measurements/fuzz and schema70 remain pending, as do64MiB/final81.
+
+### CR-1730: thirty-two-MiB private token, frame, stream and owner
+
+2026-10-09, Codex implementation/review; maintainer review pending. Task:
+adapt first-party sixteen-MiB cursor/token/frame/owner/five-prefix parsing
+to DD-1548/1549's32MiB tuple and bounded field counts while preserving
+ordinary failure invariants and private single-pass scratch discard rules.
+Add internal typed-token variant13 without changing older variants. No
+external implementation consulted. Independent TVG-1410 token/frame bytes,
+maximum-window/reset stream and full owning two-frame output pass along
+with late failure/quarantine, allocation lifecycle and old sixteen-MiB
+regressions. Keep capacity queries distinct from process peaks; private
+allowances do not admit a public default. Existing generated artifacts and
+qualified public runtimes remain intact. This local commit completes only
+the private milestone2. Public API/CLI, matched corpus/measurements/fuzz,
+schema70,64MiB and final81/push/hostedCI/external gates remain unfinished.

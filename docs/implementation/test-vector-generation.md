@@ -22726,3 +22726,20 @@ failed-read symbols, sticky errors, terminal state/extent and explicit
 resource bounds. Existing sixteen-MiB finite-core regression passes.
 Token/frame/owning and publication guarantees remain separate subsequent
 milestone2 checks; no public or performance claim follows from these tests.
+
+### TVG-1410: thirty-two-MiB private token/frame/owning qualification
+
+Independent token and frame differentials each cover200 generated cases
+and11 full-window cases, including reachable distanceF-3/length3 and
+F-258/258. Split-stream differentials cover22 streams/62 frames, including
+a maximum-window frame and its final short reset frame. A separate owning
+fixed-five differential compares independently serialized two-frame bytes
+forF+1 raw input and verifies full private-owner roundtrip with partial calls.
+Native tests cover all one-byte literals and lengths3..258, ordinary unchanged
+destinations, retained private scratch prefixes discarded after failure,
+late terminal-state failure, failed-frame quarantine, overlap and limits.
+Owning tests independently check200 tiny nearest-longest parses, chunking,
+allocation rollback, exact resource floors and no process allocation.
+Rebuild shared typed-token validation with its additive variant13 and rerun
+sixteen-MiB token/frame/stream/owning regressions. Private2GiB grants are not
+public defaults; corpus measurements, public API/CLI, fuzz and schema70 remain.

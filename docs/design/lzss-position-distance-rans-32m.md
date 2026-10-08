@@ -66,3 +66,32 @@ Only standalone private test targets use this code. Typed-token integration,
 frame quarantine and owning allocation lifecycle remain pending, so this is
 a checkpoint within milestone2. Public/CLI, measured/fuzz and schema70 gates
 remain pending; no memory default or current public runtime changes here.
+
+## DD-1549: private token, frame, stream and owning integration
+
+Add internal short-length typed-token variant13 for distanceF; all older
+variant numbers and their behavior remain intact. The field cursor uses
+26 distance classes and rejects nonzero residual in class25. Ordinary token
+and frame destinations are transactional. The separate private scratch
+operation decodes tokens in one pass and may retain a prefix on failure;
+its owner must discard that scratch. Raw reconstruction follows successful
+token validation. Stream draining begins only after complete frame validation.
+
+The owning encoder uses the first-party five-prefix nearest-longest finder
+with eligibility3 or5; subsequent public integration will fix eligibility5.
+Resource queries include owner, retained raw/token/serialized/finder buffers
+and the separate fixed working allowance. At maximumF, private queries are
+1,510,876,761 bytes encode and1,107,437,281 decode. Serialized capacity is
+671,098,017 bytes and finder capacity403,439,616 bytes. These are checked
+capacities, not OS peaks. A2GiB private test allowance is not a public default.
+Public resource admission requires later actual measurements.
+
+Independent token/frame differentials each pass211 cases (200 generated,
+11 full-window). Split-stream checks pass22 streams/62 frames, including
+full-window-to-short-reset transition. Independent fixed-five owning bytes
+match forF+1 input and two automatic frames. Native lifecycle, chunking,
+late failure/quarantine and sixteen-MiB regressions pass. This completes
+private milestone2 only. Public API/CLI, full contextual corpus comparison,
+measured defaults/resources, instrumented fuzz and schema70 remain pending.
+The full four-window goal remains active; passing private work is committed
+locally without waiting for the other windows.
