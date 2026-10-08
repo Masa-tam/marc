@@ -95,3 +95,22 @@ private milestone2 only. Public API/CLI, full contextual corpus comparison,
 measured defaults/resources, instrumented fuzz and schema70 remain pending.
 The full four-window goal remains active; passing private work is committed
 locally without waiting for the other windows.
+
+## DD-1551: measured public capacity admission
+
+The public API/static/shared ABI/CLI milestone and instrumented fuzz
+checkpoint precede full twelve-member compression and isolated 48-row
+directional qualification. BM-0227 records 59597025 versus 60783907 bytes,
+all twelve members smaller, encode time -11.316549641% and decode time
++35.197529728% against the physical 32MiB contextual control. Normal public
+driver peaks are 857104384 bytes encode and 453640192 decode; these are
+process observations with a different scope from capacity accounting.
+
+Admit the unchanged 1536MiB capacity default after exact public driver
+queries of 1511077577/1107638097 bytes, with declared 65536-byte calls and
+65536 external/control bytes, fit the grant. Retain the fixed-five policy,
+success-only destination commits, discarded failed private scratch and
+failed-frame quarantine. This qualification changes no wire format or
+numeric initialization. The local schema70/80 exchange checkpoint remains
+separate from final fixed-runtime/source80 qualification. Those final gates,
+64MiB/final81 and maintainer push/hostedCI/external validation remain pending.

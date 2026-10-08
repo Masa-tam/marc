@@ -10734,3 +10734,46 @@ times and process counters do not qualify speed or peaks. Isolated48-row
 directional1warm3 measurements, fresh public driver peaks and1536MiB trial
 admission remain pending. Final fixed-runtime/source80 qualification,
 64MiB/final81 and maintainer push/hostedCI/external gates remain unfinished.
+
+## BM-0227: complete thirty-two-MiB directional and resource qualification
+
+Date: 2026-10-09. All twelve complete corpus members total 211938580 raw
+bytes. Position-distance produces 59597025 bytes versus 60783907 for the
+physical 32MiB frame/window contextual control, a 1.952625388% reduction.
+Every member is smaller, and candidate archives agree with the independently
+qualified private encoder and the other compiler's public CLI. Candidate
+2/13+1/19+4/10 and contextual 2/6+1/5+4/3 retain separate representations;
+the control uses its existing 64MiB profile with physical 32MiB limits.
+
+All 48 directional rows use one warmup and three fresh-instance samples.
+Sum each member's median. Timing includes allocation, factory, process and
+destruction, excluding file IO and comparisons. A separate fresh normal-build
+streaming public C API driver measures process lifetime peak memory,
+including bounded 65536-byte calls and IO. Sanitizer peaks are excluded.
+Verify exact input/output hashes, all sample counts, tool hashes and empty
+selected-process audits before and after the complete isolated run.
+
+| Profile | Direction | Sum of medians, seconds | Process peak, bytes |
+| --- | --- | ---: | ---: |
+| position | encode | 664.976922400 | 857104384 |
+| position | decode | 5.584631400 | 453640192 |
+| contextual | encode | 749.832037100 | 590471168 |
+| contextual | decode | 4.130720000 | 454893568 |
+
+Position time changes relative to contextual are -11.316549641% encode and
++35.197529728% decode. These describe this complete measured workload,
+not universal throughput. Retain all three samples and their spans: the
+largest span relative to its median is 15.726198708% for position ooffice
+encode; position webster encode is 11.560920530% and osdb encode 8.738232983%.
+Do not infer a speed guarantee or population confidence interval from
+three samples. No arbitrary scatter cutoff replaces the recorded medians.
+
+Candidate driver queries include owner, calls and controls:
+1511077577/1107638097 bytes. Benchmark queries omit the separate 65536-byte
+external charge: 1511012041/1107572561 bytes. Contextual caller-workspace
+queries range 178500649..1109402665 for encode and remain 973849641 for
+decode; they exclude separate caller/control charges. Neither query scope
+is RSS. All candidate queries fit the unchanged 1536MiB capacity grant;
+DD-1551 admits that default after full-workload qualification. Final fixed
+runtime and source80 exchange qualification, 64MiB/final81 and maintainer
+push/hostedCI/external gates remain pending.

@@ -39997,3 +39997,18 @@ implementation consultation was required. Commit this passing compression
 checkpoint independently while isolated speed/normal peaks, default
 admission and final runtime/source80 qualification remain unfinished.
 64MiB/final81 and maintainer push/hostedCI/external gates remain separate.
+
+### CR-1736: complete thirty-two-MiB measured capacity qualification
+
+2026-10-09, Codex implementation/review; maintainer review pending. Task:
+complete the isolated twelve-member, 48-row directional measurements and
+fresh normal-build public process peaks. Verify all input/output hashes,
+one warmup/three samples, tool hashes, query scopes and selected-process
+audits before and after the complete run. BM-0227 records compression,
+separate directional medians, normal peaks and sample spans. DD-1551 admits
+the unchanged 1536MiB capacity default; it is not an RSS ceiling. Preserve
+every prior artifact and source/evidence record. No external implementation
+was consulted; numeric defaults and wire/parser behavior remain unchanged.
+Commit this passing measurement checkpoint independently. Final qualified
+fixed runtime/source80 exchange, 64MiB/final81 and maintainer push/hostedCI/
+external gates remain unfinished; no agent push.

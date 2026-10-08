@@ -33782,3 +33782,17 @@ private failed-scratch discard and failed-frame quarantine. CLI uses65536-
 byte calls, strict profile identity and whole-file temporary-file commit.
 Public lifecycle/static/shared ABI/CLI tests precede this milestone commit;
 full corpus, measured defaults, instrumented fuzz and schema70 follow.
+
+### DD-1551: admit the measured thirty-two-MiB capacity default
+
+Retain 1536 MiB (1610612736 bytes) after the complete twelve-member,
+48-row public directional and normal-process qualification in BM-0227.
+With 65536-byte declared input/output calls and 65536 external/control
+bytes, maximum public driver queries are 1511077577 encode and 1107638097
+decode, below the grant. Preserve owner, retained capacities and fixed
+working accounting. Process peaks have a separate scope; this budget is
+not an OS RSS ceiling. The measured tradeoff includes smaller archives
+and shorter aggregate encode time, with longer aggregate decode time.
+No numeric default, wire representation or parsing policy changes.
+Final fixed-runtime/source80 qualification, 64MiB/final81 and maintainer
+push/hostedCI/external gates remain separately unfinished.

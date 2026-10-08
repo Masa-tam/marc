@@ -2300,7 +2300,7 @@ MARC_API marc_status marc_lzss_position_distance_rans_16m_resource_requirements(
 MARC_API marc_status marc_lzss_position_distance_rans_16m_create(
     const marc_lzss_position_distance_rans_16m_config* config, marc_transform** transform) MARC_NOEXCEPT;
 
-/* DD-1550 thirty-two-MiB owning profile; 1536 MiB capacity trial, measurement review pending. */
+/* DD-1551 thirty-two-MiB owning profile; measured 1536 MiB capacity default, not an RSS ceiling. */
 typedef struct marc_lzss_position_distance_rans_32m_config {
     uint32_t struct_size, abi_version;
     marc_direction direction;
