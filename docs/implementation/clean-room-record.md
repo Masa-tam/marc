@@ -40116,3 +40116,21 @@ negatives per producer, history1..71, frozen-prefix byte preservation and
 two self/two cross routes remain unfinished. Full64MiB corpus, isolated
 measurements and capacity admission also remain pending; this preparation
 does not claim local profile completion or authorize agent push.
+
+### CR-1744: sixty-four-MiB matched private corpus checkpoint
+
+2026-10-09, Codex validation/review; maintainer review pending. Task: compare
+the first-party fixed-five64MiB position-distance rANS owner against the
+existing contextual rANS format at the same physical67108864-byte frame and
+window. Reuse the established twelve-member raw corpus, preserving all earlier
+inputs, archives and results. No external implementation or restricted source
+consulted. Check the full member roster, raw/archive lengths and SHA-256,
+both restored outputs, exact profile/window headers and bound runtime hashes.
+
+All twelve roundtrips pass, and every candidate is smaller:59366141 versus
+60568740 bytes from211938580 raw bytes (BM-0229). The complete comparison
+campaign returns success. This is a local compression checkpoint; public
+native/second compiler archive equality, isolated directional timing and
+normal peaks, capacity admission, schema71/final81 and final source/runtime
+qualification remain unfinished. This checkpoint does not claim overall
+profile completion or hosted/external verification.

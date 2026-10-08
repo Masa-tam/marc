@@ -10794,3 +10794,24 @@ records the process-lifetime peak, retains declared/control query scopes
 and verifies every committed output. Sanitizer peaks are not normal peaks.
 This infrastructure checkpoint does not qualify full corpus compression,
 isolated directional timings, normal peaks or3072MiB capacity admission.
+
+## BM-0229: sixty-four-MiB matched full-corpus compression checkpoint
+
+The twelve-member workload contains211938580 raw bytes. The private fixed-five
+position-distance encoder produces59366141 bytes; the existing contextual
+rANS control produces60568740 bytes, a1.985511008% reduction. Every member
+is strictly smaller. Both profiles use physical67108864-byte frames/windows;
+the control retains its existing dictionary2/6, entropy4/3 and context1/5
+representation, with8F decisions and16F+8 payload allowance.
+
+Each member's two archives, raw lengths and SHA-256 digests are checked.
+Both restored outputs match the original raw bytes, and archive headers
+carry the exact selected profile and physical window. Source/runtime bindings
+retain the implementation at77858cd295fa6683d4cd8cb232087f786690355c;
+the later schema-preparation commit changes only documents and test scripts.
+This checkpoint qualifies compression and roundtrips, not isolated timing,
+normal process peaks or the3072MiB capacity trial. The public native/second
+compiler full-corpus archive equality, isolated48-row measurements, capacity
+admission, schema71 exchange and final source/runtime qualification remain
+unfinished. Maintainer push, hosted CI and external four-route verification
+remain separate gates.
