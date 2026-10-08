@@ -22646,3 +22646,16 @@ checking terminal state and exact payload extent. Two hundred seeded model
 records and two hundred seeded event payloads supplement the fixed fixtures.
 This is a format/vector qualification, not a native codec, malformed-input,
 failure-publication, performance or memory-admission result.
+
+### TVG-1404: sixteen-MiB finite native entropy differential checks
+
+Compare200 independently normalized compact model descriptors and200
+independent scalar decision payloads against native parsing, canonical
+reserialization, model construction, exact reverse encoding and forward
+decoding. Also consume all24 frozen TVG-1403 decision vectors and its largest
+dense descriptor; explicitly accept context55's highest mask bit. Test native
+destination/count preservation on failures, failed-begin state preservation,
+symbol invariants, strict truncation/final state/extent, canonical records
+and checked limits. Retain existing eight-MiB finite core regression checks.
+This remains a private finite entropy checkpoint; token/frame/owning failure
+contracts, public paths, fuzzing, corpus/resources and schema69 are pending.

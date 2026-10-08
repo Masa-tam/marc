@@ -42,3 +42,19 @@ subsequent milestones. No public selector or memory default is admitted here.
 
 See [family definitions](lzss-position-distance-rans-large-windows.md) and
 [format](../format.md) for the retained framing and compact record rules.
+
+## Private entropy-core checkpoint
+
+The separately named finite C++ descriptor validator, model builder,
+reverse scalar encoder and forward decoder are implemented from the
+first-party eight-MiB core with the explicit DD-1542 layout substitutions.
+All56 mask bits are accepted; the corresponding eight-MiB high-bit rejection
+is absent. Static offset checks require residual start4610 and end4658.
+Independent differential fixtures compare200 exact descriptor roundtrips,
+200 normalized models and payloads, all24 frozen decision vectors and the
+maximum descriptor. Native unit checks retain failed destination/count and
+symbol invariants, failed-begin state preservation, bounded truncation,
+canonical records, strict final state/extent and sticky errors.
+Only standalone private test targets use this code. Typed-token integration,
+frame quarantine, owning allocation lifecycle and every public/measured/
+fuzz/exchange gate remain pending; this does not complete milestone2.

@@ -39752,3 +39752,20 @@ and200 model/200 payload checks. Initial comparison used Python tuples
 against JSON-decoded lists; compare deterministic serialized JSON instead
 and rerun both affected tests. Frozen bytes and mathematical events remain
 unchanged; no production code was involved.
+
+### CR-1720: sixteen-MiB finite entropy-core checkpoint
+
+2026-10-08, Codex implementation/review; maintainer review pending. Adapt
+first-party eight-MiB finite descriptor/model/scalar entropy components to
+DD-1542's56-context4658-frequency layout, with explicit removal of the old
+reserved high-mask-bit rejection. TVG-1404 compares independent mathematical
+fixtures and native encoder/decoder bytes and exercises finite failure
+invariants in two compiler builds. Public libraries and fixed runtime are
+unchanged; only separately named standalone test targets consume this core.
+An initial regression selection targeted an older executable absent from
+the public build directories; run that unchanged eight-MiB regression in its
+retained core build instead. Preserve those initial not-run logs.
+No external codec source consulted. This is part of milestone2, whose
+typed-token/frame/owning integration and failed-frame quarantine tests remain
+pending, followed by public, measured, fuzz and schema69 milestones. Neither
+the sixteen-MiB profile nor the full four-window goal is complete.

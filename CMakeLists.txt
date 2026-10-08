@@ -8447,3 +8447,24 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_16m_full_literal_vectors.py)
     set_tests_properties(marc_position_rans_16m_full_literal_vectors PROPERTIES TIMEOUT 60)
 endif()
+
+# Private finite entropy core; no sixteen-MiB public factory is admitted yet.
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_rans_16m_full_literal_format_tests
+        tests/position_rans_16m_full_literal_format_tests.cpp
+        src/entropy/position_rans_16m_full_literal_format.cpp
+        src/entropy/position_rans_16m_full_literal_encoder.cpp
+        src/entropy/position_rans_16m_full_literal_decoder.cpp)
+    target_compile_features(marc_position_rans_16m_full_literal_format_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_rans_16m_full_literal_format_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_rans_16m_full_literal_format
+        COMMAND marc_position_rans_16m_full_literal_format_tests)
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_rans_16m_full_literal_format_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_16m_full_literal_format_differential.py
+                $<TARGET_FILE:marc_position_rans_16m_full_literal_format_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-rans-16m-full-literal-format-differential)
+        set_tests_properties(marc_position_rans_16m_full_literal_format_differential PROPERTIES TIMEOUT 120)
+    endif()
+endif()
