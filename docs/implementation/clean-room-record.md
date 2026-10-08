@@ -40150,3 +40150,20 @@ The result does not qualify isolated directional timing, normal peaks or
 the3072MiB capacity trial. Schema71/81 exchange, final source/runtime and
 maintainer push/hosted CI/external four-route checks also remain unfinished;
 the whole four-profile goal remains active.
+
+### CR-1746: schema71 local exchange and historical qualification
+
+2026-10-09, Codex validation/review; maintainer review pending. Task: execute
+the first-party schema71 creator/verifier and negative suite sequentially on
+both normal public builds. Preserve all previous archives and compare the
+new81 bodies against each other and the qualified80-body prefix. Verify two
+self/two cross routes, all restored raw hashes and125 zero-launch/zero-output
+refusals per producer. Run the copied first-party history harness with retained
+evidence and its explicitly synthetic revision. No external implementation or
+restricted source consulted.
+
+Both campaigns and the schema1..71 history return success. All81 bodies agree
+and all80 preceding bodies remain unchanged. IX-0079/TVG-1419 record this
+separate local milestone. Isolated directional timing, normal peaks, capacity
+admission, the fixed runtime update and final committed-source81 qualification
+remain unfinished, as do maintainer push/hosted CI/external four-route checks.

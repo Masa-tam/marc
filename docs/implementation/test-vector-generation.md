@@ -22852,3 +22852,21 @@ expected output bytes and physical64MiB identities2/14+1/20+4/11 and
 2/6+1/5+4/3. The contextual control uses its existing64MiB profile with
 8F decisions/16F+8 payload. Preserve artifacts in unique directories.
 Concurrent infrastructure checks are not isolated performance evidence.
+
+### TVG-1419: schema71 exchange and historical admission regressions
+
+Date: 2026-10-09. Reuse the independently authored fixed exchange fixture and
+append exactly one64MiB position-distance rANS archive. Preserve the existing
+80-archive prefix; compare all new81 archive bodies between both normal builds
+and every old body against the qualified schema70 generation. Exercise two
+self/two cross consumers and recheck all restored raw hashes.
+
+Each producer's125 manifest/header mutations includes the13 named identity,
+order, size and hash cases plus mutation of each of112 header bytes. A private
+launch guard records any attempted codec invocation, and every rejected case
+must retain zero launches and zero output files. Both suites pass. The copied
+first-party harness derives and verifies schemas1 through71 and previous
+negative cases, retaining its evidence. Its all-zero synthetic revision does
+not represent an external producer or historical binary. Final fixed-source
+runtime qualification, isolated measurements and maintainer external checks
+remain separate unfinished gates (IX-0079).

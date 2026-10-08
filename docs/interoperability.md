@@ -1905,3 +1905,23 @@ preservation, bundle generation or self/cross decoding. Full schema71 negative,
 history1..71, both producer bundles, two self and two cross routes and final
 source/runtime bindings remain pending. Maintainer push, hosted CI and external
 four-route validation remain separate gates.
+
+## IX-0079: schema71 local exchange and historical qualification
+
+The source at5515df5c300cec10f59ed9b1597d10f92293470d produces exactly81
+archives on both normal public builds. Archive names, order, sizes, SHA-256
+and actual bytes agree. All first80 archives remain byte-for-byte unchanged
+from the qualified schema70 bundle, including the frozen first77.
+
+Two local self routes and two local cross routes restore every original
+fixture. Each producer's125 negative cases reject before codec launch and
+output publication. The historical harness verifies schemas1 through71,
+retaining its evidence. Synthetic history uses a synthetic revision and does
+not claim historical producer or external revision verification (TVG-1419).
+The full private/public twelve-member corpus also passes BM-0230.
+
+This completes the local milestone5 exchange checkpoint. Isolated64MiB
+encode/decode timings, normal peaks and capacity admission remain unfinished,
+as do the fixed runtime update and final committed-source81 qualification.
+Maintainer push, hosted CI and external four-route checks remain pending;
+the whole four-profile goal remains active.
