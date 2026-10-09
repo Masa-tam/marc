@@ -1801,3 +1801,24 @@ consulted. Hosted CI/external paths remain separate; no push.
 | tokens | 8.583 | 349855744 | 633 |
 | stream | 14.645 | 352350208 | 1037 |
 | public | 21.659 | 359788544 | 1504 |
+
+All five fully instrumented1MiB entry points complete10000 runs each with
+seed1587 and the pilot-derived576MiB RSS cap/per-target watchdogs. Retain
+all584 production units, five entries and238 independent mathematical
+seeds with maximal9207-byte descriptor. Original seeds, source, compiled
+objects/executables and all saved logs are rehashed. No sanitizer/invariant
+finding or saved crash/hang/leak/oom artifact occurs. Bounded small frames
+complement the previously qualified full-window directed cases; they do
+not replace them. Instrumented RSS is not a normal process peak or public
+memory grant. Public API/CLI and both-build corpus comparison/measurements
+are qualified; schema73/83 exchange/history, fixed-release update and
+profile closure remain pending. Hosted CI/external evidence remain separate.
+No push and no external implementation source consultation.
+
+| Target | Full seconds | Instrumented peak bytes | Completed runs |
+|---|---:|---:|---:|
+| descriptor | 6.279 | 53743616 | 10000 |
+| payload | 11.239 | 304357376 | 10000 |
+| tokens | 168.143 | 349913088 | 10000 |
+| stream | 356.047 | 352727040 | 10000 |
+| public | 539.637 | 361041920 | 10000 |

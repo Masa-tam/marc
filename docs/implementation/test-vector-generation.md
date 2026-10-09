@@ -23615,3 +23615,18 @@ admission default. Preserve original seeds, source/objects/executables and
 all logs. The10000-unit campaigns, schema73/83 exchange/history, fixed-release
 update and profile closure remain pending. No external implementation is
 consulted. Hosted CI/external paths remain separate; no push.
+
+### TVG-1455: one-MiB five10000-unit fuzz campaigns
+
+All five fully instrumented1MiB entry points complete10000 runs each with
+seed1587 and the pilot-derived576MiB RSS cap/per-target watchdogs. Retain
+all584 production units, five entries and238 independent mathematical
+seeds with maximal9207-byte descriptor. Original seeds, source, compiled
+objects/executables and all saved logs are rehashed. No sanitizer/invariant
+finding or saved crash/hang/leak/oom artifact occurs. Bounded small frames
+complement the previously qualified full-window directed cases; they do
+not replace them. Instrumented RSS is not a normal process peak or public
+memory grant. Public API/CLI and both-build corpus comparison/measurements
+are qualified; schema73/83 exchange/history, fixed-release update and
+profile closure remain pending. Hosted CI/external evidence remain separate.
+No push and no external implementation source consultation.
