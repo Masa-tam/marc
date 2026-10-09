@@ -7739,6 +7739,10 @@ if(MARC_BUILD_TESTS)
             COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_rans_64k.py
                 $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-rans-64k)
         set_tests_properties(marc_cli_position_rans_64k PROPERTIES TIMEOUT 300)
+        add_test(NAME marc_cli_position_tans_64k
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_tans_64k.py
+                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-tans-64k)
+        set_tests_properties(marc_cli_position_tans_64k PROPERTIES TIMEOUT 120)
     endif()
     add_executable(marc_position_rans_1m_api_tests tests/position_rans_1m_api_tests.cpp)
     target_compile_features(marc_position_rans_1m_api_tests PRIVATE cxx_std_20)

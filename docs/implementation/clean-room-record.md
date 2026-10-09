@@ -40529,3 +40529,26 @@ below45 seconds per test. CLI, contextual comparisons and isolated timing,
 instrumented fuzz, exchange and later windows remain unfinished. Fixed
 qualified Release and existing artifacts remain preserved; no push, hosted
 CI or new external result is claimed.
+
+### CR-1762:64KiB tANS CLI publication and full-corpus byte equivalence
+
+2026-10-10, Codex implementation and review; maintainer review pending.
+Task: connect the qualified tANS C API to the exact CLI selector, preserving
+the repository's first-party bounded file loop and temporary commit contract.
+Adapt the first-party rANS helper and regressions and add mathematical-oracle
+short-match streams and late second-frame publication refusal. No external
+or restricted codec implementation was consulted. DD-1568/TVG-1433 define
+the scope; no legal guarantee is asserted.
+
+Both normal builds pass new tANS CLI and existing rANS CLI regressions.
+Seven raw boundary cases are deterministic and restore exactly; every
+singleton cut and malformed/trailing input refuses whole-file publication.
+Independent3/4/258 matches restore, late second-frame failure publishes no
+file and existing destination/temporary contents remain unchanged.
+All twelve new CLI archives match qualified private bytes and each other,
+with original raw hashes restored. Actual contextual headers verify matching
+physical65536-byte frames/windows. The120-second whole-test and30-second
+per-command watchdogs follow measured complete campaigns below22 seconds.
+Isolated speed/normal public peaks, instrumented fuzz, exchange and later
+windows remain unfinished. Fixed qualified Release and prior artifacts
+remain preserved; no push, new hosted CI or external verification is claimed.

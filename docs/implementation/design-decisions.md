@@ -34110,3 +34110,20 @@ codec default. Compare complete archive bodies and original raw bytes.
 Retain earlier oracle math, raw parsing and expected body hashes unchanged.
 Public byte qualification does not complete CLI, contextual measurements,
 instrumented fuzz, exchange or later windows.
+
+### DD-1568:64KiB tANS CLI and whole-file publication
+
+Add the exact lzss-position-distance-tans selector through the qualified
+owning public API. Reuse the first-party bounded file loop and temporary
+commit protocol; retain all old selectors and their representations.
+Declare65536-byte input/output capacities and65536 external control bytes;
+the8MiB factory grant admits4202026 encode and2693796 decode bytes.
+
+Test empty/boundary deterministic streams, exact new identifiers, arbitrary
+stream truncation, reserved/identity mutation, strict trailing bytes and
+late first/second-frame terminal failures. Existing output/temporary files
+remain untouched. Independently constructed short-match3/4/258 streams must
+decode, although the public encoder only chooses matches of at least5 bytes.
+Compare complete CLI archives with the qualified private full-corpus bodies
+and check raw restoration. This closes public API/CLI byte correctness,
+not benchmark/fuzz/exchange or the whole profile.

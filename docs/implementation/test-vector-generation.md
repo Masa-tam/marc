@@ -23121,3 +23121,21 @@ encoding. Rehash actual fixture bodies, compare both builds and previous
 owning expectation maps. Keep public factory negative/allocation tests active.
 CLI and whole-file publication, isolated contextual measurements, instrumented
 fuzz, exchange and subsequent windows remain required.
+
+### TVG-1433:64KiB tANS CLI publication and archive equivalence
+
+Roundtrip0/1/256/65535/65536/65537/131089-byte inputs twice and compare encoded
+bytes and actual2/8+1/21+5/3 headers. Reject both cross-decode directions with
+contextual tANS. Cut every byte of a singleton archive; mutate reserved and
+identity fields, append a trailing byte and corrupt a late terminal state.
+Create a two-frame stream with a valid first frame and failing second frame;
+the CLI must publish no whole file. Preserve existing output and temporary
+files byte-for-byte. Construct independent tANS models for match lengths
+3/4/258 and compare restored raw bytes.
+
+Retain the existing64KiB rANS CLI regression. For all twelve frozen corpus
+members, compare new CLI bytes with qualified private archives, verify source
+and restored hashes and compare both normal builds. Actual contextual tANS
+headers establish the same65536-byte physical frame/window before comparison.
+These checks do not substitute for isolated repeated directional timing,
+normal public peak measurement, instrumented fuzz or exchange qualification.

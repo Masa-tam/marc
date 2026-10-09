@@ -907,3 +907,22 @@ resource and directional qualification. Earlier selectors and representations
 remain unchanged. Five instrumented fuzz campaigns and preliminary schema71
 qualification also pass. Final fixed-runtime/source81 qualification and
 maintainer push, hosted CI and external routes remain pending.
+
+## Sixty-four-KiB position-distance tANS
+
+The case-sensitive selector lzss-position-distance-tans uses dictionary2/8,
+context1/21 and entropy5/3, with65536-byte frames/windows and a known original
+length. DD-1568 connects the qualified public owning factory with65536-byte
+calls and65536 declared external control bytes under its8MiB capacity grant.
+This is not an RSS limit. Fixed-five encoding and decoder match lengths3..258
+retain their distinct scopes. All stream/frame checks and entropy terminal
+validation precede failed-frame publication.
+
+The existing whole-file temporary contract remains: an error, including a
+late second-frame error after prior raw output, does not publish the file.
+Existing destination/temporary files are refused unchanged. Unsupported IDs,
+reserved fields, truncation and trailing data refuse without publication.
+Existing selectors and representations are retained. Public API/CLI and
+full-corpus byte equivalence are locally qualified; isolated speed/normal
+public peaks, instrumented fuzz and additive exchange remain required.
+No new hosted CI or external result is claimed.
