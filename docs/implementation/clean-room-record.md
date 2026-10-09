@@ -40210,3 +40210,21 @@ schema evidence is retained without a new runtime-run claim. This closure
 is documentation only; maintainer push, hosted CI and external four-route
 verification of81 archives remain unfinished. No overall completion or
 external validation is claimed.
+
+### CR-1749: schema71 maintainer external evidence reconciliation
+
+2026-10-09, Codex reconciliation; maintainer supplied external evidence.
+Task: match the maintainer's successful push/hosted CI report and four
+81-archive console reports to the completed four-profile local audit.
+All reports identify d8e8985c738810737cd853d4ba4631928d3c7693, matching
+the current local closure and tracked remote branch. IX-0081 distinguishes
+the two Ubuntu-bundle consumer routes despite their identical producer label.
+
+Recheck retained local audit evidence, current runtime bindings and the
+documentation-only relationship between implementation and closure. Record
+external results as maintainer-reported rather than independently inspected
+hosted logs. This satisfies the final external gates for8/16/32/64MiB
+position-distance rANS. Only documentation and ignored local evidence are
+updated; no format, codec, test or runtime change. Existing artifacts and
+failure contracts are preserved. No external implementation or restricted
+source consulted.

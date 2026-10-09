@@ -1945,3 +1945,21 @@ All four profiles are locally complete. Maintainer push, hosted CI and
 external four-route validation of all81 archives remain required before
 the overall goal is complete. This closure changes documentation only;
 the implementation revision and bundle source bindings remain explicit.
+
+## IX-0081: maintainer-reported schema71 external completion
+
+On2026-10-09 the maintainer reports push and successful hosted CI for
+d8e8985c738810737cd853d4ba4631928d3c7693, followed by four successful
+81-archive external routes. The first two reports cover the Windows and
+Ubuntu CI-produced bundles consumed on Ubuntu. The last two cover the
+Ubuntu-produced bundle's self-consumption and consumption on Windows.
+Every report names the same revision and81 archives. The repeated Ubuntu
+producer label denotes two distinct consumer routes, not a third producer.
+
+The reported revision matches the local closure and tracked remote branch.
+IX-0080's retained audit establishes local completion of all four profiles;
+this report satisfies its remaining push, hosted CI and external four-route
+gates. Evidence is maintainer-reported console output and CI success;
+independent inspection of hosted job logs or external binaries is not claimed.
+The following reconciliation changes documentation only and does not alter
+the externally validated implementation or its81-archive representation.
