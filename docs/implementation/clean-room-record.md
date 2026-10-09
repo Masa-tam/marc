@@ -40167,3 +40167,24 @@ and all80 preceding bodies remain unchanged. IX-0079/TVG-1419 record this
 separate local milestone. Isolated directional timing, normal peaks, capacity
 admission, the fixed runtime update and final committed-source81 qualification
 remain unfinished, as do maintainer push/hosted CI/external four-route checks.
+
+### CR-1747: sixty-four-MiB complete directional measurements and admission
+
+2026-10-09, Codex validation/review; maintainer review pending. Task: finish
+the existing sequential48-row normal public measurement campaign without
+changing measured sources or runtimes. Check twelve-member input/output
+hashes, one warmup and three samples per row, source/tool bindings and empty
+selected-process audits before and after. Retain all partial and completed
+evidence. No external implementation or restricted source consulted.
+
+The campaign returns success and every output agrees with the qualified
+archive or raw input. BM-0231 records compression, directional timings,
+normal peaks, distinct capacity-query scopes and all sample spans. Small
+aggregate encode differences with large individual spans are not stable
+acceleration claims. DD-1555 admits the unchanged3072MiB checked capacity
+budget after complete resource qualification and prior boundary/refusal
+tests; this is not an OS RSS ceiling. No wire format or numeric default
+changes. Together with FZ-0086 this completes local milestone4.
+
+Final fixed-runtime/source81 qualification, the four-profile local completion
+audit and maintainer push/hosted CI/external four-route checks remain pending.

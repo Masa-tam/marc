@@ -1165,10 +1165,11 @@ The additive marc_lzss_position_distance_rans_64m_config/resources types
 are136/64 bytes. marc_lzss_position_distance_rans_64m_config_init(),
 marc_lzss_position_distance_rans_64m_resource_requirements() and
 marc_lzss_position_distance_rans_64m_create() retain the
-owning transform lifecycle and immutable direction. DD-1554's3072MiB
-checked capacity trial accounts for private owner capacities, public working
+owning transform lifecycle and immutable direction. DD-1555 retains3072MiB
+after BM-0231's complete public directional and resource qualification.
+The checked capacity budget accounts for private owner capacities, public working
 allowance, external retained controls and declared input/output capacities.
-This is not a process RSS ceiling or measured default admission. Encoding
+This is not a process RSS ceiling. Encoding
 uses fixed-five matching, while the format accepts lengths3..258. Ordinary
 destinations commit on success; failed private token scratch is discarded
 and failed frames are never drained. Earlier APIs remain unchanged.

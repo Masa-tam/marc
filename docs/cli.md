@@ -902,6 +902,8 @@ The case-sensitive selector lzss-position-distance-rans-64m uses DD-1552's
 2/14+1/20+4/11 known-size framing with67108864-byte frame/window maximum.
 DD-1554 retains65536-byte calls, fixed-five encoding, strict termination,
 failed-frame quarantine and whole-file temporary commit. The3072MiB checked
-capacity trial is pending actual public resource/peak review. Earlier
-selectors and representations remain unchanged. Full contextual corpus,
-measured resources, instrumented fuzz and schema71 are later milestones.
+capacity grant is admitted by DD-1555 after BM-0231's complete public
+resource and directional qualification. Earlier selectors and representations
+remain unchanged. Five instrumented fuzz campaigns and preliminary schema71
+qualification also pass. Final fixed-runtime/source81 qualification and
+maintainer push, hosted CI and external routes remain pending.

@@ -10832,3 +10832,51 @@ not isolated throughput or peak-memory measurement. The isolated48-row
 one-warmup/three-sample campaign, normal process peaks,3072MiB capacity
 admission, schema71 exchange and final source/runtime qualification remain
 unfinished. Maintainer push, hosted CI and external four routes remain pending.
+
+## BM-0231: complete sixty-four-MiB directional and resource qualification
+
+Date:2026-10-09. All twelve frozen corpus members total211938580 raw bytes.
+Position-distance produces59366141 bytes versus60568740 for the physical
+64MiB frame/window contextual control, a1.985511008% reduction. Every member
+is smaller. All candidate archives agree with the private encoder and both
+normal public CLI builds (BM-0230). Candidate2/14+1/20+4/11 and contextual
+2/6+1/5+4/3 keep separate representations; the contextual control retains8F
+decisions and16F+8 payload allowance.
+
+All48 directional rows complete with one warmup and three fresh-instance
+samples. Sum each member's median. Timing includes allocation, factory,
+process and destruction, excluding file IO and comparisons. A separate
+fresh normal public C API process measures lifetime peak memory including
+bounded65536-byte streaming calls and IO. Sanitizer peaks are excluded.
+Verify input/output hashes, all sample counts, unchanged tool hashes and
+empty selected-process audits before and after the complete isolated run.
+
+| Profile | Direction | Sum of medians, seconds | Process peak, bytes |
+| --- | --- | ---: | ---: |
+| position | encode | 1140.384730300 | 1495277568 |
+| position | decode | 6.334459000 | 879656960 |
+| contextual | encode | 1153.010480900 | 896843776 |
+| contextual | decode | 4.127841400 | 881119232 |
+
+Observed position time changes are -1.095024790% encode and +53.456937565%
+decode. Retain all three samples and spans. Position encode spans relative
+to their medians include67.286159972% reymont,23.926976721% samba,
+20.040156447% osdb and7.015550498% webster. The small aggregate encode
+difference does not establish stable acceleration; three samples provide
+no population confidence interval or universal speed guarantee. These
+measurements report the workload's tradeoffs, not a reason to discard or
+replace individual samples. No arbitrary scatter cutoff changes the medians.
+
+Candidate driver queries include owner, calls and controls:
+3021027038/2214934374 bytes. Benchmark queries omit the separate65536-byte
+external charge:3020961502/2214868838 bytes. Contextual caller-workspace
+queries range178500649..1692382249 encode and remain1946928169 decode;
+their scope excludes separate caller/control charges. Neither query is RSS.
+All candidate queries fit the unchanged3072MiB grant, admitted by DD-1555.
+Existing F+1 boundary checks qualify the drivers' output and full-frame
+query handling; their overlapping timings/peaks are not isolated evidence.
+Five fully instrumented10k campaigns remain qualified by FZ-0086.
+
+This completes the64MiB benchmark/fuzz local milestone. Final fixed-runtime
+and source81 exchange qualification, the full four-profile local completion
+audit and maintainer push/hostedCI/external four routes remain unfinished.

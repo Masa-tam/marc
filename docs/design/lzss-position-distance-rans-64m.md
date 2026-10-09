@@ -122,3 +122,16 @@ short archive, metadata/state/trailing mutations and retained destination
 cases pass. Exact public query rows also agree across builds. This completes
 public milestone3 only; capacity admission and final qualification remain
 pending as stated above.
+
+## Complete local benchmark/fuzz qualification
+
+BM-0231 qualifies all twelve corpus members and48 isolated directional rows,
+with one warmup and three samples per row and fresh normal public process
+peaks. Candidate59366141 bytes are below contextual60568740 bytes, with
+every member smaller. Observed encode time is1.095024790% shorter and
+decode time53.456937565% longer; individual encode sample spans preclude a
+stable acceleration claim. Report capacity queries separately from peaks.
+DD-1555 retains3072MiB after complete query/resource qualification. Together
+with FZ-0086's five fully instrumented10k campaigns this completes local
+milestone4. Final fixed-runtime/source81 qualification, four-profile local
+completion and maintainer push/hostedCI/external gates remain unfinished.

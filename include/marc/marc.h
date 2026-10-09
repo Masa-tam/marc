@@ -2326,7 +2326,7 @@ MARC_API marc_status marc_lzss_position_distance_rans_32m_resource_requirements(
 MARC_API marc_status marc_lzss_position_distance_rans_32m_create(
     const marc_lzss_position_distance_rans_32m_config* config, marc_transform** transform) MARC_NOEXCEPT;
 
-/* DD-1554 sixty-four-MiB owning profile; 3072 MiB capacity trial, pending measured admission. */
+/* DD-1555 sixty-four-MiB owning profile; admitted 3072 MiB checked capacity budget, not RSS. */
 typedef struct marc_lzss_position_distance_rans_64m_config {
     uint32_t struct_size, abi_version;
     marc_direction direction;

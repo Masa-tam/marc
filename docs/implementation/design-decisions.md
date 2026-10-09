@@ -33844,3 +33844,21 @@ discard and failed-frame quarantine. The case-sensitive CLI selector is
 lzss-position-distance-rans-64m with65536-byte calls, strict profile identity
 and whole-file temporary-file commit. Full corpus, measurements, instrumented
 fuzz and schema71 remain later local gates before the maintainer pushes.
+
+### DD-1555: admit sixty-four-MiB checked capacity after complete measurements
+
+Retain3072MiB (3221225472 bytes) after BM-0231's complete twelve-member,
+48-row public directional and fresh normal-process qualification. Maximum
+driver queries with65536-byte declared calls and65536 external/control bytes
+are3021027038 encode and2214934374 decode. Both fit the grant; retain checked
+owner, retained capacities, fixed working and declared-call accounting before
+allocation. Process peaks are reported separately and are not this budget's
+scope. Exact-budget acceptance, one-byte-below refusal before allocation,
+allocation rollback and failure invariants remain covered by TVG-1417.
+
+All twelve candidate archives are smaller than the physical64MiB contextual
+control. The observed aggregate encode-time difference is small relative to
+some sample spans; do not claim stable encode acceleration. Decode is slower
+on the measured workload. No numeric default, wire format or parsing policy
+changes. Final fixed-runtime/source81 qualification, the four-profile local
+completion audit and maintainer push/hostedCI/external gates remain unfinished.
