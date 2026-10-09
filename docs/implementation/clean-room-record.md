@@ -40569,3 +40569,22 @@ Source review keeps format, production codec and publication logic unchanged.
 These are infrastructure checks; isolated full-corpus measurements, instrumented
 fuzz, exchange and later windows remain separate unfinished gates. No legal
 guarantee, hosted CI or external verification is asserted.
+
+### CR-1764:64KiB paired public tANS corpus measurements
+
+Date:2026-10-10. Author/reviewer:Codex; maintainer review pending.
+Task: qualify DD-1569's normal public timing/resource paths on all twelve
+frozen BM-0233 members in both normal builds. Reuse only first-party qualified
+inputs, archives, public APIs and measurement drivers; no new external codec
+reference or restricted source was consulted.
+
+All96 normal resource executions restore original bytes or reproduce qualified
+archives. Each of96 direction/member timing measurements verifies one warmup
+and three fresh instances. Selected process audits pass before/after both
+sequential campaigns. Rehash retained inputs, outputs, receipts, executables
+and static/shared libraries; public codec/header bytes remain qualified and
+unchanged. Record medians, observed sample spreads, per-member normal peaks,
+separate query scopes, aggregate tradeoffs and the retained compression misses
+in BM-0235. These observed results make no universal performance claim.
+Instrumented fuzz, exchange, later windows, hosted CI and external qualification
+remain unfinished. Fixed qualified Release is preserved and no push occurs.

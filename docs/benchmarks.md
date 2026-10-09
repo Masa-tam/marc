@@ -10996,3 +10996,91 @@ expected bytes, existing outputs remain untouched and late terminal-state
 failure publishes no file. These short checks validate plumbing, not comparative
 throughput or corpus peaks. Isolated corpus measurements, instrumented fuzz,
 exchange and later windows remain unfinished.
+
+### BM-0235:64KiB paired public tANS corpus timing and normal peaks
+
+Date:2026-10-10. Use the twelve frozen BM-0233 members,211938580 raw bytes.
+Both normal builds reproduce every qualified candidate/contextual archive
+and restore the original hashes. Actual identities and matching65536-byte
+frames/windows remain BM-0233's2/8+1/21+5/3 and2/2+1/1+5/2. Compression
+remains80237027 versus81200703 bytes; the five per-member misses remain.
+
+Follow BM-0234's one warmup/three fresh instances, with allocation, creation,
+process and destruction timed; file I/O and byte comparison are excluded.
+Run campaigns sequentially and audit selected codec/build processes
+before/after each campaign. This is a selected-workload observation, not a
+global process lock or guarantee of an otherwise idle machine. Normal peaks
+come from separate streaming processes, not the timing driver's file vectors.
+The two normal builds are denoted A/B. Each table cell is
+position-distance/contextual (P/C).
+
+Candidate streaming admission is4202026 encode/2693796 decode bytes, including
+declared calls and65536 external control bytes, under the unchanged8MiB grant.
+Contextual caller-workspace queries are2499463 encode/1975175 decode bytes;
+these exclude driver I/O131072 and its65536 control allowance. Query scopes
+differ and neither is a process-peak limit. Timing additionally retains and
+declares actual comparison-vector capacities with a benchmark-only grant.
+
+Normal build A; median seconds and separately measured peak KiB.
+
+| Member | Encode seconds P/C | Decode seconds P/C | Encode peak KiB P/C | Decode peak KiB P/C |
+|---|---:|---:|---:|---:|
+| dickens | 1.672461/1.524184 | 0.363629/0.640446 | 6724/6784 | 6508/6228 |
+| mozilla | 8.393102/9.982172 | 1.848767/3.856617 | 6988/6856 | 6580/6296 |
+| mr | 1.550197/1.714203 | 0.332720/0.654114 | 6740/6788 | 6516/6232 |
+| nci | 2.137370/2.382210 | 0.626296/1.171038 | 6672/6764 | 6492/6208 |
+| ooffice | 1.162853/1.296795 | 0.333874/0.548837 | 6832/6804 | 6528/6296 |
+| osdb | 1.460242/1.600106 | 0.365172/0.727723 | 6736/6788 | 6520/6232 |
+| reymont | 0.921003/0.832091 | 0.206584/0.359173 | 6840/6856 | 6584/6300 |
+| samba | 2.321582/2.523674 | 0.580719/1.071949 | 6988/6856 | 6580/6296 |
+| sao | 1.710835/1.938835 | 0.346114/0.702016 | 6852/6856 | 6544/6300 |
+| webster | 5.392006/5.219375 | 1.254744/2.269732 | 6716/6780 | 6512/6224 |
+| xml | 0.388798/0.404119 | 0.110689/0.204127 | 6712/6776 | 6504/6216 |
+| x-ray | 1.714133/1.923290 | 0.397391/0.780727 | 6840/6856 | 6532/6300 |
+| Sum medians / maximum peaks | 28.824582/31.341054 | 6.766698/12.986499 | 6988/6856 | 6584/6300 |
+
+BuildA sum of member medians is8.029% shorter for encode and47.894%
+shorter for decode. These sums are not a single whole-corpus timing trial.
+Maximum member sample spread for encode is13.110% P/9.360% C.
+Maximum member sample spread for decode is33.374% P/23.149% C.
+
+Normal build B; median seconds and separately measured peak KiB.
+
+| Member | Encode seconds P/C | Decode seconds P/C | Encode peak KiB P/C | Decode peak KiB P/C |
+|---|---:|---:|---:|---:|
+| dickens | 1.571313/1.347604 | 0.394715/0.630773 | 5044/5308 | 4776/4864 |
+| mozilla | 7.515421/8.639871 | 1.902751/3.864232 | 5156/5584 | 4788/4856 |
+| mr | 1.489676/1.601112 | 0.362294/0.652722 | 4984/5376 | 4768/4864 |
+| nci | 2.113320/2.262823 | 0.657654/1.235366 | 4896/5396 | 4652/4764 |
+| ooffice | 1.038803/1.052386 | 0.280399/0.554400 | 5016/5452 | 4680/4868 |
+| osdb | 1.343737/1.366102 | 0.377325/0.731978 | 4912/5324 | 4864/4760 |
+| reymont | 0.893801/0.783311 | 0.216216/0.350642 | 4932/5396 | 4660/4816 |
+| samba | 2.186307/2.188136 | 0.605217/1.098288 | 5168/5552 | 4920/4728 |
+| sao | 1.464231/1.468711 | 0.372978/0.709886 | 5036/5436 | 4772/4908 |
+| webster | 5.042341/4.622341 | 1.365880/2.436799 | 4892/5212 | 4776/4816 |
+| xml | 0.377297/0.375337 | 0.116009/0.212130 | 4916/5408 | 4644/4844 |
+| x-ray | 1.508417/1.513782 | 0.418802/0.767629 | 4992/5484 | 4764/4788 |
+| Sum medians / maximum peaks | 26.544665/27.221516 | 7.070238/13.244845 | 5168/5584 | 4920/4908 |
+
+BuildB sum of member medians is2.486% shorter for encode and46.619%
+shorter for decode. These sums are not a single whole-corpus timing trial.
+Maximum member sample spread for encode is3.044% P/4.634% C.
+Maximum member sample spread for decode is1.906% P/4.473% C.
+
+
+Derived raw MiB/s uses total raw bytes divided by the sum of member medians;
+it is not a separate whole-corpus throughput trial.
+
+| Build | Encode MiB/s P/C | Decode MiB/s P/C |
+|---|---:|---:|
+| A | 7.012/6.449 | 29.870/15.564 |
+| B | 7.614/7.425 | 28.587/15.260 |
+
+The aggregate speed/compression result favors the candidate in these measured
+campaigns, while several members encode more slowly and five compress larger.
+Normal memory differences depend on direction/build; retain both profiles and
+the separate measurements. Report the observed sample spread rather than
+claiming a universal or precise small speed advantage from three samples.
+Do not infer that these64KiB results hold for larger windows or every workload.
+No Dynamic Range size criterion is applied. Instrumented fuzz, exchange,
+later-window local qualification, hosted CI and external paths remain unfinished.

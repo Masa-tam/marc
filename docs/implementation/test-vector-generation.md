@@ -23156,3 +23156,19 @@ Require rejection of an incorrect expected file and preservation of existing
 output. Change a singleton's final tANS state offset to1; the resource decoder
 must refuse publication and retain a zero-byte failed temporary. These small
 checks qualify measurement plumbing, not isolated corpus performance or fuzz.
+
+### TVG-1435:64KiB public tANS paired corpus measurement audit
+
+Use all twelve frozen BM-0233 sources and the qualified candidate/contextual
+archives as expected bytes. In each normal build, run48 paired direction/member
+measurements with one warmup and three fresh transform instances each. Compare
+all output bytes outside the timer. Separately run48 normal streaming resource
+processes, compare complete archive/raw hashes and retain their process peaks.
+
+Require idle selected codec/build process observations before and after each
+sequential campaign; do not claim a global process lock. Rehash original inputs,
+golden archives, normal resource outputs, measurement executables and qualified
+static/shared libraries. Recompute member medians, sample spreads and totals
+from retained receipts. Keep all artifacts, fixed qualified Release and prior
+production/header bytes unchanged. This completes the64KiB public corpus
+measurement gate, while instrumented fuzz and exchange remain unfinished.
