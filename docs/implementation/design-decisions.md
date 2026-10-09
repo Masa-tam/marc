@@ -34338,3 +34338,28 @@ and four invalid independent fixture bodies match the prior finite-frame
 checkpoint. Owner/resource grants, public API/CLI, corpus measurements, fuzz
 and the next exchange extension remain pending. CI/external validation has
 not been run for this milestone.
+
+### DD-1579: one-MiB owning transforms and fixed-five raw oracle
+
+One-MiB owning transforms retain the first-party caller-scratch state machine
+and use the existing one-MiB five-prefix finder with fixed-five eligibility.
+Do not reuse the variant-eight-only64KiB finder. Query actual owner/table/token
+sizeof values and finder extents, plus bounded controls, before allocation.
+The serialized bound is64+9207+2+ceil(96R/8), with separate private payload
+and serialized staging for encode; decode retains payload inside serialized
+scratch. No decision array is serialized or retained. Queries are admission
+charges, not measured process peaks. Public limits await normal resource
+measurements. Inject failure at every allocation, require rollback and forbid
+allocation during process. Qualify exact and one-below grants, frame resets,
+all partial boundaries and failed-frame exclusion before public admission.
+
+Qualification: both builds passed owner units, independent frame decode
+and independent raw encode/decode. Build A measured0.60/31.35/41.70 seconds
+(total73.82); build B measured0.43/24.55/36.20 (total61.35). All231 valid
+and four invalid frame bodies match the caller-scratch checkpoint; all495
+raw fixture bodies match across builds. Every owner/buffer allocation was
+injected to fail and released its partial allocations; process calls made
+no allocation attempts. One-MiB-before/equal/after boundaries and failed
+second-frame quarantine pass. Keep the120-second differential allowance
+for this measured stage and run these heavy tests serially. Public default
+limits, normal peaks/full corpus, API/CLI, fuzz and exchange remain pending.

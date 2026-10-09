@@ -72,7 +72,7 @@ for i,tokens in enumerate(cases):
     result=subprocess.run([args.executable,'--public-fixture' if args.public else '--owning-fixture' if args.owning else '--fixture',str(path)],capture_output=True,timeout=15)
     if result.returncode:raise RuntimeError((i,result.returncode,result.stdout.decode(),result.stderr.decode()))
 negative_hashes={}
-if not args.owning and not args.public:
+if not args.public:
     bad_cases=[('no-history-'+str(n),[(1,0,1048576,n)],n) for n in (3,4,258)]
     bad_cases.append(('late-invalid-history',[(0,65,0,0),(1,0,2,3)],4))
     for label,tokens,size in bad_cases:

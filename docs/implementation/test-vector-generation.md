@@ -23377,3 +23377,28 @@ and four invalid independent fixture bodies match the prior finite-frame
 checkpoint. Owner/resource grants, public API/CLI, corpus measurements, fuzz
 and the next exchange extension remain pending. CI/external validation has
 not been run for this milestone.
+
+### TVG-1446: one-MiB owning transforms and fixed-five raw oracle
+
+Adapt the independent first-party greedy raw parser with one-MiB format
+identity, fixed-five eligibility and longest/nearest tie rules. Retain all
+256 one-byte inputs, exhaustive binary lengths0..6, short-match exclusions,
+100 seed1579 random inputs and large repetitive one-MiB boundaries. Generate
+whole frame bytes mathematically and independently restore raw bytes before
+comparing the owning encoder and decoder. Separately replay all231 prior
+noncanonical typed-history frame fixtures with one-byte owning decode and
+four invalid histories with whole/split error parity and output guards.
+Owner tests inject every allocation failure and forbid allocations during
+process; validate exact grants and failed query immutability. This milestone
+does not qualify public factories/CLI, normal peaks, fuzz or exchange.
+
+Qualification: both builds passed owner units, independent frame decode
+and independent raw encode/decode. Build A measured0.60/31.35/41.70 seconds
+(total73.82); build B measured0.43/24.55/36.20 (total61.35). All231 valid
+and four invalid frame bodies match the caller-scratch checkpoint; all495
+raw fixture bodies match across builds. Every owner/buffer allocation was
+injected to fail and released its partial allocations; process calls made
+no allocation attempts. One-MiB-before/equal/after boundaries and failed
+second-frame quarantine pass. Keep the120-second differential allowance
+for this measured stage and run these heavy tests serially. Public default
+limits, normal peaks/full corpus, API/CLI, fuzz and exchange remain pending.

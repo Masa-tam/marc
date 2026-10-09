@@ -40802,3 +40802,25 @@ and four invalid independent fixture bodies match the prior finite-frame
 checkpoint. Owner/resource grants, public API/CLI, corpus measurements, fuzz
 and the next exchange extension remain pending. CI/external validation has
 not been run for this milestone.
+
+### CR-1775: one-MiB owning transforms and fixed-five raw oracle
+
+Date:2026-10-10. Author/reviewer:Codex; maintainer review pending.
+Task: implement one-MiB owning transforms and qualify independent raw
+fixed-five parsing, allocation rollback and publication guarantees.
+Adapt only first-party64KiB owner/test/oracle code and connect the existing
+first-party one-MiB finder. Use independently specified96R-bit capacity and
+actual query extents. No external or restricted implementation consulted.
+Normal resource measurements, public admission, full corpus comparison,
+fuzz and schema73/83 are pending; no push or legal guarantee claimed.
+
+Qualification: both builds passed owner units, independent frame decode
+and independent raw encode/decode. Build A measured0.60/31.35/41.70 seconds
+(total73.82); build B measured0.43/24.55/36.20 (total61.35). All231 valid
+and four invalid frame bodies match the caller-scratch checkpoint; all495
+raw fixture bodies match across builds. Every owner/buffer allocation was
+injected to fail and released its partial allocations; process calls made
+no allocation attempts. One-MiB-before/equal/after boundaries and failed
+second-frame quarantine pass. Keep the120-second differential allowance
+for this measured stage and run these heavy tests serially. Public default
+limits, normal peaks/full corpus, API/CLI, fuzz and exchange remain pending.
