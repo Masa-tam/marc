@@ -1742,7 +1742,7 @@ tests; they do not replace them. Instrumented RSS is not a normal-build
 peak or capacity-default qualification. Full matched corpus, isolated
 directional/normal-resource measurements and schema71/final81 remain pending.
 
-## FZ-0087:64KiB position-distance tANS pilot infrastructure
+## FZ-0087:64KiB position-distance tANS campaigns
 
 Date:2026-10-10. Five bounded first-party targets cover descriptor, scalar
 payload, typed tokens, split stream and owning public C lifecycle. All576
@@ -1760,5 +1760,13 @@ target,576MiB instrumented RSS cap and per-target campaign watchdogs with
 headroom above the observed runs. The ten-second per-unit guard exceeds the
 observed subsecond pilot units. Preserve logs, original seeds and any failed
 artifacts. These pilot observations are not normal peak measurements or proof
-of10000-unit campaigns, which remain pending. Exchange, larger windows and
-hosted/external qualification also remain unfinished.
+of10000-unit campaigns by themselves.
+
+Subsequently all five targets complete10000 units each with seed1569 and
+the same verified576 production units/five entries. All retain the pilot-bound
+input caps, a576MiB instrumented RSS cap and single-target scheduling. No
+sanitizer/invariant finding or saved crash/hang/leak/oom artifact occurs.
+Rehash original seeds, actual fuzz executables, source and saved campaign
+receipts. The public API/CLI, corpus measurements and this fuzz gate are locally
+qualified; exchange, larger windows and hosted/external qualification remain
+unfinished. Instrumented peaks do not replace the normal BM-0235 measurements.

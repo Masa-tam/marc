@@ -40606,3 +40606,20 @@ passes300 pilot units without sanitizer or invariant finding. Record actual
 instrumented memory/time separately from normal performance. Full campaigns,
 exchange and later-window qualification remain pending; no hosted/external
 verification, fixed Release replacement, push or legal guarantee is claimed.
+
+### CR-1766:64KiB tANS completed fuzz campaigns
+
+Date:2026-10-10. Author/reviewer:Codex; maintainer review pending.
+Task: complete and audit the five DD-1570 instrumented campaigns. No codec,
+harness, frozen expectation or reference changes follow the qualified pilots;
+no new external implementation source is consulted.
+
+Each unchanged target completes10000 units with seed1569 under ASan/UBSan,
+with all576 production static-library units verified instrumented. Measured
+pilot RSS/time selects576MiB headroom, target-specific watchdogs and one
+active target. All source/executable/seed bindings remain unchanged; saved
+logs and process resource receipts qualify every completion. No sanitizer or
+invariant finding or saved crash/hang/leak/oom artifact occurs. Retain the
+normal performance evidence separately. Exchange and later-window work remain
+pending, as do hosted/external qualification; fixed Release is preserved and
+no push or legal guarantee is claimed.

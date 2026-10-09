@@ -23189,3 +23189,15 @@ time/RSS, terminal log and artifact checks. Check ordinary failure destinations,
 private scratch equivalence, output guards, whole/split publication and sticky
 terminal states. Successful pilot checks qualify the infrastructure, not the
 planned10000-unit campaigns, exchange or the complete64KiB profile.
+
+### TVG-1437:64KiB tANS complete instrumented campaign audit
+
+After TVG-1436's pilots, run10000 units in each of the five unchanged compiled
+targets with seed1569 and one active target. Use576MiB RSS headroom derived
+from the observed pilot maximum and per-target watchdogs derived from pilot
+elapsed time and increased run count. Preserve every seed/log/output.
+Rehash actual executable/source bindings, immutable225 scalar fixture seeds
+and all saved terminal/resource receipts. Require successful10000-unit logs,
+no sanitizer/invariant finding, no crash/hang/leak/oom artifact and process
+peaks below the selected instrumented cap. This closes the64KiB fuzz gate;
+normal public peaks remain BM-0235's separate evidence and exchange is pending.
