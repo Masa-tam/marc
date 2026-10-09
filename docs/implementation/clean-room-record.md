@@ -41024,3 +41024,15 @@ Build B campaign is still running and not qualified by this record. Full
 cross-build timing/peak audit, instrumented fuzz, schema73/83, fixed-release
 publication and profile closure remain pending. Hosted CI/external paths
 are separately pending; no push is performed.
+
+### CR-1782: one-MiB paired public measurement completion
+
+Build B encode:sum of member medians 38.6560821/49.7483336 seconds P/C (22.297% shorter). Maximum normal process peaks 33570816/24702976 bytes. Maximum member sample spreads 1.336/2.116%.
+
+Build B decode:sum of member medians 3.9898580/5.1793127 seconds P/C (22.965% shorter). Maximum normal process peaks 18636800/18571264 bytes. Maximum member sample spreads 6.307/3.042%.
+
+Candidate encode medians are slower on dickens, ooffice, osdb, sao, x-ray. Candidate decode medians are slower on none of these twelve members.
+
+Both builds now complete the twelve-member paired campaign under BM-0238. Every measured output matches its qualified CLI archive or raw SHA; actual same-window identities/settings remain BM-0237. Selected process snapshots succeed with no selected codec/build work before/after, without claiming a global lock. Timing includes allocation, creation, process and destruction, with one warmup and three fresh samples; separate normal streamed process peaks include runtime and bounded IO. Queries have different accounting scopes and are not peaks. Compression totals remain64055526 P/65192805 C, all twelve smaller; no Dynamic Range adoption criterion. Mixed member encode speeds and higher encode memory remain tradeoffs. Preserve sample spreads and avoid universal/small precise speed claims.
+
+Instrumented fuzz, additive schema73/83 exchange/history, fixed-release update and full profile closure remain pending. Hosted CI/external verification are separately pending; no push.

@@ -11265,3 +11265,37 @@ Each table cell is position-distance/contextual (P/C).
 |---|---:|
 | encode | 4.752/3.937 |
 | decode | 57.958/35.196 |
+
+### BM-0240:one-MiB paired public corpus timing and normal peaks build B
+
+Build B encode:sum of member medians 38.6560821/49.7483336 seconds P/C (22.297% shorter). Maximum normal process peaks 33570816/24702976 bytes. Maximum member sample spreads 1.336/2.116%.
+
+Build B decode:sum of member medians 3.9898580/5.1793127 seconds P/C (22.965% shorter). Maximum normal process peaks 18636800/18571264 bytes. Maximum member sample spreads 6.307/3.042%.
+
+Candidate encode medians are slower on dickens, ooffice, osdb, sao, x-ray. Candidate decode medians are slower on none of these twelve members.
+
+Both builds now complete the twelve-member paired campaign under BM-0238. Every measured output matches its qualified CLI archive or raw SHA; actual same-window identities/settings remain BM-0237. Selected process snapshots succeed with no selected codec/build work before/after, without claiming a global lock. Timing includes allocation, creation, process and destruction, with one warmup and three fresh samples; separate normal streamed process peaks include runtime and bounded IO. Queries have different accounting scopes and are not peaks. Compression totals remain64055526 P/65192805 C, all twelve smaller; no Dynamic Range adoption criterion. Mixed member encode speeds and higher encode memory remain tradeoffs. Preserve sample spreads and avoid universal/small precise speed claims.
+
+Instrumented fuzz, additive schema73/83 exchange/history, fixed-release update and full profile closure remain pending. Hosted CI/external verification are separately pending; no push.
+
+Each cell is position-distance/contextual (P/C).
+
+| Member | Encode seconds P/C | Decode seconds P/C | Encode peak KiB P/C | Decode peak KiB P/C |
+|---|---:|---:|---:|---:|
+| dickens | 2.389312/2.340090 | 0.243186/0.269735 | 30988/23676 | 17568/17600 |
+| mozilla | 9.395022/14.883670 | 1.088837/1.548101 | 32784/24124 | 18200/18096 |
+| mr | 3.134378/6.797044 | 0.231106/0.274657 | 30924/23408 | 17656/17640 |
+| nci | 3.467354/5.809247 | 0.223269/0.267327 | 30120/23252 | 17436/17340 |
+| ooffice | 1.156665/0.983829 | 0.183286/0.256121 | 31532/23880 | 17692/17764 |
+| osdb | 1.358977/1.084089 | 0.203167/0.272550 | 30884/23552 | 17708/17644 |
+| reymont | 2.223079/2.523319 | 0.122056/0.131915 | 30780/23412 | 17644/17528 |
+| samba | 2.752814/3.349530 | 0.308686/0.406078 | 31772/23640 | 17948/17800 |
+| sao | 1.704328/1.272211 | 0.251793/0.379247 | 32152/24060 | 17984/18136 |
+| webster | 8.723544/8.903252 | 0.768803/0.886458 | 30844/23552 | 17540/17656 |
+| xml | 0.426812/0.438033 | 0.047935/0.055855 | 30376/23416 | 17416/17208 |
+| x-ray | 1.923797/1.364019 | 0.317735/0.431270 | 32056/23800 | 17964/18000 |
+
+| Direction | Raw MiB/s P/C from sum medians |
+|---|---:|
+| encode | 5.229/4.063 |
+| decode | 50.659/39.025 |
