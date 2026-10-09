@@ -40862,3 +40862,28 @@ only a candidate until actual public wrapper/call/external charges and creation
 are tested. Boundary resource tests measured1.12/1.40 seconds; use30-second
 watchdogs. Owner differentials measured up to41.70 seconds; retain120-second
 watchdogs and one active owning differential per shared campaign lock.
+
+### CR-1777: one-MiB public tANS factories
+
+Date:2026-10-10. Author/reviewer:Codex; maintainer review pending.
+Task: distinct one-MiB public factory and C ABI qualification. Adapt only
+first-party64KiB factory and tests, use the defined one-MiB identity/bounds
+and measured private resources. Preserve prior API representation and failure
+contracts. Independently generated mathematical frame/raw fixtures remain
+unchanged. Correct a copied fixture-driver call budget for1MiB output pauses;
+retain the initial failure log. No external or restricted implementation
+consulted. CLI, paired corpus, fuzz and exchange are pending; no push or
+legal guarantee claimed.
+
+Qualification: five tests per build passed. Build A measured0.63/0.01/0.01/
+31.55/36.49 seconds (total68.92); build B0.52/0.01/0.01/21.48/32.61
+(total54.85). All231 valid/four invalid/495 raw fixture bodies match prior
+checkpoints and across builds. Both shared libraries preserve208 existing
+exports and add only three one-MiB exports, total211. Config/resources sizes
+are136/120 bytes. All ten encode and seven decode construction allocation
+failures roll back; process calls allocate nothing. Default64MiB and exact
+queried grant creation pass with CLI-shaped call/control charges; one-byte
+below refuses unchanged before allocation. The initial insufficient call
+guard was a test-driver limit, corrected without a codec source change.
+Public CLI, paired contextual corpus, repeated timing/normal peaks, fuzz
+and exchange still require qualification; CI/external tests remain pending.

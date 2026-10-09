@@ -182,6 +182,14 @@ set(MARC_SOURCES
     src/frame/lzss_position_rans_64k_frame.cpp
     src/frame/lzss_position_rans_64k_owned.cpp
     src/frame/lzss_position_rans_64k_stream_decoder.cpp
+    src/frame/lzss_position_tans_1m_c_factory.cpp
+    src/frame/lzss_position_tans_1m_owned.cpp
+    src/frame/lzss_position_tans_1m_stream_decoder.cpp
+    src/frame/lzss_position_tans_1m_format.cpp
+    src/frame/lzss_position_tans_1m_frame.cpp
+    src/context/lzss_position_tans_1m_tokens.cpp
+    src/entropy/position_tans_1m.cpp
+    src/entropy/position_tans_1m_format.cpp
     src/frame/lzss_position_tans_64k_c_factory.cpp
     src/frame/lzss_position_tans_64k_owned.cpp
     src/frame/lzss_position_tans_64k_stream_decoder.cpp
@@ -9430,5 +9438,31 @@ if(MARC_BUILD_TESTS)
                 $<TARGET_FILE:marc_position_tans_1m_resources>
                 ${CMAKE_CURRENT_BINARY_DIR}/position-tans-1m-resources-smoke)
         set_tests_properties(marc_position_tans_1m_resources_smoke PROPERTIES TIMEOUT 30)
+    endif()
+    add_executable(marc_position_tans_1m_api_tests tests/position_tans_1m_api_tests.cpp)
+    target_compile_features(marc_position_tans_1m_api_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_1m_api_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_tans_1m_api_tests PRIVATE marc::static)
+    add_test(NAME marc_position_tans_1m_api COMMAND marc_position_tans_1m_api_tests)
+    set_tests_properties(marc_position_tans_1m_api PROPERTIES TIMEOUT 30)
+    foreach(linkage IN ITEMS static shared)
+        add_executable(marc_position_tans_1m_c_${linkage} tests/position_tans_1m_c_smoke.c)
+        target_link_libraries(marc_position_tans_1m_c_${linkage} PRIVATE marc::${linkage})
+        add_test(NAME marc_position_tans_1m_c_${linkage} COMMAND marc_position_tans_1m_c_${linkage})
+        set_tests_properties(marc_position_tans_1m_c_${linkage} PROPERTIES TIMEOUT 30)
+    endforeach()
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_tans_1m_public_frame_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_1m_frame_differential.py
+                $<TARGET_FILE:marc_position_tans_1m_api_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-1m-public-frames --public)
+        add_test(NAME marc_position_tans_1m_public_raw_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_1m_raw_differential.py
+                $<TARGET_FILE:marc_position_tans_1m_api_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-1m-public-raw --public)
+        set_tests_properties(marc_position_tans_1m_public_frame_differential
+            marc_position_tans_1m_public_raw_differential PROPERTIES TIMEOUT 120 RESOURCE_LOCK marc_position_tans_1m_campaign)
     endif()
 endif()

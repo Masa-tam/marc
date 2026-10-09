@@ -72,18 +72,17 @@ for i,tokens in enumerate(cases):
     result=subprocess.run([args.executable,'--public-fixture' if args.public else '--owning-fixture' if args.owning else '--fixture',str(path)],capture_output=True,timeout=15)
     if result.returncode:raise RuntimeError((i,result.returncode,result.stdout.decode(),result.stderr.decode()))
 negative_hashes={}
-if not args.public:
-    bad_cases=[('no-history-'+str(n),[(1,0,1048576,n)],n) for n in (3,4,258)]
-    bad_cases.append(('late-invalid-history',[(0,65,0,0),(1,0,2,3)],4))
-    for label,tokens,size in bad_cases:
-        decisions=oracle.events(tokens);vector=oracle.vector(label,decisions)
-        d,p=bytes.fromhex(vector['descriptor']),bytes.fromhex(vector['payload'])
-        frame=frame_header(size,len(tokens),len(decisions),len(p),len(d))+d+p
-        fixture=struct.pack('<II',len(frame),size)+stream_header(size)+frame+bytes(size)
-        path=stage/f'negative-{label}.bin';path.write_bytes(fixture)
-        negative_hashes[path.name]=hashlib.sha256(fixture).hexdigest()
-        result=subprocess.run([args.executable,'--reject-frame-fixture',str(path)],capture_output=True,timeout=15)
-        if result.returncode:raise RuntimeError((label,result.returncode,result.stdout.decode(),result.stderr.decode()))
+bad_cases=[('no-history-'+str(n),[(1,0,1048576,n)],n) for n in (3,4,258)]
+bad_cases.append(('late-invalid-history',[(0,65,0,0),(1,0,2,3)],4))
+for label,tokens,size in bad_cases:
+    decisions=oracle.events(tokens);vector=oracle.vector(label,decisions)
+    d,p=bytes.fromhex(vector['descriptor']),bytes.fromhex(vector['payload'])
+    frame=frame_header(size,len(tokens),len(decisions),len(p),len(d))+d+p
+    fixture=struct.pack('<II',len(frame),size)+stream_header(size)+frame+bytes(size)
+    path=stage/f'negative-{label}.bin';path.write_bytes(fixture)
+    negative_hashes[path.name]=hashlib.sha256(fixture).hexdigest()
+    result=subprocess.run([args.executable,'--reject-frame-fixture',str(path)],capture_output=True,timeout=15)
+    if result.returncode:raise RuntimeError((label,result.returncode,result.stdout.decode(),result.stderr.decode()))
 record={'passed':True,'fixtures':len(cases),'seed':1577,'seeded_histories':200,'stage':str(stage),
         'fixture_sha256':hashes,'independent_raw_restore':raw_receipts,'invalid_history_sha256':negative_hashes,
         'owning_fixture_decode_checked':args.owning,'public_fixture_decode_checked':args.public,'owning_stream_quarantine_qualification_claimed':False}

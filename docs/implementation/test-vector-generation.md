@@ -23435,3 +23435,32 @@ only a candidate until actual public wrapper/call/external charges and creation
 are tested. Boundary resource tests measured1.12/1.40 seconds; use30-second
 watchdogs. Owner differentials measured up to41.70 seconds; retain120-second
 watchdogs and one active owning differential per shared campaign lock.
+
+### TVG-1448: one-MiB public tANS factories
+
+Replay231 independent typed-history frames and495 independently parsed
+fixed-five raw fixtures through the public factory with one-byte boundaries.
+All four independently malformed histories must reject before raw output
+and agree between whole and one-byte input in category, position and consumed
+count. Qualify NULL rollback, immutable failed query destinations, ABI and
+struct sizes, every allocation-site failure, overlap/call-limit errors and
+failed-second-frame exclusion. Empty C smoke and nonempty bytewise reset
+round trips use static and shared libraries. The1MiB partial driver allows
+a bounded32MiB call budget plus input-proportional calls: a1MiB raw result
+with every third output capacity zero exceeds the copied64KiB1MiB call
+budget. Initial test-driver nontermination logs remain retained; no codec
+failure is inferred from that guard alone. CLI/default process peaks, paired
+corpus, fuzz and exchange remain separate pending gates.
+
+Qualification: five tests per build passed. Build A measured0.63/0.01/0.01/
+31.55/36.49 seconds (total68.92); build B0.52/0.01/0.01/21.48/32.61
+(total54.85). All231 valid/four invalid/495 raw fixture bodies match prior
+checkpoints and across builds. Both shared libraries preserve208 existing
+exports and add only three one-MiB exports, total211. Config/resources sizes
+are136/120 bytes. All ten encode and seven decode construction allocation
+failures roll back; process calls allocate nothing. Default64MiB and exact
+queried grant creation pass with CLI-shaped call/control charges; one-byte
+below refuses unchanged before allocation. The initial insufficient call
+guard was a test-driver limit, corrected without a codec source change.
+Public CLI, paired contextual corpus, repeated timing/normal peaks, fuzz
+and exchange still require qualification; CI/external tests remain pending.

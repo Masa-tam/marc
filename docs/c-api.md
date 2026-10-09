@@ -1213,3 +1213,27 @@ token/raw prefix is discarded, and a failed frame never drains. Earlier
 validated frames may already have published. This C API/static/shared
 checkpoint does not qualify CLI, isolated contextual measurements, fuzz,
 exchange or the later window profiles; those gates remain required.
+
+### One-MiB position-distance tANS factory
+
+The `marc_lzss_position_distance_tans_1m_config` and `_resources` types have
+separate `_config_init`, `_resource_requirements` and `_create` entry points.
+The format identity is2/9+1/22+5/4; existing64KiB entry points retain their
+behavior. Fixed-five encoding accepts known original size; decoding accepts
+the independently specified3..258 match grammar with one-MiB frame resets.
+
+Default frame/window1048576, decisions8388608, payload12582914, table entries
+217088 and64MiB aggregate admission apply. Decisions are symbols; other
+capacities are bytes. Queries separately report owned capacities, controls,
+metadata admission floor and caller/call charges; none is resident memory.
+Declare external retained storage and maximum call capacities before creation.
+A CLI-shaped query with65536 external bytes and two65536-byte calls reports
+65543980 encode and27433809 decode admission bytes. Full encode needs more
+than32MiB; the64MiB default passes actual query/create qualification with the declared
+CLI-shaped charges. Extra retained storage still requires a successful query.
+
+Failed queries leave output unchanged. Creation sets the handle to NULL on
+ordinary refusal; overlapping config/output destinations refuse unchanged.
+EndInput is explicit, EOS/error remain sticky and failed raw frames never
+publish. Prior successful frames may already be returned before a later
+error. Whole-file CLI publication is a separate contract pending connection.
