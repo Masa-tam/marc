@@ -34591,3 +34591,32 @@ memory grant. Public API/CLI and both-build corpus comparison/measurements
 are qualified; schema73/83 exchange/history, fixed-release update and
 profile closure remain pending. Hosted CI/external evidence remain separate.
 No push and no external implementation source consultation.
+
+### DD-1589: one-MiB additive exchange admission and self paths
+
+Two normal producers agree on all83 schema73/`marc-cli-v73` archives.
+Append only `lzss-position-distance-tans-1m` after the retained82-entry
+schema72 prefix. All preceding names, order, manifest entry values and
+complete archive bodies match both frozen producers; the original81
+remain preserved. The new archive is3234 bytes for unchanged8193 raw bytes,
+SHA-256 eacb3f29a0ea45ff1c8e2dc96bbcd4c879b551c1ba9b24daa671c832cfe159d4.
+Exact112-byte header identity2/9+1/22+5/4, one-MiB window/frame, grammar3..258,
+five-byte encoder eligibility,52 contexts and4614 frequencies are admitted
+before any codec launch. Validate all reserved/feature/parameter bytes.
+
+Both self consumers restore all83 archives and reproduce their complete
+bytes. Each rejects125 guarded negatives before codec launch or output
+publication, including every112 header-byte mutation. Existing schema72
+and earlier negative suites are retained. The updated history path first
+qualifies73 then converts its exact82-entry prefix to72; one full history
+run is in progress. Normal producers use codec implementation revision
+9b133822cbecf1345b2a2dc6e62c6dfa16561d2e.
+
+This milestone qualifies producer/schema admission and two self paths.
+Two cross paths, complete histories1..73, final committed-source exchange,
+full previous-Release backup/update and profile closure remain pending.
+BM-0237/0239/0240 and FZ-0088 separately record completed corpus comparison,
+paired normal measurements and five10000-unit fully instrumented campaigns.
+Hosted CI/external qualification remain pending; the latest maintainer
+external evidence remains schema71/81 in IX-0081. Later windows/final88 are
+unfinished, and no push is performed.

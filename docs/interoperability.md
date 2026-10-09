@@ -10,17 +10,19 @@ marc-interoperability-windows-msvc-x64
 marc-interoperability-ubuntu-ninja-x64
 ```
 
-The current local schema-72 bundle contains the same generated `input.bin`, the
+The current local schema-73 bundle contains the same generated `input.bin`, the
 frozen 42 stable-profile archives, twenty-five preceding experimental Format 2
 archives, seven position-distance Dynamic Range archives, seven
-position-distance rANS archives, one position-distance tANS archive, and
-`manifest.json`. The manifest declares codec set `marc-cli-v72` and records
+position-distance rANS archives, two position-distance tANS archives, and
+`manifest.json`. The manifest declares codec set `marc-cli-v73` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.
 
 The latest maintainer-confirmed hosted CI and external four-route result is
-schema71 with81 archives (IX-0081). Schema72's82 archives are locally qualified
-as described in IX-0082; no hosted or external82-archive result is claimed.
+schema71 with81 archives (IX-0081). Schema72's82 archives are locally complete
+as described in IX-0083. Schema73's83 archives have producer/admission and
+self-path qualification in IX-0084, with cross/history/runtime closure pending.
+No hosted or external82/83-archive result is claimed.
 
 Download and extract a bundle from a successful GitHub Actions run. Build marc
 at the same commit on the platform being tested, then use an output directory
@@ -2012,3 +2014,32 @@ This closes IX-0082's outstanding local history/runtime/audit gates only.
 Hosted CI and external82-archive results are not yet available. The next six
 windows and the final88-archive audit remain required. Intermediate commits
 remain local; the maintainer will push after all seven local profiles pass.
+
+## IX-0084:one-MiB tANS exchange foundation
+
+Two normal producers agree on all83 schema73/`marc-cli-v73` archives.
+Append only `lzss-position-distance-tans-1m` after the retained82-entry
+schema72 prefix. All preceding names, order, manifest entry values and
+complete archive bodies match both frozen producers; the original81
+remain preserved. The new archive is3234 bytes for unchanged8193 raw bytes,
+SHA-256 eacb3f29a0ea45ff1c8e2dc96bbcd4c879b551c1ba9b24daa671c832cfe159d4.
+Exact112-byte header identity2/9+1/22+5/4, one-MiB window/frame, grammar3..258,
+five-byte encoder eligibility,52 contexts and4614 frequencies are admitted
+before any codec launch. Validate all reserved/feature/parameter bytes.
+
+Both self consumers restore all83 archives and reproduce their complete
+bytes. Each rejects125 guarded negatives before codec launch or output
+publication, including every112 header-byte mutation. Existing schema72
+and earlier negative suites are retained. The updated history path first
+qualifies73 then converts its exact82-entry prefix to72; one full history
+run is in progress. Normal producers use codec implementation revision
+9b133822cbecf1345b2a2dc6e62c6dfa16561d2e.
+
+This milestone qualifies producer/schema admission and two self paths.
+Two cross paths, complete histories1..73, final committed-source exchange,
+full previous-Release backup/update and profile closure remain pending.
+BM-0237/0239/0240 and FZ-0088 separately record completed corpus comparison,
+paired normal measurements and five10000-unit fully instrumented campaigns.
+Hosted CI/external qualification remain pending; the latest maintainer
+external evidence remains schema71/81 in IX-0081. Later windows/final88 are
+unfinished, and no push is performed.
