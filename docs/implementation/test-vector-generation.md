@@ -22992,3 +22992,21 @@ Construct a valid tANS model/payload whose first token is a match: bounded
 metadata passes but dictionary validation rejects its missing frame history
 before raw publication. Flip unused high payload padding and verify rejection.
 Check short private table/token/raw spans retain ordinary raw output.
+
+### TVG-1426: canonical64KiB raw selection to tANS frame
+
+Write an independent greedy raw parser: search distances ascending, update
+only on strictly longer matches, cap length258, emit matches only at length
+at least5, and otherwise emit one literal. Reconstruct token sequences using
+forward overlap copying before producing mathematical tANS frame fixtures.
+Check all256 single-byte values, all binary strings through length6,
+three-/four-/five-byte eligibility boundaries, nearest ties, final match
+length boundaries,65535/65536-byte repetitive inputs, all-byte periodic
+data and100 seeded finite inputs (seed1561).
+
+Compare exhaustive, transactional indexed and private indexed tokenizer
+outputs with independent expected tokens. Compare tANS raw restoration and
+full re-encoded frame bytes with the independent fixtures. Existing finite
+frame failure tests remain required; arbitrary process chunking, owning
+allocation and memory/throughput measurements are not inferred from this
+finite dictionary-selection campaign.

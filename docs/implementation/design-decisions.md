@@ -33962,3 +33962,20 @@ owning resource queries or public memory defaults.
 Frame transactions do not replace stream chunking/EOF, allocation rollback,
 canonical raw dictionary encoder differential, public API/ABI/CLI,
 corpus/fuzz/resources or additive exchange gates. Those remain required.
+
+### DD-1561: reuse exact64KiB dictionary parsing for tANS
+
+The entropy choice does not change variant8 dictionary grammar or the
+fixed-five raw encoder policy. Select the existing short-length-escape
+indexed scratch tokenizer with eligibility5 for the future owning encoder.
+Retain the exhaustive and transactional indexed entries as references.
+The exact prefix index checks collisions, includes skipped source positions,
+and retains longest-match/nearest-distance behavior. No new dictionary
+representation or redundant parser is introduced.
+
+Independently compare raw token choices before tANS frame encoding, rather
+than deriving expected tokens from production output. Verify reference,
+transactional indexed and private indexed paths against those choices and
+the entire independently authored frame/raw pair. This qualifies dictionary
+selection for the finite64KiB tANS connection; owning stream integration,
+resource queries, public admission and all remaining profile gates follow.

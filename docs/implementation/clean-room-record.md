@@ -40351,3 +40351,27 @@ outputs; failed entropy does not start private raw reconstruction.
 Documentation and whitespace checks pass. The differential watchdog is120
 seconds after campaigns below33 seconds; normal peaks and large-window
 parallelism remain separate measurement gates.
+
+### CR-1755:64KiB exact dictionary reuse and independent raw tANS vectors
+
+2026-10-09, Codex implementation and review; maintainer review pending.
+Task: qualify existing variant8 fixed-five dictionary selection for the
+private64KiB tANS frame implementation. Reuse first-party exhaustive and
+exact prefix-index tokenizers; no new production dictionary parser is
+needed. Independently write a distance-ascending greedy Python parser and
+raw/frame fixtures from DD-1556/1561. No external or restricted codec
+implementation consulted. TVG-1426 records the comparison scope.
+
+This step does not expose public factories, qualify owning stream allocation,
+or supply corpus speed/peak/fuzz/exchange evidence. Those and later-window/
+final88 gates remain required. Existing artifacts and fixed qualified Release
+runtime are retained; no new hosted CI or external verification is claimed.
+
+Both normal builds pass the ordinary frame tests,220 independent token-frame
+fixtures and495 independent raw-selection fixtures. All three dictionary
+paths produce the independent fixed-five tokens; complete tANS frame bytes
+and raw restoration agree, including empty dictionary input. Actual fixture
+bodies also agree across builds. Documentation and whitespace checks pass.
+The raw differential watchdog is120 seconds after measured campaigns below
+48 seconds. These normal finite tests do not substitute for instrumented
+fuzz, process resource measurements or later owning stream qualification.

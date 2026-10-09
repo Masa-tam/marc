@@ -8702,6 +8702,11 @@ if(MARC_BUILD_TESTS)
     set_tests_properties(marc_position_tans_64k_frame_format PROPERTIES TIMEOUT 30)
     add_executable(marc_position_tans_64k_frame_tests
         tests/position_tans_64k_frame_tests.cpp
+        src/dictionary/lzss_short_match_candidate.cpp
+        src/dictionary/lzss_short_prefix_match_finder.cpp
+        src/dictionary/lzss_match_finder.cpp
+        src/dictionary/lzss_hash_chain_match_finder.cpp
+        src/dictionary/lzss_binary_tree_match_finder.cpp
         src/frame/lzss_position_tans_64k_frame.cpp
         src/frame/lzss_position_tans_64k_format.cpp
         src/context/lzss_position_tans_64k_tokens.cpp
@@ -8724,6 +8729,12 @@ if(MARC_BUILD_TESTS)
                 $<TARGET_FILE:marc_position_tans_64k_frame_tests>
                 ${CMAKE_CURRENT_BINARY_DIR}/position-tans-64k-frames)
         set_tests_properties(marc_position_tans_64k_frame_differential PROPERTIES TIMEOUT 120)
+        add_test(NAME marc_position_tans_64k_raw_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_64k_raw_differential.py
+                $<TARGET_FILE:marc_position_tans_64k_frame_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-64k-raw)
+        set_tests_properties(marc_position_tans_64k_raw_differential PROPERTIES TIMEOUT 120)
     endif()
     add_executable(marc_position_tans_64k_token_tests
         tests/position_tans_64k_token_tests.cpp

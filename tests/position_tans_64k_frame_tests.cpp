@@ -1,5 +1,6 @@
 #include "frame/lzss_position_tans_64k_frame.hpp"
 #include "core/endian.hpp"
+#include "dictionary/lzss_short_length_escape_candidate.hpp"
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -17,7 +18,7 @@ constexpr auto marker=std::byte{0x5a};
 bool marked(std::span<const std::byte> bytes) {
     return std::all_of(bytes.begin(),bytes.end(),[](auto b){return b==marker;});
 }
-int fixture(const char* path) {
+int fixture(const char* path,bool raw_parse=false) {
     std::ifstream file(path,std::ios::binary);std::vector<char> chars((std::istreambuf_iterator<char>(file)),{});
     if (!file || chars.size()<120 || chars.size()>(UINT64_C(2)<<20)) return 2;
     std::vector<std::byte> data(chars.size());
@@ -28,7 +29,17 @@ int fixture(const char* path) {
     marc::core::DecoderLimits limits{};PositionTans64kStreamHeader stream{};std::size_t n{};
     if (parse_position_tans_64k_stream(bytes.subspan(8,112),limits,stream,n)!=PositionTans64kFormatError::none
         || n!=112 || stream.original_size!=rs) return 4;
-    if (rs==0) return fs==0 ? 0 : 5;
+    if (rs==0) {
+        if (fs!=0) return 5;
+        if (raw_parse) {
+            const auto a=tokenize_lzss_short_length_escape_candidate({},stream.dictionary,limits,5,{});
+            const auto b=tokenize_lzss_short_length_escape_candidate_indexed({},stream.dictionary,limits,5,{},{});
+            const auto c=tokenize_lzss_short_length_escape_candidate_indexed_scratch({},stream.dictionary,limits,5,{},{});
+            if (a.error!=LzssShortMatchCandidateError::none || b.error!=LzssShortMatchCandidateError::none
+                || c.error!=LzssShortMatchCandidateError::none || a.token_count || b.token_count || c.token_count) return 13;
+        }
+        return 0;
+    }
     const PositionTans64kFrameContext context{stream,limits,0,0};
     const auto frame=bytes.subspan(120,fs);const auto expected=bytes.subspan(120+fs,rs);
     PositionTans64kFrameLayout layout{};
@@ -43,6 +54,23 @@ int fixture(const char* path) {
     std::fill(raw.begin(),raw.end(),marker);
     if (decode_position_tans_64k_frame_scratch(frame,context,dt,tokens,raw).error!=Error::none
         || !std::equal(expected.begin(),expected.end(),raw.begin())) return 8;
+    if (raw_parse) {
+        const auto f=calculate_lzss_short_prefix_workspace(rs,stream.dictionary,limits,
+            LzssTypedTokenVariant::field_context_64k_short_length_escape);
+        if (f.error!=LzssShortPrefixError::none) return 10;
+        std::vector<std::uint32_t> storage((f.workspace_size+3)/4);
+        auto workspace=std::as_writable_bytes(std::span(storage)).first(f.workspace_size);
+        std::vector<LzssTypedToken> reference(rs),indexed(rs),private_tokens(rs);
+        const auto a=tokenize_lzss_short_length_escape_candidate(expected,stream.dictionary,limits,5,reference);
+        const auto b=tokenize_lzss_short_length_escape_candidate_indexed(expected,stream.dictionary,limits,5,indexed,workspace);
+        const auto c=tokenize_lzss_short_length_escape_candidate_indexed_scratch(expected,stream.dictionary,limits,5,private_tokens,workspace);
+        if (a.error!=LzssShortMatchCandidateError::none || b.error!=LzssShortMatchCandidateError::none
+            || c.error!=LzssShortMatchCandidateError::none || a.token_count!=tokens.size()
+            || b.token_count!=tokens.size() || c.token_count!=tokens.size()) return 11;
+        const auto equal=[](const auto& x,const auto& y) { return x.kind==y.kind && x.literal==y.literal && x.distance==y.distance && x.length==y.length; };
+        for (const auto& sequence : {std::span(reference),std::span(indexed),std::span(private_tokens)})
+            if (!std::equal(tokens.begin(),tokens.end(),sequence.begin(),equal)) return 12;
+    }
     // Re-encode restored tokens and compare complete independently authored frame.
     std::vector<std::uint16_t> et(position_tans_64k_table_entries);
     std::vector<std::byte> payload(layout.header.payload_size),scratch(fs),encoded(fs+2,marker);
@@ -54,6 +82,7 @@ int fixture(const char* path) {
 }
 int main(int argc,char** argv) {
     if (argc==3 && std::string(argv[1])=="--fixture") return fixture(argv[2]);
+    if (argc==3 && std::string(argv[1])=="--raw-fixture") return fixture(argv[2],true);
     marc::core::DecoderLimits limits{};
     PositionTans64kStreamHeader stream{};stream.original_size=1;
     const PositionTans64kFrameContext context{stream,limits,0,0};
