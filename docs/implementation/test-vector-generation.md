@@ -23351,3 +23351,29 @@ differential durations are0.22/29.92 and0.01/19.84 seconds. Tail guards,
 ordinary rollback, late entropy failure before raw restoration and exact-quota
 checks pass;30/120-second watchdogs exceed measured runs. Preserve all finite
 fixtures and earlier qualified sources/runtime unchanged.
+
+### TVG-1445: one-MiB arbitrary splits and failed-frame draining exclusion
+
+Drive the caller-owned decoder through every split of two independently reset
+singleton frames and a mixed overlap/literal-history frame, varying output1/2/7,
+Flush and explicit EndInput. Check every truncation returns only prior validated
+raw frames, second-frame entropy finish failure never publishes its byte, strict
+trailing input, empty streams, zero-output pauses, late empty EndInput, alias/
+unsupported flags and exact/one-below constructor/nested retained admission.
+Require consistent repeated EOS/error with no counts or output changes.
+
+Re-run all231 independent frame fixtures with one-byte input and output, plus
+ordinary/private raw verification and complete re-encoding. Four independent
+bad histories compare whole versus one-byte error code/position/consumption
+with no raw publication. Driver count/progress/output-tail failures must propagate
+to its fixture return code, not merely print. Retain the earlier fixture bodies
+unchanged. State-machine qualification does not establish owner rollback,
+public default limits, API/CLI, normal timings/peaks, fuzz or schema73/83.
+
+Qualification: both builds passed finite frames, caller-scratch stream and
+independent frame differential tests. Build A measured0.19/0.53/30.24 seconds
+(total32.31); build B measured0.01/0.31/20.36 seconds (total20.82). All231 valid
+and four invalid independent fixture bodies match the prior finite-frame
+checkpoint. Owner/resource grants, public API/CLI, corpus measurements, fuzz
+and the next exchange extension remain pending. CI/external validation has
+not been run for this milestone.

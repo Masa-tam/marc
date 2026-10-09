@@ -40777,3 +40777,28 @@ bytes and raw hashes agree, ordinary/private raw stays unpublished on failure,
 and all saved prior production/frozen/runtime bindings remain unchanged.
 Documentation and source/evidence audits pass. Commit this finite frame gate;
 streaming controller, owners and public/default-resource admission stay pending.
+
+### CR-1774: one-MiB caller-owned stream decoder review
+
+Date:2026-10-10. Author/reviewer:Codex; maintainer review pending.
+Task: qualify arbitrary buffer splits and failed-frame draining exclusion.
+Adapt only first-party64KiB decoder/test state machines under DD-1573/1578;
+no external or restricted implementation is consulted. The complete descriptor
+and payload are bounded; decode success alone admits the draining state.
+Every error fixes the terminal category/position and prevents further output.
+
+Retain ordinary counts, validated prior-frame output and explicit EndInput
+semantics. Extend serialized fixture capacity for8R decisions and preserve
+all previous1MiB independent bodies. Tighten the fixture driver to propagate
+its count/progress/output guard checks through return status. Qualify231
+one-byte fixture streams and four independent bad-history whole/split cases.
+Owning resources/default grants, API/CLI, measurements/fuzz and exchange remain
+unfinished; no push or legal guarantee is claimed.
+
+Qualification: both builds passed finite frames, caller-scratch stream and
+independent frame differential tests. Build A measured0.19/0.53/30.24 seconds
+(total32.31); build B measured0.01/0.31/20.36 seconds (total20.82). All231 valid
+and four invalid independent fixture bodies match the prior finite-frame
+checkpoint. Owner/resource grants, public API/CLI, corpus measurements, fuzz
+and the next exchange extension remain pending. CI/external validation has
+not been run for this milestone.

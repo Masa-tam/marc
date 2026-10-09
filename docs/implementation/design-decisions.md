@@ -34312,3 +34312,29 @@ Require ordinary/private raw unpublished with zero committed counts and token/
 raw tail guards intact. A separate terminal-state defect after the last private
 token must still leave raw scratch untouched. These finite frame gates do not
 qualify a streaming controller, owner/default grants, public factory or CLI.
+
+### DD-1578: one-MiB caller-scratch streaming decoder
+
+Adapt the first-party caller-owned decoder state machine with bounded serialized,
+private-token/raw/table spans and distinct1MiB frame types. Validate the complete
+stream header, frame header and canonical descriptor before collecting payload;
+enter draining only after finite raw-frame decode succeeds. Failed frames go
+straight to sticky error and never drain. Earlier validated frames may already
+be committed; whole-file CLI publication remains a separate later contract.
+
+Preserve independent input/output counts, one-byte/zero-capacity behavior,
+explicit EndInput, nonterminal Flush and immutable EOS/error. Charge owner,
+retained regions and bounded internal controls before processing, with extra
+owner bytes explicit. Streaming fixtures use the1MiB bound96 bits per raw byte
+for serialized capacity; they do not reuse the64KiB84-bit formula. Qualify all
+231 frame fixtures at one-byte boundaries, invalid-history whole/split parity
+and a directed late second-frame terminal error. No owner/default grant or
+public factory/CLI is admitted by this caller-scratch milestone.
+
+Qualification: both builds passed finite frames, caller-scratch stream and
+independent frame differential tests. Build A measured0.19/0.53/30.24 seconds
+(total32.31); build B measured0.01/0.31/20.36 seconds (total20.82). All231 valid
+and four invalid independent fixture bodies match the prior finite-frame
+checkpoint. Owner/resource grants, public API/CLI, corpus measurements, fuzz
+and the next exchange extension remain pending. CI/external validation has
+not been run for this milestone.

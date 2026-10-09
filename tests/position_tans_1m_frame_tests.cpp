@@ -6,6 +6,9 @@
 #include <string>
 #include <vector>
 
+int position_tans_1m_stream_tests();
+int check_position_tans_1m_stream_fixture(std::span<const std::byte>,std::span<const std::byte>);
+int check_position_tans_1m_failed_stream_fixture(std::span<const std::byte>,std::size_t);
 
 namespace {
 using namespace marc::frame::internal;
@@ -31,10 +34,12 @@ int fixture(const char* path,bool reject_history=false) {
         || n!=112 || stream.original_size!=rs) return 4;
     if (rs==0) {
         if (fs!=0) return 5;
-        return 0;
+        return check_position_tans_1m_stream_fixture(bytes.subspan(8,112),{});
     }
     const PositionTans1mFrameContext context{stream,limits,0,0};
     const auto frame=bytes.subspan(120,fs);const auto expected=bytes.subspan(120+fs,rs);
+    if (!reject_history && check_position_tans_1m_stream_fixture(bytes.subspan(8,112+fs),expected)) return 14;
+    if (reject_history && check_position_tans_1m_failed_stream_fixture(bytes.subspan(8,112+fs),rs)) return 17;
     PositionTans1mFrameLayout layout{};
     if (preflight_position_tans_1m_frame(frame,context,layout)!=PositionTans1mFormatError::none
         || layout.requirements.serialized_size!=fs) return 6;
@@ -71,6 +76,7 @@ int fixture(const char* path,bool reject_history=false) {
 }
 }
 int main(int argc,char** argv) {
+    if (argc==2 && std::string(argv[1])=="--stream") return position_tans_1m_stream_tests();
     if (argc==3 && std::string(argv[1])=="--fixture") return fixture(argv[2]);
     if (argc==3 && std::string(argv[1])=="--reject-frame-fixture") return fixture(argv[2],true);
     marc::core::DecoderLimits limits{};limits.max_block_size=UINT64_C(8)*1048576;
