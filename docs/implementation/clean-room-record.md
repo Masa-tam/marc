@@ -40251,3 +40251,29 @@ CTest in both environments. These are Python mathematical tests, not
 compiled production C++ validation. Documentation/link and whitespace
 checks pass. The120-second vector watchdog follows observed runtimes
 below30 seconds; it is not a policy for later heavy codec tests.
+
+### CR-1751: private64KiB finite position-distance tANS implementation
+
+2026-10-09, Codex implementation and review; maintainer review pending.
+Task: implement the bounded DD-1556 descriptor/model/automaton before
+token/frame ownership and public connection. Use first-party mathematical
+specifications and existing independently authored tANS table primitive;
+no external implementation or restricted source consulted. Add independent
+Python-versus-C++ model/descriptor/payload fixtures and ordinary failure
+tests as TVG-1422. Review bit/count/table arithmetic and overlap handling.
+
+DD-1557 preserves ordinary descriptor/serialization/symbol destinations on
+failure. Table banks and reverse payload are explicitly private scratch;
+this finite layer alone cannot prove failed-frame quarantine. No public
+factory, CLI selector, default memory grant or exchange entry is added.
+Token/frame/stream differential and failure tests, public API/ABI/CLI,
+benchmark/fuzz/resources, exchange and later-window/external88 gates remain
+unfinished. The fixed runtime and existing81 artifacts are retained.
+
+Both final normal builds pass the finite ordinary and225-fixture
+differential tests; all225 fixture bodies also agree across builds.
+Documentation and whitespace checks pass. Record this independently
+reviewable finite-core checkpoint without marking the entire private
+milestone complete. The120-second differential watchdog follows observed
+campaigns below40 seconds; later frame and heavy resource tests require
+their own observed scheduling and limits.

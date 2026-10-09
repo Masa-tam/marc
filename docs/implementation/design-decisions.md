@@ -33881,3 +33881,21 @@ tradeoffs; missing controls or compression misses require explicit reasons
 and policy. Existing81 bodies remain frozen as schemas72..78 append seven
 profiles. All seven local gates precede maintainer push/CI/external88 gates.
 No public factory, runtime budget or performance result is admitted here.
+
+### DD-1557: private64KiB finite tANS model and automaton
+
+Implement DD-1556 descriptor analysis with bounded staging and canonical
+re-serialization: ordinary descriptor/byte/count destinations update only
+on success. Add checked integer model normalization, private49-table banks
+and reverse writer/forward reader over caller-provided bounded scratch.
+Each bank has200704 entries. Charge actual table bytes, descriptor/payload
+extents and131072 fixed working bytes before scratch preparation; this
+private accounting is not a public memory default or measured process peak.
+
+The reverse writer's output and table banks are private scratch, discarded
+on failure. The forward reader commits each symbol only on success and
+requires exact decisions, bit consumption, terminal4096 and all active
+contexts used. Check arithmetic, table extents and source/scratch overlap.
+Finite tests do not qualify token history, raw-frame publication, owning
+stream allocation, public API/CLI, corpus resources or exchange. Those
+remain later required stages before64KiB completion and the next window.

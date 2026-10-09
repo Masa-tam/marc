@@ -22906,3 +22906,25 @@ state, extent and padding cases reject. These tests qualify finite
 mathematics only; production validators, token/frame differential trials,
 failure contracts, public API/CLI, corpus measurements, fuzz and exchange
 remain unfinished.
+
+### TVG-1422: private finite64KiB tANS differential and failure checks
+
+Date:2026-10-09. Feed all25 frozen DD-1556 finite vectors and200 independently
+generated seeded models/payloads to the bounded C++ fixture driver. The
+driver independently builds normalized models, canonical descriptors,
+inverse tables, measured and written payloads, then forward-decodes every
+decision and checks exact terminal state/bit consumption. Retain all225
+fixtures in unique run directories and compare their actual bytes across
+both normal compiler builds. Isolated model/distance vectors are not frame
+history claims.
+
+Ordinary tests cover empty entropy and hand AB bytes, descriptor truncation
+at every split, metadata/reserved mutations, unknown modes, noncanonical
+dense single models, frequency overflow, trailing descriptors, state,
+padding, missing/extra valid bits, early finish, unused contexts, corrupt
+private tables, sticky failures and success-only symbol destinations.
+Invalid/short descriptor serialization retains bytes and size. Test scratch
+extent, payload/table overlap, encode overlap, table-entry limit, exact
+private accounting grant and one-byte-below refusal before scratch writes.
+Token/frame/stream failure quarantine, public factories, fuzz and corpus
+qualification are not supplied by this finite test scope.
