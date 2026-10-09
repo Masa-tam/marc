@@ -135,3 +135,20 @@ DD-1555 retains3072MiB after complete query/resource qualification. Together
 with FZ-0086's five fully instrumented10k campaigns this completes local
 milestone4. Final fixed-runtime/source81 qualification, four-profile local
 completion and maintainer push/hostedCI/external gates remain unfinished.
+
+## Final local milestone5 and four-profile audit
+
+IX-0080/TVG-1420 qualify the final normal runtimes at implementation
+revision615be3e941fa069caa5e937d6d6a9d440494e094. Both builds pass thirteen
+current public API/static/shared ABI/CLI regressions. Both schema71 bundles
+contain the same81 archive bodies and preserve the preceding80. Two self
+and two cross routes pass;125 negative cases per producer reject before
+codec invocation or output publication. Retained history1..71 is qualified
+evidence, not a newly executed historical runtime campaign.
+
+The current audit combines these final checks with all five64MiB milestones
+and retained8/16/32MiB local closures and source checks. All four profiles
+are locally complete. Ordinary failure destinations, failed private-scratch
+discard and failed-frame quarantine retain their tested contracts. Hosted
+CI and external four-route81-archive verification after maintainer push
+remain required; local completion does not mark the overall goal complete.

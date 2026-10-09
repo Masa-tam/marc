@@ -22870,3 +22870,23 @@ negative cases, retaining its evidence. Its all-zero synthetic revision does
 not represent an external producer or historical binary. Final fixed-source
 runtime qualification, isolated measurements and maintainer external checks
 remain separate unfinished gates (IX-0079).
+
+### TVG-1420: final schema71 runtime and retained-evidence audit
+
+Date: 2026-10-09. Run the unchanged first-party exchange fixture through
+both final normal builds at615be3e941fa069caa5e937d6d6a9d440494e094.
+Compare all81 actual archive bodies and all80 bodies against the qualified
+predecessor, then check324 restored outputs across two self/two cross
+routes. Both125-case admission suites retain zero codec launches and zero
+output files for every rejection. Bind source scripts, runtime hashes,
+successful job exits and selected-process audits to the qualification.
+
+Recheck retained local closure evidence for8/16/32MiB and their unchanged
+profile-specific production sources. Both final builds pass all twelve
+four-profile API/static/shared ABI tests and the64MiB CLI boundary test.
+Recheck the64MiB independent vectors, private/public qualifications, five
+fully instrumented10000-run fuzz campaigns, complete48-row measurements,
+capacity admission and preserved predecessor runtime backup. Historical
+schema1..71 evidence is retained, not newly executed by this final audit.
+All four profiles pass local completion; hosted CI and external81-archive
+four-route verification remain unclaimed (IX-0080).

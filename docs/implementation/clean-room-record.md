@@ -40188,3 +40188,25 @@ changes. Together with FZ-0086 this completes local milestone4.
 
 Final fixed-runtime/source81 qualification, the four-profile local completion
 audit and maintainer push/hosted CI/external four-route checks remain pending.
+
+### CR-1748: final four-profile local qualification and granular closure
+
+2026-10-09, Codex validation/review; maintainer review pending. Task:
+complete the final normal runtime/schema71 exchange, audit all four
+large-window position-distance rANS local milestones, and commit this
+passing final checkpoint separately from pending hosted/external checks.
+Use only retained first-party implementations, fixtures and independently
+authored evidence checks. No external implementation or restricted source
+consulted.
+
+Both final normal builds pass thirteen current regressions. All81 archive
+bodies agree across producers; the preceding80 are preserved. Two self
+and two cross routes pass, as do125 admission rejections per producer.
+The current audit rechecks retained prior-profile evidence and production
+sources, all64MiB milestone receipts, complete directional measurements,
+fully instrumented fuzz and preserved predecessor runtime artifacts.
+IX-0080/TVG-1420 record local completion of all four profiles. Historical
+schema evidence is retained without a new runtime-run claim. This closure
+is documentation only; maintainer push, hosted CI and external four-route
+verification of81 archives remain unfinished. No overall completion or
+external validation is claimed.

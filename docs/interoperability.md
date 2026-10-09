@@ -1925,3 +1925,23 @@ encode/decode timings, normal peaks and capacity admission remain unfinished,
 as do the fixed runtime update and final committed-source81 qualification.
 Maintainer push, hosted CI and external four-route checks remain pending;
 the whole four-profile goal remains active.
+
+## IX-0080: final schema71 runtime and four-profile local closure
+
+At implementation revision615be3e941fa069caa5e937d6d6a9d440494e094,
+both final normal builds pass thirteen public API, static/shared C ABI and
+CLI regressions covering the four large-window position-distance rANS
+profiles. Both producers generate identical81-archive schema71 bundles.
+Two self and two cross consumers restore all originals; each producer's125
+negative cases rejects before codec launch or output publication. Every
+preceding80 archive body remains unchanged, including the frozen77 prefix.
+
+The final audit rechecks retained8/16/32MiB closure evidence and unchanged
+profile-specific production sources, then combines the current shared
+regressions with all five64MiB milestones. It retains the qualified
+schema1..71 historical evidence without claiming a new historical runtime
+run. BM-0231 and FZ-0086 complete the measurement, capacity and fuzz gates.
+All four profiles are locally complete. Maintainer push, hosted CI and
+external four-route validation of all81 archives remain required before
+the overall goal is complete. This closure changes documentation only;
+the implementation revision and bundle source bindings remain explicit.
