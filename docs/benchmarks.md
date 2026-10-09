@@ -10929,3 +10929,46 @@ actual configuration/identity/restoration must be checked in the matched
 campaign before deciding whether the compression target is met. Dynamic
 Range compression is not an adoption criterion. Public API/ABI/CLI,
 repeated isolated timing, instrumented fuzz and exchange remain unfinished.
+
+## BM-0233:64KiB public tANS same-window compression comparison
+
+Date:2026-10-10. Both normal CLI builds encode and decode all twelve frozen
+members with physical65536-byte frames and windows. Actual candidate headers
+are dictionary2/8, context1/21 and entropy5/3; contextual control headers are
+dictionary2/2, context1/1 and entropy5/2. The candidate dictionary parameters
+are65536/3/258/0; contextual parameters are65536/5/258/0. Candidate public
+encoding still uses fixed-five eligibility. Exact entropy parameter bytes,
+original lengths and archive/restored SHA-256 are retained per member.
+All raw hashes restore. Both profiles' complete archives agree across builds;
+candidate CLI bytes also match the qualified private full-corpus baseline.
+
+| Member | Raw bytes | Position-distance tANS bytes | Contextual tANS bytes |
+| --- | ---: | ---: | ---: |
+| dickens | 10192446 | 4183733 | 4181804 |
+| mozilla | 51220480 | 24261734 | 24985999 |
+| mr | 9970564 | 3735097 | 3830001 |
+| nci | 33553445 | 3775899 | 3766905 |
+| ooffice | 6152192 | 3869724 | 3875737 |
+| osdb | 10085684 | 5094715 | 5101500 |
+| reymont | 6627202 | 2109373 | 2107401 |
+| samba | 21606400 | 6232479 | 6252318 |
+| sao | 7251944 | 6320682 | 6420327 |
+| webster | 41458703 | 13506159 | 13485682 |
+| xml | 5345280 | 828424 | 825037 |
+| x-ray | 8474240 | 6319008 | 6367992 |
+| Total | 211938580 | 80237027 | 81200703 |
+
+The total is963676 bytes smaller, a1.186782829% reduction. Seven members
+shrink; five miss the per-member smaller-size goal: dickens+1929 bytes,
+nci+8994, reymont+1972, webster+20477 and xml+3387. Their causes have not
+been diagnosed, so no model-specific cause or speed advantage is inferred.
+This is an aggregate compression improvement, not universal superiority.
+
+Retain the separately identified profiles and these misses. Complete the
+remaining window comparisons and directional speed/normal memory measurements
+before recommending workload-specific choices. Any later representation
+change needs a separately specified variant and independent vectors; do not
+silently retune existing streams or claim every file is smaller. Dynamic Range
+compression is not an adoption criterion. This campaign qualifies compression
+and restoration only; isolated repeated timings, normal public peaks,
+instrumented fuzz, exchange and later-window completion remain unfinished.
