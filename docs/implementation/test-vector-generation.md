@@ -23324,3 +23324,30 @@ Both normal builds pass the full header/preflight unit. Observed durations are
 0.17 seconds and below0.01 seconds; the existing30-second watchdog provides
 headroom. Stream/frame serialization matches the hand-decoded bytes, and all
 ordinary destination, upper-count, prefix and exact-quota checks pass.
+
+### TVG-1444: one-MiB independent raw frames and success-only publication
+
+Generate231 frame fixtures with seed1577 for200 histories; independent token
+field models provide complete stream/frame/descriptor/payload bytes, and forward
+overlap restoration provides expected raw bytes. Cover distances above65536
+through1048573 and full1048576 raw extent with bounded prefix histories.
+Both ordinary and controller-scratch decoders restore exactly those bytes;
+re-encoding decoded tokens reproduces the entire independently authored frame.
+Guard raw/token scratch tails and ordinary raw/serialized tails.
+
+Independently specified three exact-window and one late invalid-reference frames
+must reject with no ordinary/private raw publication and zero committed sizes.
+Finite unit tests cover every singleton frame cut, entropy finish after a private
+literal, invalid state/padding/history, short tables/tokens/raw/serialization,
+overlap, exact/one-below retained quota and second-frame dictionary reset.
+The scratch contract deliberately permits discarded private tokens after late
+failure; raw restoration awaits entropy finish. Stream arbitrary splits/terminal
+behavior, raw finder reference parsing, owners/API/CLI, normal measurements,
+fuzz and exchange remain separate pending qualifications.
+
+Both normal builds pass231 valid and four invalid-history frame fixtures with
+identical fixture bytes and independently restored raw sizes/hashes. Unit/
+differential durations are0.22/29.92 and0.01/19.84 seconds. Tail guards,
+ordinary rollback, late entropy failure before raw restoration and exact-quota
+checks pass;30/120-second watchdogs exceed measured runs. Preserve all finite
+fixtures and earlier qualified sources/runtime unchanged.

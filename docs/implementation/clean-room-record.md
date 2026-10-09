@@ -40754,3 +40754,26 @@ inspection. Hand-decoded tuple/header bytes, frozen singleton descriptor and
 ordinary failure/checked-bound tests pass. Previous production/frozen bytes and
 fixed Release remain unchanged. Commit this bounded admission submilestone;
 raw entropy/history validation and failed-frame quarantine remain pending.
+
+### CR-1773: one-MiB raw frame quarantine implementation
+
+Date:2026-10-10. Author/reviewer:Codex; maintainer review pending.
+Task: integrate bounded token decode and private raw reconstruction with success-
+only ordinary publication. Adapt first-party64KiB finite frame wrappers under
+DD-1573/1577; no external/restricted codec code or new reference is consulted.
+Retain exact metadata, checked retained-region accounting and overlap preflight,
+then entropy finish before raw reconstruction and commit counts/output last.
+
+Independent scalar models and frame-local restoration supply231 valid whole
+frames plus four invalid-history frames. Directed late entropy failure checks
+private tokens can exist without any raw publication. Distinct1MiB wrappers
+preserve all earlier sources/representations. Do not infer streaming controller,
+owner/default-resource, public API/CLI or exchange completion from finite frame
+qualification. No push or legal guarantee is claimed.
+
+Both normal builds pass finite frame unit tests and231 independently authored
+whole-frame/raw expectations plus four invalid-history cases. Complete fixture
+bytes and raw hashes agree, ordinary/private raw stays unpublished on failure,
+and all saved prior production/frozen/runtime bindings remain unchanged.
+Documentation and source/evidence audits pass. Commit this finite frame gate;
+streaming controller, owners and public/default-resource admission stay pending.

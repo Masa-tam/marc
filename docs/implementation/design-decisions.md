@@ -34293,3 +34293,22 @@ publication. Parsed structures/requirements/serialized bytes commit only on
 success. Charge217088 decode entries plus supplied raw/token/serialized regions
 and finite control scratch; public owner/default grants remain unqualified.
 Hand-decoded singleton headers agree with the separate finite descriptor bytes.
+
+### DD-1577: one-MiB finite raw-frame quarantine
+
+Decode one complete frame by strict prefix/extent validation, a single entropy
+pass into private typed tokens, exact entropy finish, then frame-local raw
+reconstruction into private scratch. Copy ordinary raw bytes and report
+committed counts only after all stages succeed. Controller-facing raw scratch
+remains private and must never drain on any error. Encoding uses supplied
+validated tokens and copies complete ordinary serialization only after success.
+Validate all caller regions, bounds and overlap before scratch preparation.
+
+Qualify231 independently restored histories with whole frame byte equality,
+including full1048576 raw extent and actual long references. Independently
+author four invalid-history frames: isolated exact-window matches at lengths3/
+4/258 and literal-A followed by a before-history distance2/length3 match.
+Require ordinary/private raw unpublished with zero committed counts and token/
+raw tail guards intact. A separate terminal-state defect after the last private
+token must still leave raw scratch untouched. These finite frame gates do not
+qualify a streaming controller, owner/default grants, public factory or CLI.
