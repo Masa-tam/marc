@@ -11253,3 +11253,13 @@ implementation is consulted. The finite Python oracle builds inverse
 transitions from forward mathematical entries and checks hand-computable
 tANS payloads before production implementation. It does not claim
 FSE compatibility or external conformance.
+
+### IR-1290: one-MiB position-distance tANS independent specialization
+
+Use IR-1289's first-party mathematical spread/state description and DD-1556's
+family partition with N20. Adapt the independently written64KiB finite oracle
+for52 contexts, seven mask bytes and twenty distance bits. Add a forward byte
+parser written from the descriptor specification, hand-checked complete empty
+and initial-A descriptors and explicit boundaries above the old window.
+No production codec calls, external compression source or restricted reference
+provide the frozen bytes. External conformance/FSE compatibility is not claimed.

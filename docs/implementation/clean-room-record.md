@@ -40660,3 +40660,25 @@ exchange. The64KiB profile is locally complete. Comparison tradeoffs and five
 individual compression misses remain explicit in BM-0233/0235. Six later
 windows, final88 audit and hosted/external validation are unfinished. No push,
 new external implementation consultation or legal guarantee is claimed.
+
+### CR-1769: one-MiB tANS format and finite vector provenance
+
+Date:2026-10-10. Author/reviewer:Codex; maintainer review pending.
+Task: define the next window and freeze independent expectations before codec
+implementation. First-party references are IR-1289/1290 and DD-1556/1573;
+no external implementation, restricted code or production codec output is
+consulted. Adapt the64KiB mathematical oracle, extend distance boundaries and
+write a forward descriptor parser directly from explicit byte-field rules.
+
+Complete empty/initial-A descriptor bytes are hand-checked by grouped little-
+endian fields; scalar tANS payload equations retain directed expectations.
+Freeze34 vectors and200 seeded cases with52 contexts and N20. Isolated long
+distances are marked as grammar vectors, not realizable reset-frame histories.
+Production implementation, differential/failure/API/CLI/resource/fuzz and
+exchange qualification remain unfinished; no new admission, push or legal
+non-infringement guarantee is claimed.
+
+Both normal build environments pass the34 frozen/200 seeded finite tests and
+document/link inspection. Earlier64KiB oracle/expectations and the qualified
+fixed Release executable remain unchanged. This independently reviewable
+format/vector milestone is committed before production implementation.

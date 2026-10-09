@@ -9223,3 +9223,12 @@ LEu16 state payload with strict LSB-first padding/terminal rules, known-size
 stream/frame identity and checked capacities. This reservation and finite
 mathematical vectors admit no production API, CLI or exchange entry.
 Existing81 archives and all earlier representations remain unchanged.
+
+### DD-1573: one-MiB position-distance tANS exact specialization
+
+[The one-MiB specialization](design/lzss-position-distance-tans-1m.md)
+fixes dictionary2/9/context1/22/entropy5/4, window1048576,52 contexts,
+4614 frequencies, seven mask bytes and maximal9207-byte descriptor. It
+states checked decision/payload/frame bounds and independently frozen finite
+expectations before implementation. All earlier formats remain unchanged;
+this milestone exposes no factory, CLI selector or exchange archive.

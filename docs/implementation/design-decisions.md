@@ -34216,3 +34216,21 @@ and complete self/cross exchange through the fixed path. This closes only the
 64KiB local profile. Next implement1MiB from its reserved tuple and independent
 vectors. The next six windows, final88-archive audit, hosted CI and external
 four-route qualification remain separate required gates; no intermediate push.
+
+### DD-1573: one-MiB position-distance tANS format before implementation
+
+The exact specialization is in docs/design/lzss-position-distance-tans-1m.md.
+Select2/9+1/22+5/4 with F1048576,N20,52 contexts,4614 frequencies, seven-byte
+active mask with four zero high bits and maximal9207-byte descriptor.
+Decision bounds change to min(30T,8R); the prior64KiB seven-per-raw limit must
+not be copied. State/spread/normalization and previous-literal history follow
+the independently specified family equations; serialized decision events are
+not a separate payload region. Reserve the format without production admission.
+
+Freeze independent finite bytes before writing production parsing or codecs.
+The34 vectors cover eighteen isolated distance boundaries up to the exact
+window, plus lengths/literals/full models; isolated distances do not establish
+frame history. Add200 seeded52-alphabet cases and forward compact parsing,
+malformed descriptor/payload checks and hand-computable byte expectations.
+Production differential/failure guarantees, API/CLI, measurements/fuzz and
+schema73/83 remain later milestones; capacities require actual resource tests.

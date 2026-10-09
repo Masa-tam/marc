@@ -23231,3 +23231,23 @@ Save the entire old Release with a per-file hash manifest, verify the qualified
 replacement, and rerun CLI malformed/late-frame publication and self/cross
 82-archive checks through the fixed path. Keep the six later windows and
 hosted/external/final88 qualification explicitly incomplete.
+
+### TVG-1440: one-MiB position-distance tANS frozen finite oracle
+
+Use the first-party DD-1573 Python oracle without production codec calls.
+Derive inverse tANS transitions from the forward4096-state equations, verify
+complete hand-checked31-byte empty and35-byte initial-A descriptors, and check
+scalar A/AA/AB/ABA payload bytes. Freeze34 finite vectors with seed1573 for
+200 additional52-alphabet cases, including all-active dense9207-byte models,
+eighteen isolated distances1..1048576 and literal history through matches.
+
+A separately written forward compact parser reconstructs models and rejects
+truncation/trailing, incorrect counts and high mask bits. Reject distance1048577
+and malformed state/padding. Recalculate descriptors/payloads and compare the
+saved JSON without rewriting it. Run the test on both normal build environments.
+These finite tests qualify no C++ codec, real frame history, API/CLI or exchange.
+
+Both normal build environments pass34 frozen vectors and200 seeded cases;
+observed test durations are27.48 and17.45 seconds. The120-second test watchdog
+provides headroom above the slower measured run. Preserve both test logs and
+the earlier64KiB oracle/expectation hashes unchanged.
