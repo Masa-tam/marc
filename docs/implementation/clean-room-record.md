@@ -40228,3 +40228,26 @@ position-distance rANS. Only documentation and ignored local evidence are
 updated; no format, codec, test or runtime change. Existing artifacts and
 failure contracts are preserved. No external implementation or restricted
 source consulted.
+
+### CR-1750: position-distance tANS task and independent finite definition
+
+2026-10-09, Codex design/vector generation; maintainer review pending.
+Task: implement seven position-distance tANS windows in order, preserving
+81 existing archive bodies, adding seven only after independent local
+qualification, with same-window contextual measurements and granular
+passing local commits. IR-1289 records first-party mathematical references;
+no external implementation or restricted source consulted.
+
+DD-1556 defines additive identities, descriptor/state/bit rules and bounded
+framing before production coding. TVG-1421 supplies independently derived
+forward/inverse automata and finite64KiB vectors. Baseline81 order and
+producer artifacts are actually checked and retained. No fixed runtime is
+replaced. Mathematical checks do not qualify production decoding, failure
+contracts, memory defaults or public factories. Later internal/public,
+benchmark/fuzz, exchange and all-seven/external88 gates remain unfinished.
+
+The final25 frozen vectors and200 seeded payload checks pass through
+CTest in both environments. These are Python mathematical tests, not
+compiled production C++ validation. Documentation/link and whitespace
+checks pass. The120-second vector watchdog follows observed runtimes
+below30 seconds; it is not a policy for later heavy codec tests.

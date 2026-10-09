@@ -8661,6 +8661,10 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
         COMMAND ${Python3_EXECUTABLE} -B -X utf8
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_64m_full_literal_vectors.py)
     set_tests_properties(marc_position_rans_64m_full_literal_vectors PROPERTIES TIMEOUT 60)
+    add_test(NAME marc_position_tans_64k_vectors
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_64k_vectors.py)
+    set_tests_properties(marc_position_tans_64k_vectors PROPERTIES TIMEOUT 120)
 endif()
 
 # Private finite entropy core; no thirty-two-MiB public factory is admitted yet.

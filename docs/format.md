@@ -9212,3 +9212,14 @@ specifies the additive2/14+1/20+4/11 representation with58 contexts,
 descriptor. Retain DD-1532 scalar/model/framing rules and failed-frame
 quarantine. This format/vector milestone alone admits no public API, CLI
 or exchange entry. Existing profiles and representations are unchanged.
+
+### DD-1556: position-distance tANS additive family definition
+
+[The complete seven-window specification](design/lzss-position-distance-tans.md)
+reserves tANS variants3..9 with new contexts21..27. It defines the full
+previous-literal partition, distinct24-byte descriptor prefix and variable
+active masks, normalized models,4096-state spread/inverse transitions,
+LEu16 state payload with strict LSB-first padding/terminal rules, known-size
+stream/frame identity and checked capacities. This reservation and finite
+mathematical vectors admit no production API, CLI or exchange entry.
+Existing81 archives and all earlier representations remain unchanged.

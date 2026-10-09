@@ -33862,3 +33862,22 @@ some sample spans; do not claim stable encode acceleration. Decode is slower
 on the measured workload. No numeric default, wire format or parsing policy
 changes. Final fixed-runtime/source81 qualification, the four-profile local
 completion audit and maintainer push/hostedCI/external gates remain unfinished.
+
+### DD-1556: position-distance tANS additive seven-window family
+
+Define the exact representation in docs/design/lzss-position-distance-tans.md
+before production coding: dictionary variants8..14, new context21..27,
+tANS entropy3..9, table_log12 and the full seventeen-literal-context
+partition. Retain all older tuples. Use the first-party spread/state
+mathematics, uniform length residual model and position distance-bit models.
+Specify descriptor, payload, known-size framing, checked decision/payload
+bounds and success-only ordinary output/failed-frame quarantine.
+
+Implement64KiB/1/4/8/16/32/64MiB in order, committing passing reviewable
+milestones independently. Same-window contextual tANS comparisons require
+actual API admission, wire identity and restoration;8/32MiB settings are
+unverified until exercised. Record per-member/totals and encode/decode/peak
+tradeoffs; missing controls or compression misses require explicit reasons
+and policy. Existing81 bodies remain frozen as schemas72..78 append seven
+profiles. All seven local gates precede maintainer push/CI/external88 gates.
+No public factory, runtime budget or performance result is admitted here.

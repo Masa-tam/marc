@@ -11242,3 +11242,14 @@ alphabet, eight-byte mask and checked capacity derivation. Adapt the existing
 independent thirty-two-MiB field oracle; retain a separately written forward
 compact parser and directed byte expectations. No external compression
 implementation or restricted source is consulted.
+
+### IR-1289: position-distance tANS mathematical specification
+
+Use the repository's independently authored tANS variant1 spread/state
+equations, contextual tANS variant2 compact-model representation and
+DD-1532/1536 position-distance field partition as first-party references.
+DD-1556 combines these ideas in distinct new tuples; no external codec
+implementation is consulted. The finite Python oracle builds inverse
+transitions from forward mathematical entries and checks hand-computable
+tANS payloads before production implementation. It does not claim
+FSE compatibility or external conformance.

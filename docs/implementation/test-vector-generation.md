@@ -22890,3 +22890,19 @@ capacity admission and preserved predecessor runtime backup. Historical
 schema1..71 evidence is retained, not newly executed by this final audit.
 All four profiles pass local completion; hosted CI and external81-archive
 four-route verification remain unclaimed (IX-0080).
+
+### TVG-1421: independent64KiB position-distance tANS finite vectors
+
+Date:2026-10-09. Independently derive DD-1556 forward spread transitions
+and inverse entries using bounded Python mathematics, without calling a
+production codec. Verify tANS hand expectations A/AA/AB/ABA before token
+vectors. Freeze25 cases covering empty entropy, literals, full previous
+literal partitions, short lengths3/4, length258, distance class boundaries
+and literal history across matches, plus all-active maximum9122-byte dense
+models. Isolated model/distance cases do not prove
+valid frame history. Two hundred seeded decision/model payloads (seed1556)
+restore exactly with terminal state4096 and exact bit consumption. Invalid
+state, extent and padding cases reject. These tests qualify finite
+mathematics only; production validators, token/frame differential trials,
+failure contracts, public API/CLI, corpus measurements, fuzz and exchange
+remain unfinished.
