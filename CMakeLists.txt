@@ -9469,4 +9469,23 @@ if(MARC_BUILD_TESTS)
         set_tests_properties(marc_position_tans_1m_public_frame_differential
             marc_position_tans_1m_public_raw_differential PROPERTIES TIMEOUT 120 RESOURCE_LOCK marc_position_tans_1m_campaign)
     endif()
+    add_executable(marc_position_tans_1m_benchmark benchmarks/position_tans_1m_benchmark.cpp)
+    target_compile_features(marc_position_tans_1m_benchmark PRIVATE cxx_std_20)
+    target_link_libraries(marc_position_tans_1m_benchmark PRIVATE marc::static)
+    add_executable(marc_position_tans_1m_public_resources benchmarks/position_tans_1m_public_resources.cpp)
+    target_compile_features(marc_position_tans_1m_public_resources PRIVATE cxx_std_20)
+    target_link_libraries(marc_position_tans_1m_public_resources PRIVATE marc::static)
+    if(WIN32)
+        target_link_libraries(marc_position_tans_1m_public_resources PRIVATE psapi)
+    endif()
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_tans_1m_public_measurements
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_1m_public_measurements.py
+                $<TARGET_FILE:marc_position_tans_1m_benchmark>
+                $<TARGET_FILE:marc_position_tans_1m_public_resources>
+                $<TARGET_FILE:marc_cli>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-1m-public-measurements)
+        set_tests_properties(marc_position_tans_1m_public_measurements PROPERTIES TIMEOUT 30 RESOURCE_LOCK marc_position_tans_1m_campaign)
+    endif()
 endif()

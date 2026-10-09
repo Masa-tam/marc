@@ -23515,3 +23515,31 @@ is applied. Do not infer speed or memory advantage: these generation checks
 ran with up to two active campaigns after the normal resource precursor;
 no timing/peak claim is made. Repeated paired speed/normal public peaks,
 instrumented fuzz and additive schema73/83 remain mandatory pending gates.
+
+### TVG-1451: one-MiB paired public measurement infrastructure
+
+Use separate normal public paths for timing and process peaks. The benchmark
+verifies every produced byte against the qualified CLI archive/raw, excludes
+file loading and byte comparison from the timer, and includes allocation,
+factory creation, process and destruction. One warmup precedes three fresh
+instances; retain all samples and their spread, not only the median.
+Whole-file comparison vectors are explicitly charged on the candidate query
+and are benchmark-only retention, not the peak-memory workload.
+
+The resource path streams separate65536-byte input/output arrays through the
+public factory; contextual uses the actual PROFILE_1M API settings. Record
+normal process lifetime resident peaks, including probe runtime and bounded
+IO. Fork after small executable entry for the Linux peak probe to exclude
+inherited launcher high-water. Candidate query with declared controls/calls
+is65543980 encode/27433809 decode bytes; contextual query is caller workspace
+storage and is not the same accounting scope. Neither query is a process peak.
+
+Qualify five empty/singleton/window-before/equal/after inputs for both actual
+one-MiB profiles and both directions. Require complete outputs match CLI
+bytes/restored raw, actual tuple2/9+1/22+5/4 versus2/3+1/2+5/2, correct
+windows/frames, three positive samples, one warmup, wrong-comparison refusal,
+existing-file preservation and failed terminal-state raw remaining unpublished.
+Both builds passed:4.36/4.73 seconds (CTest totals4.42/4.81). Use30-second
+measurement-path watchdogs after these observations. This foundation does not
+establish the full twelve-member repeated speed/normal-peak comparison;
+that campaign, instrumented fuzz and schema73/83 remain pending.
