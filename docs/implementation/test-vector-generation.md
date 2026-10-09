@@ -23104,3 +23104,20 @@ one-byte roundtrip of0/255/65 through three independently reset frames.
 Inspect actual shared exports for the three new entry points and preservation
 of the previous symbol set. CLI and independent public fixture campaigns,
 matched contextual measurements, instrumented fuzz and exchange follow.
+
+### TVG-1432: independent64KiB public token/raw archive fixtures
+
+Use TVG-1425's220 valid token-frame fixtures and TVG-1426's495 canonical
+raw fixtures without changing expected header/frame/model/payload/raw bytes.
+Add mutually exclusive public/owning driver selection. Each public case uses
+exact resource admission, one-byte source/sink, occasional zero-output calls
+and process allocation-attempt checks. Compare all715 restored raw inputs;
+compare all495 canonical raw complete archives through public encoding.
+Arbitrary valid token histories are decoder-only canonical assertions.
+
+Check bounded fixture envelope/frame/raw sizes and actual declared vector
+retention, including growth transients and prior decoded output kept during
+encoding. Rehash actual fixture bodies, compare both builds and previous
+owning expectation maps. Keep public factory negative/allocation tests active.
+CLI and whole-file publication, isolated contextual measurements, instrumented
+fuzz, exchange and subsequent windows remain required.

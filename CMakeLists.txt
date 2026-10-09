@@ -8785,6 +8785,18 @@ if(MARC_BUILD_TESTS)
                 $<TARGET_FILE:marc_position_tans_64k_resources>
                 ${CMAKE_CURRENT_BINARY_DIR}/position-tans-64k-resources-smoke)
         set_tests_properties(marc_position_tans_64k_resources_smoke PROPERTIES TIMEOUT 30)
+        add_test(NAME marc_position_tans_64k_public_frame_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_64k_frame_differential.py
+                $<TARGET_FILE:marc_position_tans_64k_api_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-64k-public-frames --public)
+        add_test(NAME marc_position_tans_64k_public_raw_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_64k_raw_differential.py
+                $<TARGET_FILE:marc_position_tans_64k_api_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-64k-public-raw --public)
+        set_tests_properties(marc_position_tans_64k_public_frame_differential
+            marc_position_tans_64k_public_raw_differential PROPERTIES TIMEOUT 120)
     endif()
     if(Python3_Interpreter_FOUND)
         add_test(NAME marc_position_tans_64k_frame_differential

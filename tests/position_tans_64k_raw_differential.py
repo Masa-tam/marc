@@ -36,7 +36,7 @@ def stream(size):
     struct.pack_into('<HHIII',b,96,1,21,0,0,0)
     return b
 
-parser=argparse.ArgumentParser();parser.add_argument('executable');parser.add_argument('directory');parser.add_argument('--owning',action='store_true');args=parser.parse_args()
+parser=argparse.ArgumentParser();parser.add_argument('executable');parser.add_argument('directory');selection=parser.add_mutually_exclusive_group();selection.add_argument('--owning',action='store_true');selection.add_argument('--public',action='store_true');args=parser.parse_args()
 root=Path(args.directory);root.mkdir(parents=True,exist_ok=True)
 stage=Path(tempfile.mkdtemp(prefix='run-',dir=root))
 cases=[bytes([i]) for i in range(256)]
@@ -67,10 +67,10 @@ for i,raw in enumerate(cases):
     fixture=struct.pack('<II',len(frame),len(raw))+stream(len(raw))+frame+raw
     path=stage/f'{i:03d}.bin';path.write_bytes(fixture)
     hashes[path.name]=hashlib.sha256(fixture).hexdigest()
-    result=subprocess.run([args.executable,'--owning-raw-fixture' if args.owning else '--raw-fixture',str(path)],capture_output=True,timeout=15)
+    result=subprocess.run([args.executable,'--public-raw-fixture' if args.public else '--owning-raw-fixture' if args.owning else '--raw-fixture',str(path)],capture_output=True,timeout=15)
     if result.returncode:raise RuntimeError((i,len(raw),result.returncode,result.stderr.decode()))
 record={'passed':True,'fixtures':len(cases),'seed':1561,'seeded_inputs':100,'all_one_byte_values':256,
         'binary_exhaustive_max_length':6,'stage':str(stage),'fixture_sha256':hashes,
-        'owning_fixture_encode_decode_checked':args.owning,'owning_stream_qualification_claimed':False}
+        'owning_fixture_encode_decode_checked':args.owning,'public_fixture_encode_decode_checked':args.public,'owning_stream_qualification_claimed':False}
 (stage/'qualification.json').write_text(json.dumps(record,indent=2)+'\n')
 print(json.dumps({k:v for k,v in record.items() if k!='fixture_sha256'}))

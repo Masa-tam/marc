@@ -34092,3 +34092,21 @@ Retain sticky error/EOS, unsupported reset flags and success-only raw frame
 publication. Qualify C linkage through static/shared real-data consumers and
 preserve all prior exported symbols. CLI, contextual measurements, fuzz and
 exchange remain separate required gates before profile completion.
+
+### DD-1567: independent64KiB public tANS fixture paths
+
+Route the unchanged independent token-frame/raw fixture bodies through
+public owning C factories. Decode all valid token histories; encode only
+canonical fixed-five raw expectations. Use actual fixture frame capacity,
+known original lengths and exact queried grants. Keep one-byte input/output,
+zero-output starvation, sticky terminal and process allocation checks.
+
+Bound fixture parsing before allocation: raw at most65536 bytes, frame at
+most697316 bytes, exact envelope extent and frame capacity1..65536. Reserve
+four MiB for the fixture/copies/results and caller controls; assert actual
+vector capacities, including transient old/new growth, within that declared
+retention. This driver budget is neither normal resident memory nor a new
+codec default. Compare complete archive bodies and original raw bytes.
+Retain earlier oracle math, raw parsing and expected body hashes unchanged.
+Public byte qualification does not complete CLI, contextual measurements,
+instrumented fuzz, exchange or later windows.

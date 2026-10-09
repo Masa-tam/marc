@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <fstream>
+#include <string>
 #include <new>
 #include <vector>
 
@@ -29,7 +31,8 @@ Config config(marc_direction direction,std::uint32_t frame=257) {
     c.input_capacity_bytes=c.output_capacity_bytes=7; return c;
 }
 struct Result { std::vector<std::uint8_t> bytes; marc_process_result result{}; std::size_t consumed{}; };
-Result run(marc_transform* p,const std::vector<std::uint8_t>& input,std::size_t chunk=7) {
+Result run(marc_transform* p,const std::vector<std::uint8_t>& input,std::size_t chunk=7,
+           std::size_t retained_base=0,std::size_t retained_limit=SIZE_MAX) {
     Result r;
     for (std::size_t call=0;call<input.size()*3+1048576;++call) {
         const auto count=std::min(chunk,input.size()-r.consumed);
@@ -44,7 +47,11 @@ Result run(marc_transform* p,const std::vector<std::uint8_t>& input,std::size_t 
         check(r.result.status!=MARC_STATUS_PROGRESS || r.result.input_consumed || r.result.output_produced,"progress without counts");
         check(output.front()==0xa5 && std::all_of(output.begin()+1+r.result.output_produced,output.end(),[](auto b) { return b==0xa5; }),"output guards");
         r.consumed+=r.result.input_consumed;
+        const auto previous_capacity=r.bytes.capacity();
         r.bytes.insert(r.bytes.end(),output.begin()+1,output.begin()+1+r.result.output_produced);
+        const auto transient_old=r.bytes.capacity()!=previous_capacity ? previous_capacity : 0;
+        check(retained_base<=retained_limit && r.bytes.capacity()<=retained_limit-retained_base
+            && transient_old<=retained_limit-retained_base-r.bytes.capacity(),"declared caller retention bounds actual vector capacities");
         if (r.result.status==MARC_STATUS_END_OF_STREAM || r.result.status>=100) {
             const auto again=marc_transform_process(p,{nullptr,0},{nullptr,0},0);
             check(again.status==r.result.status && !again.input_consumed && !again.output_produced
@@ -124,7 +131,51 @@ void refusal_tests() {
     }
 }
 }
-int main() {
+int fixture(const char* path,bool raw_encode) {
+    std::ifstream file(path,std::ios::binary|std::ios::ate);
+    if (!file) return 2;
+    const auto extent=file.tellg();
+    if (extent<120 || extent>static_cast<std::streamoff>(UINT64_C(2)<<20)) return 3;
+    file.seekg(0);std::vector<std::uint8_t> bytes(static_cast<std::size_t>(extent));
+    if (!file.read(reinterpret_cast<char*>(bytes.data()),static_cast<std::streamsize>(bytes.size()))) return 4;
+    std::uint32_t fs{},rs{},frame{};
+    const auto view=std::as_bytes(std::span(bytes));
+    if (!marc::core::load_le(view,0,fs) || !marc::core::load_le(view,4,rs)
+        || !marc::core::load_le(view,28,frame)) return 5;
+    if (rs>65536 || fs>697316 || UINT64_C(120)+fs+rs!=bytes.size()
+        || !frame || frame>65536 || ((rs==0)!=(fs==0))) return 5;
+    std::vector<std::uint8_t> archive(bytes.begin()+8,bytes.begin()+120+fs);
+    std::vector<std::uint8_t> raw(bytes.begin()+120+fs,bytes.end());
+    auto c=config(MARC_DIRECTION_DECODE,frame);
+    // Bound original fixture, archive/raw copies, result-vector growth and
+    // controls, including transient old/new vector allocations between calls.
+    // The checked FS/RS bounds above keep their sum below four MiB.
+    c.external_retained_bytes=UINT64_C(4)<<20;
+    Resources resources{};
+    if (marc_lzss_position_distance_tans_resource_requirements(&c,&resources)!=MARC_STATUS_OK) return 6;
+    c.max_internal_buffered_bytes=resources.minimum_aggregate_bytes;
+    marc_transform* decoder{};
+    if (marc_lzss_position_distance_tans_create(&c,&decoder)!=MARC_STATUS_OK || !decoder) return 7;
+    const auto retained=bytes.capacity()+archive.capacity()+raw.capacity()+65536;
+    const auto decoded=run(decoder,archive,1,retained,static_cast<std::size_t>(c.external_retained_bytes));
+    marc_transform_destroy(decoder);
+    if (decoded.result.status!=MARC_STATUS_END_OF_STREAM || decoded.bytes!=raw || failures) return 8;
+    if (raw_encode) {
+        auto e=config(MARC_DIRECTION_ENCODE,frame);e.original_size=raw.size();
+        e.external_retained_bytes=UINT64_C(4)<<20;
+        if (marc_lzss_position_distance_tans_resource_requirements(&e,&resources)!=MARC_STATUS_OK) return 9;
+        e.max_internal_buffered_bytes=resources.minimum_aggregate_bytes;
+        marc_transform* encoder{};
+        if (marc_lzss_position_distance_tans_create(&e,&encoder)!=MARC_STATUS_OK || !encoder) return 10;
+        const auto encoded=run(encoder,raw,1,retained+decoded.bytes.capacity(),static_cast<std::size_t>(e.external_retained_bytes));
+        marc_transform_destroy(encoder);
+        if (encoded.result.status!=MARC_STATUS_END_OF_STREAM || encoded.bytes!=archive || failures) return 11;
+    }
+    return 0;
+}
+int main(int argc,char** argv) {
+    if (argc==3 && std::string(argv[1])=="--public-fixture") return fixture(argv[2],false);
+    if (argc==3 && std::string(argv[1])=="--public-raw-fixture") return fixture(argv[2],true);
     budget_tests();
     refusal_tests();
     for (auto direction : {MARC_DIRECTION_ENCODE,MARC_DIRECTION_DECODE}) {

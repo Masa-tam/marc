@@ -40508,3 +40508,24 @@ CLI and independent public fixtures, matched contextual measurements,
 instrumented fuzz and exchange remain unfinished. Fixed qualified Release
 and prior artifacts remain preserved; no push, hosted CI or new external
 verification is claimed.
+
+### CR-1761:64KiB public independent fixture qualification
+
+2026-10-10, Codex implementation and review; maintainer review pending.
+Task: connect unchanged first-party independently authored tANS and greedy
+raw fixtures to the public C API. Add bounded public fixture dispatch and
+mutually exclusive driver selectors; do not change oracle models, raw parser
+or expected serialized bodies. No external or restricted implementation was
+consulted. DD-1567 and TVG-1432 distinguish valid history decoding from
+canonical raw archive encoding. No legal guarantee is asserted.
+
+Both normal builds pass public factory tests plus715 independent decoding
+fixtures and495 complete canonical archive encoding comparisons. Actual
+fixture bodies agree across builds and with previous owning expectations.
+Exact queried grants, allocation-free process calls and actual vector
+retention checks remain active. Existing factory negative/allocation tests
+still pass. The120-second differential watchdog follows measured campaigns
+below45 seconds per test. CLI, contextual comparisons and isolated timing,
+instrumented fuzz, exchange and later windows remain unfinished. Fixed
+qualified Release and existing artifacts remain preserved; no push, hosted
+CI or new external result is claimed.
