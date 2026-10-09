@@ -40402,3 +40402,30 @@ Documentation and whitespace checks pass. The stream unit watchdog is30
 seconds after measured subsecond runs; differential watchdogs remain120
 seconds after campaigns below44 seconds. Owning/resource/fuzz qualification
 and public admission remain unfinished.
+
+### CR-1757:64KiB tANS internal ownership and buffer admission
+
+2026-10-09, Codex implementation and review; maintainer review pending.
+Task: integrate first-party stream ownership patterns with tANS-specific
+table banks and private frame staging. Reuse the existing exact dictionary
+tokenizer and known-size owner state machine; independently account for
+tANS payload/model bounds and retained controls/buffers under DD-1563.
+No external or restricted implementation consulted. TVG-1428 introduces
+allocation-point failure injection, steady-state allocation detection,
+query boundaries and chunk/restoration checks.
+
+Internal ownership does not admit a public codec or complete all profile
+gates. Public API/ABI/CLI, independent owning fixture comparison, normal
+peak/speed/corpus qualification, instrumented fuzz and schema72 exchange
+remain required; later windows and final88 retain their full scope. Existing
+artifacts and fixed qualified Release runtime remain unchanged. No new hosted
+CI or external verification is claimed.
+
+Both normal builds pass the internal owning test target. All eight encoder
+and five decoder allocation sites reject cleanly under individual injected
+failures and release prior allocations. Exact grants admit construction and
+boundary processing; one-byte-below refuses before allocation. Process calls
+attempt no allocations, chunked bytes/restoration agree, and late second-frame
+failure publishes only the earlier valid frame. Documentation and whitespace
+checks pass. The target watchdog is30 seconds after measured subsecond runs;
+this is not a normal process peak or corpus throughput measurement.

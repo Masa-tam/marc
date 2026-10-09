@@ -23032,3 +23032,20 @@ Also feed all220 independent token-frame fixtures and495 independent raw
 fixtures through the stream decoder using one-byte source and sink capacities,
 including empty streams and65536-byte restored frames. Compare exact raw
 bytes and strict terminal status with their independently generated contents.
+
+### TVG-1428:64KiB tANS owning admission, rollback and chunks
+
+Count every owner/buffer allocation and inject failure at each construction
+site. Verify null/out-of-memory and no surviving partial allocation. Check
+exact encoder/decoder admission and one-byte-below refusal before allocation,
+unchanged failed query destinations, encode/decode bank sizes and private
+staging extents. Detect any attempted allocation inside process calls.
+
+Compare encoded bytes across input/output chunk capacities and every small
+input split with one-byte output; verify owning raw restoration. Include
+empty input,65535/65536/65537-byte inputs under exact grants, full reset
+frames and final short frames. Corrupt a second singleton frame after all
+private tokens and verify only the first frame publishes; reject premature
+known-size EndInput before output. These internal owner tests do not supply
+public API/ABI/CLI, corpus compression/speed/normal peaks, instrumented fuzz
+or exchange qualification.

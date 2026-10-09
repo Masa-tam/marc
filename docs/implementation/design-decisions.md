@@ -33999,3 +33999,22 @@ Reject source/output/scratch/owner overlap before writes. Charge full retained
 buffers, local control/model work, table bank and additional owner bytes
 before collection; this private construction bound is not a public grant.
 Owning allocation/rollback and encoder streaming remain later required gates.
+
+### DD-1563:64KiB tANS owning buffers and resource admission
+
+Own the indexed fixed-five dictionary buffers, tANS encode/decode bank and
+bounded raw/serialized buffers. Encoder additionally retains private payload
+and serialized staging so only complete frames drain. Calculate byte extents
+with checked arithmetic before allocation. Expose owned buffer bytes, object
+bytes, fixed local working allowance and the shared metadata validator's
+conservative full-decode-bank floor separately. Admission is the maximum
+of actual owner/working storage and that floor, not measured process peak.
+No public default memory grant is selected by these internal queries.
+
+Queries commit only on success; rejected queries allocate nothing. Construct
+buffers with checked nothrow allocations and release every earlier buffer on
+any failure. Decoder includes the embedded stream controller exactly once;
+encoder eligibility is fixed5. Process calls reuse all storage and never
+allocate. Preserve known-size/end/flush semantics and byte determinism over
+arbitrary chunks. A failed frame never drains; earlier validated frames may
+already have committed. Public admission and remaining profile gates follow.

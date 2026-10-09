@@ -8726,6 +8726,16 @@ if(MARC_BUILD_TESTS)
     set_tests_properties(marc_position_tans_64k_frames PROPERTIES TIMEOUT 30)
     add_test(NAME marc_position_tans_64k_stream COMMAND marc_position_tans_64k_frame_tests --stream)
     set_tests_properties(marc_position_tans_64k_stream PROPERTIES TIMEOUT 30)
+    get_target_property(position_tans_private_sources marc_position_tans_64k_frame_tests SOURCES)
+    list(FILTER position_tans_private_sources EXCLUDE REGEX "^tests/")
+    add_executable(marc_position_tans_64k_owned_tests
+        tests/position_tans_64k_owned_tests.cpp
+        src/frame/lzss_position_tans_64k_owned.cpp
+        ${position_tans_private_sources})
+    target_compile_features(marc_position_tans_64k_owned_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_64k_owned_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_tans_64k_owned COMMAND marc_position_tans_64k_owned_tests)
+    set_tests_properties(marc_position_tans_64k_owned PROPERTIES TIMEOUT 30)
     if(Python3_Interpreter_FOUND)
         add_test(NAME marc_position_tans_64k_frame_differential
             COMMAND ${Python3_EXECUTABLE} -B -X utf8
