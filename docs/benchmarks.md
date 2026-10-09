@@ -11137,3 +11137,43 @@ watchdogs and one active owning differential per shared campaign lock.
 Same-window contextual tANS has not yet been run for this milestone. No
 relative compression or speed goal is claimed; the public paired comparison
 remains mandatory before one-MiB profile completion.
+
+### BM-0237:one-MiB same-window public tANS compression comparison
+
+Run all twelve frozen Silesia members through the public one-MiB CLI
+selectors, verify original SHA256, actual known-size112-byte stream headers
+and restored SHA256, and compare complete encoded files across two builds.
+Position-distance is dictionary2/9+context1/22+tANS5/4; contextual is
+2/3+1/2+5/2. Both actual windows and frame sizes are1048576 bytes.
+Dictionary parameters are(1048576,3,258,0) versus(1048576,5,258,0);
+position-distance fixed-five encoding still uses eligibility5. Candidate
+entropy bytes are0c013400061200000000000000000000; contextual bytes are
+0c011f00c61100000000000000000000. Record these distinct representations,
+not an assumed same-format comparison. No custom unsupported control is used.
+
+All twelve position-distance files are smaller. Total raw211938580 bytes;
+position-distance64055526 versus contextual65192805,1137279 fewer bytes,
+1.744485454% smaller. All complete files match across builds; candidate files
+also match the prior independently qualified private-owner corpus. Every
+member restores exactly. This establishes the same-window compression goal
+on this corpus, not a universal guarantee. No Dynamic Range size condition
+is applied. Do not infer speed or memory advantage: these generation checks
+ran with up to two active campaigns after the normal resource precursor;
+no timing/peak claim is made. Repeated paired speed/normal public peaks,
+instrumented fuzz and additive schema73/83 remain mandatory pending gates.
+
+| Member | Raw bytes | Position-distance | Contextual | Difference P-C |
+|---|---:|---:|---:|---:|
+| dickens | 10192446 | 3451992 | 3457628 | -5636 |
+| mozilla | 51220480 | 18733159 | 19429699 | -696540 |
+| mr | 9970564 | 3387565 | 3504455 | -116890 |
+| nci | 33553445 | 2761976 | 2765751 | -3775 |
+| ooffice | 6152192 | 3079900 | 3088785 | -8885 |
+| osdb | 10085684 | 3443765 | 3463603 | -19838 |
+| reymont | 6627202 | 1704016 | 1706738 | -2722 |
+| samba | 21606400 | 5099912 | 5110756 | -10844 |
+| sao | 7251944 | 5258238 | 5387558 | -129320 |
+| webster | 41458703 | 11018533 | 11032345 | -13812 |
+| xml | 5345280 | 580638 | 581370 | -732 |
+| x-ray | 8474240 | 5535832 | 5664117 | -128285 |
+| Total | 211938580 | 64055526 | 65192805 | -1137279 |
