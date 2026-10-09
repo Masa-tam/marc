@@ -40824,3 +40824,41 @@ no allocation attempts. One-MiB-before/equal/after boundaries and failed
 second-frame quarantine pass. Keep the120-second differential allowance
 for this measured stage and run these heavy tests serially. Public default
 limits, normal peaks/full corpus, API/CLI, fuzz and exchange remain pending.
+
+### CR-1776: one-MiB normal private resource precursor
+
+Date:2026-10-10. Author/reviewer:Codex; maintainer review pending.
+Task: normal resource admission and process-peak diagnostics. Adapt only
+first-party64KiB probe/driver under the one-MiB specification. No external
+or restricted implementation consulted; no push or legal guarantee claimed.
+
+Normal resource precursor: independently admitted owners stream files through
+separate65536-byte input/output buffers. Query actual retained capacities and
+working controls, test exact grant and one-below refusal, measure process peak
+without sanitizers or allocation overrides, and verify actual112-byte tuple
+2/9+1/22+5/4 with frame/window1048576 and restored SHA256. Empty, singleton,
+window-before/equal/after cases pass; existing destination reuse is refused
+unchanged. A singleton terminal-state error retains a zero-byte temporary and
+never publishes raw. This private diagnostic does not replace CLI qualification.
+
+The full12 verified corpus members restore in both builds with identical complete
+archive bodies. Admission queries are65343164 bytes encode and27232993 decode;
+owned buffers are65202292/27092025, fixed controls140352 and owner520/616 bytes.
+Encode finder13369344, token12582912, table434176, raw1048576, serialized12592185,
+private serialized12592185 and private payload12582914. Decode table868352 and
+payload retained within serialized scratch. These are bounds, not OS peaks.
+
+BuildA: encode/decode summed one-sample times42.629502/32.149345 seconds; maximum measured process peaks35336192/20463616 bytes.
+BuildB: encode/decode summed one-sample times41.082050/9.429802 seconds; maximum measured process peaks33415168/18477056 bytes.
+Each member/direction is a fresh normal process; timings include factory,
+stream/file IO, destruction and rename. Linux diagnostic forks after executable
+entry to avoid inherited launcher high-water RSS. These preliminary single
+samples establish resource observations; they are not repeated isolated speed
+comparisons. No global benchmark lock is claimed. Retain build labels separately.
+
+Public/default grants, same-window contextual tANS comparison, repeated public
+speed/peak measurements, fuzz and exchange remain pending. A64MiB default is
+only a candidate until actual public wrapper/call/external charges and creation
+are tested. Boundary resource tests measured1.12/1.40 seconds; use30-second
+watchdogs. Owner differentials measured up to41.70 seconds; retain120-second
+watchdogs and one active owning differential per shared campaign lock.

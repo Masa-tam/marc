@@ -9412,6 +9412,23 @@ if(MARC_BUILD_TESTS)
                 $<TARGET_FILE:marc_position_tans_1m_owned_tests>
                 ${CMAKE_CURRENT_BINARY_DIR}/position-tans-1m-owned-raw --owning)
         set_tests_properties(marc_position_tans_1m_owned_frame_differential
-            marc_position_tans_1m_owned_raw_differential PROPERTIES TIMEOUT 120)
+            marc_position_tans_1m_owned_raw_differential PROPERTIES TIMEOUT 120 RESOURCE_LOCK marc_position_tans_1m_campaign)
+    endif()
+    get_target_property(position_tans_1m_owner_sources marc_position_tans_1m_owned_tests SOURCES)
+    list(REMOVE_ITEM position_tans_1m_owner_sources tests/position_tans_1m_owned_tests.cpp)
+    add_executable(marc_position_tans_1m_resources
+        benchmarks/position_tans_1m_resources.cpp ${position_tans_1m_owner_sources})
+    target_compile_features(marc_position_tans_1m_resources PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_1m_resources PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    if(WIN32)
+        target_link_libraries(marc_position_tans_1m_resources PRIVATE psapi)
+    endif()
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_tans_1m_resources_smoke
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tools/run_position_tans_1m_resources.py
+                $<TARGET_FILE:marc_position_tans_1m_resources>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-1m-resources-smoke)
+        set_tests_properties(marc_position_tans_1m_resources_smoke PROPERTIES TIMEOUT 30)
     endif()
 endif()
