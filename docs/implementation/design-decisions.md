@@ -34234,3 +34234,20 @@ frame history. Add200 seeded52-alphabet cases and forward compact parsing,
 malformed descriptor/payload checks and hand-computable byte expectations.
 Production differential/failure guarantees, API/CLI, measurements/fuzz and
 schema73/83 remain later milestones; capacities require actual resource tests.
+
+### DD-1574: one-MiB bounded finite tANS core and ordinary rollback
+
+Specialize the first-party64KiB finite reference into distinct1MiB internal
+symbols and types with52 contexts,4614 frequencies and53 table banks. Keep
+explicit descriptor packing/parsing, integer normalization, reverse encoding
+and forward decoding. Reject the seventh mask byte's unused four high bits
+before model parsing. Retain transactional ordinary descriptor/serialized
+bytes/counts and per-symbol destinations; failed private tables/payload scratch
+must be discarded. No frame or public admission follows from this finite core.
+
+A uniform-only finite entropy decision sequence may have a zero adaptive mask
+with nonzero decision count: its fixed2048/2048 bank is separate. Correct the
+independent forward parser's overly restrictive mask/count equivalence and add
+three uniform-only plus last-context51 regressions. Frozen34 original vectors
+remain byte-identical. Raw frame validity still requires actual dictionary
+kind/history/raw-size validation and private-frame quarantine in later work.

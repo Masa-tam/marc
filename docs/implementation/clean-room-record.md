@@ -40682,3 +40682,29 @@ Both normal build environments pass the34 frozen/200 seeded finite tests and
 document/link inspection. Earlier64KiB oracle/expectations and the qualified
 fixed Release executable remain unchanged. This independently reviewable
 format/vector milestone is committed before production implementation.
+
+### CR-1770: one-MiB finite core first-party implementation
+
+Date:2026-10-10. Author/reviewer:Codex; maintainer review pending.
+Task: implement bounded finite parsing/model/encoder/decoder after the committed
+format/vector milestone. Adapt only this repository's independently authored
+64KiB tANS finite reference and tests; references are IR-1289/1290 and DD-1573.
+No external or restricted codec code is consulted. Distinct internal symbols
+preserve the existing64KiB implementation and representations.
+
+Review changes context/frequency/table extents and descriptor mask layout,
+adding explicit rejection of the four unused mask bits. Independent forward
+parser review finds that uniform-only isolated decisions can legally have no
+adaptive model; remove its erroneous converse and add three uniform-only and
+context51 regressions. Frozen34 expectations remain unchanged. This fixes
+only the independent parser's extra constraint; production raw-frame history
+and failed-frame quarantine remain required later. Qualification is finite
+entropy only, with no public/default-grant/CLI/exchange admission or legal
+non-infringement guarantee.
+
+Both normal builds pass finite unit and238 independent differential fixtures,
+with identical fixture bytes and unchanged frozen34 expectations. Ordinary
+failed descriptor/serialized/count/symbol checks and all four unused mask bits
+pass. Documentation checks and preserved fixed Release/source hash checks also
+pass. Commit this finite submilestone; the complete internal token/frame/stream
+and owning-resource milestone remains unfinished.

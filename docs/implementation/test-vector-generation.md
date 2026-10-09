@@ -23251,3 +23251,27 @@ Both normal build environments pass34 frozen vectors and200 seeded cases;
 observed test durations are27.48 and17.45 seconds. The120-second test watchdog
 provides headroom above the slower measured run. Preserve both test logs and
 the earlier64KiB oracle/expectation hashes unchanged.
+
+### TVG-1441: one-MiB finite production differential and failure guards
+
+Compile the distinct bounded1MiB descriptor/model/automaton core and compare
+both normal builds against DD-1573's unchanged34 frozen vectors,200 seeded
+finite models/payloads and four uniform/last-context regressions. Require exact
+canonical descriptor and payload bytes and forward decoded decisions. Every
+fixture carries independent expectations; no production code generates them.
+
+Unit checks cover ordinary failed parse/serialize/count/symbol destinations,
+every descriptor cut and prefix metadata change, all unused mask bits, invalid
+models/modes/state/padding/terminal/counts, unrequested contexts, short scratch,
+input/table aliasing and exact/one-below table admission. Tables and reverse
+payload are private scratch; ordinary symbol publication requires each read
+success and whole raw-frame publication still awaits later validation.
+These finite checks do not qualify typed tokens, frames, streams, APIs/CLI,
+normal resource/default grants, fuzz or schema73/83.
+
+Both normal builds pass all three finite tests. The vectors/core/differential
+runs take26.93/0.02/34.58 and17.39/0.01/25.00 seconds respectively. All238
+independent fixture bodies agree across builds, including the four added
+uniform/last-context cases. Preserve original34 expectations and previous
+64KiB production sources unchanged. The120-second vector/differential and
+30-second core watchdogs provide headroom over the observed runs.

@@ -171,7 +171,7 @@ def parse_models(descriptor):
                 raise ValueError('noncanonical model')
         result.append(model)
     if cursor!=len(descriptor):raise ValueError('descriptor trailing')
-    if bool(decisions)!=bool(mask):raise ValueError('empty decisions')
+    if not decisions and mask:raise ValueError('empty decisions')
     return result
 
 def decode(payload, valid, contexts, models):
@@ -231,6 +231,10 @@ def qualify():
     maximum = vector('isolated-all-active-dense-models',[(c,v) for c,n in enumerate(ALPHABETS) for v in range(n)])
     assert len(bytes.fromhex(maximum['descriptor'])) == 9207
     cases.append(maximum)
+    # Uniform-only finite entropy is valid even with no adaptive active bank.
+    # Such isolated decisions do not constitute a valid raw dictionary frame.
+    for seq in ([(-1,0)],[(-1,1)],[(-1,0),(-1,1),(-1,0)],[(51,0),(51,1),(51,0)]):
+        vector('uniform-or-last-context-regression',seq)
     empty=bytes.fromhex(cases[0]['descriptor'])
     for bad in (empty[:-1],empty+b'\x00',empty[:30]+b'\x80',
                 empty[:12]+b'\x30\x00'+empty[14:],empty[:16]+b'\xda\x11\x00\x00'+empty[20:]):

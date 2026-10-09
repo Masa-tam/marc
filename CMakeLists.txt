@@ -9288,3 +9288,24 @@ if(MARC_BUILD_FUZZERS)
         target_link_libraries(marc_fuzz_${entry} PRIVATE marc::static)
     endforeach()
 endif()
+
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_tans_1m_core_tests
+        tests/position_tans_1m_core_tests.cpp
+        src/entropy/position_tans_1m_format.cpp
+        src/entropy/position_tans_1m.cpp
+        src/entropy/tans_tables.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_tans_1m_core_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_1m_core_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_tans_1m_core COMMAND marc_position_tans_1m_core_tests)
+    set_tests_properties(marc_position_tans_1m_core PROPERTIES TIMEOUT 30)
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_tans_1m_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_1m_differential.py
+                $<TARGET_FILE:marc_position_tans_1m_core_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-1m-differential)
+        set_tests_properties(marc_position_tans_1m_differential PROPERTIES TIMEOUT 120)
+    endif()
+endif()
