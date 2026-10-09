@@ -40733,3 +40733,24 @@ unit rollback checks. Full fixture bytes and independent raw restoration
 sizes/hashes agree; normal fixed Release, earlier64KiB sources and frozen1MiB
 finite expectations remain unchanged. Save all initial/final logs and commit
 this token submilestone without marking raw-frame/stream quarantine complete.
+
+### CR-1772: one-MiB stream/frame strict preflight specialization
+
+Date:2026-10-10. Author/reviewer:Codex; maintainer review pending.
+Task: implement the exact stream/frame admission layer before raw decoding.
+Adapt first-party64KiB explicit field helpers and bounded prefix validators
+under DD-1573/1576; no external or restricted compression implementation is
+consulted. Distinct1MiB symbols/types preserve earlier representations.
+
+Review exact tuple and counts, hand-decoded singleton headers, the unchanged
+independent descriptor, all reserved bytes and checked8R/30T/extents. Keep
+ordinary parsed/serialized destinations transactional. Preflight verifies only
+metadata, descriptor and payload extent; entropy finish/history/raw-frame
+quarantine, owning resources and public admission remain mandatory later.
+No new API, CLI, exchange archive, push or legal guarantee is claimed.
+
+Both normal builds pass the strict stream/frame preflight unit and document
+inspection. Hand-decoded tuple/header bytes, frozen singleton descriptor and
+ordinary failure/checked-bound tests pass. Previous production/frozen bytes and
+fixed Release remain unchanged. Commit this bounded admission submilestone;
+raw entropy/history validation and failed-frame quarantine remain pending.

@@ -34276,3 +34276,20 @@ This qualifies token-level rollback, not raw-frame publication. Frame/stream
 quarantine and owner/default-resource queries remain mandatory later. A small
 exact-quota unit must use a block limit compatible with that quota, rather than
 blindly copying the entire window into its block setting.
+
+### DD-1576: one-MiB strict stream/frame preflight before raw decode
+
+Specialize the exact112-byte MARC2.0 stream and64-byte MRF2 header validators
+for dictionary2/9/context1/22/entropy5/4. Require window1048576, configured
+frame1..1048576,52 contexts/4614 frequencies and no flags/reserved/side/trailer
+extensions. Strict known original size determines each frame's raw extent and
+sequence. Validate2T<=D<=min(30T,8R),31..9207 descriptor bytes and checked
+payload/serialized/retained sizes before buffering payload or requesting tables.
+
+Prefix preflight validates the complete canonical descriptor, including all
+unused active-mask bits. Full preflight validates declared payload extent;
+it does not establish entropy terminal state, dictionary history or raw-frame
+publication. Parsed structures/requirements/serialized bytes commit only on
+success. Charge217088 decode entries plus supplied raw/token/serialized regions
+and finite control scratch; public owner/default grants remain unqualified.
+Hand-decoded singleton headers agree with the separate finite descriptor bytes.

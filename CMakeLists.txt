@@ -9334,3 +9334,17 @@ if(MARC_BUILD_TESTS)
         set_tests_properties(marc_position_tans_1m_token_differential PROPERTIES TIMEOUT 120)
     endif()
 endif()
+
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_tans_1m_frame_format_tests
+        tests/position_tans_1m_frame_format_tests.cpp
+        src/frame/lzss_position_tans_1m_format.cpp
+        src/entropy/position_tans_1m_format.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_tans_1m_frame_format_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_1m_frame_format_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_tans_1m_frame_format COMMAND marc_position_tans_1m_frame_format_tests)
+    set_tests_properties(marc_position_tans_1m_frame_format PROPERTIES TIMEOUT 30)
+endif()

@@ -23302,3 +23302,25 @@ agree between builds. Unit/differential times are0.20/32.14 and0.01/22.56
 seconds; existing30/120-second watchdogs exceed measured durations. Ordinary
 failure destinations, late failed private-prefix discard and tail guards pass.
 The fixed Release and preceding64KiB/1MiB finite sources remain unchanged.
+
+### TVG-1443: one-MiB stream/frame byte expectations and bounded admission
+
+Hand-check complete112-byte tuple2/9+1/22+5/4 header and64-byte singleton
+frame header against explicit field offsets. Use the unchanged independent
+initial-A35-byte descriptor, two-byte zero state, prefix99 and serialized101
+bytes. Test every stream/frame cut, short serialization destination, fixed
+identity/parameter/reserved byte, descriptor-prefix mutation, sequence and
+empty/two-frame partition with ordinary output/requirements unchanged on error.
+
+Verify configured frame/window/table/block/output/expansion limits and exact/
+one-below private footprint using a consistent one-byte configured frame for
+the tiny quota test. Check full1MiB two-decisions-per-literal payload3145730,
+absolute8R decision8388608/payload12582914/serialized12592185 ceilings, one
+above raw ceiling and independent30T versus31T metadata bounds. Preflight
+acceptance deliberately makes no entropy/history/quarantine claim; later frame
+decode must validate and keep raw scratch private until complete success.
+
+Both normal builds pass the full header/preflight unit. Observed durations are
+0.17 seconds and below0.01 seconds; the existing30-second watchdog provides
+headroom. Stream/frame serialization matches the hand-decoded bytes, and all
+ordinary destination, upper-count, prefix and exact-quota checks pass.
