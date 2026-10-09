@@ -33979,3 +33979,23 @@ transactional indexed and private indexed paths against those choices and
 the entire independently authored frame/raw pair. This qualifies dictionary
 selection for the finite64KiB tANS connection; owning stream integration,
 resource queries, public admission and all remaining profile gates follow.
+
+### DD-1562:64KiB tANS bounded caller-buffer stream decoder
+
+Adapt the first-party known-size stream controller to the tANS tuple and
+caller-provided200704-entry private decode bank. Collect a bounded stream
+header, frame header, canonical descriptor and payload in that order.
+Validate header requirements and descriptor before payload collection;
+transition to raw draining only after the private frame transaction succeeds.
+Keep earlier validated frames on a later-frame failure, discard failed token/
+raw scratch, and report a sticky error with no further output.
+
+Accept arbitrary input/output splits, including zero capacity and one byte.
+Known original size alone is not end-of-stream: await explicit EndInput,
+reject truncated structures and trailing bytes, and drain final validated
+raw before EndOfStream. Repeated ended calls return EndOfStream. Decoder
+Flush is a deterministic no-op; ResetBlock and unknown flags are unsupported.
+Reject source/output/scratch/owner overlap before writes. Charge full retained
+buffers, local control/model work, table bank and additional owner bytes
+before collection; this private construction bound is not a public grant.
+Owning allocation/rollback and encoder streaming remain later required gates.

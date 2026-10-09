@@ -8702,6 +8702,8 @@ if(MARC_BUILD_TESTS)
     set_tests_properties(marc_position_tans_64k_frame_format PROPERTIES TIMEOUT 30)
     add_executable(marc_position_tans_64k_frame_tests
         tests/position_tans_64k_frame_tests.cpp
+        tests/position_tans_64k_stream_tests.cpp
+        src/frame/lzss_position_tans_64k_stream_decoder.cpp
         src/dictionary/lzss_short_match_candidate.cpp
         src/dictionary/lzss_short_prefix_match_finder.cpp
         src/dictionary/lzss_match_finder.cpp
@@ -8722,6 +8724,8 @@ if(MARC_BUILD_TESTS)
     target_include_directories(marc_position_tans_64k_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_64k_frames COMMAND marc_position_tans_64k_frame_tests)
     set_tests_properties(marc_position_tans_64k_frames PROPERTIES TIMEOUT 30)
+    add_test(NAME marc_position_tans_64k_stream COMMAND marc_position_tans_64k_frame_tests --stream)
+    set_tests_properties(marc_position_tans_64k_stream PROPERTIES TIMEOUT 30)
     if(Python3_Interpreter_FOUND)
         add_test(NAME marc_position_tans_64k_frame_differential
             COMMAND ${Python3_EXECUTABLE} -B -X utf8

@@ -7,6 +7,9 @@
 #include <string>
 #include <vector>
 
+int position_tans_64k_stream_tests();
+int check_position_tans_64k_stream_fixture(std::span<const std::byte>,std::span<const std::byte>);
+
 namespace {
 using namespace marc::frame::internal;
 using namespace marc::entropy::internal;
@@ -38,10 +41,11 @@ int fixture(const char* path,bool raw_parse=false) {
             if (a.error!=LzssShortMatchCandidateError::none || b.error!=LzssShortMatchCandidateError::none
                 || c.error!=LzssShortMatchCandidateError::none || a.token_count || b.token_count || c.token_count) return 13;
         }
-        return 0;
+        return check_position_tans_64k_stream_fixture(bytes.subspan(8,112),{});
     }
     const PositionTans64kFrameContext context{stream,limits,0,0};
     const auto frame=bytes.subspan(120,fs);const auto expected=bytes.subspan(120+fs,rs);
+    if (check_position_tans_64k_stream_fixture(bytes.subspan(8,112+fs),expected)) return 14;
     PositionTans64kFrameLayout layout{};
     if (preflight_position_tans_64k_frame(frame,context,layout)!=PositionTans64kFormatError::none
         || layout.requirements.serialized_size!=fs) return 6;
@@ -81,6 +85,7 @@ int fixture(const char* path,bool raw_parse=false) {
 }
 }
 int main(int argc,char** argv) {
+    if (argc==2 && std::string(argv[1])=="--stream") return position_tans_64k_stream_tests();
     if (argc==3 && std::string(argv[1])=="--fixture") return fixture(argv[2]);
     if (argc==3 && std::string(argv[1])=="--raw-fixture") return fixture(argv[2],true);
     marc::core::DecoderLimits limits{};

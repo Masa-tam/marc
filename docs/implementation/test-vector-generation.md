@@ -23010,3 +23010,25 @@ full re-encoded frame bytes with the independent fixtures. Existing finite
 frame failure tests remain required; arbitrary process chunking, owning
 allocation and memory/throughput measurements are not inferred from this
 finite dictionary-selection campaign.
+
+### TVG-1427:64KiB tANS stream split and failed-frame quarantine
+
+Use two independently qualified singleton frames and a frame with length258
+forward overlap copying and literal history across matches. Verify every
+input split with one-/multi-byte output capacities and one-byte source/sink.
+Check every truncation: retain only raw from earlier completely validated
+frames. Corrupt the second frame's terminal state after all private tokens,
+and verify only the first frame drains; corrupt the first frame and publish
+no raw. Reject a bad descriptor before payload and strict trailing data.
+
+Check zero output capacity, delayed empty EndInput, starvation, final drains,
+empty streams, sticky errors/repeated EndOfStream, unsupported flags,
+source/output overlap and exact constructor/nested-frame memory bound with
+one-byte-below refusal and a short private table bank. These caller-buffer
+tests do not qualify an owning factory, allocation rollback, stream encoder,
+public API, normal process peaks or corpus/fuzz/exchange gates.
+
+Also feed all220 independent token-frame fixtures and495 independent raw
+fixtures through the stream decoder using one-byte source and sink capacities,
+including empty streams and65536-byte restored frames. Compare exact raw
+bytes and strict terminal status with their independently generated contents.

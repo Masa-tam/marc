@@ -40375,3 +40375,30 @@ bodies also agree across builds. Documentation and whitespace checks pass.
 The raw differential watchdog is120 seconds after measured campaigns below
 48 seconds. These normal finite tests do not substitute for instrumented
 fuzz, process resource measurements or later owning stream qualification.
+
+### CR-1756:64KiB tANS caller-buffer stream decoder and frame quarantine
+
+2026-10-09, Codex implementation and review; maintainer review pending.
+Task: integrate bounded tANS frame restoration with the first-party MARC2
+known-size incremental decoder controller. Retain documented state/EOF
+contracts while adding caller-owned tANS tables and explicit local model/
+control accounting. No external or restricted implementation consulted.
+DD-1562 defines the transaction/draining boundary; TVG-1427 checks splits,
+malformed input and late frame failure against independently qualified
+finite frame fixtures and explicit expected raw bytes.
+
+This stage does not complete stream encoding or owning resource/allocation
+rollback. Those, public API/ABI/CLI, corpus comparison/normal peaks/fuzz and
+exchange remain required before64KiB and later-window completion. Fixed
+qualified Release runtime and existing artifacts remain preserved. No new
+hosted CI or external verification is claimed.
+
+Both normal builds pass caller-buffer stream tests and the related finite
+frame tests. All220 independent token-frame and495 raw fixtures also pass
+through one-byte source/sink stream decoding and retain exact restored bytes.
+Actual fixture bodies agree across builds. Late first/second-frame failures
+never drain the failed raw frame; prior validated frames remain committed.
+Documentation and whitespace checks pass. The stream unit watchdog is30
+seconds after measured subsecond runs; differential watchdogs remain120
+seconds after campaigns below44 seconds. Owning/resource/fuzz qualification
+and public admission remain unfinished.
