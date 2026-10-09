@@ -34504,3 +34504,40 @@ Both builds passed:4.36/4.73 seconds (CTest totals4.42/4.81). Use30-second
 measurement-path watchdogs after these observations. This foundation does not
 establish the full twelve-member repeated speed/normal-peak comparison;
 that campaign, instrumented fuzz and schema73/83 remain pending.
+
+### DD-1585: one-MiB paired public corpus measurement build A
+
+Build A completed the full twelve-member public paired campaign under the
+BM-0238 method. Actual windows/frames/identities and sizes remain BM-0237;
+all measured encode outputs equal the qualified archives and all raw hashes
+restore. One warmup and three fresh instances per direction/member include
+allocation, creation, process and destruction, excluding file loading and
+byte comparison. Retain all samples and spreads. Normal lifetime resident
+peaks come from separate streamed processes, including runtime and bounded
+IO, not whole-file timing vectors. Selected codec/build process snapshots
+succeeded with zero selected work before/after; no global lock is claimed.
+
+Candidate public streaming queries65543980/27433809 bytes include declared
+calls and65536 external control bytes under64MiB default admission. Actual
+contextual caller-workspace queries29631431/23602119 exclude those driver
+IO/control charges. Scopes differ; neither query is an OS peak. Timing-only
+comparison vectors are separately charged with a benchmark-only grant.
+
+Build A summed member medians: encode42.5364419 P versus51.3391999 C seconds,
+17.146% shorter; decode3.4873884 versus5.7427117,39.273% shorter. These are
+sums of medians, not one whole-corpus trial. Encode is slower on dickens,
+ooffice, osdb, sao, webster and x-ray; decode is faster on all twelve observed
+medians. Maximum sample spreads encode7.271% P/10.530% C, decode2.766% P/
+2.983% C. Avoid universal or precise small speed claims from three samples.
+
+Maximum normal process peaks encode35381248 P/26181632 C bytes; decode
+20443136/20111360. All twelve observed candidate peaks are higher in this
+build, particularly encode. Compression and aggregate timing gains trade
+against higher admission/observed memory and six slower member encodes.
+Compression remains smaller for every member on this corpus, without a
+Dynamic Range condition. Keep both formats and their separate measurements.
+
+Build B campaign is still running and not qualified by this record. Full
+cross-build timing/peak audit, instrumented fuzz, schema73/83, fixed-release
+publication and profile closure remain pending. Hosted CI/external paths
+are separately pending; no push is performed.
