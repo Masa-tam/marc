@@ -40641,3 +40641,22 @@ historical run remains in progress at this milestone. No codec semantics or
 frozen vectors change. Complete historical qualification, final runtime audit,
 fixed Release replacement, hosted CI and external verification remain pending.
 No push or legal guarantee is claimed.
+
+### CR-1768:64KiB position-distance tANS local completion audit
+
+Date:2026-10-10. Author/reviewer:Codex; maintainer review pending.
+Task: close the first window after its independent milestone qualifications.
+No codec, frozen expectation, external reference or entropy model changes.
+References remain the independent format/vector design and this repository's
+previously recorded implementation and verification tools.
+
+Rehashed production sources,715 decode/495 encode fixtures, normal12-member
+paired timing/peak receipts, five10000-unit instrumented campaigns and both
+schema1..72 histories pass. Both committed-source82 producers preserve all81
+old entries/bodies; four self/cross routes and250 guarded negatives pass.
+The complete previous Release's124 files are saved and verified; the qualified
+fixed-path executable passes publication regressions and full self/cross
+exchange. The64KiB profile is locally complete. Comparison tradeoffs and five
+individual compression misses remain explicit in BM-0233/0235. Six later
+windows, final88 audit and hosted/external validation are unfinished. No push,
+new external implementation consultation or legal guarantee is claimed.

@@ -23216,3 +23216,18 @@ truncated-header cases. Require rejection before a guarded codec launch and
 zero output files. Preserve the prior schema71 negative suite unchanged.
 Extend the historical runner to schema1..72 and retain each route's evidence;
 a completed route and an in-progress route must be reported separately.
+
+### TVG-1439:64KiB committed-source exchange and local closure
+
+Regenerate both schema72/82 producers using committed exchange source at
+dd79f435c89802761ae09a497ce7f497fbe070b6. Verify two self/two cross routes,
+full raw restoration and archive equality, and125 guarded negatives per
+consumer. Complete both schema1..72 histories and rehash every retained
+manifest/archive/restored/re-encoded body; preserve the earlier81 baseline.
+
+Rehash all milestone-specific production sources and715/495 public fixtures,
+paired normal12-member measurement receipts and five instrumented campaigns.
+Save the entire old Release with a per-file hash manifest, verify the qualified
+replacement, and rerun CLI malformed/late-frame publication and self/cross
+82-archive checks through the fixed path. Keep the six later windows and
+hosted/external/final88 qualification explicitly incomplete.

@@ -34199,3 +34199,20 @@ a codec-launch guard and require zero published files. Two normal producers
 and two self/two cross consumers must restore raw bytes and reproduce complete
 archives. These local exchange gates do not establish hosted CI, external
 validation, later windows or fixed Release replacement.
+
+### DD-1572:64KiB local closure before the1MiB implementation
+
+Close one window only when its format, independent finite/frame/stream
+qualification, public API/CLI, measured normal resources, instrumented fuzz
+and additive exchange gates all pass. Rehash qualified production sources,
+independent715 decode/495 encode fixtures, all12 paired corpus evidence,
+five10000-unit campaigns and schema1..72 historical routes. Keep intermediate
+receipts' incomplete flags as historical scope, and add a separate closure
+receipt instead of rewriting those earlier claims.
+
+Preserve the complete previous Release before replacing the fixed executable;
+verify the replacement and saved files, then run CLI publication regressions
+and complete self/cross exchange through the fixed path. This closes only the
+64KiB local profile. Next implement1MiB from its reserved tuple and independent
+vectors. The next six windows, final88-archive audit, hosted CI and external
+four-route qualification remain separate required gates; no intermediate push.

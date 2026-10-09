@@ -1989,3 +1989,26 @@ backup/update and complete64KiB audit remain outstanding. BM-0235 and FZ-0087
 record separately completed measurements and instrumented campaigns. Hosted CI,
 external82-archive reports, later windows and the final88-archive goal remain
 pending. The latest external result remains IX-0081's81 archives.
+
+## IX-0083:64KiB tANS final local completion
+
+The final exchange source revision is
+dd79f435c89802761ae09a497ce7f497fbe070b6. Fresh normal producers agree on
+all82 schema72 archives and preserve the retained81-archive prefix byte for
+byte. Two self and two cross consumers restore/re-encode every complete
+archive; each consumer rejects125 guarded negatives before codec launch or
+publication. Both builds complete schemas1..72, and the saved historical
+bodies and outputs are rehashed against their manifests.
+
+The final audit binds the unchanged qualified codec sources, independent715
+decode/495 encode fixtures, paired full12-member normal measurements and
+five10000-unit instrumented campaigns. After saving and verifying all124 files
+of the previous Release, the qualified fixed-path executable also passes CLI
+malformed/late-frame publication regressions and82-archive self/cross checks.
+The64KiB profile is locally complete; BM-0233/0235 retain its aggregate size
+improvement, five per-member misses, speed and memory tradeoffs.
+
+This closes IX-0082's outstanding local history/runtime/audit gates only.
+Hosted CI and external82-archive results are not yet available. The next six
+windows and the final88-archive audit remain required. Intermediate commits
+remain local; the maintainer will push after all seven local profiles pass.
