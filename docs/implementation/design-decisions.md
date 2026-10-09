@@ -34033,3 +34033,32 @@ owner refusal to every truncation, strict trailing data, overlapping buffers
 and unsupported flags. This qualifies internal byte behavior, not public
 factory admission or a process memory default; corpus/resource/fuzz/exchange
 gates remain required.
+
+### DD-1565: normal64KiB tANS resource precursor and measurement scope
+
+Use a separate normal executable for internal owning resource diagnostics.
+Do not use allocation-interception unit executables or sanitizer processes
+to estimate normal peaks. Keep admission, actually owned buffer bytes,
+owner/control bytes, fixed local working allowance and the conservative
+metadata floor distinct from process lifetime resident high-water bytes.
+Report the two65536-byte driver IO buffers separately from private admission.
+On Linux, fork from the small executable before owner construction to exclude
+a larger launcher's pre-exec high-water RSS from the child's getrusage result.
+
+Validate exact queries, one-byte-below refusal, actual stream identifiers,
+frame/window parameters and raw restoration. Hash the executable, driver,
+input and output; retain each independent direction's receipt and artifacts.
+For the frozen twelve-member corpus, verify original sizes and MD5 first,
+then record SHA-256 and compare complete archives across normal builds.
+Single-process elapsed times include IO and are preliminary diagnostics,
+not an isolated repeated-sample contextual speed comparison.
+
+For65536-byte frames, measured queries are4001210 bytes encode and2492980
+decode. Allocated owner buffers are3860426 and2352100 bytes respectively.
+Two65536-byte public call capacities plus a65536-byte block allowance would
+already raise the encoder floor to4197818 bytes, before public wrappers and
+external retained storage. Therefore a4194304-byte grant cannot simply be
+inherited from position rANS. Choose and test the public grant only after
+including the actual factory/control charges; a resident peak is not that
+grant. Public API/ABI/CLI, contextual comparisons, instrumented fuzz and
+exchange remain required before this profile is complete.

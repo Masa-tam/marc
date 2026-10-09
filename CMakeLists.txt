@@ -8734,6 +8734,16 @@ if(MARC_BUILD_TESTS)
         ${position_tans_private_sources})
     target_compile_features(marc_position_tans_64k_owned_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_64k_owned_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    # Normal resource precursor: no test allocation overrides or sanitizers.
+    add_executable(marc_position_tans_64k_resources
+        benchmarks/position_tans_64k_resources.cpp
+        src/frame/lzss_position_tans_64k_owned.cpp
+        ${position_tans_private_sources})
+    target_compile_features(marc_position_tans_64k_resources PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_64k_resources PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    if(WIN32)
+        target_link_libraries(marc_position_tans_64k_resources PRIVATE psapi)
+    endif()
     add_test(NAME marc_position_tans_64k_owned COMMAND marc_position_tans_64k_owned_tests)
     set_tests_properties(marc_position_tans_64k_owned PROPERTIES TIMEOUT 30)
     if(Python3_Interpreter_FOUND)
@@ -8749,6 +8759,12 @@ if(MARC_BUILD_TESTS)
                 ${CMAKE_CURRENT_BINARY_DIR}/position-tans-64k-owned-raw --owning)
         set_tests_properties(marc_position_tans_64k_owned_frame_differential
             marc_position_tans_64k_owned_raw_differential PROPERTIES TIMEOUT 120)
+        add_test(NAME marc_position_tans_64k_resources_smoke
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tools/run_position_tans_64k_resources.py
+                $<TARGET_FILE:marc_position_tans_64k_resources>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-64k-resources-smoke)
+        set_tests_properties(marc_position_tans_64k_resources_smoke PROPERTIES TIMEOUT 30)
     endif()
     if(Python3_Interpreter_FOUND)
         add_test(NAME marc_position_tans_64k_frame_differential

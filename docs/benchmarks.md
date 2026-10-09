@@ -10880,3 +10880,52 @@ Five fully instrumented10k campaigns remain qualified by FZ-0086.
 This completes the64MiB benchmark/fuzz local milestone. Final fixed-runtime
 and source81 exchange qualification, the full four-profile local completion
 audit and maintainer push/hostedCI/external four routes remain unfinished.
+
+## BM-0232: preliminary64KiB position-distance tANS owning resources
+
+Date:2026-10-09. Normal internal owning probes use65536-byte frames/windows
+and actual dictionary2/8, context1/21, entropy5/3. All twelve original
+members match their frozen size/MD5 manifest, restore their original SHA-256
+and produce identical complete archives in both normal builds.
+
+| Member | Raw bytes | Position-distance tANS bytes |
+| --- | ---: | ---: |
+| dickens | 10192446 | 4183733 |
+| mozilla | 51220480 | 24261734 |
+| mr | 9970564 | 3735097 |
+| nci | 33553445 | 3775899 |
+| ooffice | 6152192 | 3869724 |
+| osdb | 10085684 | 5094715 |
+| reymont | 6627202 | 2109373 |
+| samba | 21606400 | 6232479 |
+| sao | 7251944 | 6320682 |
+| webster | 41458703 | 13506159 |
+| xml | 5345280 | 828424 |
+| x-ray | 8474240 | 6319008 |
+| Total | 211938580 | 80237027 |
+
+Internal admission is4001210 bytes encode and2492980 decode. Actual owned
+buffer sums are3860426 and2352100; object sizes520 and616; fixed working
+allowance140264; the shared metadata floor2483172. Encode banks consume
+401408 bytes and decode banks802816. Encode also retains688130 private
+payload bytes and697316 private serialized bytes, separately from697316
+ordinary pending bytes. The probe's two65536-byte IO buffers are excluded
+from these private queries. DD-1565 explains why4MiB public admission cannot
+be inherited without calculating additional public charges.
+
+Separate normal direction processes record lifetime resident peaks, including
+probe runtime and bounded IO. Linux child peaks exclude the launcher's
+inherited pre-exec high-water. Across the two twelve-member probe campaigns,
+maximum observed peaks range5181440..7131136 bytes encode and4911104..6717440
+decode. They differ from configured admission and do not establish a public
+memory limit. Sanitizer and allocation-interception peaks are excluded.
+
+Each direction has one elapsed-time sample including factory, file IO,
+process, destruction and rename. The two diagnostic campaigns overlapped,
+so those timings are not isolated throughput evidence. Per-member receipts
+are retained, but no contextual speed advantage is claimed. Same-window
+contextual tANS comparison is still unperformed at this checkpoint: its
+actual configuration/identity/restoration must be checked in the matched
+campaign before deciding whether the compression target is met. Dynamic
+Range compression is not an adoption criterion. Public API/ABI/CLI,
+repeated isolated timing, instrumented fuzz and exchange remain unfinished.

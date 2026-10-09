@@ -40454,3 +40454,28 @@ the earlier qualified finite/caller-buffer expectations. Documentation and
 whitespace checks pass. Differential watchdogs remain120 seconds after
 measured campaigns below38 seconds; these normal test timings do not replace
 corpus throughput or process peak measurements.
+
+### CR-1759: normal64KiB tANS resource diagnostic precursor
+
+2026-10-09, Codex implementation and review; maintainer review pending.
+Task: diagnose normal internal owning resource requirements before selecting
+public admission. Reuse the repository's first-party streaming-file and
+operating-system peak-counter ideas, with independently added query component
+checks, actual identity/raw restoration and separation of Linux inherited
+launcher high-water by forking after executable entry. No external or
+restricted compression implementation was consulted. DD-1565, TVG-1430 and
+BM-0232 state the measurement limits; no legal guarantee is asserted.
+
+Both normal diagnostic builds pass empty/singleton/window-boundary smoke
+checks, destination preservation and late failed-frame nonpublication.
+All twelve corpus members restore exact original hashes and produce identical
+archives across builds. The internal queries distinguish allocated buffers
+from working admission and process peaks. The30-second smoke watchdog follows
+measured runs below2 seconds; full-corpus member directions remain below10
+seconds under the existing120-second differential watchdog.
+
+No production codec code or public format was changed. Public factory/ABI/CLI,
+matched contextual compression and repeated isolated speed measurements,
+instrumented fuzz and additive exchange remain unfinished. Existing artifacts
+and the fixed qualified Release executable remain preserved. No new hosted
+CI or external verification is claimed.

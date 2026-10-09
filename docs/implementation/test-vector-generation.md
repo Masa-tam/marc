@@ -23065,3 +23065,20 @@ retain overlapping input/output buffers and refuse unsupported encoder flags
 before consumption/output. Existing late terminal failure, exact grants and
 allocation rollback tests remain mandatory. Public API/ABI/CLI, instrumented
 fuzz, corpus compression/throughput/normal peaks and exchange follow.
+
+### TVG-1430: normal64KiB tANS diagnostic verification
+
+Run the normal private resource driver on empty input, singletonA and
+65535/65536/65537-byte periodic inputs. Require exact grants, rejection one
+byte below admission, actual2/8+1/21+5/3 headers with65536-byte frames/windows,
+known raw lengths and SHA-256 restoration. Check each reported workspace
+component sum separately from process resident peaks and external driver IO.
+Refuse an existing output without changing its hash. Change the singleton's
+terminal tANS state after its token can decode; require no published output
+and an empty retained temporary raw file.
+
+The twelve frozen corpus inputs must first match the independent size/MD5
+manifest. Record per-member raw/archive/restored SHA-256 and direction-specific
+normal query/peak receipts. Compare archive bodies across normal builds.
+These diagnostics do not assert matched contextual compression superiority
+or isolated codec throughput, and do not admit a public factory default.
