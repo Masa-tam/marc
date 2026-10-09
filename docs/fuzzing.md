@@ -1770,3 +1770,34 @@ Rehash original seeds, actual fuzz executables, source and saved campaign
 receipts. The public API/CLI, corpus measurements and this fuzz gate are locally
 qualified; exchange, larger windows and hosted/external qualification remain
 unfinished. Instrumented peaks do not replace the normal BM-0235 measurements.
+
+## FZ-0088: one-MiB position-distance tANS campaigns
+
+Date:2026-10-10. Five bounded first-party targets extend the qualified64KiB
+patterns to the exact1MiB alphabet, descriptor and decision bounds. All584
+production static-library units and five entries are verified instrumented
+with ASan/UBSan and fuzzer coverage, including the owning C lifecycle.
+Retain238 independent mathematical descriptor/payload fixture seeds with
+maximal9207-byte descriptor. Scalar input65536 permits8192 decisions;
+descriptor input9208 includes one trailing byte; token/stream input4096,
+public raw input128 and generated public frames32..64 remain bounded.
+These small-frame campaigns complement the full-window directed tests.
+
+All five300-unit pilots with seed1587 complete without sanitizer/invariant
+finding or saved crash/hang/leak/oom artifact. Instrumented peaks and elapsed
+fuzzer time select one active target, a576MiB RSS cap and per-target full
+watchdogs equal to twice the pilot-scaled10000-unit duration plus60 seconds.
+The ten-second unit guard exceeds the observed subsecond pilot units.
+Do not interpret instrumented RSS as a normal process peak or a public
+admission default. Preserve original seeds, source/objects/executables and
+all logs. The10000-unit campaigns, schema73/83 exchange/history, fixed-release
+update and profile closure remain pending. No external implementation is
+consulted. Hosted CI/external paths remain separate; no push.
+
+| Target | Pilot seconds | Instrumented peak bytes | Full watchdog seconds |
+|---|---:|---:|---:|
+| descriptor | 1.135 | 42881024 | 136 |
+| payload | 2.522 | 282230784 | 229 |
+| tokens | 8.583 | 349855744 | 633 |
+| stream | 14.645 | 352350208 | 1037 |
+| public | 21.659 | 359788544 | 1504 |

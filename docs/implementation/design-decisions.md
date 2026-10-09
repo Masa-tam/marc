@@ -34553,3 +34553,26 @@ Candidate encode medians are slower on dickens, ooffice, osdb, sao, x-ray. Candi
 Both builds now complete the twelve-member paired campaign under BM-0238. Every measured output matches its qualified CLI archive or raw SHA; actual same-window identities/settings remain BM-0237. Selected process snapshots succeed with no selected codec/build work before/after, without claiming a global lock. Timing includes allocation, creation, process and destruction, with one warmup and three fresh samples; separate normal streamed process peaks include runtime and bounded IO. Queries have different accounting scopes and are not peaks. Compression totals remain64055526 P/65192805 C, all twelve smaller; no Dynamic Range adoption criterion. Mixed member encode speeds and higher encode memory remain tradeoffs. Preserve sample spreads and avoid universal/small precise speed claims.
 
 Instrumented fuzz, additive schema73/83 exchange/history, fixed-release update and full profile closure remain pending. Hosted CI/external verification are separately pending; no push.
+
+### DD-1587: one-MiB fully instrumented fuzz pilot
+
+Date:2026-10-10. Five bounded first-party targets extend the qualified64KiB
+patterns to the exact1MiB alphabet, descriptor and decision bounds. All584
+production static-library units and five entries are verified instrumented
+with ASan/UBSan and fuzzer coverage, including the owning C lifecycle.
+Retain238 independent mathematical descriptor/payload fixture seeds with
+maximal9207-byte descriptor. Scalar input65536 permits8192 decisions;
+descriptor input9208 includes one trailing byte; token/stream input4096,
+public raw input128 and generated public frames32..64 remain bounded.
+These small-frame campaigns complement the full-window directed tests.
+
+All five300-unit pilots with seed1587 complete without sanitizer/invariant
+finding or saved crash/hang/leak/oom artifact. Instrumented peaks and elapsed
+fuzzer time select one active target, a576MiB RSS cap and per-target full
+watchdogs equal to twice the pilot-scaled10000-unit duration plus60 seconds.
+The ten-second unit guard exceeds the observed subsecond pilot units.
+Do not interpret instrumented RSS as a normal process peak or a public
+admission default. Preserve original seeds, source/objects/executables and
+all logs. The10000-unit campaigns, schema73/83 exchange/history, fixed-release
+update and profile closure remain pending. No external implementation is
+consulted. Hosted CI/external paths remain separate; no push.
