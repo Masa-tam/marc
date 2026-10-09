@@ -10910,8 +10910,8 @@ allowance140264; the shared metadata floor2483172. Encode banks consume
 401408 bytes and decode banks802816. Encode also retains688130 private
 payload bytes and697316 private serialized bytes, separately from697316
 ordinary pending bytes. The probe's two65536-byte IO buffers are excluded
-from these private queries. DD-1565 explains why4MiB public admission cannot
-be inherited without calculating additional public charges.
+from these private queries. DD-1565 requires calculating additional public
+charges before deciding whether4MiB fits a particular caller configuration.
 
 Separate normal direction processes record lifetime resident peaks, including
 probe runtime and bounded IO. Linux child peaks exclude the launcher's

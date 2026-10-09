@@ -23082,3 +23082,25 @@ manifest. Record per-member raw/archive/restored SHA-256 and direction-specific
 normal query/peak receipts. Compare archive bodies across normal builds.
 These diagnostics do not assert matched contextual compression superiority
 or isolated codec throughput, and do not admit a public factory default.
+
+### TVG-1431:64KiB tANS public factory and C linkage
+
+Run the complete fourteen-test private gate before public construction.
+Then qualify exact public grants and one byte below, unchanged failed query
+results, zero allocations on invalid config/grant and overflow/alias refusal.
+Inject each of ten encoder and seven decoder construction allocation failures;
+require null handles and release of every previous allocation. Detect any
+allocation inside normal process calls. Cover immutable direction, ABI/size
+and reserved fields, insufficient table limits, zero-output calls, one-byte
+input/output, empty input, frame boundaries and sticky ended/error states.
+
+Check default8MiB admission, every reported private component and the actual
+maximum-block-floor rule. Prove4MiB fits zero external retained bytes and
+fails encode after65536 retained bytes are declared. Exercise every cut of a
+two-singleton archive and late second-frame terminal-state corruption, keeping
+only prior complete raw output. Refuse oversized calls and ResetBlock before
+progress. C consumers in both static/shared linkage verify new header IDs and
+one-byte roundtrip of0/255/65 through three independently reset frames.
+Inspect actual shared exports for the three new entry points and preservation
+of the previous symbol set. CLI and independent public fixture campaigns,
+matched contextual measurements, instrumented fuzz and exchange follow.

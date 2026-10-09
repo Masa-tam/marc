@@ -40479,3 +40479,32 @@ matched contextual compression and repeated isolated speed measurements,
 instrumented fuzz and additive exchange remain unfinished. Existing artifacts
 and the fixed qualified Release executable remain preserved. No new hosted
 CI or external verification is claimed.
+
+### CR-1760:64KiB tANS public C factory and linkage qualification
+
+2026-10-10, Codex implementation and review; maintainer review pending.
+Task: connect the repository's qualified private tANS owners to an additive
+C API and validate resource admission, lifecycle and C linkage. Adapt the
+first-party position-rANS boundary/control pattern and tests, independently
+accounting for tANS banks and staging. No external or restricted codec
+implementation was consulted. DD-1566/TVG-1431 define the scope. Existing
+profile implementations and serialized formats remain unchanged.
+
+The fourteen-test private gate passes in both normal builds. Public factory
+tests qualify exact grants, one-byte-below and invalid/overlapping config
+refusal before allocation, unchanged query outputs and all ten encoder/seven
+decoder allocation failures with rollback. Process allocation checks remain
+active. Boundary/raw roundtrips and every truncated two-frame prefix pass;
+late second-frame terminal failure publishes only the prior valid frame.
+Static/shared C consumers verify new IDs and real-data one-byte restoration.
+Actual shared exports add three API names while retaining previous symbols.
+
+Correct the precursor's double-counted block allowance: the actual public
+factory uses a maximum floor, with caller/wrapper charges added once.4MiB
+fits declared calls without external storage;65536 external retained bytes
+exceed it for encode. The new8MiB default admits the measured declared query;
+it is not RSS. The30-second public watchdog follows measured subsecond runs.
+CLI and independent public fixtures, matched contextual measurements,
+instrumented fuzz and exchange remain unfinished. Fixed qualified Release
+and prior artifacts remain preserved; no push, hosted CI or new external
+verification is claimed.

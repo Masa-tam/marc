@@ -182,6 +182,14 @@ set(MARC_SOURCES
     src/frame/lzss_position_rans_64k_frame.cpp
     src/frame/lzss_position_rans_64k_owned.cpp
     src/frame/lzss_position_rans_64k_stream_decoder.cpp
+    src/frame/lzss_position_tans_64k_c_factory.cpp
+    src/frame/lzss_position_tans_64k_owned.cpp
+    src/frame/lzss_position_tans_64k_stream_decoder.cpp
+    src/frame/lzss_position_tans_64k_format.cpp
+    src/frame/lzss_position_tans_64k_frame.cpp
+    src/context/lzss_position_tans_64k_tokens.cpp
+    src/entropy/position_tans_64k.cpp
+    src/entropy/position_tans_64k_format.cpp
     src/frame/lzss_position_rans_1m_format.cpp
     src/frame/lzss_position_rans_1m_frame.cpp
     src/frame/lzss_position_rans_1m_stream_decoder.cpp
@@ -8745,6 +8753,18 @@ if(MARC_BUILD_TESTS)
         target_link_libraries(marc_position_tans_64k_resources PRIVATE psapi)
     endif()
     add_test(NAME marc_position_tans_64k_owned COMMAND marc_position_tans_64k_owned_tests)
+    add_executable(marc_position_tans_64k_api_tests tests/position_tans_64k_api_tests.cpp)
+    target_compile_features(marc_position_tans_64k_api_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_64k_api_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_tans_64k_api_tests PRIVATE marc::static)
+    add_test(NAME marc_position_tans_64k_api COMMAND marc_position_tans_64k_api_tests)
+    set_tests_properties(marc_position_tans_64k_api PROPERTIES TIMEOUT 30)
+    foreach(linkage IN ITEMS static shared)
+        add_executable(marc_position_tans_64k_c_${linkage} tests/position_tans_64k_c_smoke.c)
+        target_link_libraries(marc_position_tans_64k_c_${linkage} PRIVATE marc::${linkage})
+        add_test(NAME marc_position_tans_64k_c_${linkage} COMMAND marc_position_tans_64k_c_${linkage})
+        set_tests_properties(marc_position_tans_64k_c_${linkage} PROPERTIES TIMEOUT 30)
+    endforeach()
     set_tests_properties(marc_position_tans_64k_owned PROPERTIES TIMEOUT 30)
     if(Python3_Interpreter_FOUND)
         add_test(NAME marc_position_tans_64k_owned_frame_differential

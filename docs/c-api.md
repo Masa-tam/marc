@@ -1173,3 +1173,43 @@ This is not a process RSS ceiling. Encoding
 uses fixed-five matching, while the format accepts lengths3..258. Ordinary
 destinations commit on success; failed private token scratch is discarded
 and failed frames are never drained. Earlier APIs remain unchanged.
+
+## Sixty-four-KiB owning position-distance tANS
+
+DD-1566 adds marc_lzss_position_distance_tans_config_init(),
+marc_lzss_position_distance_tans_resource_requirements() and
+marc_lzss_position_distance_tans_create() for dictionary2/8, context1/21
+and entropy5/3. Config/resources are136/120 bytes on the qualified64-bit
+ABI. The physical window is65536 bytes; frame capacity is1..65536 bytes.
+Direction is immutable and encoding declares the exact original byte size.
+The fixed-five encoder retains longest/nearest parsing; decoding accepts
+match lengths3..258 in independently reset frames.
+
+The default8MiB admission includes declared input/output capacities, external
+retained bytes and public control/working charges. Limits default to65536
+frame bytes,458752 binary decisions per block,688130 payload bytes and200704
+table entries. Other size fields are bytes. A resource query separates
+private payload, serialized staging, table bank, actual owned buffers,
+owner bytes, fixed working allowance and conservative metadata floor.
+Minimum aggregate admission is the larger of private admission and the
+configured decision-block ceiling, plus external/public charges. The block
+ceiling is not an additional allocation. Neither query nor grant is RSS.
+
+With full65536-byte calls and65536 declared external retained bytes, queries
+are4202026 bytes encode and2693796 decode. With external retained bytes zero,
+they are4136490 and2628260, so4MiB fits; adding the65536-byte retained charge
+exceeds4MiB for encode. The8MiB default covers the qualified declared workload
+and leaves room for caller controls, but additional storage must still be
+declared and admitted. Exact queries admit construction and one-byte-below
+queries/create refuse before allocation. Failed resource queries retain their
+result. Factory refusals set the handle to null; config/handle overlap refuses
+without altering the overlapping storage. All construction failures release
+previous allocations. Process calls reuse storage and do not allocate.
+
+Calls exceeding declared capacities fail before consumption/output. Flush is
+a no-op; ResetBlock and unknown flags are unsupported. Error/end states are
+sticky. Ordinary output commits only from validated frames; a failed private
+token/raw prefix is discarded, and a failed frame never drains. Earlier
+validated frames may already have published. This C API/static/shared
+checkpoint does not qualify CLI, isolated contextual measurements, fuzz,
+exchange or the later window profiles; those gates remain required.

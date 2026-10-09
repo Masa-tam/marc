@@ -34055,10 +34055,40 @@ not an isolated repeated-sample contextual speed comparison.
 
 For65536-byte frames, measured queries are4001210 bytes encode and2492980
 decode. Allocated owner buffers are3860426 and2352100 bytes respectively.
-Two65536-byte public call capacities plus a65536-byte block allowance would
-already raise the encoder floor to4197818 bytes, before public wrappers and
-external retained storage. Therefore a4194304-byte grant cannot simply be
-inherited from position rANS. Choose and test the public grant only after
-including the actual factory/control charges; a resident peak is not that
-grant. Public API/ABI/CLI, contextual comparisons, instrumented fuzz and
+Public admission uses the maximum of private admission and the configured
+block ceiling, then adds wrappers, declared calls and external retained
+storage. The block ceiling is not a separately allocated additional buffer.
+An earlier precursor explanation added that ceiling twice; this calculation
+corrects it. A4194304-byte grant can fit default calls with zero external
+retained bytes, but65536 declared external bytes exceed it for encoding.
+Choose and test the public grant after including actual factory/control
+charges; a resident peak is not that grant. Public API/ABI/CLI, contextual comparisons, instrumented fuzz and
 exchange remain required before this profile is complete.
+
+### DD-1566: additive64KiB tANS public factory and checked admission
+
+Expose independent config_init/resource_requirements/create C entry points
+for2/8+1/21+5/3 without changing existing APIs. Use the qualified owning
+encoder/decoder behind a declared-call-capacity boundary. Charge wrapper,
+opaque handle and4096 public working bytes plus declared input/output and
+external retained capacities before private construction. Public admission
+is max(private owner/working admission, max_block_size) plus those charges;
+do not allocate or add a second block buffer. Resource fields expose all
+private banks/staging, actual owner buffers and conservative floors.
+
+Set the new default to8MiB using the measured private query and normal peaks
+as diagnostic evidence, then qualify the actual public factory grant. Full
+65536-byte calls with65536 external retained bytes require4202026 encode
+and2693796 decode bytes; with zero external retained bytes4136490/2628260
+fits4MiB. Adding the retained65536 bytes fails4MiB encode. This explicitly
+corrects the precursor's assumption of separately adding a block allowance.
+An8MiB grant is a capacity budget, not a resident-memory ceiling.
+
+Query outputs commit on success only; factories preserve overlapping config
+storage and otherwise set failed handles to null, matching existing C API
+lifecycle. All private/wrapper/handle allocations roll back on failure.
+Process is allocation-free; refuse excess call capacities before progress.
+Retain sticky error/EOS, unsupported reset flags and success-only raw frame
+publication. Qualify C linkage through static/shared real-data consumers and
+preserve all prior exported symbols. CLI, contextual measurements, fuzz and
+exchange remain separate required gates before profile completion.
