@@ -22928,3 +22928,24 @@ extent, payload/table overlap, encode overlap, table-entry limit, exact
 private accounting grant and one-byte-below refusal before scratch writes.
 Token/frame/stream failure quarantine, public factories, fuzz and corpus
 qualification are not supplied by this finite test scope.
+
+### TVG-1423:64KiB token history differential and ordinary/private failures
+
+Date:2026-10-09. Independently generate twenty directed histories and200
+seeded histories (seed1558). Reconstruct each raw history in Python with
+frame-local forward overlap copying; feed independently specified token
+decisions through the finite oracle to obtain descriptor/payload bytes.
+Compare C++ plans, bytes, ordinary tokens and private tokens. Include empty,
+single literal, all byte values, literal history across matches, lengths3/4
+and258, distance-class boundaries and reachableF-3/F-258 references in
+exact65536-byte histories. Isolated exactF grammar vectors remain a
+different claim from valid reset-frame references.
+
+Ordinary tests retain all token output and its tail on descriptor/payload
+truncations, count/raw discrepancies, bad state and trailing data. Find and
+retain a directed late failure with a valid private prefix; ordinary output
+still remains unchanged. Check invalid history, short encoded output,
+scratch/output overlap, failed plan descriptor retention, ordinary/private
+token overlap, exact decode aggregate budget, one-byte-below refusal and
+dictionary distance-limit preflight. This scope qualifies token publication,
+not raw frame/stream publication or an owning factory.

@@ -33899,3 +33899,24 @@ contexts used. Check arithmetic, table extents and source/scratch overlap.
 Finite tests do not qualify token history, raw-frame publication, owning
 stream allocation, public API/CLI, corpus resources or exchange. Those
 remain later required stages before64KiB completion and the next window.
+
+### DD-1558: private64KiB token mapping and publication boundary
+
+Map dictionary variant8 tokens into DD-1556's full literal, preceding-kind,
+short-length, distance-class and position-bit decisions. Validate reset-frame
+history and exact raw size before modeling. Plan models and reverse payload
+size with caller-provided private tables. Encode into private payload first;
+copy ordinary descriptor/payload only after all checks and finish succeed.
+
+Decode once into private token scratch, validating history, counts, raw
+extent and entropy finish. An ordinary token entry copies that scratch only
+after complete success; failures retain every ordinary token and its unused
+tail. Private failure may retain a prefix that must be discarded. Result
+counts describe private progress, not published tokens. Reject overlapping
+source, table, scratch, ordinary output and controls before writes. Charge
+actual retained spans, controls and fixed working before preparation.
+Private token accounting is not an owning-frame or public memory grant.
+
+These entries do not expose a public codec or qualify raw-frame publication,
+stream chunking, allocation rollback, corpus/fuzz/resources or exchange.
+Frame and owning stream integration remain required before64KiB completion.

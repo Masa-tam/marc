@@ -40277,3 +40277,28 @@ reviewable finite-core checkpoint without marking the entire private
 milestone complete. The120-second differential watchdog follows observed
 campaigns below40 seconds; later frame and heavy resource tests require
 their own observed scheduling and limits.
+
+### CR-1752: private64KiB token mapping and success-only publication
+
+2026-10-09, Codex implementation and review; maintainer review pending.
+Task: connect the finite tANS model to independently specified dictionary
+variant8 histories while keeping failed token prefixes private. Reuse the
+first-party typed-token validator and short-length arithmetic; independently
+write the full-literal forward/reverse mapping and history reader from
+DD-1556. No external implementation or restricted source consulted.
+
+DD-1558 copies ordinary encoded bytes or tokens only after private work
+and complete finish succeed. TVG-1423 compares actual descriptors/payloads
+and token restoration against independently reconstructed valid histories,
+including reachable window boundaries, and checks failure/overlap/budget
+contracts. Raw-frame nonpublication, stream/owning allocation, public
+API/ABI/CLI, corpus/measurement/fuzz, schema72 and later-window/final88
+gates remain unfinished. Existing runtime and81 artifacts are retained.
+
+Both normal builds pass the ordinary token tests and all220 independent
+history fixtures; actual fixture bodies also agree across builds.
+Documentation and whitespace checks pass. This checkpoint completes token
+mapping and ordinary/private token publication tests only. It does not
+complete the private raw-frame/stream milestone. The differential watchdog
+is120 seconds after observed campaigns below34 seconds; later heavy tests
+retain separate measurement requirements.
