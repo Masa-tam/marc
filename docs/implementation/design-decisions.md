@@ -34251,3 +34251,28 @@ independent forward parser's overly restrictive mask/count equivalence and add
 three uniform-only plus last-context51 regressions. Frozen34 original vectors
 remain byte-identical. Raw frame validity still requires actual dictionary
 kind/history/raw-size validation and private-frame quarantine in later work.
+
+### DD-1575: one-MiB typed mapping and private single-pass token decode
+
+Specialize the first-party64KiB typed mapper for the1MiB short-length-escape
+dictionary variant9 and full previous-literal tANS partition. Validate raw
+R<=1048576, tokensT<=R and2T<=D<=min(30T,8R) using checked wide arithmetic.
+Account for every supplied region before work and reject overlap before writes.
+Plan/ordinary descriptor/payload/token destinations commit only on success.
+A single forward entropy pass reconstructs private tokens, validating each
+reference against frame-local produced history before adding it. The ordinary
+wrapper copies private tokens only after exact raw/decision counts and entropy
+terminal validation; a failed private prefix is discarded.
+
+Construct independently restored long histories using distance-one matches
+rather than a million literal tokens. Cover new distance boundaries65535/65536/
+65537 through1048573 and full1048576 raw extent, while retaining200 seeded
+histories and existing short/overlap/literal-partition cases. Independently
+specified exact-window distance1048576 is legal finite grammar but cannot fit
+a reset frame with prior history plus a match; reject three isolated length3/
+4/258 fixtures with ordinary output and scratch guards unchanged.
+
+This qualifies token-level rollback, not raw-frame publication. Frame/stream
+quarantine and owner/default-resource queries remain mandatory later. A small
+exact-quota unit must use a block limit compatible with that quota, rather than
+blindly copying the entire window into its block setting.

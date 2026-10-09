@@ -40708,3 +40708,28 @@ failed descriptor/serialized/count/symbol checks and all four unused mask bits
 pass. Documentation checks and preserved fixed Release/source hash checks also
 pass. Commit this finite submilestone; the complete internal token/frame/stream
 and owning-resource milestone remains unfinished.
+
+### CR-1771: one-MiB typed mapping and token failure review
+
+Date:2026-10-10. Author/reviewer:Codex; maintainer review pending.
+Task: connect DD-1574's finite core to independently validated1MiB typed tokens.
+Adapt only first-party64KiB mapping, private single-pass decoder and ordinary
+transactional wrapper, preserving previous-literal history and entropy finish
+checks. References remain IR-1289/1290 and DD-1573/1575. No external or
+restricted implementation source is consulted.
+
+Extend frame-local distance/count bounds, independent history generation and
+three exact-window malformed-history fixtures. Record independently restored
+raw hashes and preserve ordinary output/tail guards on invalid history.
+The first exact-quota unit rejects its inconsistent block setting because the
+copied full-window block limit exceeds its small retained-byte quota; set the
+block limit to that unit's actual raw extent. Preserve the failed log. This
+is a test-configuration correction, not an entropy/dictionary source defect.
+Complete raw-frame quarantine, owning resources, APIs/CLI, normal comparison,
+fuzz and exchange remain pending; no push or legal guarantee is claimed.
+
+Both normal builds pass the final231 valid/three invalid-history fixtures and
+unit rollback checks. Full fixture bytes and independent raw restoration
+sizes/hashes agree; normal fixed Release, earlier64KiB sources and frozen1MiB
+finite expectations remain unchanged. Save all initial/final logs and commit
+this token submilestone without marking raw-frame/stream quarantine complete.

@@ -23275,3 +23275,30 @@ independent fixture bodies agree across builds, including the four added
 uniform/last-context cases. Preserve original34 expectations and previous
 64KiB production sources unchanged. The120-second vector/differential and
 30-second core watchdogs provide headroom over the observed runs.
+
+### TVG-1442: one-MiB typed-token independent histories and rollback
+
+Generate231 valid typed histories with seed1575 for200 random cases. Restore
+raw bytes independently by literal append and forward overlap copy; record raw
+sizes/hashes and generate compact tANS expectations through the mathematical
+oracle. Directed matches extend actual history beyond65536 through1048573,
+and a length258 case restores exactly1048576 bytes. Use distance-one matches
+to build long history with bounded fixture count; no encoder match finder
+provides token choices. Preserve all earlier fixtures and fixed expectations.
+
+Compare planned/encoded descriptors/payloads and both ordinary/private decoded
+tokens to each independent fixture. Three additional exact-window grammar
+fixtures at lengths3/4/258 must reject invalid frame history, retain the entire
+ordinary output and private scratch tail guards. Unit tests cover every
+DS/P cut, counts/state/trailing, late failed private prefix discard, overlap,
+ordinary descriptor/payload/token rollback and exact/one-below retained quota.
+Fixture limits explicitly admit up to8*1048576 decisions; they are test settings,
+not public default resource grants. Raw-frame/stream/API/fuzz/exchange gates
+remain unfinished.
+
+Both normal builds pass231 valid histories plus three invalid exact-window
+history fixtures. Complete fixture bytes and independently restored raw hashes
+agree between builds. Unit/differential times are0.20/32.14 and0.01/22.56
+seconds; existing30/120-second watchdogs exceed measured durations. Ordinary
+failure destinations, late failed private-prefix discard and tail guards pass.
+The fixed Release and preceding64KiB/1MiB finite sources remain unchanged.

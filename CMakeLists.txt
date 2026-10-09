@@ -9309,3 +9309,28 @@ if(MARC_BUILD_TESTS)
         set_tests_properties(marc_position_tans_1m_differential PROPERTIES TIMEOUT 120)
     endif()
 endif()
+
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_tans_1m_token_tests
+        tests/position_tans_1m_token_tests.cpp
+        src/context/lzss_position_tans_1m_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_tans_1m.cpp
+        src/entropy/position_tans_1m_format.cpp
+        src/entropy/tans_tables.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_tans_1m_token_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_1m_token_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_tans_1m_tokens COMMAND marc_position_tans_1m_token_tests)
+    set_tests_properties(marc_position_tans_1m_tokens PROPERTIES TIMEOUT 30)
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_tans_1m_token_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_1m_token_differential.py
+                $<TARGET_FILE:marc_position_tans_1m_token_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-1m-token-differential)
+        set_tests_properties(marc_position_tans_1m_token_differential PROPERTIES TIMEOUT 120)
+    endif()
+endif()
