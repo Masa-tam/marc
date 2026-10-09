@@ -25,7 +25,7 @@ def frame_header(raw,tokens,decisions,payload,descriptor):
                      raw,tokens,decisions,decisions,payload,descriptor,0,0)
     return b
 
-parser=argparse.ArgumentParser();parser.add_argument('executable');parser.add_argument('directory');args=parser.parse_args()
+parser=argparse.ArgumentParser();parser.add_argument('executable');parser.add_argument('directory');parser.add_argument('--owning',action='store_true');args=parser.parse_args()
 root=Path(args.directory);root.mkdir(parents=True,exist_ok=True)
 stage=Path(tempfile.mkdtemp(prefix='run-',dir=root))
 cases=[[],[(0,65,0,0)],[(0,i,0,0) for i in range(256)]]
@@ -60,9 +60,9 @@ for i,tokens in enumerate(cases):
     fixture=struct.pack('<II',len(frame),len(raw))+stream_header(len(raw))+frame+raw
     path=stage/f'{i:03d}.bin';path.write_bytes(fixture)
     hashes[path.name]=hashlib.sha256(fixture).hexdigest()
-    result=subprocess.run([args.executable,'--fixture',str(path)],capture_output=True,timeout=15)
+    result=subprocess.run([args.executable,'--owning-fixture' if args.owning else '--fixture',str(path)],capture_output=True,timeout=15)
     if result.returncode:raise RuntimeError((i,result.returncode,result.stdout.decode(),result.stderr.decode()))
 record={'passed':True,'fixtures':len(cases),'seed':1560,'seeded_histories':200,'stage':str(stage),
-        'fixture_sha256':hashes,'owning_stream_quarantine_qualification_claimed':False}
+        'fixture_sha256':hashes,'owning_fixture_decode_checked':args.owning,'owning_stream_quarantine_qualification_claimed':False}
 (stage/'qualification.json').write_text(json.dumps(record,indent=2)+'\n')
 print(json.dumps({k:v for k,v in record.items() if k!='fixture_sha256'}))

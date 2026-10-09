@@ -8737,6 +8737,20 @@ if(MARC_BUILD_TESTS)
     add_test(NAME marc_position_tans_64k_owned COMMAND marc_position_tans_64k_owned_tests)
     set_tests_properties(marc_position_tans_64k_owned PROPERTIES TIMEOUT 30)
     if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_tans_64k_owned_frame_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_64k_frame_differential.py
+                $<TARGET_FILE:marc_position_tans_64k_owned_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-64k-owned-frames --owning)
+        add_test(NAME marc_position_tans_64k_owned_raw_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_64k_raw_differential.py
+                $<TARGET_FILE:marc_position_tans_64k_owned_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-64k-owned-raw --owning)
+        set_tests_properties(marc_position_tans_64k_owned_frame_differential
+            marc_position_tans_64k_owned_raw_differential PROPERTIES TIMEOUT 120)
+    endif()
+    if(Python3_Interpreter_FOUND)
         add_test(NAME marc_position_tans_64k_frame_differential
             COMMAND ${Python3_EXECUTABLE} -B -X utf8
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_64k_frame_differential.py

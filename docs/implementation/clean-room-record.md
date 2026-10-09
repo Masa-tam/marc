@@ -40429,3 +40429,28 @@ attempt no allocations, chunked bytes/restoration agree, and late second-frame
 failure publishes only the earlier valid frame. Documentation and whitespace
 checks pass. The target watchdog is30 seconds after measured subsecond runs;
 this is not a normal process peak or corpus throughput measurement.
+
+### CR-1758:64KiB independent owning stream bytes and malformed rejection
+
+2026-10-09, Codex implementation and review; maintainer review pending.
+Task: compare internal owning streams against the repository's independently
+generated tANS and greedy raw expectations. Extend first-party fixture
+drivers to select owning paths without changing the mathematical models,
+raw parser or expected archive bodies. No external or restricted codec
+implementation consulted. DD-1564 and TVG-1429 distinguish arbitrary valid
+token history decoding from canonical raw encoding comparison.
+
+This checkpoint does not select public memory defaults or report normal
+process peaks. Public API/ABI/CLI, full corpus comparison/measurement,
+instrumented fuzz and additive exchange remain required before64KiB and
+later-window completion. Existing artifacts and fixed qualified Release
+remain preserved. No new hosted CI or external verification is claimed.
+
+Both normal builds pass owning negative/allocation tests and all715
+independent decoding fixtures; all495 canonical raw fixtures also produce
+exact independent archive bytes through owning encoding. Process allocation
+checks remain active. Actual fixture bodies agree across builds and with
+the earlier qualified finite/caller-buffer expectations. Documentation and
+whitespace checks pass. Differential watchdogs remain120 seconds after
+measured campaigns below38 seconds; these normal test timings do not replace
+corpus throughput or process peak measurements.

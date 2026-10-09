@@ -23049,3 +23049,19 @@ private tokens and verify only the first frame publishes; reject premature
 known-size EndInput before output. These internal owner tests do not supply
 public API/ABI/CLI, corpus compression/speed/normal peaks, instrumented fuzz
 or exchange qualification.
+
+### TVG-1429: independent64KiB owning token/raw fixture campaigns
+
+Reuse TVG-1425's220 valid token-frame histories and TVG-1426's495 canonical
+raw fixtures without changing their stream/frame bodies. Decode all715
+through owning streams at one-byte input/output capacity and compare exact
+raw bytes and terminal status. Encode the495 canonical raw inputs through
+owning streams at one-byte capacities and compare complete header/frame
+bytes with independent expectations. Detect any process allocation attempt.
+
+Negative owning tests retain only prior validated frames across every cut
+of a two-frame archive, reject trailing bytes after the declared stream,
+retain overlapping input/output buffers and refuse unsupported encoder flags
+before consumption/output. Existing late terminal failure, exact grants and
+allocation rollback tests remain mandatory. Public API/ABI/CLI, instrumented
+fuzz, corpus compression/throughput/normal peaks and exchange follow.

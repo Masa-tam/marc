@@ -34018,3 +34018,18 @@ encoder eligibility is fixed5. Process calls reuse all storage and never
 allocate. Preserve known-size/end/flush semantics and byte determinism over
 arbitrary chunks. A failed frame never drains; earlier validated frames may
 already have committed. Public admission and remaining profile gates follow.
+
+### DD-1564: independent64KiB owning stream byte qualification
+
+Run the existing mathematical token-frame and independent greedy raw
+fixtures through owning decoding with one-byte source/sink. For canonical
+raw-selection fixtures, also compare owning encoding with the entire
+independently authored MARC archive. Arbitrary valid token histories can
+differ from canonical raw parsing, so their owning encoder bytes are not
+used as a canonical-encoder assertion. Keep both scopes explicit.
+
+Retain allocation-point and process-allocation checks and extend ordinary
+owner refusal to every truncation, strict trailing data, overlapping buffers
+and unsupported flags. This qualifies internal byte behavior, not public
+factory admission or a process memory default; corpus/resource/fuzz/exchange
+gates remain required.

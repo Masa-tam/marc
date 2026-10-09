@@ -1,7 +1,10 @@
 #include "frame/lzss_position_tans_64k_owned.hpp"
+#include "core/endian.hpp"
 #include <algorithm>
 #include <cstdlib>
 #include <iostream>
+#include <fstream>
+#include <string>
 #include <new>
 #include <vector>
 
@@ -60,8 +63,39 @@ std::vector<std::byte> transform(Transform& codec,std::span<const std::byte> inp
     }
     check(false,"bounded transform completed");return result;
 }
+int fixture(const char* path,bool raw_encode) {
+    std::ifstream file(path,std::ios::binary|std::ios::ate);
+    if (!file) return 2;
+    const auto extent=file.tellg();
+    if (extent<120 || extent>static_cast<std::streamoff>(UINT64_C(2)<<20)) return 3;
+    file.seekg(0);std::vector<char> chars(static_cast<std::size_t>(extent));
+    if (!file.read(chars.data(),static_cast<std::streamsize>(chars.size()))) return 4;
+    std::vector<std::byte> data(chars.size());
+    std::transform(chars.begin(),chars.end(),data.begin(),[](char c){return static_cast<std::byte>(c);});
+    std::uint32_t fs{},rs{};(void)load_le(data,0,fs);(void)load_le(data,4,rs);
+    if (rs>65536 || fs>697316 || UINT64_C(120)+fs+rs!=data.size()) return 5;
+    const auto bytes=std::span<const std::byte>(data);
+    const auto archive=bytes.subspan(8,112+fs);const auto expected=bytes.subspan(120+fs,rs);
+    PositionTans64kStreamHeader stream{};std::size_t consumed{};DecoderLimits limits{};
+    if (parse_position_tans_64k_stream(archive,limits,stream,consumed)!=PositionTans64kFormatError::none
+        || consumed!=112 || stream.original_size!=rs || ((rs==0)!=(fs==0))) return 6;
+    ErrorCode error{};
+    auto decoder=PositionTans64kOwnedDecoder::create(stream.frame_size,limits,error);
+    if (!decoder || error!=ErrorCode::none) return 7;
+    const auto raw=transform(*decoder,archive,1,1);
+    if (!std::equal(raw.begin(),raw.end(),expected.begin(),expected.end()) || failures) return 8;
+    if (raw_encode) {
+        auto encoder=PositionTans64kOwnedEncoder::create(stream,limits,error);
+        if (!encoder || error!=ErrorCode::none) return 9;
+        const auto encoded=transform(*encoder,expected,1,1);
+        if (!std::equal(encoded.begin(),encoded.end(),archive.begin(),archive.end()) || failures) return 10;
+    }
+    return 0;
 }
-int main() {
+}
+int main(int argc,char** argv) {
+    if (argc==3 && std::string(argv[1])=="--owning-fixture") return fixture(argv[2],false);
+    if (argc==3 && std::string(argv[1])=="--owning-raw-fixture") return fixture(argv[2],true);
     DecoderLimits limits{};PositionTans64kStreamHeader stream{};stream.frame_size=64;stream.original_size=160;
     PositionTans64kWorkspace enc{},dec{};
     check(PositionTans64kOwnedEncoder::requirements(stream,limits,enc)==ErrorCode::none
@@ -142,6 +176,30 @@ int main() {
     check(failed.status==StreamStatus::error && failed.output_produced==1
         && pair_output[0]==std::byte{65} && pair_output[1]==std::byte{0x5a},"owned late second-frame failure publishes only first");
     check(pair_decoder->process({},pair_output,end).output_produced==0,"owned failure remains sticky");
+    pair_bytes[pair_bytes.size()-2]=std::byte{0};
+    for (std::size_t cut=0;cut<pair_bytes.size();++cut) {
+        auto truncated=PositionTans64kOwnedDecoder::create(1,limits,error);
+        std::fill(pair_output.begin(),pair_output.end(),std::byte{0x5a});
+        const auto r=truncated->process(std::span(pair_bytes).first(cut),pair_output,end);
+        const auto committed=cut>=212 ? 1U : 0U;
+        check(r.status==StreamStatus::error && r.error.code==ErrorCode::malformed_stream
+            && r.output_produced==committed && (committed==0 || pair_output[0]==std::byte{65})
+            && pair_output[committed]==std::byte{0x5a},"owned every truncation excludes failed frame");
+    }
+    auto trailing_bytes=pair_bytes;trailing_bytes.push_back(std::byte{0});
+    auto trailing_decoder=PositionTans64kOwnedDecoder::create(1,limits,error);
+    const auto trailing=trailing_decoder->process(trailing_bytes,pair_output,end);
+    check(trailing.status==StreamStatus::error && trailing.input_consumed==312
+        && trailing.output_produced==2,"owned strict trailing refusal after valid frames");
+    auto aliased_decoder=PositionTans64kOwnedDecoder::create(1,limits,error);
+    const auto pair_before=pair_bytes;
+    const auto aliased=aliased_decoder->process(pair_bytes,std::span(pair_bytes).first(2),end);
+    check(aliased.status==StreamStatus::error && aliased.error.code==ErrorCode::invalid_argument
+        && !aliased.input_consumed && !aliased.output_produced && pair_bytes==pair_before,"owned decoder overlap unchanged");
+    auto flagged_encoder=PositionTans64kOwnedEncoder::create(pair_stream,limits,error);
+    const auto flag_error=flagged_encoder->process(pair_raw,pair_output,flag_value(ProcessFlags::reset_block));
+    check(flag_error.status==StreamStatus::error && flag_error.error.code==ErrorCode::unsupported
+        && !flag_error.input_consumed && !flag_error.output_produced,"owned encoder unsupported reset");
     auto early=PositionTans64kOwnedEncoder::create(pair_stream,limits,error);
     std::fill(pair_output.begin(),pair_output.end(),std::byte{0x5a});
     const auto invalid=early->process(std::span(pair_raw).first(1),pair_output,end);
