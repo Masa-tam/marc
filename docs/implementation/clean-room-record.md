@@ -40325,3 +40325,29 @@ bytes and failure retention. Documentation and whitespace checks pass. The
 target has a30-second watchdog after measured subsecond runs; this metadata
 test does not determine the watchdog or parallelism for future corpus,
 owning stream and large-window tests.
+
+### CR-1754:64KiB tANS finite frame encoding and private raw quarantine
+
+2026-10-09, Codex implementation and review; maintainer review pending.
+Task: connect DD-1556 metadata, private tokens and raw restoration while
+retaining ordinary outputs on any failure. Reuse first-party typed-token
+validation/reconstruction and overlap arithmetic; implement caller-scratch
+transaction boundaries from DD-1560. No restricted or external codec source
+consulted. TVG-1425 writes independent field layouts and mathematical payloads
+and restores raw bytes independently with forward copying.
+
+Finite frame success-only publication does not complete the stream/owning
+contract. Canonical raw dictionary encoder, split/finish/EOF controller,
+allocation rollback, public API/ABI/CLI, corpus/normal peaks/fuzz and exchange
+remain required before64KiB completion; later windows and final88 follow.
+Existing artifacts and the fixed qualified runtime are retained. Hosted CI
+and external verification for these new profiles are not claimed.
+
+Both normal builds pass ordinary frame tests and all220 independent complete
+frame fixtures. Actual fixture bodies agree across builds. Late entropy
+finish failure after every private token, valid entropy with invalid history,
+padding, cut/alias/short-buffer and exact-budget failures retain ordinary raw
+outputs; failed entropy does not start private raw reconstruction.
+Documentation and whitespace checks pass. The differential watchdog is120
+seconds after campaigns below33 seconds; normal peaks and large-window
+parallelism remain separate measurement gates.

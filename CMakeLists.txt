@@ -8700,6 +8700,31 @@ if(MARC_BUILD_TESTS)
     target_include_directories(marc_position_tans_64k_frame_format_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_64k_frame_format COMMAND marc_position_tans_64k_frame_format_tests)
     set_tests_properties(marc_position_tans_64k_frame_format PROPERTIES TIMEOUT 30)
+    add_executable(marc_position_tans_64k_frame_tests
+        tests/position_tans_64k_frame_tests.cpp
+        src/frame/lzss_position_tans_64k_frame.cpp
+        src/frame/lzss_position_tans_64k_format.cpp
+        src/context/lzss_position_tans_64k_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_tans_64k.cpp
+        src/entropy/position_tans_64k_format.cpp
+        src/entropy/tans_tables.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_typed_reconstructor.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_tans_64k_frame_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_64k_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_tans_64k_frames COMMAND marc_position_tans_64k_frame_tests)
+    set_tests_properties(marc_position_tans_64k_frames PROPERTIES TIMEOUT 30)
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_tans_64k_frame_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_64k_frame_differential.py
+                $<TARGET_FILE:marc_position_tans_64k_frame_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-64k-frames)
+        set_tests_properties(marc_position_tans_64k_frame_differential PROPERTIES TIMEOUT 120)
+    endif()
     add_executable(marc_position_tans_64k_token_tests
         tests/position_tans_64k_token_tests.cpp
         src/context/lzss_position_tans_64k_tokens.cpp

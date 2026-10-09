@@ -33940,3 +33940,25 @@ requirements. It is neither a public factory grant nor a measured peak.
 Full preflight validates payload extent only; entropy finish, history and
 raw publication require the subsequent frame decoder. No public factory,
 raw quarantine, stream ownership or corpus/exchange admission is implied.
+
+### DD-1560:64KiB tANS private frame transaction
+
+Connect validated frame prefixes to a single entropy pass into caller-owned
+private token scratch. Require entropy finish before reconstructing raw
+bytes through the first-party typed reconstructor with dictionary variant8.
+Commit ordinary raw output only after exact reconstruction succeeds. A
+controller entry retains all raw bytes privately and reports zero committed
+counts on any error; controllers must discard failed scratch and never drain
+it. Diagnostic token counts describe private validation progress only.
+
+For encoding, validate reset-frame token history, plan the canonical model,
+write private payload and serialized frame, then commit ordinary serialized
+bytes after the complete header/payload succeeds. Check all retained spans,
+controls and checked byte extents for overlap/budget before scratch writes.
+Account for bounded working storage, retained local model/validation controls
+and full caller span capacities. These private aggregate checks are not
+owning resource queries or public memory defaults.
+
+Frame transactions do not replace stream chunking/EOF, allocation rollback,
+canonical raw dictionary encoder differential, public API/ABI/CLI,
+corpus/fuzz/resources or additive exchange gates. Those remain required.

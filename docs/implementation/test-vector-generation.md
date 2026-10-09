@@ -22966,3 +22966,29 @@ does not validate a corrupt entropy state. Subsequent stream spans are
 accepted with a reported frame extent; strict EOF and failed raw-frame
 nonpublication remain required controller/decoder tests. These tests do not
 claim raw restoration, ordinary raw output preservation or ownership.
+
+### TVG-1425:64KiB tANS complete-frame differential and quarantine
+
+Independently construct MARC/MRF2 bytes in Python from DD-1556 fields and
+the mathematical tANS oracle. Reconstruct each token history with frame-local
+forward overlap copying. Include twenty directed histories and200 seeded
+histories (seed1560), empty streams, all byte values, preserved literal
+history across matches, lengths3/4/258 and reachable65536-byte boundaries.
+Compare production ordinary and private raw restoration with the independent
+raw bytes; re-encode restored tokens and compare the entire frame. Preserve
+unused ordinary tails. This is a token-frame encoder check, not a canonical
+raw dictionary selection differential.
+
+Check every complete-frame cut, output/scratch aliasing, invalid state,
+short raw/serialized destinations, invalid history, exact aggregate decoder
+budget and one-byte-below refusal before scratch preparation. A singleton
+model with state offset1 decodes all private tokens but fails terminal state:
+verify ordinary raw and private raw remain unchanged, committed counts zero.
+Check a later frame resets history and rejects references to an earlier
+frame. These tests qualify finite-frame quarantine, not stream ownership,
+arbitrary process splits, allocation rollback or public factories.
+
+Construct a valid tANS model/payload whose first token is a match: bounded
+metadata passes but dictionary validation rejects its missing frame history
+before raw publication. Flip unused high payload padding and verify rejection.
+Check short private table/token/raw spans retain ordinary raw output.
