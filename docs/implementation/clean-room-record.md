@@ -40623,3 +40623,21 @@ invariant finding or saved crash/hang/leak/oom artifact occurs. Retain the
 normal performance evidence separately. Exchange and later-window work remain
 pending, as do hosted/external qualification; fixed Release is preserved and
 no push or legal guarantee is claimed.
+
+### CR-1767:64KiB tANS additive exchange milestone
+
+Date:2026-10-10. Author/reviewer:Codex; maintainer review pending.
+Task: append the qualified64KiB profile to the81-archive exchange baseline.
+References are this repository's schema71 producer, verifier, historical
+runner and negative suite, plus its independently frozen tANS format. No
+external codec implementation or restricted source is consulted.
+
+Review confirms the preceding81 profile order and entries remain unchanged;
+both saved baseline manifests and all bodies are rehashed unchanged. Both
+normal producers agree on all82 bodies. Four local self/cross consumers pass
+full decode and re-encode equality, and250 guarded negatives reject before
+codec launch/publication. One normal build completes schemas1..72; the second
+historical run remains in progress at this milestone. No codec semantics or
+frozen vectors change. Complete historical qualification, final runtime audit,
+fixed Release replacement, hosted CI and external verification remain pending.
+No push or legal guarantee is claimed.

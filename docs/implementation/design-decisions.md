@@ -34182,3 +34182,20 @@ Run a300-unit pilot in each path before selecting campaign memory/deadlines.
 Choose one active target and preserve failed logs/seeds/artifacts. Instrumented
 RSS neither establishes the normal public grant nor substitutes for BM-0235.
 An actual crash/hang requires a permanent regression before qualification.
+
+### DD-1571:64KiB position-distance tANS additive exchange admission
+
+Append only `lzss-position-distance-tans` after the frozen schema71/81-profile
+order. Schema72 declares `marc-cli-v72` and exactly82 archives. Preserve every
+preceding archive entry and complete byte representation. Admit the complete
+manifest, file hashes and all112 bytes of the new profile header before any
+codec invocation. The exact dictionary/context/entropy identity is2/8,1/21,
+5/3 with frame/window65536 and known original size; reject changes to every
+reserved or parameter byte as well as truncated headers.
+
+Keep all earlier schema branches. Extend the historical conversion runner
+from schema72 to71 and then its existing descent to1. New negative cases use
+a codec-launch guard and require zero published files. Two normal producers
+and two self/two cross consumers must restore raw bytes and reproduce complete
+archives. These local exchange gates do not establish hosted CI, external
+validation, later windows or fixed Release replacement.

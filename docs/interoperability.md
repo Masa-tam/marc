@@ -10,12 +10,17 @@ marc-interoperability-windows-msvc-x64
 marc-interoperability-ubuntu-ninja-x64
 ```
 
-Each current schema-58 bundle contains the same generated `input.bin`, the
-frozen 42 stable-profile archives, twenty-five experimental Format 2 archives,
-one position-distance archive, and `manifest.json`. The manifest declares
-codec set `marc-cli-v58` and records
+The current local schema-72 bundle contains the same generated `input.bin`, the
+frozen 42 stable-profile archives, twenty-five preceding experimental Format 2
+archives, seven position-distance Dynamic Range archives, seven
+position-distance rANS archives, one position-distance tANS archive, and
+`manifest.json`. The manifest declares codec set `marc-cli-v72` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.
+
+The latest maintainer-confirmed hosted CI and external four-route result is
+schema71 with81 archives (IX-0081). Schema72's82 archives are locally qualified
+as described in IX-0082; no hosted or external82-archive result is claimed.
 
 Download and extract a bundle from a successful GitHub Actions run. Build marc
 at the same commit on the platform being tested, then use an output directory
@@ -34,7 +39,7 @@ arguments. The verifier performs all of the following:
 
 1. validates the manifest version, exact codec set and profile order, leaf-only
    file names, sizes, and SHA-256 values;
-2. decodes all sixty-eight foreign archives and compares their output byte
+2. decodes all eighty-two foreign archives and compares their output byte
    for byte with `input.bin`;
 3. re-encodes `input.bin` with the local executable and compares every complete
    archive byte for byte with the foreign archive.
@@ -47,7 +52,7 @@ has this form:
 artifact: marc-interoperability-windows-msvc-x64
 local platform: <OS, architecture, compiler>
 commit: <manifest source_revision and local Git commit>
-result: Verified 68 archives from windows-msvc-x64 (...), revision <Git object ID>
+result: Verified 82 archives from windows-msvc-x64 (...), revision <Git object ID>
 ```
 
 ## Schema compatibility
@@ -1963,3 +1968,24 @@ gates. Evidence is maintainer-reported console output and CI success;
 independent inspection of hosted job logs or external binaries is not claimed.
 The following reconciliation changes documentation only and does not alter
 the externally validated implementation or its81-archive representation.
+
+## IX-0082:64KiB position-distance tANS local exchange milestone
+
+At implementation revisionb33ec65f5d2d9d1ca0c680aa23e3faad87cccd19,
+two normal builds produce identical82-archive schema72/`marc-cli-v72` bundles.
+Append `lzss-position-distance-tans` as the final entry; all original81 entries,
+order and complete archive bodies match the retained schema71 baseline.
+The new archive is3233 bytes for the unchanged8193-byte generated input.
+
+Two self and two cross routes restore every archive and reproduce its complete
+bytes. Each consumer rejects125 new schema72 negative cases before codec
+launch or file publication, including changes to each of the112 header bytes.
+The earlier schema71 negative suite remains intact. One build completes the
+new schema1..72 historical run; the other historical run is still in progress.
+
+This commit qualifies the additive producer/verifier and four local exchange
+routes. Final committed-source qualification, remaining history, fixed Release
+backup/update and complete64KiB audit remain outstanding. BM-0235 and FZ-0087
+record separately completed measurements and instrumented campaigns. Hosted CI,
+external82-archive reports, later windows and the final88-archive goal remain
+pending. The latest external result remains IX-0081's81 archives.

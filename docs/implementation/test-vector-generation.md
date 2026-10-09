@@ -23201,3 +23201,18 @@ and all saved terminal/resource receipts. Require successful10000-unit logs,
 no sanitizer/invariant finding, no crash/hang/leak/oom artifact and process
 peaks below the selected instrumented cap. This closes the64KiB fuzz gate;
 normal public peaks remain BM-0235's separate evidence and exchange is pending.
+
+### TVG-1438: schema72 frozen-prefix and prelaunch exchange tests
+
+Confirm the retained starting schema71 manifest has81 entries. Generate82
+archives on each normal build; compare the complete first81 entry objects,
+order and bodies with both saved baseline bundles, and compare all82 bodies
+between producers. Check both self and both cross consumers' decoded hashes
+against input and re-encoded hashes against each complete source archive.
+
+Run125 schema72 negatives per consumer, including every header byte0..111,
+old selector, downgrade, wrong codec set/order/count, duplicate, hash/size and
+truncated-header cases. Require rejection before a guarded codec launch and
+zero output files. Preserve the prior schema71 negative suite unchanged.
+Extend the historical runner to schema1..72 and retain each route's evidence;
+a completed route and an in-progress route must be reported separately.
