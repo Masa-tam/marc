@@ -34425,3 +34425,30 @@ below refuses unchanged before allocation. The initial insufficient call
 guard was a test-driver limit, corrected without a codec source change.
 Public CLI, paired contextual corpus, repeated timing/normal peaks, fuzz
 and exchange still require qualification; CI/external tests remain pending.
+
+### DD-1582: one-MiB position-distance tANS CLI
+
+Add only the case-sensitive selector lzss-position-distance-tans-1m.
+Use one-MiB public defaults, two65536-byte call arrays and65536 explicitly
+retained CLI-control bytes. Keep the existing complete-file temporary
+publication controller. Qualify deterministic encode/decode at empty,
+singleton, all bytes and window-before/equal/after/final-partial cases;
+independently generate short-match grammar streams3/4/258. Check every
+singleton cut, wrong identity/reserved bytes, terminal state, second-frame
+error, strict trailing input and existing output/temporary preservation.
+Refuse the distance-less alias and same-window contextual streams in the
+new decoder, and require contextual decoder refusal of new streams.
+Re-run unchanged64KiB CLI tests with the new executable. This checkpoint
+requires paired corpus, repeated timing/normal peaks, fuzz and exchange
+before profile completion. Fixed qualified executable publication awaits
+all local one-MiB gates; hosted CI/external tests remain pending.
+
+Qualification: new1MiB and unchanged64KiB CLI tests pass in both builds.
+Build A measured12.78/12.22 seconds (total25.13); build B15.96/14.48
+(total30.55). New profile has seven deterministic boundary round trips,
+213 singleton truncations and three independent3/4/258 grammar matches.
+Both builds refuse failed final/second frames and preserve prior output
+and temporary files. Existing64KiB seven archives and three grammar
+archive hashes match the prior qualified fixed-executable receipt. The
+fixed qualified Release remains unchanged; paired contextual measurements,
+fuzz and schema73/83 remain pending before one-MiB closure.

@@ -926,3 +926,21 @@ Existing selectors and representations are retained. Public API/CLI and
 full-corpus byte equivalence are locally qualified; isolated speed/normal
 public peaks, instrumented fuzz and additive exchange remain required.
 No new hosted CI or external result is claimed.
+
+### One-MiB position-distance tANS
+
+The exact selector `lzss-position-distance-tans-1m` identifies dictionary2/9,
+context1/22 and tANS5/4. Known-size streams reset dictionary/models at each
+one-MiB frame. Fixed-five encoding preserves longest/nearest matches;
+decoding accepts the specified3..258 grammar. The distance-less selector
+`lzss-position-tans-1m` is rejected. Existing64KiB and contextual selectors
+retain their own identities.
+
+The CLI uses the distinct one-MiB public factory with64MiB aggregate admission,
+65536-byte input/output calls and65536 declared retained control bytes. Actual
+full query charges are65543980 encode and27433809 decode bytes; these are
+capacity accounting rather than process peaks. Failed frames never drain.
+Whole-file output is renamed only after complete successful decoding and
+strict trailing checks. Failed inputs publish no final destination; existing
+output/temporary files remain unchanged. Corpus comparisons, repeated normal
+measurements, fuzz and exchange are separate pending qualification gates.

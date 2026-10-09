@@ -1236,4 +1236,5 @@ Failed queries leave output unchanged. Creation sets the handle to NULL on
 ordinary refusal; overlapping config/output destinations refuse unchanged.
 EndInput is explicit, EOS/error remain sticky and failed raw frames never
 publish. Prior successful frames may already be returned before a later
-error. Whole-file CLI publication is a separate contract pending connection.
+error. Whole-file CLI publication is separately qualified by profile-specific
+CLI tests; paired measurements, fuzz and exchange remain required.
