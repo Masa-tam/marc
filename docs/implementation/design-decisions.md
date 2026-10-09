@@ -33920,3 +33920,23 @@ Private token accounting is not an owning-frame or public memory grant.
 These entries do not expose a public codec or qualify raw-frame publication,
 stream chunking, allocation rollback, corpus/fuzz/resources or exchange.
 Frame and owning stream integration remain required before64KiB completion.
+
+### DD-1559:64KiB tANS frame header and descriptor preflight
+
+Implement the DD-1556 tuple in bounded112-byte stream and64-byte frame
+parsers/serializers. Reuse first-party MARC/MRF2 layout helpers and sequence
+rules; replace rANS event bounds with equal event/decision counts and the
+tANS bit ceiling. Headers and descriptor prefixes reject before payload
+buffering. Ordinary structures, consumed count and encoded header bytes
+commit only on success. Parsing a frame from a stream span reports its
+extent; strict whole-stream trailing-data rejection remains the controller's
+responsibility.
+
+Count all49 context/uniform decode tables, actual typed tokens, raw bytes,
+serialized frame and131072 working bytes in the minimum private decoder
+footprint. This lower bound excludes caller destinations and retained
+controls: the later owner must account for those and its maximum nested
+requirements. It is neither a public factory grant nor a measured peak.
+Full preflight validates payload extent only; entropy finish, history and
+raw publication require the subsequent frame decoder. No public factory,
+raw quarantine, stream ownership or corpus/exchange admission is implied.

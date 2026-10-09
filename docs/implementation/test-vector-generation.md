@@ -22949,3 +22949,20 @@ scratch/output overlap, failed plan descriptor retention, ordinary/private
 token overlap, exact decode aggregate budget, one-byte-below refusal and
 dictionary distance-limit preflight. This scope qualifies token publication,
 not raw frame/stream publication or an owning factory.
+
+### TVG-1424:64KiB tANS bounded header and prefix checks
+
+Freeze hand-decoded112-byte known-size stream and64-byte singleton literal
+A frame headers, with the independently generated DD-1556 singleton model.
+Compare production serialization with these finite byte strings. Check every
+stream/header/payload cut, ordinary output and parsed-count retention,
+identity/parameter/reserved-byte mutation, malformed descriptors before
+payload, event/decision equality, wide payload ceiling arithmetic, sequence
+partition and empty-stream frame refusal. Check exact minimum private
+footprint, one-byte-below refusal, and table/window/match limits.
+
+Explicitly test that prefix validation needs no payload and full preflight
+does not validate a corrupt entropy state. Subsequent stream spans are
+accepted with a reported frame extent; strict EOF and failed raw-frame
+nonpublication remain required controller/decoder tests. These tests do not
+claim raw restoration, ordinary raw output preservation or ownership.

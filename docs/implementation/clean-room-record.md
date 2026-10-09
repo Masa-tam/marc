@@ -40302,3 +40302,26 @@ mapping and ordinary/private token publication tests only. It does not
 complete the private raw-frame/stream milestone. The differential watchdog
 is120 seconds after observed campaigns below34 seconds; later heavy tests
 retain separate measurement requirements.
+
+### CR-1753:64KiB tANS stream/frame bounded preflight
+
+2026-10-09, Codex implementation and review; maintainer review pending.
+Task: implement DD-1556 headers and preallocation prefix validation for
+the private64KiB tANS profile. Adapt the repository's first-party MARC/MRF2
+layout and transaction pattern; independently apply tANS decision/payload
+bounds and complete per-context table accounting. No external implementation
+or restricted source consulted. TVG-1424 uses frozen hand-decoded headers
+and the independent mathematical singleton descriptor.
+
+This stage validates metadata and descriptor extents, not entropy finish or
+raw restoration. Frame decoder/publication, stream/owning allocation,
+dictionary encoder, public API/ABI/CLI, corpus/fuzz/resource qualification
+and schema72/final88 gates remain unfinished. Existing artifacts and fixed
+qualified runtime are retained. No new hosted CI or external evidence is
+claimed.
+
+The matching ordinary target passes in both normal builds, including frozen
+bytes and failure retention. Documentation and whitespace checks pass. The
+target has a30-second watchdog after measured subsecond runs; this metadata
+test does not determine the watchdog or parallelism for future corpus,
+owning stream and large-window tests.
