@@ -23172,3 +23172,20 @@ static/shared libraries. Recompute member medians, sample spreads and totals
 from retained receipts. Keep all artifacts, fixed qualified Release and prior
 production/header bytes unchanged. This completes the64KiB public corpus
 measurement gate, while instrumented fuzz and exchange remain unfinished.
+
+### TVG-1436:64KiB tANS fuzz seeds and pilot qualification
+
+Copy225 prior independently qualified scalar model/payload envelopes. Compare
+their body hashes across retained successful differential runs before seeding;
+do not regenerate frozen expectations through production code. Extract exact
+descriptor bodies and retain complete scalar envelopes for the two entropy
+targets. Include the maximal9122-byte descriptor. Use bounded raw seeds for
+literal histories, repeated0/255, all low/high byte values and patterned data
+in token/stream/public targets, which independently generate valid frames.
+
+Verify ASan/UBSan/fuzzer instrumentation in all576 production static-library
+compile commands and five entries. Run300 units per target with saved process
+time/RSS, terminal log and artifact checks. Check ordinary failure destinations,
+private scratch equivalence, output guards, whole/split publication and sticky
+terminal states. Successful pilot checks qualify the infrastructure, not the
+planned10000-unit campaigns, exchange or the complete64KiB profile.

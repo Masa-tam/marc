@@ -1741,3 +1741,24 @@ quarantine. These small-frame campaigns complement full-window directed
 tests; they do not replace them. Instrumented RSS is not a normal-build
 peak or capacity-default qualification. Full matched corpus, isolated
 directional/normal-resource measurements and schema71/final81 remain pending.
+
+## FZ-0087:64KiB position-distance tANS pilot infrastructure
+
+Date:2026-10-10. Five bounded first-party targets cover descriptor, scalar
+payload, typed tokens, split stream and owning public C lifecycle. All576
+production static-library units and all five entry points have verified
+ASan/UBSan and fuzzer coverage flags. Descriptor/payload seeds preserve225
+independently qualified mathematical fixtures, including the maximal9122-byte
+descriptor. Scalar payload input65536 permits8192 decisions; descriptor input
+9123 includes one trailing byte; token/stream input4096 and public raw input128
+remain bounded. Generated public frames32..64 complement directed full-window
+and one-byte-frame tests.
+
+Each target completes300 pilot units with seed1569 without sanitizer or
+invariant finding. Actual pilot memory/time records select a single active
+target,576MiB instrumented RSS cap and per-target campaign watchdogs with
+headroom above the observed runs. The ten-second per-unit guard exceeds the
+observed subsecond pilot units. Preserve logs, original seeds and any failed
+artifacts. These pilot observations are not normal peak measurements or proof
+of10000-unit campaigns, which remain pending. Exchange, larger windows and
+hosted/external qualification also remain unfinished.

@@ -34153,3 +34153,32 @@ itself a restoration proof: the campaign must compare archive/raw hashes.
 Keep all failed diagnostic artifacts and refuse existing destinations. This
 measurement infrastructure does not complete full-corpus timing, fuzz,
 exchange, later windows or hosted/external qualification.
+
+### DD-1570:64KiB position-distance tANS instrumented fuzz boundaries
+
+Add five bounded first-party fuzz entry points for descriptor, scalar payload,
+typed tokens, split stream and public owning C lifecycle. Link every entry to
+the production static library with ASan/UBSan and fuzzer coverage on all its
+translation units; verify compile commands rather than assuming harness flags
+instrument the library. Keep normal measurement binaries separate.
+
+Reuse only the repository's descriptor/payload and public rANS harness ideas.
+Adapt descriptor semantics, supplied tANS table scratch, terminal states and
+seven-decisions-per-raw-byte frame limits explicitly. The token target compares
+transactional ordinary output with private scratch on success, and requires
+unchanged ordinary destinations plus output guards on failure. Stream/public
+targets compare whole/split calls, zero output capacity and immutable terminal
+states. Generated valid frames, mutation and truncation drive history/entropy
+validation and failed-frame quarantine.
+
+Seed descriptor/payload paths from225 independently qualified mathematical
+fixtures, including the maximal9122-byte descriptor and isolated distance
+grammar. Bound payload decisions to8192/input65536, descriptor input9123,
+token/stream input4096 and public raw input128. Public raw frames32..64 keep
+generated campaigns bounded; small fuzz frames complement the directed full
+window and one-byte-frame regressions rather than replacing them.
+
+Run a300-unit pilot in each path before selecting campaign memory/deadlines.
+Choose one active target and preserve failed logs/seeds/artifacts. Instrumented
+RSS neither establishes the normal public grant nor substitutes for BM-0235.
+An actual crash/hang requires a permanent regression before qualification.

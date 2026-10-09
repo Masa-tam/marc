@@ -40588,3 +40588,21 @@ separate query scopes, aggregate tradeoffs and the retained compression misses
 in BM-0235. These observed results make no universal performance claim.
 Instrumented fuzz, exchange, later windows, hosted CI and external qualification
 remain unfinished. Fixed qualified Release is preserved and no push occurs.
+
+### CR-1765:64KiB tANS instrumented fuzz infrastructure
+
+Date:2026-10-10. Author/reviewer:Codex; maintainer review pending.
+Task: add five bounded tANS fuzz paths and qualify their instrumented pilots.
+Consult only first-party position-distance rANS descriptor/payload/public
+harnesses, typed-token and split-stream tests, DD-1556 math and qualified
+tANS sources. No external compression implementation or restricted source
+was consulted. New token/stream entry points explicitly supply private tANS
+tables and test transactional output and failed-frame quarantine.
+
+All576 production static-library units and five entries have verified
+ASan/UBSan and fuzzer coverage flags. Preserve225 independently qualified
+model/payload seeds, their hashes and maximal9122-byte descriptor. Each target
+passes300 pilot units without sanitizer or invariant finding. Record actual
+instrumented memory/time separately from normal performance. Full campaigns,
+exchange and later-window qualification remain pending; no hosted/external
+verification, fixed Release replacement, push or legal guarantee is claimed.

@@ -9266,3 +9266,21 @@ if(MARC_BUILD_BENCHMARKS)
         target_link_libraries(marc_position_rans_64m_resources PRIVATE psapi)
     endif()
 endif()
+
+if(MARC_BUILD_FUZZERS)
+    foreach(entry IN ITEMS
+        position_tans_64k_descriptor
+        position_tans_64k_payload
+        lzss_position_tans_64k_tokens
+        lzss_position_tans_64k_stream
+        lzss_position_tans_64k_public)
+        add_executable(marc_fuzz_${entry} fuzz/${entry}_fuzz.cpp)
+        target_compile_features(marc_fuzz_${entry} PRIVATE cxx_std_20)
+        target_include_directories(marc_fuzz_${entry} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_compile_options(marc_fuzz_${entry} PRIVATE
+            -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+        target_link_options(marc_fuzz_${entry} PRIVATE -fsanitize=fuzzer,address,undefined)
+        # MARC_BUILD_FUZZERS instruments every marc_static production object.
+        target_link_libraries(marc_fuzz_${entry} PRIVATE marc::static)
+    endforeach()
+endif()
