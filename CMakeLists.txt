@@ -9237,6 +9237,28 @@ if(MARC_BUILD_BENCHMARKS)
 endif()
 
 if(MARC_BUILD_BENCHMARKS)
+    add_executable(marc_position_tans_64k_benchmark benchmarks/position_tans_64k_benchmark.cpp)
+    target_compile_features(marc_position_tans_64k_benchmark PRIVATE cxx_std_20)
+    target_link_libraries(marc_position_tans_64k_benchmark PRIVATE marc::static)
+    add_executable(marc_position_tans_64k_public_resources benchmarks/position_tans_64k_public_resources.cpp)
+    target_compile_features(marc_position_tans_64k_public_resources PRIVATE cxx_std_20)
+    target_link_libraries(marc_position_tans_64k_public_resources PRIVATE marc::static)
+    if(WIN32)
+        target_link_libraries(marc_position_tans_64k_public_resources PRIVATE psapi)
+    endif()
+    if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_tans_64k_public_measurements
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_64k_public_measurements.py
+                $<TARGET_FILE:marc_position_tans_64k_benchmark>
+                $<TARGET_FILE:marc_position_tans_64k_public_resources>
+                $<TARGET_FILE:marc_cli>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-64k-public-measurements)
+        set_tests_properties(marc_position_tans_64k_public_measurements PROPERTIES TIMEOUT 120)
+    endif()
+endif()
+
+if(MARC_BUILD_BENCHMARKS)
     add_executable(marc_position_rans_64m_resources benchmarks/position_rans_64m_resources.cpp)
     target_compile_features(marc_position_rans_64m_resources PRIVATE cxx_std_20)
     target_link_libraries(marc_position_rans_64m_resources PRIVATE marc::static)

@@ -34127,3 +34127,29 @@ decode, although the public encoder only chooses matches of at least5 bytes.
 Compare complete CLI archives with the qualified private full-corpus bodies
 and check raw restoration. This closes public API/CLI byte correctness,
 not benchmark/fuzz/exchange or the whole profile.
+
+### DD-1569:64KiB paired public tANS measurement scopes
+
+Measure the position-distance owning C API and the existing contextual tANS
+64K C API profile with physical frame/window65536. Reuse first-party normal
+measurement loops, retaining independent CLI byte comparisons. Timing covers
+fresh workspace allocation, creation, process calls and destruction; file I/O
+and byte comparisons are outside the timer. Use one warmup and three fresh
+instances for each profile/direction/member.
+
+The timing driver retains two finite comparison vectors. Charge their actual
+capacities plus65536 control bytes to the owning API and extend only that
+benchmark's admission grant. Declare65536-byte call capacities separately.
+Never describe that retained-file measurement as streaming peak memory.
+A separate normal resource executable streams two65536-byte I/O arrays with
+65536 external control bytes and the unchanged8MiB owning grant. Contextual
+queries report caller workspace bytes only; I/O/control bytes are separately
+reported and do not turn this query into an owning admission contract.
+
+Measure operating-system process peaks without sanitizers or allocation-test
+overrides. Where pre-exec high-water RSS is inherited, fork from the normal
+executable before allocating codec state. A completed transform is not by
+itself a restoration proof: the campaign must compare archive/raw hashes.
+Keep all failed diagnostic artifacts and refuse existing destinations. This
+measurement infrastructure does not complete full-corpus timing, fuzz,
+exchange, later windows or hosted/external qualification.

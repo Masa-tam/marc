@@ -10972,3 +10972,27 @@ silently retune existing streams or claim every file is smaller. Dynamic Range
 compression is not an adoption criterion. This campaign qualifies compression
 and restoration only; isolated repeated timings, normal public peaks,
 instrumented fuzz, exchange and later-window completion remain unfinished.
+
+### BM-0234:64KiB public tANS measurement infrastructure
+
+The normal paired timing driver uses the owning position-distance tANS C API
+and the contextual tANS64K caller-workspace C API. Each run checks every output
+byte against a previously verified expected file. One warmup and three fresh
+instances time allocation, creation, process calls and destruction, excluding
+file I/O and byte comparison. Whole-file comparison vector capacities are
+reported and charged to the candidate's benchmark-only admission extension.
+
+A separate normal process streams65536-byte input/output arrays. Candidate
+query scope includes owner, calls and65536 external control bytes; contextual
+query scope includes caller workspaces only, with driver I/O/control allowance
+reported separately. Neither query is a measured resident-memory limit.
+Operating-system peak measurements use a fresh post-exec child where inherited
+launcher high-water RSS would otherwise contaminate the measurement.
+
+Both normal builds pass sizes0/1/65535/65536/65537 in both directions for both
+profiles. Complete archive bytes match the CLI and raw bytes restore; actual
+headers identify65536-byte frame/windows. Timing comparisons reject incorrect
+expected bytes, existing outputs remain untouched and late terminal-state
+failure publishes no file. These short checks validate plumbing, not comparative
+throughput or corpus peaks. Isolated corpus measurements, instrumented fuzz,
+exchange and later windows remain unfinished.

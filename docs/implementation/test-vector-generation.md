@@ -23139,3 +23139,20 @@ and restored hashes and compare both normal builds. Actual contextual tANS
 headers establish the same65536-byte physical frame/window before comparison.
 These checks do not substitute for isolated repeated directional timing,
 normal public peak measurement, instrumented fuzz or exchange qualification.
+
+### TVG-1434:64KiB paired normal public tANS measurement checks
+
+Generate raw sizes0/1/65535/65536/65537 from repeating all byte values.
+For position-distance and contextual64K tANS, encode with the public CLI,
+compare the resource driver's complete archive and restored raw hashes,
+and verify actual header identifiers and physical65536-byte frames/windows.
+Run the repeated timing driver against those same expected files, requiring
+one warmup, three positive samples and exact byte comparison on every run.
+Compare the candidate's queried timing admission to its normal resource
+admission plus the actual comparison-vector capacities. Query scopes remain
+different for contextual caller workspaces and position-distance owning state.
+
+Require rejection of an incorrect expected file and preservation of existing
+output. Change a singleton's final tANS state offset to1; the resource decoder
+must refuse publication and retain a zero-byte failed temporary. These small
+checks qualify measurement plumbing, not isolated corpus performance or fuzz.

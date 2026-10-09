@@ -40552,3 +40552,20 @@ per-command watchdogs follow measured complete campaigns below22 seconds.
 Isolated speed/normal public peaks, instrumented fuzz, exchange and later
 windows remain unfinished. Fixed qualified Release and prior artifacts
 remain preserved; no push, new hosted CI or external verification is claimed.
+
+### CR-1763:64KiB public tANS measurement infrastructure
+
+Date:2026-10-10. Author/reviewer:Codex; maintainer review pending.
+Task: add normal paired public tANS timing and process-peak measurement paths
+with explicit caller retention and query scopes. Adapt only the repository's
+independently authored position-distance rANS64MiB measurement loops and the
+qualified private64KiB tANS Linux fork measurement procedure. No external
+compression implementation or restricted source was consulted.
+
+Boundary checks compare each profile's complete archive with its public CLI,
+verify exact identifiers/frame/window and raw restoration, and exercise failed
+comparison, existing-file preservation and late invalid terminal state.
+Source review keeps format, production codec and publication logic unchanged.
+These are infrastructure checks; isolated full-corpus measurements, instrumented
+fuzz, exchange and later windows remain separate unfinished gates. No legal
+guarantee, hosted CI or external verification is asserted.
