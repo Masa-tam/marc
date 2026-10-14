@@ -9542,6 +9542,20 @@ if(MARC_BUILD_TESTS)
     target_include_directories(marc_position_tans_8m_core_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_8m_core COMMAND marc_position_tans_8m_core_tests)
     set_tests_properties(marc_position_tans_8m_core PROPERTIES TIMEOUT 30)
+    add_executable(marc_position_tans_8m_token_tests
+        tests/position_tans_8m_token_tests.cpp
+        src/context/lzss_position_tans_8m_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_tans_8m.cpp
+        src/entropy/position_tans_8m_format.cpp
+        src/entropy/tans_tables.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_tans_8m_token_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_8m_token_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_tans_8m_tokens COMMAND marc_position_tans_8m_token_tests)
+    set_tests_properties(marc_position_tans_8m_tokens PROPERTIES TIMEOUT 30)
     add_executable(marc_position_tans_4m_token_tests
         tests/position_tans_4m_token_tests.cpp
         src/context/lzss_position_tans_4m_tokens.cpp

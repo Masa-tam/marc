@@ -41215,3 +41215,12 @@ The eight-MiB specialization derives its identifiers, dimensions, grammar,
 and bounds directly from the repository's DD-1556 family definition. The
 separate vector oracle is written from those mathematical rules. No external
 implementation, source, or test suite was consulted.
+
+### CR-1799: eight-MiB entropy and token integration
+
+The internal eight-MiB entropy and token layers adapt this repository's
+independently authored four-MiB implementation to DD-1602 dimensions and
+dictionary variant 11. Review and integration tests identified and corrected
+the uniform residual bank index and token decision bounds. No external source
+or test suite was consulted. The uniform-only regression and token failure
+tests cover this milestone; later qualification gates remain pending.

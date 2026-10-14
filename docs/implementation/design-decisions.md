@@ -34752,3 +34752,20 @@ The dedicated 8 MiB probe passes the adjacent unlisted value and confirms
 position-distance tANS comparison is unperformed because no same-window
 contextual tANS configuration is admitted; it must not be substituted with a
 nearby window or a guessed internal configuration.
+
+### DD-1604: eight-MiB entropy and token qualification
+
+The eight-MiB token layer uses dictionary variant 11 and the dedicated tANS
+descriptor and tables. Its decoder admits the family bounds of 33 decisions
+per token and nine per raw byte. Ordinary descriptor, payload, and token
+destinations commit only on success; discarded private token prefixes remain
+unpublished. Finite tests cover truncation, invalid references, late entropy
+failure, output tails, overlap, and exact aggregate limits.
+
+Integration exposed a residual-bank indexing error in the new entropy core:
+the uniform length-residual bank must be 55, following adaptive contexts
+0 through 54. Both encode and decode now select bank 55, with a permanent
+uniform-only regression. The earlier token test crash followed a failed
+encode plan and an empty payload access in the test; the test now stops at
+the failed prerequisite. Frame, stream, oracle differential, public API, CLI,
+resource measurements, fuzz, and exchange qualification remain unfinished.

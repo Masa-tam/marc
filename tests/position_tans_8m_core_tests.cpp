@@ -73,6 +73,24 @@ int fixture(const char* path) {
 int main(int argc,char** argv) {
     if (argc==3 && std::string(argv[1])=="--fixture") return fixture(argv[2]);
     PositionTans8mDescriptor empty{};
+    // Uniform residuals have their own bank after all 55 adaptive contexts.
+    // No adaptive model is active here; reading bank 54 instead of 55 fails.
+    PositionTans8mDescriptor uniform{};uniform.decision_count=2;
+    uniform.payload_size=3;uniform.final_valid_bits=2;
+    std::vector<std::uint16_t> uniform_encode(position_tans_8m_table_entries);
+    check(build_position_tans_8m_encode_tables(uniform,{},uniform_encode)==Error::none,"uniform tables");
+    std::vector<std::byte> uniform_payload(3);
+    PositionTans8mReverseWriter uniform_writer(uniform,{},uniform_encode,uniform_payload);
+    std::size_t uniform_size=777;std::uint8_t uniform_valid=77;
+    check(uniform_writer.add(-1,1)==Error::none && uniform_writer.add(-1,0)==Error::none
+          && uniform_writer.finish(uniform_size,uniform_valid)==Error::none
+          && uniform_size==3 && uniform_valid==2,"uniform residual bank encode");
+    std::vector<TansDecodeEntry> uniform_decode(position_tans_8m_table_entries);
+    PositionTans8mDecoder uniform_reader;std::uint32_t uniform_symbol=777;
+    check(uniform_reader.begin(uniform,uniform_payload,{},uniform_decode)==Error::none
+          && uniform_reader.read(-1,uniform_symbol)==Error::none && uniform_symbol==0
+          && uniform_reader.read(-1,uniform_symbol)==Error::none && uniform_symbol==1
+          && uniform_reader.finish()==Error::none,"uniform residual bank decode");
     auto zero=serialize(empty);
     check(zero.size()==31,"empty descriptor extent");
     PositionTans8mDescriptor parsed{};

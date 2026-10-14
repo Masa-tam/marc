@@ -126,7 +126,7 @@ PositionTans8mError PositionTans8mReverseWriter::add(int c,std::uint32_t symbol)
     if (c < -1 || c>=55) return error_=Error::invalid_context;
     if (symbol>=(c==-1 ? 2U : alphabets[static_cast<std::size_t>(c)])) return error_=Error::invalid_symbol;
     if (decisions_>=descriptor_.decision_count) return error_=Error::count_mismatch;
-    const auto table_index=c==-1 ? 54U : static_cast<unsigned>(c);
+    const auto table_index=c==-1 ? 55U : static_cast<unsigned>(c);
     std::uint32_t frequency{},cumulative{};
     if (c==-1) { frequency=2048;cumulative=symbol*2048; }
     else {
@@ -202,7 +202,7 @@ PositionTans8mError PositionTans8mDecoder::read(int c,std::uint32_t& symbol) noe
         || !disjoint(&symbol,sizeof(symbol),this,sizeof(*this)))
         return error_=Error::overlapping_buffers;
     if (decisions_>=descriptor_.decision_count) return error_=Error::count_mismatch;
-    const auto index=c==-1 ? 54U : static_cast<unsigned>(c);
+    const auto index=c==-1 ? 55U : static_cast<unsigned>(c);
     if (c!=-1 && !active(descriptor_,index)) return error_=Error::inactive_context;
     if (state_<L || state_>=2*L) return error_=Error::invalid_state;
     const auto e=tables_[index*L+state_-L];
