@@ -2127,3 +2127,14 @@ remain the evidence for retained prefixes and malformed-bundle rejection.
 This closes the eight-MiB local two-producer exchange routes. Fixed-Release
 closure, hosted CI, external verification, later profiles, and final88 audit
 remain unfinished. No push is performed.
+
+## IX-0090: eight-MiB fixed Release closure
+
+The prior fixed Release directory is preserved and rehashed before replacing
+its executable with the qualified eight-MiB candidate. The fixed path passes
+the eight-MiB CLI boundary, truncation, and failed-frame non-publication test.
+It also restores and fully re-encodes all85 schema75 archives.
+
+This closes the eight-MiB local fixed-Release gate. Hosted CI, external
+verification, corpus measurements, later profiles, and final88 audit remain
+unfinished. No push is performed.
