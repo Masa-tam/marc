@@ -96,3 +96,25 @@ the resulting stream identifies dictionary variant 5, context variant 4, and
 tANS algorithm/variant 5/2, and its public decoder restores the source bytes.
 This establishes a usable same-window measurement control; it does not yet
 establish any compression, speed, or peak-memory result.
+
+### Local corpus comparison
+
+The complete twelve-member Silesia comparison used the admitted contextual
+control above, with both its window and frame set to 8 MiB.  Every source was
+decoded and verified by the benchmark before a sample was accepted.  The
+position-distance profile was smaller for every member: 60,386,573 bytes in
+total versus 61,561,630 bytes for contextual tANS, a reduction of 1,175,057
+bytes.  Per-member compressed sizes were 3,202,391/3,207,580 (`dickens`),
+18,178,475/18,887,433 (`mozilla`), 3,230,777/3,346,496 (`mr`),
+2,332,401/2,335,773 (`nci`), 3,014,557/3,019,638 (`ooffice`),
+3,218,940/3,238,839 (`osdb`), 1,535,529/1,538,735 (`reymont`),
+4,748,386/4,752,873 (`samba`), 5,095,397/5,229,190 (`sao`),
+10,069,203/10,083,307 (`webster`), 550,084/550,945 (`xml`), and
+5,210,433/5,370,821 (`x-ray`), in position/contextual order.
+
+The three-sample medians showed faster position decoding for every member.
+Position encoding was faster on six members and slower on the other six.
+Its measured process peak working set was larger for every member.  The
+per-member sample arrays and peaks are retained with the measurement evidence;
+these observations describe this measurement only and do not establish a
+general throughput or memory guarantee.
