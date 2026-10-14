@@ -34747,11 +34747,12 @@ configuration and restoration check, not inferred from nearby profiles.
 ### DD-1603: eight-MiB contextual tANS comparison availability
 
 The public contextual tANS API accepts only its five published profile values.
-The dedicated 8 MiB probe passes the adjacent unlisted value and confirms
-`MARC_STATUS_INVALID_ARGUMENT` with no config mutation. Therefore the 8 MiB
-position-distance tANS comparison is unperformed because no same-window
-contextual tANS configuration is admitted; it must not be substituted with a
-nearby window or a guessed internal configuration.
+An unlisted profile value rejects with `MARC_STATUS_INVALID_ARGUMENT`, but
+this does not rule out changing window and frame within an existing profile.
+The extended probe sets both to 8 MiB: encoder workspace queries return
+`MARC_STATUS_UNSUPPORTED` for profiles 0 through 2 and `MARC_STATUS_OK` for
+profiles 3 and 4. Same-window comparison remains pending actual header
+identity and exact restoration checks for an admitted configuration.
 
 ### DD-1604: eight-MiB entropy and token qualification
 

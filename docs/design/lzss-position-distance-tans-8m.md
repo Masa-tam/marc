@@ -69,6 +69,9 @@ The current public contextual tANS API exposes profiles only for 64 KiB, 1,
 4, 16, and 64 MiB. `marc_position_tans_8m_contextual_probe` passes the next
 profile value to its public profile applicator and verifies rejection with
 `MARC_STATUS_INVALID_ARGUMENT` without configuration mutation. Accordingly,
-no same-window contextual tANS compression, speed, or memory comparison is
-available for this profile at present. This is an API result, not a claim
-about a hypothetical contextual representation.
+the absence of a dedicated profile alone does not establish comparison
+availability. The extended probe sets both window and frame to 8,388,608
+bytes under every published profile. Encoder workspace queries reject the
+64 KiB, 1 MiB, and 4 MiB profiles but admit the 16 MiB and 64 MiB profiles.
+Actual serialized identity and exact restoration remain to be checked before
+using either admitted configuration for the comparison.
