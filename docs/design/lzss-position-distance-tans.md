@@ -120,3 +120,11 @@ schemas. Final88 needs self/cross routes and prelaunch negative admission.
 Preserve all artifacts and the prior fixed Release runtime before updates.
 Only after all seven local profiles and final audit pass does the maintainer
 push and obtain CI success and88-archive external four-route evidence.
+
+### Updated compiler revalidation — 2026-10-15
+
+After the LLVM update, the Clang 22.1.3 build recompiled the seven position-
+distance tANS core-test targets. The four vector checks available in the
+current build and all seven core checks passed (14 tests total, 106.40 seconds).
+This is local compiler revalidation; it does not substitute for the remaining
+per-profile API/CLI, fuzz, measurement, and external-route gates.
