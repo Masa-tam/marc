@@ -34796,6 +34796,14 @@ decoder as the private frame layer. Resource queries include the 233,472-entry
 decode bank and all caller capacities before allocation; the CLI name is an
 explicit selector and does not alias another window.
 
+The exchange extension uses schema76 for the 16 MiB profile. It appends one
+archive after the unchanged schema75 prefix, preserves the historical archive
+order, validates the exact `2/12 + 1/25 + 5/7` identity, and keeps malformed
+bundle rejection ahead of codec launch and output publication. The local
+schema76 producer, self verifier, 125-case negative campaign, and schema1..75
+compatibility audit are recorded separately from the remaining cross-producer,
+fixed-Release, CI, external, and corpus gates.
+
 ### DD-1605: eight-MiB tANS frame ownership and C boundary
 
 The native eight-MiB frame layer buffers a serialized frame, tANS tables,

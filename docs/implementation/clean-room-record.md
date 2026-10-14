@@ -41286,3 +41286,14 @@ invariants. The public C boundary and CLI selector were then added using the
 same repository-owned contract, with API and smoke tests for resource
 admission and round-trip behavior. Benchmark, fuzz, exchange, and similarity
 review are still open release gates.
+
+### CR-1804: 2026-10-15 — Sixteen-MiB exchange admission
+
+The exchange producer and verifier were extended independently from the
+repository's schema75 pattern. Schema76 appends the native sixteen-MiB tANS
+archive after the unchanged prefix and checks its exact header identity before
+decoding. The local self route, 125 malformed-bundle cases, and historical
+schema1..75 compatibility audit passed. No external implementation or source
+was consulted. Cross-producer, fixed-Release, hosted-CI, external-route,
+full-corpus, and similarity qualification remain open; this record makes no
+legal guarantee.

@@ -2138,3 +2138,27 @@ It also restores and fully re-encodes all85 schema75 archives.
 This closes the eight-MiB local fixed-Release gate. Hosted CI, external
 verification, corpus measurements, later profiles, and final88 audit remain
 unfinished. No push is performed.
+
+## IX-0091: sixteen-MiB tANS schema76 admission and history
+
+The retained prefix is schema75 with85 archives. Schema76 appends
+`lzss-position-distance-tans-16m` as archive86, preserving every earlier entry
+and archive body in order. Its fixture archive is 3,234 bytes with SHA-256
+`fc2e42e18e953942e742b6b5ea1ab78f9ccc67a051c5cebe5373f27390ac0a44` and the
+producer and verifier require the exact identity `2/12+1/25+5/7`, a sixteen-
+MiB window and frame, grammar3..258, 56 contexts, and4,658 frequencies.
+
+The schema76 self route restores and re-encodes all86 archives byte for byte.
+Its 125 malformed manifest and fixed-header cases are rejected before codec
+launch and output publication. The compatibility audit derives and verifies
+schemas1 through75 from the schema76 source, retaining the historical prefix.
+Independent producer, fixed-Release, hosted CI, external verification, full
+corpus measurement, and final88 audit remain unfinished. No push is performed.
+
+## IX-0092: sixteen-MiB local exchange closure
+
+The local schema76 producer, self verifier, negative campaign, and historical
+compatibility audit all pass. This closes the first local exchange gate for the
+sixteen-MiB profile. A second producer and cross routes, fixed-Release closure,
+hosted CI, external verification, and later 32/64 MiB profiles remain open.
+No push is performed.

@@ -80,3 +80,14 @@ Clang toolchain. A 2,048-input bounded run completed without a crash, hang, or
 sanitizer finding; it checks split versus whole input, terminal-state
 stability, output-tail retention, and the failed-frame publication boundary.
 This is a fuzz pilot receipt, not the full public fuzz campaign.
+
+The exchange scripts now admit schema76 as the schema75 prefix plus
+`lzss-position-distance-tans-16m`. The 86-entry local producer and verifier
+agree on the exact identity `2/12 + 1/25 + 5/7`; the appended 3,234-byte
+fixture archive has SHA-256
+`fc2e42e18e953942e742b6b5ea1ab78f9ccc67a051c5cebe5373f27390ac0a44`.
+The schema76 negative campaign rejects 125 malformed manifests or header
+mutations before codec launch and before output publication. The compatibility
+audit restores and re-encodes schemas 1 through 75 after deriving schema76.
+Independent second-producer, fixed-Release, hosted-CI, external-route,
+full-corpus measurement, and release similarity gates remain open.
