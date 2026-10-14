@@ -225,6 +225,8 @@ set(MARC_SOURCES
     src/frame/lzss_position_tans_64m_format.cpp
     src/frame/lzss_position_tans_64m_frame.cpp
     src/frame/lzss_position_tans_64m_stream_decoder.cpp
+    src/frame/lzss_position_tans_64m_owned.cpp
+    src/frame/lzss_position_tans_64m_c_factory.cpp
     src/frame/lzss_position_tans_1m_owned.cpp
     src/frame/lzss_position_tans_1m_stream_decoder.cpp
     src/frame/lzss_position_tans_1m_format.cpp
@@ -9751,6 +9753,14 @@ if(MARC_BUILD_TESTS)
         tests/position_tans_64m_stream_fuzz.cpp)
     target_compile_features(marc_position_tans_64m_stream_fuzz_compile_smoke PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_64m_stream_fuzz_compile_smoke PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_executable(marc_position_tans_64m_api_tests
+        tests/position_tans_64m_api_tests.cpp)
+    target_compile_features(marc_position_tans_64m_api_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_64m_api_tests PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    target_link_libraries(marc_position_tans_64m_api_tests PRIVATE marc::static)
+    add_test(NAME marc_position_tans_64m_api COMMAND marc_position_tans_64m_api_tests)
+    set_tests_properties(marc_position_tans_64m_api PROPERTIES TIMEOUT 180)
     if(Python3_Interpreter_FOUND)
         add_test(NAME marc_position_tans_64m_vectors
             COMMAND ${Python3_EXECUTABLE} -B ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_64m_vectors.py)
