@@ -278,6 +278,7 @@ try {
     & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') -MarcCli $resolvedCli -BundleDirectory $schema77 -OutputDirectory (Join-Path $root 'verified77')
     & (Join-Path $PSScriptRoot 'interoperability_schema77_negatives.ps1') -MarcCli $resolvedCli -BundleDirectory $schema77 -EvidenceDirectory (Join-Path $root 'schema77-negatives')
     Convert-Bundle $schema77 $schema76 76 'marc-cli-v76' (@($latest77.archives[0..85] | ForEach-Object { $_.codec }))
+    Convert-Bundle $schema76 $schema75 75 'marc-cli-v75' (@($latest77.archives[0..84] | ForEach-Object { $_.codec }))
     $latest75 = Get-Content -LiteralPath (Join-Path $schema75 'manifest.json') -Raw | ConvertFrom-Json
     if ($latest75.schema_version -ne 75 -or $latest75.codec_set -ne 'marc-cli-v75' -or
             @($latest75.archives).Count -ne 85 -or $latest75.archives[84].codec -ne 'lzss-position-distance-tans-8m') {
