@@ -50,3 +50,9 @@ respectively. The queried workspace values were 4,108,825,632 versus
 for decode. The remaining eleven materials were not completed because the
 next large-material position run produced no result within the local
 observation window; no corpus total or peak-resident claim is made.
+
+An additional `mr` position-only run completed at 3,201,375 bytes with
+encode samples 22.0430174/23.4017857/22.9234037 seconds and decode samples
+0.3163874/0.3125655/0.3157884 seconds. Its contextual counterpart did not
+produce a result in the observation window and was stopped; it is excluded
+from comparison totals.
