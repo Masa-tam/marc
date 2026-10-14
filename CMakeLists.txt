@@ -3200,6 +3200,16 @@ if(MARC_BUILD_FUZZERS)
     target_link_options(marc_fuzz_position_tans_16m_stream PRIVATE
         -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_position_tans_16m_stream PRIVATE marc::static)
+    add_executable(marc_fuzz_position_tans_32m_stream
+        tests/position_tans_32m_stream_fuzz.cpp)
+    target_compile_features(marc_fuzz_position_tans_32m_stream PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_position_tans_32m_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_position_tans_32m_stream PRIVATE
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer
+        -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_position_tans_32m_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_position_tans_32m_stream PRIVATE marc::static)
     add_executable(marc_fuzz_lzss_position_distance_stream
         fuzz/lzss_position_distance_stream_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_position_distance_stream PRIVATE cxx_std_20)
@@ -9638,6 +9648,16 @@ if(MARC_BUILD_TESTS)
     add_test(NAME marc_position_tans_16m_api
         COMMAND marc_position_tans_16m_api_tests)
     set_tests_properties(marc_position_tans_16m_api PROPERTIES TIMEOUT 90)
+    add_executable(marc_position_tans_32m_benchmark benchmarks/position_tans_32m_benchmark.cpp)
+    target_compile_features(marc_position_tans_32m_benchmark PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_32m_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    target_link_libraries(marc_position_tans_32m_benchmark PRIVATE marc::static)
+    if(MARC_BUILD_TOOLS AND Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_tans_32m_benchmark_smoke
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_32m_benchmark_smoke.py
+                $<TARGET_FILE:marc_position_tans_32m_benchmark> ${CMAKE_CURRENT_BINARY_DIR}/position-tans-32m-benchmark)
+        set_tests_properties(marc_position_tans_32m_benchmark_smoke PROPERTIES TIMEOUT 300)
+    endif()
     if(Python3_Interpreter_FOUND)
         add_test(NAME marc_position_tans_16m_vectors
             COMMAND ${Python3_EXECUTABLE} -B ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_16m_vectors.py)
@@ -9681,6 +9701,10 @@ if(MARC_BUILD_TESTS)
     target_link_libraries(marc_position_tans_32m_api_tests PRIVATE marc::static)
     add_test(NAME marc_position_tans_32m_api COMMAND marc_position_tans_32m_api_tests)
     set_tests_properties(marc_position_tans_32m_api PROPERTIES TIMEOUT 120)
+    add_library(marc_position_tans_32m_stream_fuzz_compile_smoke OBJECT
+        tests/position_tans_32m_stream_fuzz.cpp)
+    target_compile_features(marc_position_tans_32m_stream_fuzz_compile_smoke PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_32m_stream_fuzz_compile_smoke PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     if(Python3_Interpreter_FOUND)
         add_test(NAME marc_position_tans_32m_vectors
             COMMAND ${Python3_EXECUTABLE} -B ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_32m_vectors.py)

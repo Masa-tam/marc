@@ -34839,3 +34839,10 @@ The CLI now exposes `lzss-position-distance-tans-32m` and routes it to the
 32 MiB public factory. The updated Clang build includes the selector and help
 inventory. Full CLI round-trip and malformed-file campaign remain pending
 because the profile's measured allocation floor must be recorded first.
+
+The 32 MiB benchmark reports compression size, encode/decode timing samples,
+and queried workspace bytes for both profiles. No published contextual
+32 MiB profile exists; the comparison uses the existing contextual 64 MiB
+profile with both window and frame set to 32 MiB, and records that identity in
+the result. The benchmark smoke passes. A stream fuzz harness is present and
+passes the compile smoke; sanitizer execution remains pending.

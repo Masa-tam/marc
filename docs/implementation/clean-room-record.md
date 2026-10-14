@@ -41322,3 +41322,12 @@ The project agent connected the 32 MiB public factory to the repository CLI
 and verified the selector in the generated help output with the updated Clang
 build. Full CLI round-trip, malformed-input, benchmark, fuzz, and exchange
 qualification remain open; no external implementation or source was consulted.
+
+### CR-1808: 2026-10-15 — Thirty-two-MiB benchmark and fuzz harness
+
+The project agent adapted the repository-owned sixteen-MiB measurement and
+stream-fuzz contracts. Contextual comparison uses the existing 64 MiB profile
+with a 32 MiB window/frame because no published contextual 32 MiB profile is
+available. The benchmark smoke and Clang fuzz compile smoke pass. Full corpus
+measurement and sanitizer fuzz execution remain open; no external source was
+consulted and this record makes no legal guarantee.
