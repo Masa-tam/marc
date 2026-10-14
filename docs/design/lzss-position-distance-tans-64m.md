@@ -35,3 +35,7 @@ compile smoke are wired; sanitizer runtime execution is a separate GNU-driver
 qualification step and is not claimed by this milestone. Cross-producer,
 hosted-CI, external-route, full-corpus measurement, and similarity review
 remain open release gates.
+The updated Clang 22.1.3 build re-ran the ten 64 MiB CLI, benchmark-smoke,
+core, token, frame-format, frame, stream, API, vector, and differential tests;
+all ten passed in 54.38 seconds.
+
