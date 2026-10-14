@@ -74,3 +74,9 @@ limit because the public workspace query measured 176,169,991 bytes for the
 contextual encoded frame. The full twelve-member corpus comparison was
 started but remains pending the process-idle audit; no partial corpus result is
 treated as a qualification receipt.
+
+The stream sanitizer harness is also present and was built with the updated
+Clang toolchain. A 2,048-input bounded run completed without a crash, hang, or
+sanitizer finding; it checks split versus whole input, terminal-state
+stability, output-tail retention, and the failed-frame publication boundary.
+This is a fuzz pilot receipt, not the full public fuzz campaign.
