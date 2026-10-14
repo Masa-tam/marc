@@ -126,6 +126,9 @@ The updated Clang build also runs explicit CLI campaigns for the 16 MiB and
 trips, identity checks, malformed-input rejection, trailing-data rejection,
 wrong-profile rejection, and failed-output retention.
 
+The complete seven-selector CLI CTest set (64 KiB through 64 MiB) then passed
+in the updated Clang build: 7/7 tests, 96.79 seconds.
+
 ### Updated compiler revalidation — 2026-10-15
 
 After the LLVM update, the Clang 22.1.3 build recompiled the seven position-
