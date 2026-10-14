@@ -58,3 +58,23 @@ bytes, a 115,032-byte position-distance saving. Position encode/decode took
 56.316897/0.2969483 seconds. Queried workspace values were
 4,105,241,650/1,692,372,236 versus 301,551,007/1,423,217,885 bytes. These
 are single samples and are not mixed with the three-sample `dickens` results.
+
+The completed eight-material size comparison is:
+
+| material | position bytes | contextual bytes | position saving |
+| --- | ---: | ---: | ---: |
+| dickens | 3,150,534 | 3,155,009 | 4,475 |
+| mr | 3,201,375 | 3,316,407 | 115,032 |
+| ooffice | 3,014,606 | 3,019,670 | 5,064 |
+| osdb | 3,178,327 | 3,197,744 | 19,417 |
+| reymont | 1,535,568 | 1,538,759 | 3,191 |
+| sao | 5,095,422 | 5,229,206 | 133,784 |
+| x-ray | 5,200,442 | 5,361,523 | 161,081 |
+| xml | 550,133 | 550,977 | 844 |
+| **total** | **24,926,407** | **25,369,295** | **442,888** |
+
+The 64 MiB profile was smaller for every completed material. The remaining
+four materials (`mozilla`, `nci`, `samba`, and `webster`) have no completed
+pair and are excluded from the total. The benchmark reports queried
+workspace bytes and timings, but not peak resident memory; peak-memory
+comparison remains unverified.
