@@ -34817,3 +34817,13 @@ altering the caller's requirements result. The public C API has distinct
 requirement before allocation, and retains the fixed-five encoder plus
 full-range decoder contract. CLI, benchmark, fuzzing, contextual comparison,
 and exchange remain separate gates.
+
+### DD-1607: thirty-two-MiB tANS specialization
+
+The 32 MiB profile is a distinct `2/13 + 1/26 + 5/8` format. It extends the
+position-distance family to 57 contexts and 4,669 frequencies, with an
+eight-byte active mask and a 9,313-byte descriptor ceiling. The internal
+implementation preserves private descriptor, token, and raw staging and
+success-only frame publication. The format/vector/core stage is locally
+verified; public wiring, measurements, fuzzing, and exchange are separate
+unfinished gates.

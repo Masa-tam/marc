@@ -211,6 +211,12 @@ set(MARC_SOURCES
     src/frame/lzss_position_tans_16m_stream_decoder.cpp
     src/frame/lzss_position_tans_16m_owned.cpp
     src/frame/lzss_position_tans_16m_c_factory.cpp
+    src/entropy/position_tans_32m.cpp
+    src/entropy/position_tans_32m_format.cpp
+    src/context/lzss_position_tans_32m_tokens.cpp
+    src/frame/lzss_position_tans_32m_format.cpp
+    src/frame/lzss_position_tans_32m_frame.cpp
+    src/frame/lzss_position_tans_32m_stream_decoder.cpp
     src/frame/lzss_position_tans_1m_owned.cpp
     src/frame/lzss_position_tans_1m_stream_decoder.cpp
     src/frame/lzss_position_tans_1m_format.cpp
@@ -9638,6 +9644,42 @@ if(MARC_BUILD_TESTS)
                 $<TARGET_FILE:marc_position_tans_16m_core_tests>
                 ${CMAKE_CURRENT_BINARY_DIR}/position-tans-16m-differential)
         set_tests_properties(marc_position_tans_16m_vectors marc_position_tans_16m_differential
+            PROPERTIES TIMEOUT 120)
+    endif()
+    foreach(layer IN ITEMS core token frame_format)
+        add_executable(marc_position_tans_32m_${layer}_tests
+            tests/position_tans_32m_${layer}_tests.cpp)
+        target_compile_features(marc_position_tans_32m_${layer}_tests PRIVATE cxx_std_20)
+        target_include_directories(marc_position_tans_32m_${layer}_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_position_tans_32m_${layer}_tests PRIVATE marc::static)
+        add_test(NAME marc_position_tans_32m_${layer}
+            COMMAND marc_position_tans_32m_${layer}_tests)
+        set_tests_properties(marc_position_tans_32m_${layer} PROPERTIES TIMEOUT 30)
+    endforeach()
+    add_executable(marc_position_tans_32m_frame_tests
+        tests/position_tans_32m_frame_tests.cpp)
+    target_compile_features(marc_position_tans_32m_frame_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_32m_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_tans_32m_frame_tests PRIVATE marc::static)
+    add_test(NAME marc_position_tans_32m_frame
+        COMMAND marc_position_tans_32m_frame_tests)
+    set_tests_properties(marc_position_tans_32m_frame PROPERTIES TIMEOUT 60)
+    add_executable(marc_position_tans_32m_stream_tests
+        tests/position_tans_32m_stream_tests.cpp)
+    target_compile_features(marc_position_tans_32m_stream_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_32m_stream_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_tans_32m_stream_tests PRIVATE marc::static)
+    add_test(NAME marc_position_tans_32m_stream
+        COMMAND marc_position_tans_32m_stream_tests)
+    set_tests_properties(marc_position_tans_32m_stream PROPERTIES TIMEOUT 60)
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_tans_32m_vectors
+            COMMAND ${Python3_EXECUTABLE} -B ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_32m_vectors.py)
+        add_test(NAME marc_position_tans_32m_differential
+            COMMAND ${Python3_EXECUTABLE} -B ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_32m_differential.py
+                $<TARGET_FILE:marc_position_tans_32m_core_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-32m-differential)
+        set_tests_properties(marc_position_tans_32m_vectors marc_position_tans_32m_differential
             PROPERTIES TIMEOUT 120)
     endif()
     add_executable(marc_position_tans_8m_core_tests

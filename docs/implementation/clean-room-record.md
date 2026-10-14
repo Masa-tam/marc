@@ -41297,3 +41297,12 @@ schema1..75 compatibility audit passed. No external implementation or source
 was consulted. Cross-producer, fixed-Release, hosted-CI, external-route,
 full-corpus, and similarity qualification remain open; this record makes no
 legal guarantee.
+
+### CR-1805: 2026-10-15 — Thirty-two-MiB position-distance tANS format and core
+
+The project agent adapted the repository-owned sixteen-MiB contracts and
+independently corrected the 57-context descriptor mask to occupy eight bytes.
+No external implementation or source was consulted. The independent vector
+oracle, core/token/frame/stream tests, and differential fixtures pass with
+Clang 22.1.3. Public API/CLI, benchmark, fuzz, exchange, and similarity review
+remain open; this record makes no legal guarantee.
