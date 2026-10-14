@@ -92,7 +92,9 @@ PositionTans4mError parse_position_tans_4m_descriptor(
     if (d.decision_count!=expected_decisions || d.payload_size!=expected_payload
         || input[8]!=std::byte{12} || flags || contexts!=54 || reserved
         || frequencies!=4636 || tail
-        || (std::to_integer<unsigned>(input[30])&0xf0U)) return Error::invalid_metadata;
+        // The final seven-byte mask carries six valid context bits (54 total);
+        // only its upper two bits are reserved.
+        || (std::to_integer<unsigned>(input[30])&0xc0U)) return Error::invalid_metadata;
     std::size_t cursor=31;
     for (std::size_t c=0;c<54;++c) {
         if ((std::to_integer<unsigned>(input[24+c/8])&(1U<<(c%8)))==0) continue;

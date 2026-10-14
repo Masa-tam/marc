@@ -41164,3 +41164,11 @@ the production CLI as an oracle only for valid seed creation, keep the
 measurement scope explicit, and enforce failed-output quarantine externally.
 No external or copyleft implementation or corpus was consulted; the pilot
 does not imply full benchmark or fuzz completion.
+
+### CR-1793: four-MiB mask and multi-frame review
+
+The final-mask correction was derived from the repository's own declared
+54-context layout and the byte mask width, then checked against the existing
+descriptor parser and independent vectors. The multi-frame regression used
+the existing first-party corpus and public selectors; no external codec
+implementation or test suite was consulted.

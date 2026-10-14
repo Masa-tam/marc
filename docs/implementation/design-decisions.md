@@ -34687,3 +34687,11 @@ values. It is explicitly a pilot and cannot qualify corpus totals or a memory
 grant. The public decoder mutation pilot uses bounded subprocess watchdogs
 and treats final/temporary publication as an invariant; full component
 campaigns and exchange remain required.
+
+### DD-1597: four-MiB context-mask correction and multi-frame qualification
+
+The four-MiB descriptor has54 contexts, so the final seven-byte activity mask
+uses six valid bits and reserves only its upper two bits. The parser now checks
+`0xC0`; valid bits previously rejected by `0xF0` are accepted. Independent
+format/frame/stream/CLI tests, a500-case mutation pilot and a multi-frame
+Silesia member then pass. Full corpus measurement and exchange remain open.

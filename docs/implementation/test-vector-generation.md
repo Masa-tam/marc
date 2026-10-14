@@ -23722,3 +23722,10 @@ process RSS values. The decoder pilot receipt records500 deterministic
 mutations with zero crash/timeout findings and destination publication
 checks. These receipts do not claim corpus-wide comparison or sanitizer
 coverage.
+
+### TVG-1464: four-MiB multi-frame regression receipt
+
+The generated `dickens` archive crosses the four-MiB frame boundary and is
+decoded back to the recorded raw SHA-256 by both selectors. The corrected
+archive and new output are stored separately from the earlier failed decode
+artifact. The regression does not claim the full corpus or bundle gates.

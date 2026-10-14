@@ -11292,6 +11292,18 @@ and decode times0.09/0.08 s. Maximum RSS was108328/27796 KiB for encode and
 measurements, not a corpus comparison or a public memory grant; member-wise
 compression totals and repeated normal samples remain required.
 
+### BM-0242:four-MiB multi-frame dickens qualification
+
+The `dickens` member (10,192,446 bytes) was encoded and decoded through both
+actual4MiB selectors after fixing the final context-mask reserved-bit check.
+The position archive is3,260,516 bytes and contextual is3,265,904 bytes
+(position smaller by0.1652%). Three benchmark samples give encode medians
+5.882/6.170 seconds and decode medians0.238/0.260 seconds (P/C). Normal
+process peak RSS is112204/34468 KiB for encode and60000/16392 KiB for decode.
+All restored SHA-256 values equal the raw member. This is one multi-frame
+member, not the required twelve-member total; queries and normal RSS are
+separate accounting scopes.
+
 | Member | Encode seconds P/C | Decode seconds P/C | Encode peak KiB P/C | Decode peak KiB P/C |
 |---|---:|---:|---:|---:|
 | dickens | 2.389312/2.340090 | 0.243186/0.269735 | 30988/23676 | 17568/17600 |

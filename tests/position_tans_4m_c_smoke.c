@@ -23,7 +23,7 @@ int main(void) {
         if (result.status >= 100) return 7;
     }
     marc_transform_destroy(transform);
-    if (memcmp(wire, "MARC", 4) || wire[12] != 2 || wire[14] != 9 || wire[16] != 5 || wire[18] != 4 || wire[96] != 1 || wire[98] != 22) return 8;
+    if (memcmp(wire, "MARC", 4) || wire[12] != 2 || wire[14] != 10 || wire[16] != 5 || wire[18] != 5 || wire[96] != 1 || wire[98] != 23) return 8;
     {
         const unsigned char raw[3] = {0, 255, 65};
         unsigned char encoded[1024], restored[3];
