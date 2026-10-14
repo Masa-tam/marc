@@ -23679,3 +23679,12 @@ late-failed-frame non-publication check. Four fixed Release self/cross exchange
 routes restore and re-encode all83 final archives byte for byte. The closure
 retains the previous135-file Release backup and does not replace any earlier
 vector receipt.
+
+### TVG-1459: four-MiB independent mathematical vectors
+
+`tests/position_tans_4m_vectors.py` derives inverse transitions from the
+forward tANS equations without calling production code. It generates232
+vectors and a frozen JSON file, checks the descriptor parser and strict
+normalization, and covers empty entropy, lengths3/4/258, literal history,
+distance boundaries through4194304, all active models and malformed-state
+boundaries. The CMake test runs the oracle with a120-second bound.

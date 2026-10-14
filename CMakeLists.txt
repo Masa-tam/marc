@@ -8693,6 +8693,10 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
         COMMAND ${Python3_EXECUTABLE} -B -X utf8
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_1m_vectors.py)
     set_tests_properties(marc_position_tans_1m_vectors PROPERTIES TIMEOUT 120)
+    add_test(NAME marc_position_tans_4m_vectors
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_4m_vectors.py)
+    set_tests_properties(marc_position_tans_4m_vectors PROPERTIES TIMEOUT 120)
 endif()
 
 if(MARC_BUILD_TESTS)

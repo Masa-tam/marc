@@ -34640,3 +34640,15 @@ retain their prior hashes. The current fixed executable is checked by hash,
 then used for one-MiB boundary, failure-publication, self and cross bundle
 routes. This is a local closure record; hosted CI and external verification
 remain separate gates.
+
+### DD-1592: four-MiB format admission and independent vectors
+
+The four-MiB specialization reserves selector `lzss-position-distance-tans-4m`
+with dictionary2/10, context1/23, entropy5/5, 54 contexts and4636
+frequencies. Its exact112-byte stream identity, descriptor maximum9249,
+distance grammar through4194304, frame bounds and resource accounting are
+defined in `docs/design/lzss-position-distance-tans-4m.md`. The independent
+oracle freezes232 mathematical vectors, including isolated distance
+boundaries, length and literal-history cases, all-active models and malformed
+descriptor coverage. No public factory, CLI or bundle entry is admitted by
+this milestone.

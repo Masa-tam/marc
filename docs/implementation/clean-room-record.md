@@ -41122,3 +41122,11 @@ four self/cross exchange routes were reviewed against repository-authored
 format definitions, implementation, fixtures and scripts. The review found
 no consultation of external copyleft implementations or test suites. The
 closure remains local and does not claim hosted or external qualification.
+
+### CR-1788: four-MiB format and vector provenance
+
+The four-MiB format and232-vector oracle were authored from the repository
+family specification and integer tANS equations. The parser and inverse table
+enumeration are independent of production sources. No external copyleft
+implementation or test suite was consulted; the new selector remains
+unconnected to public API and exchange output at this milestone.
