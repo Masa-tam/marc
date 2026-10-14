@@ -134,9 +134,19 @@ def main(arguments: Sequence[str] | None = None) -> int:
             "contextual": contextual,
         })
 
+    totals = {
+        "raw_bytes": sum(record["raw_bytes"] for record in records),
+        "position_compressed_bytes": sum(
+            record["position"]["compressed_bytes"] for record in records
+        ),
+        "contextual_compressed_bytes": sum(
+            record["contextual"]["compressed_bytes"] for record in records
+        ),
+    }
     result = {
-        "schema": "marc-position-tans-8m-comparison-v1",
+        "schema": "marc-position-tans-8m-comparison-v2",
         "members": records,
+        "totals": totals,
         "contextual_control": {
             "public_profile": "16m",
             "frame_size": 8_388_608,
