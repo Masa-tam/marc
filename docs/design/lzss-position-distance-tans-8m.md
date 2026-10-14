@@ -64,3 +64,11 @@ for the identity, normalization, descriptor grammar, inverse transitions,
 boundary lengths, and distances through 8,388,608. This specification and its
 vectors do not admit an internal implementation, public API, CLI selector,
 benchmark, fuzz target, or exchange archive. Those remain separate gates.
+
+The current public contextual tANS API exposes profiles only for 64 KiB, 1,
+4, 16, and 64 MiB. `marc_position_tans_8m_contextual_probe` passes the next
+profile value to its public profile applicator and verifies rejection with
+`MARC_STATUS_INVALID_ARGUMENT` without configuration mutation. Accordingly,
+no same-window contextual tANS compression, speed, or memory comparison is
+available for this profile at present. This is an API result, not a claim
+about a hypothetical contextual representation.
