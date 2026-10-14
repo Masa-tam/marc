@@ -19,5 +19,7 @@ scratch and leaves ordinary destinations unchanged.
 The independent oracle derives 237 vectors, including the 64 MiB distance
 boundaries and a dense descriptor at the declared 9,334-byte limit. Clang core,
 token, frame-format, frame, stream, vector, and oracle-differential tests pass
-locally. Public API/CLI, benchmark, fuzz runtime, exchange, contextual
-measurements, and release qualification remain open.
+locally. The public API resource query, fixed-capacity process path, CLI
+selector, deterministic small-input round trips, malformed-input rejection,
+and unpublished failed-frame check now pass locally. Benchmark, fuzz runtime,
+exchange, contextual measurements, and release qualification remain open.

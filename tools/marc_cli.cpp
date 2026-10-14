@@ -11,6 +11,7 @@
 #include "lzss_position_tans_8m_cli.hpp"
 #include "lzss_position_tans_16m_cli.hpp"
 #include "lzss_position_tans_32m_cli.hpp"
+#include "lzss_position_tans_64m_cli.hpp"
 #include "lzss_position_rans_4m_cli.hpp"
 #include "lzss_position_rans_8m_cli.hpp"
 #include "lzss_position_rans_16m_cli.hpp"
@@ -227,6 +228,7 @@ enum class Codec {
     lzss_position_tans_8m,
     lzss_position_tans_16m,
     lzss_position_tans_32m,
+    lzss_position_tans_64m,
     lzss_position_rans_4m,
     lzss_position_rans_8m,
     lzss_position_rans_16m,
@@ -1634,6 +1636,8 @@ bool process_file(const marc_direction direction,
         return marc_cli_position_tans_16m::process_file(direction, source_size, source, sink);
     if (codec == Codec::lzss_position_tans_32m)
         return marc_cli_position_tans_32m::process_file(direction, source_size, source, sink);
+    if (codec == Codec::lzss_position_tans_64m)
+        return marc_cli_position_tans_64m::process_file(direction, source_size, source, sink);
     if (codec == Codec::lzss_position_tans_64k)
         return marc_cli_position_tans_64k::process_file(direction, source_size, source, sink);
     if (codec == Codec::lzss_position_rans_64k)
@@ -2485,7 +2489,7 @@ void usage() {
                  "lzss-position-distance-dynamic-range-16m, "
                  "lzss-position-distance-dynamic-range-32m, "
                  "lzss-position-distance-dynamic-range-64m, "
-                 "lzss-position-distance-tans, lzss-position-distance-tans-1m, lzss-position-distance-tans-4m, lzss-position-distance-tans-8m, lzss-position-distance-tans-16m, lzss-position-distance-tans-32m, lzss-position-distance-rans, lzss-position-distance-rans-1m, lzss-position-distance-rans-4m, lzss-position-distance-rans-8m, lzss-position-distance-rans-16m, lzss-position-distance-rans-32m, lzss-position-distance-rans-64m, lzss-contextual-rans, lzss-contextual-rans-1m, "
+                 "lzss-position-distance-tans, lzss-position-distance-tans-1m, lzss-position-distance-tans-4m, lzss-position-distance-tans-8m, lzss-position-distance-tans-16m, lzss-position-distance-tans-32m, lzss-position-distance-tans-64m, lzss-position-distance-rans, lzss-position-distance-rans-1m, lzss-position-distance-rans-4m, lzss-position-distance-rans-8m, lzss-position-distance-rans-16m, lzss-position-distance-rans-32m, lzss-position-distance-rans-64m, lzss-contextual-rans, lzss-contextual-rans-1m, "
                  "lzss-contextual-rans-4m, lzss-contextual-rans-16m, "
                  "lzss-contextual-rans-64m, "
                  "lzss-contextual-tans, lzss-contextual-tans-1m, "
@@ -2607,6 +2611,8 @@ int main(const int argc, const char* const argv[]) {
             codec = Codec::lzss_position_tans_16m;
         else if (name == "lzss-position-distance-tans-32m")
             codec = Codec::lzss_position_tans_32m;
+        else if (name == "lzss-position-distance-tans-64m")
+            codec = Codec::lzss_position_tans_64m;
         else if (name == "lzss-position-distance-tans")
             codec = Codec::lzss_position_tans_64k;
         else if (name == "lzss-position-distance-rans")
