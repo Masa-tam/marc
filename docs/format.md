@@ -9234,6 +9234,16 @@ additional table bank. The family grammar, canonical normalization and state
 transitions apply without changes to previous formats. This internal milestone
 admits no public API, CLI selector or exchange entry.
 
+### DD-1608: sixty-four-MiB position-distance tANS exact specialization
+
+[The sixty-four-MiB specialization](design/lzss-position-distance-tans-64m.md)
+defines dictionary `2/14`, context `1/27`, entropy `5/9`, window 67,108,864,
+58 contexts and 4,680 frequencies. Its eight-byte mask uses 58 adaptive bits,
+and its descriptor maximum is 9,334 bytes. The uniform binary model occupies
+an additional table bank. The family grammar, canonical normalization and
+state transitions apply without changes to previous formats. This internal
+milestone admits no public API, CLI selector or exchange entry.
+
 ### DD-1573: one-MiB position-distance tANS exact specialization
 
 [The one-MiB specialization](design/lzss-position-distance-tans-1m.md)
