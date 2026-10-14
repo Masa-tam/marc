@@ -11280,6 +11280,18 @@ Instrumented fuzz, additive schema73/83 exchange/history, fixed-release update a
 
 Each cell is position-distance/contextual (P/C).
 
+### BM-0241:four-MiB position-distance tANS contextual pilot
+
+A single4MiB deterministic boundary input was encoded and decoded through the
+actual selectors `lzss-position-distance-tans-4m` and
+`lzss-contextual-tans-4m`. Both restored the input. The position archive was
+17,172 bytes and the contextual archive 44,484 bytes, so this pilot favored
+position by61.37%. Position/contextual encode elapsed times were0.19/0.13 s
+and decode times0.09/0.08 s. Maximum RSS was108328/27796 KiB for encode and
+58844/9668 KiB for decode. These are one synthetic boundary-sized pilot
+measurements, not a corpus comparison or a public memory grant; member-wise
+compression totals and repeated normal samples remain required.
+
 | Member | Encode seconds P/C | Decode seconds P/C | Encode peak KiB P/C | Decode peak KiB P/C |
 |---|---:|---:|---:|---:|
 | dickens | 2.389312/2.340090 | 0.243186/0.269735 | 30988/23676 | 17568/17600 |

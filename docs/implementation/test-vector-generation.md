@@ -23713,3 +23713,12 @@ encoding, exact `2/10+1/23+5/5` identity, wrong-profile rejection, selected
 truncation points, trailing bytes, and preservation of an existing output
 file after a failed decode. The test passed in the current Clang build;
 benchmark, fuzz and exchange vectors remain unclaimed.
+
+### TVG-1463: four-MiB measurement and decoder-mutation receipts
+
+The measurement receipt records one4MiB input, both actual tANS selectors,
+archive sizes, restoration hashes, encode/decode elapsed times and normal
+process RSS values. The decoder pilot receipt records500 deterministic
+mutations with zero crash/timeout findings and destination publication
+checks. These receipts do not claim corpus-wide comparison or sanitizer
+coverage.

@@ -34678,3 +34678,12 @@ one-MiB identity is rejected by the four-MiB parser. Boundary, deterministic
 re-encode, representative truncation, trailing-data, wrong-profile and
 destination-preservation tests pass. Benchmark, fuzz and exchange remain
 separate unfinished gates.
+
+### DD-1596: four-MiB measurement and fuzz pilot scope
+
+The first four-MiB measurement records the actual contextual selector and a
+single boundary-sized input with separate compression, elapsed-time and RSS
+values. It is explicitly a pilot and cannot qualify corpus totals or a memory
+grant. The public decoder mutation pilot uses bounded subprocess watchdogs
+and treats final/temporary publication as an invariant; full component
+campaigns and exchange remain required.

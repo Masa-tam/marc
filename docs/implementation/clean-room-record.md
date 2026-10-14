@@ -41155,3 +41155,12 @@ wire identity was found by the independent CLI assertion and corrected in
 the four-MiB serializer/parser; the frozen wire-vector, frame, stream and CLI
 tests then passed. No external or copyleft implementation or test suite was
 consulted; benchmark, fuzz and exchange qualification is not implied.
+
+### CR-1792: four-MiB benchmark and fuzz pilot review
+
+The benchmark and mutation harnesses were written from the repository's
+public selectors, C ABI and existing test-driver conventions. They invoke
+the production CLI as an oracle only for valid seed creation, keep the
+measurement scope explicit, and enforce failed-output quarantine externally.
+No external or copyleft implementation or corpus was consulted; the pilot
+does not imply full benchmark or fuzz completion.

@@ -1822,3 +1822,13 @@ No push and no external implementation source consultation.
 | tokens | 168.143 | 349913088 | 10000 |
 | stream | 356.047 | 352727040 | 10000 |
 | public | 539.637 | 361041920 | 10000 |
+
+## FZ-0089: four-MiB public decoder mutation pilot
+
+The four-MiB CLI fuzz pilot creates one valid one-MiB seed archive through
+the public selector and applies500 deterministic truncation, bit-flip,
+insertion and byte-replacement mutations. Every case has a five-second
+watchdog; no crash or timeout occurred, and failed decodes left final and
+temporary destinations unpublished. This is a decoder mutation pilot only;
+it is not a sanitizer campaign, does not establish exhaustive malformed
+coverage, and does not replace the required full-window component campaigns.
