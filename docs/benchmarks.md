@@ -11366,6 +11366,8 @@ first creates a reference archive, then verifies three fresh encoder instances
 against it and verifies a decoder warmup plus three fresh decoder instances
 against the original input. The JSON record contains archive bytes, three
 encode/decode samples, and direction-specific queried workspace quantities.
+Its whole-stream admission limit is separate from its eight-MiB frame and
+window; the smoke also exercises a contextual source one byte beyond a frame.
 
 The runner records buffer-inclusive queried quantities, not process RSS and not
 an API memory grant. Its smoke uses a bounded synthetic input only to verify

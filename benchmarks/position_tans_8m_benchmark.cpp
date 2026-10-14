@@ -49,7 +49,9 @@ bool run(bool position,marc_direction direction,const std::vector<std::uint8_t>&
         status=marc_lzss_contextual_tans_config_apply_profile(&cc,MARC_LZSS_CONTEXTUAL_PROFILE_16M);
         if (status!=MARC_STATUS_OK) return false;
         cc.frame_size=cc.window_size=8388608;
-        cc.max_total_output_size=8388608;
+        // Frames remain 8 MiB, but corpus members may contain several frames.
+        // This is an admission limit only; it does not enlarge a frame workspace.
+        cc.max_total_output_size=UINT64_C(1)<<30;
         cc.max_frame_size=8388608;
         cc.max_block_size=UINT64_C(9)*8388608;
         cc.max_compressed_payload_size=UINT64_C(128)<<20;

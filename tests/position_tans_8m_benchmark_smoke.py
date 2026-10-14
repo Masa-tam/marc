@@ -36,6 +36,9 @@ def main():
     source.write_bytes(bytes(range(256)) * 2)
     invoke(tool, "position", source)
     invoke(tool, "contextual", source)
+    multiframe = root / "multiframe.bin"
+    multiframe.write_bytes(b"\0" * (8 * 1024 * 1024 + 1))
+    invoke(tool, "contextual", multiframe)
     return 0
 
 
