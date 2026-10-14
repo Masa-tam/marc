@@ -1265,3 +1265,24 @@ been returned. The four-MiB internal and public API tests cover these rules,
 including one-byte chunking and static/shared C smoke paths. CLI connection,
 contextual comparison, benchmark, fuzz, and exchange-bundle qualification
 remain separate gates for this profile.
+
+### Eight-MiB position-distance tANS factory
+
+The `marc_lzss_position_distance_tans_8m_config` and `_resources` types have
+separate `_config_init`, `_resource_requirements`, and `_create` entry points.
+The format identity is `2/11+1/24+5/6`, with an 8,388,608-byte dictionary and
+frame window. Fixed-five encoding and decoding use the independently specified
+3..258 match grammar; entropy tables contain 229376 entries.
+
+The default admission specifies an 8,388,608-byte frame, a 75,497,472-decision
+block ceiling, a 113,246,210-byte compressed-payload ceiling, and a one-GiB
+aggregate internal limit. A resource query reports the full-window owned
+components and caller-declared capacities before allocation. These are
+admission limits, not resident-memory or RSS claims.
+
+Invalid metadata, capacities, table counts, and overlapping configuration or
+output storage fail without consumption. EndInput is explicit, EOS and error
+remain sticky, and raw bytes drain only after the complete private frame has
+validated; a failed frame never drains. The local API tests cover small-frame
+round trips and withholding a failed second frame. CLI, contextual comparison,
+benchmark, fuzzing, and exchange-bundle qualification remain separate gates.

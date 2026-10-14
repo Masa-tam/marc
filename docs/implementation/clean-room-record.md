@@ -41224,3 +41224,15 @@ dictionary variant 11. Review and integration tests identified and corrected
 the uniform residual bank index and token decision bounds. No external source
 or test suite was consulted. The uniform-only regression and token failure
 tests cover this milestone; later qualification gates remain pending.
+
+### CR-1800: eight-MiB tANS frame and public boundary review
+
+The frame, stream, owning, and C-boundary layers derive from repository-owned
+64 KiB, 1 MiB, and 4 MiB tANS contracts while applying the separately defined
+8 MiB identifier, descriptor dimensions, and token variant. No external
+implementation, source, or test suite was consulted. Independent header and
+frame checks cover transactional parsing, private token/raw restoration,
+stream truncation and late-frame failure, bounded ownership admission, and
+public two-frame failure withholding. This records only the implemented local
+boundary; CLI, benchmark, fuzzing, contextual comparison, and exchange work
+remain incomplete.

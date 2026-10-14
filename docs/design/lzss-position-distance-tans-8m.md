@@ -61,9 +61,9 @@ grant. Workspace limits, timeouts, and parallelism require measured evidence.
 
 `tests/position_tans_8m_vectors.py` is the independent mathematical oracle
 for the identity, normalization, descriptor grammar, inverse transitions,
-boundary lengths, and distances through 8,388,608. This specification and its
-vectors do not admit an internal implementation, public API, CLI selector,
-benchmark, fuzz target, or exchange archive. Those remain separate gates.
+boundary lengths, and distances through 8,388,608. The specification and
+vectors alone do not establish implementation, benchmark, fuzzing, CLI, or
+exchange completion; each remains a separate gate with its own evidence.
 
 The current public contextual tANS API exposes profiles only for 64 KiB, 1,
 4, 16, and 64 MiB. `marc_position_tans_8m_contextual_probe` passes the next
@@ -75,3 +75,12 @@ bytes under every published profile. Encoder workspace queries reject the
 64 KiB, 1 MiB, and 4 MiB profiles but admit the 16 MiB and 64 MiB profiles.
 Actual serialized identity and exact restoration remain to be checked before
 using either admitted configuration for the comparison.
+
+The native 8 MiB tANS frame parser, private-token/private-raw decoder,
+owning workspace adapter, and C API are implemented. Their local tests cover
+independent headers, exact re-encoding of a complete frame, arbitrary stream
+splits, short buffers, malformed terminal state and padding, invalid history,
+and successful-publication-only output. The API exposes the 8 MiB identity and
+reports full-window resource requirements before allocation. CLI, benchmark,
+coverage-guided decoder fuzzing, contextual comparison measurements, and
+exchange-bundle admission remain incomplete.

@@ -184,6 +184,7 @@ set(MARC_SOURCES
     src/frame/lzss_position_rans_64k_stream_decoder.cpp
     src/frame/lzss_position_tans_1m_c_factory.cpp
     src/frame/lzss_position_tans_4m_c_factory.cpp
+    src/frame/lzss_position_tans_8m_c_factory.cpp
     src/frame/lzss_position_tans_8m_owned.cpp
     src/frame/lzss_position_tans_8m_stream_decoder.cpp
     src/frame/lzss_position_tans_8m_format.cpp
@@ -9641,6 +9642,12 @@ if(MARC_BUILD_TESTS)
     target_include_directories(marc_position_tans_8m_owned_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_8m_owned COMMAND marc_position_tans_8m_owned_tests)
     set_tests_properties(marc_position_tans_8m_owned PROPERTIES TIMEOUT 30)
+    add_executable(marc_position_tans_8m_api_tests tests/position_tans_8m_api_tests.cpp)
+    target_compile_features(marc_position_tans_8m_api_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_8m_api_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_tans_8m_api_tests PRIVATE marc::static)
+    add_test(NAME marc_position_tans_8m_api COMMAND marc_position_tans_8m_api_tests)
+    set_tests_properties(marc_position_tans_8m_api PROPERTIES TIMEOUT 60)
     add_executable(marc_position_tans_4m_frame_tests
         tests/position_tans_4m_frame_tests.cpp
         tests/position_tans_4m_stream_tests.cpp
