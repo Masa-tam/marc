@@ -80,3 +80,9 @@ two materials (`mozilla` and `webster`) have no completed pair and are
 excluded from the total. The benchmark reports queried
 workspace bytes and timings, but not peak resident memory; peak-memory
 comparison remains unverified.
+
+The benchmark now also reports peak resident memory. On its 256-byte probe,
+position-distance reported 812,380,160 bytes and contextual tANS reported
+811,724,800 bytes. These are process peaks for the paired single-sample run,
+not the corpus peak values; the completed corpus rows above therefore retain
+their explicit peak-memory-unverified status.

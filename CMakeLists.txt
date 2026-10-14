@@ -9700,6 +9700,9 @@ if(MARC_BUILD_TESTS)
     target_compile_features(marc_position_tans_64m_benchmark PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_64m_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_link_libraries(marc_position_tans_64m_benchmark PRIVATE marc::static)
+    if(WIN32)
+        target_link_libraries(marc_position_tans_64m_benchmark PRIVATE psapi)
+    endif()
     if(Python3_Interpreter_FOUND)
         add_test(NAME marc_position_tans_64m_benchmark_smoke
             COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_64m_benchmark_smoke.py

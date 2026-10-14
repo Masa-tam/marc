@@ -11,6 +11,15 @@
 #include <new>
 #include <string>
 #include <vector>
+#ifdef _WIN32
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#include <psapi.h>
+#else
+#include <sys/resource.h>
+#endif
 
 namespace {
 using Clock=std::chrono::steady_clock;
@@ -22,6 +31,17 @@ bool load(const char* path,std::vector<std::uint8_t>& out) {
     return n==0 || static_cast<bool>(file.read(reinterpret_cast<char*>(out.data()),n));
 }
 double seconds(Clock::time_point t) { return std::chrono::duration<double>(Clock::now()-t).count(); }
+std::uint64_t peak_resident_bytes() {
+#ifdef _WIN32
+    PROCESS_MEMORY_COUNTERS counters{};
+    if (!GetProcessMemoryInfo(GetCurrentProcess(),&counters,sizeof(counters))) return 0;
+    return static_cast<std::uint64_t>(counters.PeakWorkingSetSize);
+#else
+    rusage counters{};
+    if (getrusage(RUSAGE_SELF,&counters)) return 0;
+    return static_cast<std::uint64_t>(counters.ru_maxrss)*1024;
+#endif
+}
 bool run(bool position,marc_direction direction,const std::vector<std::uint8_t>& input,
          const std::vector<std::uint8_t>* expected,std::vector<std::uint8_t>* generated,
          double& elapsed,std::uint64_t& queried) {
@@ -134,7 +154,8 @@ int main(int argc,char** argv) {
             <<",\"encode_queried_bytes\":"<<encode_queried
             <<",\"decode_queried_bytes\":"<<decode_queried
             <<",\"encode_seconds\":["<<encode_samples[0]<<','<<encode_samples[1]<<','<<encode_samples[2]
-            <<"],\"decode_seconds\":["<<decode_samples[0]<<','<<decode_samples[1]<<','<<decode_samples[2]<<"]}\n";
+            <<"],\"decode_seconds\":["<<decode_samples[0]<<','<<decode_samples[1]<<','<<decode_samples[2]
+            <<"],\"peak_resident_bytes\":"<<peak_resident_bytes()<<"}\n";
         return 0;
     }
     if (argc!=5) return 2;
@@ -149,6 +170,7 @@ int main(int argc,char** argv) {
     std::cout<<std::setprecision(12)<<"{\"verified\":true,\"profile\":\""<<profile
         <<"\",\"mode\":\""<<mode<<"\",\"frame_size\":67108864,\"window_size\":67108864"
         <<",\"warmups\":1,\"queried_bytes\":"<<queried<<",\"seconds\":["
-        <<samples[0]<<','<<samples[1]<<','<<samples[2]<<"]}\n";
+        <<samples[0]<<','<<samples[1]<<','<<samples[2]<<"],\"peak_resident_bytes\":"
+        <<peak_resident_bytes()<<"}\n";
 }
 
