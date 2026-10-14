@@ -22,6 +22,7 @@ boundaries. Clang core, token, frame-format, frame, stream, vector, and
 oracle-differential tests pass locally. The public API and CLI now have
 deterministic round-trip and malformed-input coverage; the updated Clang
 build also passes the new 16/32 MiB CLI campaigns. Benchmark smoke, fuzz
-compile smoke, and schema77 exchange admission are recorded separately.
+compile smoke, the 16/32 MiB 500-case CLI mutation campaigns, and schema77
+exchange admission are recorded separately.
 Corpus comparison, sanitizer runtime, cross-producer, hosted-CI, external
 routes, and release similarity remain open.
