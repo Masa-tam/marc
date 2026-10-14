@@ -38,4 +38,3 @@ remain open release gates.
 The updated Clang 22.1.3 build re-ran the ten 64 MiB CLI, benchmark-smoke,
 core, token, frame-format, frame, stream, API, vector, and differential tests;
 all ten passed in 54.38 seconds.
-
