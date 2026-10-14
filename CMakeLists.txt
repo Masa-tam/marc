@@ -3153,6 +3153,16 @@ if(MARC_BUILD_FUZZERS)
     target_compile_options(marc_static PRIVATE
         -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer)
+    add_executable(marc_fuzz_position_tans_8m_stream
+        tests/position_tans_8m_stream_fuzz.cpp)
+    target_compile_features(marc_fuzz_position_tans_8m_stream PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_position_tans_8m_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_position_tans_8m_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_position_tans_8m_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_position_tans_8m_stream PRIVATE marc::static)
     add_executable(marc_fuzz_lzss_position_distance_stream
         fuzz/lzss_position_distance_stream_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_position_distance_stream PRIVATE cxx_std_20)

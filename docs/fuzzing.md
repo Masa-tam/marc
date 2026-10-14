@@ -1855,3 +1855,18 @@ descriptor and payload, 129 seconds for tokens, 252 seconds for stream, and
 they do not replace the normal peak-memory measurements or directed full-window
 tests. Exchange/schema, fixed-Release closure, hosted CI, and external paths
 remain separate unfinished gates.
+
+## FZ-0091: eight-MiB position-distance tANS stream decoder campaign
+
+The native eight-MiB tANS stream decoder has a libFuzzer target with AddressSanitizer
+and UndefinedBehaviorSanitizer. Each input is limited to 4,097 bytes and is
+decoded with both whole-input and arbitrary split schedules. The target checks
+that public raw bytes, consumed input, terminal status, and error position are
+identical; it also guards unproduced output and verifies sticky terminal calls.
+
+A deterministic 4,096-run campaign completed without a crash, timeout, or
+sanitizer finding. The campaign reached 114 coverage counters and 369 feature
+edges, with a 329 MiB sanitizer-reported peak. It exercises bounded malformed
+stream admission and split-output failure behavior. It does not qualify public
+API/CLI fuzzing, full-frame memory behavior, coverage of all entropy states,
+or exchange interoperability.

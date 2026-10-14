@@ -41236,3 +41236,13 @@ stream truncation and late-frame failure, bounded ownership admission, and
 public two-frame failure withholding. This records only the implemented local
 boundary; CLI, benchmark, fuzzing, contextual comparison, and exchange work
 remain incomplete.
+
+### CR-1801: eight-MiB tANS bounded stream-fuzz review
+
+The stream fuzz target is independently derived from the repository's stream
+status contract and 8 MiB private-frame decoder. It compares complete and
+split scheduling while retaining output sentinels and terminal-state checks.
+No external implementation, source, or corpus was consulted. A bounded
+sanitizer campaign found no crash, timeout, or sanitizer diagnostic. The
+target does not establish public-boundary, full-frame, exchange, or release
+fuzz completion.

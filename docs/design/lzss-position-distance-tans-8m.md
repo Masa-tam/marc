@@ -82,5 +82,6 @@ independent headers, exact re-encoding of a complete frame, arbitrary stream
 splits, short buffers, malformed terminal state and padding, invalid history,
 and successful-publication-only output. The API exposes the 8 MiB identity and
 reports full-window resource requirements before allocation. CLI, benchmark,
-coverage-guided decoder fuzzing, contextual comparison measurements, and
-exchange-bundle admission remain incomplete.
+contextual comparison measurements, and exchange-bundle admission remain
+incomplete. A bounded sanitizer-backed stream decoder fuzz target exists; it
+does not replace full-frame or public-boundary fuzzing.
