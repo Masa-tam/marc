@@ -85,7 +85,12 @@ reports full-window resource requirements before allocation. CLI, benchmark,
 and exchange-bundle schema75 admission, cross-route qualification, and
 fixed-Release closure are implemented, while contextual comparison measurements
 and final bundle closure remain incomplete. A bounded sanitizer-backed stream decoder fuzz
-target exists; it does not replace full-frame or public-boundary fuzzing. The contextual tANS
+target exists; it does not replace full-frame or public-boundary fuzzing. The public CLI
+campaign first restores a known seed, then runs 500 deterministic truncation, bit-flip,
+insertion, and overwrite mutations.  It requires bounded completion, no process crash, and
+no output or temporary file after every decoder failure.  A successful mutation can describe
+another valid stream because this profile has no integrity trailer, so its output is not
+compared with the seed.  The contextual tANS
 control uses its 16 MiB public profile with an explicit 8 MiB frame and window:
 the resulting stream identifies dictionary variant 5, context variant 4, and
 tANS algorithm/variant 5/2, and its public decoder restores the source bytes.
