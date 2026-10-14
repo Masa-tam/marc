@@ -11356,3 +11356,19 @@ paired run and do not establish universal throughput or memory behavior.
 |---|---:|
 | encode | 5.229/4.063 |
 | decode | 50.659/39.025 |
+
+### BM-0244:eight-MiB position-distance tANS measurement runner
+
+The eight-MiB runner measures the owning position-distance tANS API beside a
+contextual tANS control that applies the existing16MiB profile while explicitly
+setting the frame and dictionary window to8MiB. Its self-contained `all` mode
+first creates a reference archive, then verifies three fresh encoder instances
+against it and verifies a decoder warmup plus three fresh decoder instances
+against the original input. The JSON record contains archive bytes, three
+encode/decode samples, and direction-specific queried workspace quantities.
+
+The runner records buffer-inclusive queried quantities, not process RSS and not
+an API memory grant. Its smoke uses a bounded synthetic input only to verify
+the measurement path. No eight-MiB corpus compression total, timing result, or
+peak-memory comparison is recorded here; those require the pending full
+same-window corpus campaign.
