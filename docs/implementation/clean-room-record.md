@@ -41247,6 +41247,19 @@ sanitizer campaign found no crash, timeout, or sanitizer diagnostic. The
 target does not establish public-boundary, full-frame, exchange, or release
 fuzz completion.
 
+### Sixteen-MiB tANS internal specialization review
+
+Date: 2026-10-15. Author/reviewer: Codex. Task: specialize the independently
+defined position-distance tANS family for a sixteen-MiB window, retaining
+private token scratch and ordinary-output failure retention. References were
+the repository's family mathematics and internal tANS table specification.
+No external implementation was consulted. Review found and corrected inherited
+eight-MiB capacities, a missing uniform table bank and the oracle's emission
+of transition bits from the wrong state. The corrected oracle and core agree
+on 236 finite fixtures; core/token failure-retention tests pass. Frame, public,
+resource, fuzz and exchange qualification remain incomplete. Release similarity
+review remains a later gate; this internal review makes no legal guarantee.
+
 ### CR-1802: eight-MiB contextual tANS measurement-control review
 
 The contextual tANS measurement control uses the documented public C API. It

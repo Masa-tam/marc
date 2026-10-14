@@ -34771,6 +34771,19 @@ encode plan and an empty payload access in the test; the test now stops at
 the failed prerequisite. Frame, stream, oracle differential, public API, CLI,
 resource measurements, fuzz, and exchange qualification remain unfinished.
 
+### DD-1606: sixteen-MiB tANS specialization
+
+The sixteen-MiB specialization reserves dictionary `2/12`, context `1/25`,
+and entropy `5/7`, using 56 adaptive contexts and 4,658 frequencies. Its
+seven-byte mask uses every bit; the uniform length residual model occupies
+table bank 56 after adaptive banks 0 through 55. The independent oracle
+includes isolated distances at, below, and above eight MiB and through the
+sixteen-MiB grammar maximum. Internal entropy and token components retain
+ordinary-output-on-success and private-scratch discard contracts. Frame,
+public API/CLI, resources, fuzzing and exchange qualification are separate
+unfinished gates. The detailed representation is in
+`docs/design/lzss-position-distance-tans-16m.md`.
+
 ### DD-1605: eight-MiB tANS frame ownership and C boundary
 
 The native eight-MiB frame layer buffers a serialized frame, tANS tables,

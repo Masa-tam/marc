@@ -9224,6 +9224,16 @@ stream/frame identity and checked capacities. This reservation and finite
 mathematical vectors admit no production API, CLI or exchange entry.
 Existing81 archives and all earlier representations remain unchanged.
 
+### DD-1606: sixteen-MiB position-distance tANS exact specialization
+
+[The sixteen-MiB specialization](design/lzss-position-distance-tans-16m.md)
+defines dictionary `2/12`, context `1/25`, entropy `5/7`, window 16,777,216,
+56 contexts and 4,658 frequencies. Its seven-byte mask uses every bit, and
+its descriptor maximum is 9,291 bytes. The uniform binary model occupies an
+additional table bank. The family grammar, canonical normalization and state
+transitions apply without changes to previous formats. This internal milestone
+admits no public API, CLI selector or exchange entry.
+
 ### DD-1573: one-MiB position-distance tANS exact specialization
 
 [The one-MiB specialization](design/lzss-position-distance-tans-1m.md)

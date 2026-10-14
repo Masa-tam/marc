@@ -1,4 +1,4 @@
-"""Independent eight-MiB position-distance tANS mathematical vectors."""
+"""Independent sixteen-MiB position-distance tANS mathematical vectors."""
 import argparse
 import json
 import random
@@ -110,8 +110,9 @@ def encode(sequence, models):
                    for next_state, actual in [inverse[context][symbol, state >> width]]
                    if actual == width]
         assert len(choices) == 1
-        state, width = choices[0]
+        next_state, width = choices[0]
         chunks.append([(state >> bit) & 1 for bit in range(width)])
+        state = next_state
     bits = [bit for chunk in reversed(chunks) for bit in chunk]
     body = bytearray((len(bits) + 7) // 8)
     for i, bit in enumerate(bits):
@@ -138,7 +139,7 @@ def qualify():
         result.append(vector(f'length-{length}', token_events([(0, 65, 0, 0), (1, 0, 1, length)])))
     for distance in (1, 2, 3, 255, 256, 32767, 32768, 65535, 65536, 65537,
                      1_048_575, 1_048_576, 4_194_303, 4_194_304,
-                     8_388_607, 16_777_216):
+                     8_388_607, 8_388_608, 16_777_215, 16_777_216):
         result.append(vector(f'isolated-distance-{distance}', token_events([(1, 0, distance, 3)])))
     result.append(vector('literal-history-through-match',
                          token_events([(0, 255, 0, 0), (1, 0, 1, 4), (0, 17, 0, 0)])))
@@ -159,7 +160,9 @@ if __name__ == '__main__':
     parser.add_argument('--write', action='store_true')
     args = parser.parse_args()
     vectors = qualify()
-    result = {'format': 'DD-1603/16MiB', 'vectors': vectors}
+    result = {'format': 'DD-1606/16MiB', 'vectors': vectors}
     if args.write:
         OUT.write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
+    else:
+        assert json.loads(OUT.read_text(encoding='utf-8')) == json.loads(json.dumps(result)), 'frozen vectors differ'
     print(json.dumps({'format': result['format'], 'vectors': len(vectors), 'max_descriptor': 9291}))

@@ -11254,6 +11254,14 @@ transitions from forward mathematical entries and checks hand-computable
 tANS payloads before production implementation. It does not claim
 FSE compatibility or external conformance.
 
+### Sixteen-MiB tANS specialization references
+
+DD-1606 uses the repository's DD-1556 family mathematics and independently
+written tANS4096 spread/state specification. The finite Python oracle calls no
+production codec. Its reverse encoding emits bits from the state before the
+inverse transition, as required by the state equation. No external source or
+compression implementation was consulted for this specialization.
+
 ### IR-1290: one-MiB position-distance tANS independent specialization
 
 Use IR-1289's first-party mathematical spread/state description and DD-1556's

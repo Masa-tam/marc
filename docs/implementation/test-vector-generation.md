@@ -23764,6 +23764,18 @@ Every case records rejection, zero published output files, and zero codec
 launches. It applies to manifest admission only and does not replace cross or
 historical receipts.
 
+### Sixteen-MiB tANS oracle qualification
+
+The DD-1606 Python oracle freezes 234 cases, including the highest adaptive
+context, all-active descriptor, distance boundaries at and around eight and
+sixteen MiB, and 200 seeded decision sequences. Generation without `--write`
+compares the complete result with the frozen JSON. The differential runner
+adds uniform-bank and context-55 cases and passes 236 finite fixtures to the
+C++ core. It compares model frequencies, descriptor bytes, payload bytes,
+valid-bit counts and decoded symbols. This does not qualify frames or public
+interfaces. Review corrected a pre-transition-state bit emission error inherited
+from the eight-MiB oracle; the earlier oracle requires a separate re-audit.
+
 ### TVG-1469: eight-MiB position tANS independent vectors
 
 The eight-MiB oracle derives active models, canonical descriptor records, and
