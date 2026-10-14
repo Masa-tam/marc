@@ -23746,3 +23746,12 @@ runs with seed 1603, a ten-second unit guard, a 768MiB instrumented cap, and
 no saved artifact. The corresponding pilot and full logs remain generated
 evidence. These randomized inputs complement independent vectors and directed
 full-window cases; they do not replace either class of test.
+
+### TVG-1467: four-MiB schema74 exchange receipt
+
+The schema74 producer receipt contains the retained83-entry schema73 prefix
+and exactly one appended four-MiB position-distance tANS archive. The
+verification receipt restores all84 entries and compares complete re-encoded
+archive bytes. Header validation checks the 112-byte fixed identity before
+codec dispatch. Cross-route, historical, and negative receipts remain
+separate unfinished evidence.

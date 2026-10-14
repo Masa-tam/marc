@@ -34715,3 +34715,12 @@ Each entry has a bounded input domain and a ten-second unit guard, while the
 full campaign runs one target at a time under an instrumented 768MiB cap. Its
 instrumented RSS is evidence for fuzz scheduling only, not a public resource
 default or normal-process memory measurement.
+
+### DD-1600: four-MiB exchange schema admission
+
+The four-MiB position-distance tANS profile is appended, never inserted, in
+the exchange profile sequence. The observed predecessor is schema73 with83
+archives, so the additive profile forms schema74/archive84. Both producer and
+consumer scripts verify the exact four-MiB header identity and parameters
+before codec dispatch. A schema74 self route is not evidence for cross-build,
+historical, negative-input, fixed-Release, hosted, or external qualification.

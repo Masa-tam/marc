@@ -41190,3 +41190,12 @@ sentinel, split-buffer, and terminal-state checks in each applicable layer.
 No external implementation, source, or test corpus was consulted. A successful
 bounded sanitizer campaign does not claim exhaustive malformed-input coverage
 or replace exchange qualification.
+
+### CR-1796: four-MiB exchange schema review
+
+The schema74 addition was derived from the repository's existing manifest
+format, retained schema73 profile list, and four-MiB format definition. The
+new header assertion independently writes and compares every fixed header
+field before decode. No external implementation, source, or test suite was
+consulted. The retained-prefix comparison is a local producer result and does
+not imply external interoperability.

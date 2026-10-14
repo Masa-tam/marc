@@ -177,6 +177,26 @@ function Assert-PositionTans1mHeader([byte[]]$Bytes, [uint64]$OriginalBytes) {
     }
 }
 
+function Assert-PositionTans4mHeader([byte[]]$Bytes, [uint64]$OriginalBytes) {
+    if ($Bytes.Length -lt 112) { throw '4 MiB position tANS archive header is truncated' }
+    $expected = [byte[]]::new(112)
+    [System.Text.Encoding]::ASCII.GetBytes('MARC').CopyTo($expected, 0)
+    foreach ($field in @(@(4,2,2), @(6,2,0), @(8,2,64), @(10,2,1),
+            @(12,2,2), @(14,2,10), @(16,2,5), @(18,2,5), @(20,4,4194304),
+            @(28,4,16), @(32,4,16), @(40,8,$OriginalBytes), @(48,4,16),
+            @(64,4,4194304), @(68,4,3), @(72,4,258), @(80,1,12), @(81,1,1),
+            @(82,2,54), @(84,4,4636), @(96,2,1), @(98,2,23))) {
+        for ($index = 0; $index -lt $field[1]; ++$index) {
+            $expected[$field[0] + $index] = [byte](([uint64]$field[2] -shr (8 * $index)) -band 255)
+        }
+    }
+    for ($index = 0; $index -lt 112; ++$index) {
+        if ($Bytes[$index] -ne $expected[$index]) {
+            throw '4 MiB position tANS archive does not carry exact identity and parameters'
+        }
+    }
+}
+
 function Get-Sha256([string]$Path) {
     $stream = [System.IO.File]::OpenRead($Path)
     try {
@@ -356,6 +376,7 @@ $schema70Profiles = $schema69Profiles + @('lzss-position-distance-rans-32m')
 $schema71Profiles = $schema70Profiles + @('lzss-position-distance-rans-64m')
 $schema72Profiles = $schema71Profiles + @('lzss-position-distance-tans')
 $schema73Profiles = $schema72Profiles + @('lzss-position-distance-tans-1m')
+$schema74Profiles = $schema73Profiles + @('lzss-position-distance-tans-4m')
 if ($manifest.schema_version -eq 1) {
     if ($null -ne $manifest.PSObject.Properties['codec_set']) {
         throw 'Schema 1 interoperability manifests must not declare a codec set'
@@ -721,6 +742,11 @@ if ($manifest.schema_version -eq 1) {
         throw "Unsupported interoperability codec set: $($manifest.codec_set)"
     }
     $expectedProfiles = $schema73Profiles
+} elseif ($manifest.schema_version -eq 74) {
+    if ([string]$manifest.codec_set -ne 'marc-cli-v74') {
+        throw "Unsupported interoperability codec set: $($manifest.codec_set)"
+    }
+    $expectedProfiles = $schema74Profiles
 } else {
     throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
 }
@@ -928,6 +954,19 @@ foreach ($entry in $manifest.archives) {
             }
         } finally { $stream.Dispose() }
         Assert-PositionTans1mHeader $header ([uint64]$manifest.input.bytes)
+    }
+    if ($codec -eq 'lzss-position-distance-tans-4m') {
+        $header = [byte[]]::new(112)
+        $stream = [System.IO.File]::OpenRead($archivePath)
+        try {
+            $offset = 0
+            while ($offset -lt 112) {
+                $read = $stream.Read($header, $offset, 112 - $offset)
+                if ($read -eq 0) { throw '4 MiB position tANS archive header is truncated' }
+                $offset += $read
+            }
+        } finally { $stream.Dispose() }
+        Assert-PositionTans4mHeader $header ([uint64]$manifest.input.bytes)
     }
     if ($codec -eq 'lzss-position-distance-rans-64m') {
         $header = [byte[]]::new(112)

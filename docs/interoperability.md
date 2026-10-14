@@ -2078,3 +2078,22 @@ one-MiB local profile, fixed Release and local exchange gates.
 
 Hosted CI, external schema83 verification, the five later windows and final
 schema88 remain incomplete. No push is performed.
+
+## IX-0087: four-MiB tANS schema74 producer and self route
+
+The actual starting bundle contains83 schema73 archives, rather than the
+earlier81-archive baseline. Schema74 appends only
+`lzss-position-distance-tans-4m` as archive84 after that retained prefix. The
+first83 manifest entry values and archive hashes match exactly. The appended
+8193-byte fixture archive is3234 bytes, SHA-256
+`8876e1d6d06a3169f32260ec9416ab7ae8c62499bb5a63e5c04d3e96c1a1fbe7`.
+Generation and verification require its exact112-byte identity
+`2/10+1/23+5/5`, four-MiB window/frame, grammar3..258,54 contexts and4636
+frequencies before codec launch.
+
+One local producer and its self consumer restore and completely re-encode all
+84 archives byte-for-byte. This is a schema-admission and self-route result
+only. A second producer, two cross routes, guarded negative campaign,
+historical schema audit, fixed-Release update/closure, hosted CI, external
+verification, later profiles, and final88 audit remain unfinished. No push is
+performed.
