@@ -2115,3 +2115,15 @@ This records schema admission, self-route, and historical compatibility only.
 Second-producer and cross-route qualification, fixed-Release closure, hosted
 CI, external verification, later profiles, and final88 audit remain unfinished.
 No push is performed.
+
+## IX-0089: eight-MiB tANS schema75 cross routes
+
+Two independently built producers generate byte-identical schema75 archive
+entries. Each producer's bundle has been restored and fully re-encoded by both
+producers, covering both self routes and both cross routes for all85 archives.
+The separate schema1..75 history and schema75 prelaunch-negative qualification
+remain the evidence for retained prefixes and malformed-bundle rejection.
+
+This closes the eight-MiB local two-producer exchange routes. Fixed-Release
+closure, hosted CI, external verification, later profiles, and final88 audit
+remain unfinished. No push is performed.
