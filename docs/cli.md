@@ -944,3 +944,20 @@ Whole-file output is renamed only after complete successful decoding and
 strict trailing checks. Failed inputs publish no final destination; existing
 output/temporary files remain unchanged. Corpus comparisons, repeated normal
 measurements, fuzz and exchange are separate pending qualification gates.
+
+### Four-MiB position-distance tANS
+
+The exact selector `lzss-position-distance-tans-4m` identifies dictionary2/10,
+context1/23 and tANS5/5. Known-size streams reset dictionary and models at
+each four-MiB frame. Fixed-five encoding preserves longest/nearest matches;
+decoding accepts the specified3..258 grammar and distances through4,194,304.
+The distance-less name `lzss-position-tans-4m` is rejected.
+
+The CLI uses the four-MiB public factory with a384MiB default aggregate
+admission,65536-byte input/output calls and65536 declared retained control
+bytes. Resource queries and creation are bounded before allocation. Failed
+frames never drain, and whole-file output is renamed only after successful
+decoding and strict trailing checks. Boundary, truncation, deterministic
+re-encode, wrong-profile and destination-preservation tests are connected;
+contextual comparison, paired measurements, fuzz and exchange remain
+separate qualification gates.

@@ -34669,3 +34669,12 @@ internal limit, decision ceiling9R, payload ceiling17,301,506 bytes and
 225,280 entropy table entries. Resource queries and create paths preserve
 outputs on refusal and perform allocation-failure rollback. Static/shared
 ABI and public roundtrip smoke tests pass; CLI and exchange remain separate.
+
+### DD-1595: four-MiB CLI selector and wire identity
+
+The public selector `lzss-position-distance-tans-4m` dispatches to the
+four-MiB factory and serializes identity `2/10+1/23+5/5`; the previous
+one-MiB identity is rejected by the four-MiB parser. Boundary, deterministic
+re-encode, representative truncation, trailing-data, wrong-profile and
+destination-preservation tests pass. Benchmark, fuzz and exchange remain
+separate unfinished gates.

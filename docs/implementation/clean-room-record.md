@@ -41146,3 +41146,12 @@ The four-MiB C ABI was connected using the repository's existing public
 factory contract and the DD-1592 resource equations. Static/shared ABI,
 resource refusal and allocation rollback tests pass. No external or copyleft
 implementation was consulted; CLI and exchange integration remain pending.
+
+### CR-1791: four-MiB CLI integration review
+
+The four-MiB CLI adapter and publication harness were written from the
+repository's public C ABI and DD-1592 format definition. A residual one-MiB
+wire identity was found by the independent CLI assertion and corrected in
+the four-MiB serializer/parser; the frozen wire-vector, frame, stream and CLI
+tests then passed. No external or copyleft implementation or test suite was
+consulted; benchmark, fuzz and exchange qualification is not implied.

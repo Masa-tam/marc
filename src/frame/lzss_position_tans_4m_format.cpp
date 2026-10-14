@@ -48,7 +48,7 @@ PositionTans4mFormatError serialize_position_tans_4m_stream(
     std::array<std::byte,112> bytes{};
     put_magic(bytes,"MARC");
     for (const auto& [offset,value] : std::array<std::pair<std::size_t,std::uint16_t>,10>{
-        {{4,2},{6,0},{8,64},{10,1},{12,2},{14,9},{16,5},{18,4},{96,1},{98,22}}})
+        {{4,2},{6,0},{8,64},{10,1},{12,2},{14,10},{16,5},{18,5},{96,1},{98,23}}})
         (void)core::store_le(bytes,offset,value);
     (void)core::store_le(bytes,20,stream.frame_size);
     (void)core::store_le(bytes,28,std::uint32_t{16});
@@ -71,7 +71,7 @@ PositionTans4mFormatError parse_position_tans_4m_stream(
     const auto bytes=input.first(112);
     if (!magic(bytes,"MARC")) return Error::invalid_magic;
     for (const auto& [offset,value] : std::array<std::pair<std::size_t,std::uint16_t>,9>{
-        {{4,2},{6,0},{8,64},{12,2},{14,9},{16,5},{18,4},{96,1},{98,22}}})
+        {{4,2},{6,0},{8,64},{12,2},{14,10},{16,5},{18,5},{96,1},{98,23}}})
         if (load<std::uint16_t>(bytes,offset)!=value) return Error::unsupported_identity;
     if (load<std::uint16_t>(bytes,10)!=1) return Error::invalid_flags;
     if (load<std::uint32_t>(bytes,24)!=0 || load<std::uint32_t>(bytes,28)!=16

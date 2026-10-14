@@ -32,7 +32,7 @@ PositionTans4mFrameLayout sentinel() {
 int main() {
     // Hand-decoded DD-1573 headers: one known byte, one singleton literal A.
     auto expected_stream=hex(
-        "4d41524302000000400001000200090005000400000010000000000010000000"
+        "4d415243020000004000010002000a0005000500000010000000000010000000"
         "1000000000000000010000000000000010000000000000000000000000000000"
         "000010000300000002010000000000000c013400061200000000000000000000"
         "01001600000000000000000000000000");
@@ -44,7 +44,7 @@ int main() {
     put(expected_stream,64,std::uint32_t{4194304});
     put(expected_stream,82,std::uint16_t{54});
     put(expected_stream,84,std::uint32_t{4636});
-    put(expected_stream,98,std::uint16_t{22});
+    put(expected_stream,98,std::uint16_t{23});
     put(descriptor,12,std::uint16_t{54});
     put(descriptor,16,std::uint32_t{4636});
     check(expected_stream.size()==112 && expected_frame.size()==64 && descriptor.size()==35,"frozen extents");

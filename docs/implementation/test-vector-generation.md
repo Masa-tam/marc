@@ -23704,3 +23704,12 @@ protection, resource-query preservation, allocation-failure cleanup, caller
 capacity limits, one-byte chunking and roundtrip restoration. C smoke tests
 pass against both static and shared libraries. The CLI name and bundle schema
 are not yet admitted by this receipt.
+
+### TVG-1462: four-MiB CLI boundary and publication tests
+
+The independent CLI harness exercises empty, one-byte, sub-boundary, exact
+four-MiB and one-byte-over-boundary inputs. It checks byte-identical repeated
+encoding, exact `2/10+1/23+5/5` identity, wrong-profile rejection, selected
+truncation points, trailing bytes, and preservation of an existing output
+file after a failed decode. The test passed in the current Clang build;
+benchmark, fuzz and exchange vectors remain unclaimed.
