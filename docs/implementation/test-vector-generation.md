@@ -23696,3 +23696,11 @@ descriptor/model/automaton checks, typed-token private-scratch and ordinary
 destination rollback, frame-format bounds, frame failure publication and
 stream chunking. All six pass in the current Clang build. Public API and
 exchange vectors are intentionally not claimed by this receipt.
+
+### TVG-1461: four-MiB public API and ABI tests
+
+The four-MiB public test covers invalid-config refusal, aliased destination
+protection, resource-query preservation, allocation-failure cleanup, caller
+capacity limits, one-byte chunking and roundtrip restoration. C smoke tests
+pass against both static and shared libraries. The CLI name and bundle schema
+are not yet admitted by this receipt.

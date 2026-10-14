@@ -183,6 +183,7 @@ set(MARC_SOURCES
     src/frame/lzss_position_rans_64k_owned.cpp
     src/frame/lzss_position_rans_64k_stream_decoder.cpp
     src/frame/lzss_position_tans_1m_c_factory.cpp
+    src/frame/lzss_position_tans_4m_c_factory.cpp
     src/frame/lzss_position_tans_1m_owned.cpp
     src/frame/lzss_position_tans_1m_stream_decoder.cpp
     src/frame/lzss_position_tans_1m_format.cpp
@@ -9560,4 +9561,16 @@ if(MARC_BUILD_TESTS)
     set_tests_properties(marc_position_tans_4m_frames PROPERTIES TIMEOUT 30)
     add_test(NAME marc_position_tans_4m_stream COMMAND marc_position_tans_4m_frame_tests --stream)
     set_tests_properties(marc_position_tans_4m_stream PROPERTIES TIMEOUT 30)
+    add_executable(marc_position_tans_4m_api_tests tests/position_tans_4m_api_tests.cpp)
+    target_compile_features(marc_position_tans_4m_api_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_4m_api_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_tans_4m_api_tests PRIVATE marc::static)
+    add_test(NAME marc_position_tans_4m_api COMMAND marc_position_tans_4m_api_tests)
+    set_tests_properties(marc_position_tans_4m_api PROPERTIES TIMEOUT 60)
+    foreach(linkage IN ITEMS static shared)
+        add_executable(marc_position_tans_4m_c_${linkage} tests/position_tans_4m_c_smoke.c)
+        target_link_libraries(marc_position_tans_4m_c_${linkage} PRIVATE marc::${linkage})
+        add_test(NAME marc_position_tans_4m_c_${linkage} COMMAND marc_position_tans_4m_c_${linkage})
+        set_tests_properties(marc_position_tans_4m_c_${linkage} PROPERTIES TIMEOUT 60)
+    endforeach()
 endif()

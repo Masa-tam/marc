@@ -34660,3 +34660,12 @@ identity and preserve ordinary destination commit rules and private failed
 frame quarantine. Clang CMake/CTest passes the mathematical vectors, finite
 core, token rollback, frame format, frame and stream tests. Public factory,
 CLI, measurements, fuzzing and exchange remain separate unfinished gates.
+
+### DD-1594: four-MiB public API admission
+
+The four-MiB C ABI uses the new selector-specific config and resource
+structures. Measured owned requirements are admitted with a384MiB default
+internal limit, decision ceiling9R, payload ceiling17,301,506 bytes and
+225,280 entropy table entries. Resource queries and create paths preserve
+outputs on refusal and perform allocation-failure rollback. Static/shared
+ABI and public roundtrip smoke tests pass; CLI and exchange remain separate.

@@ -41139,3 +41139,10 @@ first-party architecture. CMake/CTest results cover six internal targets,
 including rollback and failed-frame non-publication. No external copyleft
 implementation or test suite was consulted, and public/API qualification is
 not implied.
+
+### CR-1790: four-MiB public API review
+
+The four-MiB C ABI was connected using the repository's existing public
+factory contract and the DD-1592 resource equations. Static/shared ABI,
+resource refusal and allocation rollback tests pass. No external or copyleft
+implementation was consulted; CLI and exchange integration remain pending.

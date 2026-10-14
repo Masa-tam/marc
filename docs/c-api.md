@@ -1238,3 +1238,30 @@ EndInput is explicit, EOS/error remain sticky and failed raw frames never
 publish. Prior successful frames may already be returned before a later
 error. Whole-file CLI publication is separately qualified by profile-specific
 CLI tests; paired measurements, fuzz and exchange remain required.
+
+### Four-MiB position-distance tANS factory
+
+The `marc_lzss_position_distance_tans_4m_config` and `_resources` types have
+separate `_config_init`, `_resource_requirements` and `_create` entry points.
+The format identity is `2/10+1/23+5/5`, with a four-MiB dictionary and frame
+window. The fixed-five token grammar accepts distances through 4,194,304 and
+match lengths 3..258; entropy tables contain 225280 entries in the admitted
+configuration.
+
+The default admission uses a 4,194,304-byte frame, a 37,748,736-decision
+block ceiling, and a 17,301,506-byte compressed-payload ceiling. The default
+aggregate internal limit is 384MiB. These are bounded admission parameters;
+the resource query still accounts for caller-declared capacities and external
+retained storage, and the measured CLI-shaped query reported 257449900 bytes
+for encode and 106109863 bytes for decode. Query results are requirements,
+not resident-memory or RSS claims.
+
+Invalid capacities, table counts, frame limits, and overlapping configuration
+or output storage fail before consumption and preserve the caller's existing
+buffers. Allocation-failure cleanup releases private scratch and leaves the
+handle null. EndInput is explicit, EOS and error are sticky, and failed raw
+frames never publish or drain; previously validated frames may already have
+been returned. The four-MiB internal and public API tests cover these rules,
+including one-byte chunking and static/shared C smoke paths. CLI connection,
+contextual comparison, benchmark, fuzz, and exchange-bundle qualification
+remain separate gates for this profile.
