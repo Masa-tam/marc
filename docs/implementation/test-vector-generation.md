@@ -23670,3 +23670,12 @@ guarded prelaunch cases and the route audit covers250. Native and Clang
 history evidence covers schema1..73 with raw restoration and complete
 re-encoding hashes. The old partial Clang attempt is retained but not used as
 final evidence.
+
+### TVG-1458: one-MiB fixed Release closure vectors
+
+The current fixed Release executable passes seven boundary round trips,
+213 truncation cases, independent grammar lengths 3, 4 and 258, and the
+late-failed-frame non-publication check. Four fixed Release self/cross exchange
+routes restore and re-encode all83 final archives byte for byte. The closure
+retains the previous135-file Release backup and does not replace any earlier
+vector receipt.

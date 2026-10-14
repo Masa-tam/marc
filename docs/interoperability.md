@@ -2059,3 +2059,22 @@ against its manifest. The earlier partial Clang attempt is retained but is not
 used as final evidence. This closes the one-MiB local exchange and historical
 compatibility gates; fixed Release update/closure, hosted CI/external83,
 later profiles and final88 remain pending. No push is performed.
+
+## IX-0086:one-MiB fixed Release local closure
+
+The fixed Windows Release path now contains the qualified one-MiB executable
+with SHA-256
+`95530b5ca30e63e6de9ec904ecba353f8f26315ea506299cdb192b2ad5fb3a38`.
+Before overlay, all135 files in the prior Release were copied and rehashed;
+the backup and unchanged extra-file hashes remain available. The current
+fixed executable passes the one-MiB CLI boundary and late-failure test.
+
+Using the fixed Windows executable and the Clang executable, four local
+routes (native self, native consuming Clang, Clang consuming native, Clang
+self) restore and re-encode all83 schema73 archives byte for byte. The
+schema1..73 native and Clang histories and the250 final prelaunch negative
+cases remain covered by their separate PASS checkpoints. This closes the
+one-MiB local profile, fixed Release and local exchange gates.
+
+Hosted CI, external schema83 verification, the five later windows and final
+schema88 remain incomplete. No push is performed.

@@ -41114,3 +41114,11 @@ identically. Each rejects125 malformed manifests before launch/publication;
 the final audit covers250 guarded cases. Native and Clang independently
 restore and re-encode schema1..73 and rehash each manifest, body and raw
 output. No external implementation or copyleft test source was consulted.
+
+### CR-1787: one-MiB fixed Release closure review
+
+The one-MiB fixed Release overlay, backup verification, boundary CLI run and
+four self/cross exchange routes were reviewed against repository-authored
+format definitions, implementation, fixtures and scripts. The review found
+no consultation of external copyleft implementations or test suites. The
+closure remains local and does not claim hosted or external qualification.

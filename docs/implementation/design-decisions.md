@@ -34630,3 +34630,13 @@ guarded negatives before launch/publication; the final audit covers250 cases.
 Both normal builds complete schema1..73 historical restoration and full
 re-encoding with manifest, body and raw hashes checked. Fixed Release overlay,
 closure, hosted CI, external verification and later profiles remain separate.
+
+### DD-1591: one-MiB fixed Release closure
+
+The fixed Windows Release path is overlaid with the qualified one-MiB build
+only after the complete previous Release was copied and rehashed. The
+135-file backup remains available, and files outside the qualified copy set
+retain their prior hashes. The current fixed executable is checked by hash,
+then used for one-MiB boundary, failure-publication, self and cross bundle
+routes. This is a local closure record; hosted CI and external verification
+remain separate gates.
