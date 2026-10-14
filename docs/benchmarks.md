@@ -11372,3 +11372,11 @@ an API memory grant. Its smoke uses a bounded synthetic input only to verify
 the measurement path. No eight-MiB corpus compression total, timing result, or
 peak-memory comparison is recorded here; those require the pending full
 same-window corpus campaign.
+
+`run_position_tans_8m_comparison.py` verifies the selected external corpus
+members before launching either profile, requires an explicit idle-process
+receipt before each independent child process, and refuses to replace an
+existing result. Its local JSON schema retains member hashes, exact control
+identity, compressed bytes, timing samples, queried quantities, and the child
+process peak working set. A one-member pilot and the complete twelve-member
+campaign remain pending.
