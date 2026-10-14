@@ -41331,3 +41331,13 @@ with a 32 MiB window/frame because no published contextual 32 MiB profile is
 available. The benchmark smoke and Clang fuzz compile smoke pass. Full corpus
 measurement and sanitizer fuzz execution remain open; no external source was
 consulted and this record makes no legal guarantee.
+
+### CR-1809: 2026-10-15 — Thirty-two-MiB exchange admission
+
+Schema77 appends the native 32 MiB tANS archive after the unchanged schema76
+prefix and verifies identity `2/13 + 1/26 + 5/8`. The local 87-entry producer
+and verifier pass, and malformed schema77 cases are rejected before codec
+launch. A schema77 to schema76 conversion also verifies 86 archives. The full
+schema1..75 compatibility audit and cross-producer checks remain open; no
+external implementation or source was consulted and this record makes no
+legal guarantee.

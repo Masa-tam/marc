@@ -34846,3 +34846,11 @@ and queried workspace bytes for both profiles. No published contextual
 profile with both window and frame set to 32 MiB, and records that identity in
 the result. The benchmark smoke passes. A stream fuzz harness is present and
 passes the compile smoke; sanitizer execution remains pending.
+
+The exchange producer and verifier now define schema77 as the unchanged
+schema76 prefix plus `lzss-position-distance-tans-32m`. The local schema77
+bundle contains 87 archives; its appended 3,235-byte archive has SHA-256
+`b54aef233338d55d61b01b1b34b3615e7a1957862a08e617f5b9dd37cbe3a635`.
+Self-verification passed. The schema77 negative campaign and a schema77 to
+schema76 compatibility conversion were run locally; the full historical
+schema1..75 audit remains pending after the script integration is corrected.
