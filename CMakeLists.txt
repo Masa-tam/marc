@@ -9611,6 +9611,13 @@ if(MARC_BUILD_TESTS)
     target_include_directories(marc_position_tans_8m_core_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_8m_core COMMAND marc_position_tans_8m_core_tests)
     set_tests_properties(marc_position_tans_8m_core PROPERTIES TIMEOUT 30)
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_tans_8m_differential
+            COMMAND ${Python3_EXECUTABLE} -B ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_8m_differential.py
+                $<TARGET_FILE:marc_position_tans_8m_core_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-8m-differential)
+        set_tests_properties(marc_position_tans_8m_differential PROPERTIES TIMEOUT 120)
+    endif()
     add_executable(marc_position_tans_8m_token_tests
         tests/position_tans_8m_token_tests.cpp
         src/context/lzss_position_tans_8m_tokens.cpp

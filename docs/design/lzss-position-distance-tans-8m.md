@@ -59,6 +59,13 @@ grant. Workspace limits, timeouts, and parallelism require measured evidence.
 
 ## Qualification status
 
+The mathematical oracle's reverse encoder was corrected to emit the low bits
+of the pre-transition state. Its 232 frozen cases are now checked on every
+generation, and a separate C++ differential campaign adds uniform-bank and
+highest-context cases. All 234 fixtures agree on frequencies, descriptor,
+payload, valid bits and decoded symbols. This corrects verification evidence
+without changing the format or codec implementation.
+
 `tests/position_tans_8m_vectors.py` is the independent mathematical oracle
 for the identity, normalization, descriptor grammar, inverse transitions,
 boundary lengths, and distances through 8,388,608. The specification and

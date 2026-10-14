@@ -110,8 +110,9 @@ def encode(sequence, models):
                    for next_state, actual in [inverse[context][symbol, state >> width]]
                    if actual == width]
         assert len(choices) == 1
-        state, width = choices[0]
+        next_state, width = choices[0]
         chunks.append([(state >> bit) & 1 for bit in range(width)])
+        state = next_state
     bits = [bit for chunk in reversed(chunks) for bit in chunk]
     body = bytearray((len(bits) + 7) // 8)
     for i, bit in enumerate(bits):
@@ -162,4 +163,6 @@ if __name__ == '__main__':
     result = {'format': 'DD-1602/8MiB', 'vectors': vectors}
     if args.write:
         OUT.write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
+    else:
+        assert json.loads(OUT.read_text(encoding='utf-8')) == json.loads(json.dumps(result)), 'frozen vectors differ'
     print(json.dumps({'format': result['format'], 'vectors': len(vectors), 'max_descriptor': 9270}))

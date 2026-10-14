@@ -34,5 +34,5 @@ padding, uniform-bank separation, overlap and budget rejection, discarded
 private token prefixes, and retention of ordinary destinations on failure.
 The C++ core also agrees with 236 independent oracle fixtures. The oracle
 was corrected to emit bits from the pre-transition state. The inherited
-eight-MiB oracle requires a separate re-audit. Frame, public API/CLI,
+eight-MiB oracle was separately corrected and passed 234 core fixtures. Frame, public API/CLI,
 benchmark, fuzz and exchange completion remain unproven.

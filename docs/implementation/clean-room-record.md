@@ -41249,6 +41249,11 @@ fuzz completion.
 
 ### Sixteen-MiB tANS internal specialization review
 
+Follow-up review: the inherited eight-MiB mathematical oracle was corrected
+separately using the same state equation. Its 232 regenerated fixtures plus
+uniform and highest adaptive context cases agree with the existing C++ core
+(234 fixtures). Production code and stream representation are unchanged.
+
 Date: 2026-10-15. Author/reviewer: Codex. Task: specialize the independently
 defined position-distance tANS family for a sixteen-MiB window, retaining
 private token scratch and ordinary-output failure retention. References were

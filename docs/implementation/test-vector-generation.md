@@ -23774,7 +23774,9 @@ adds uniform-bank and context-55 cases and passes 236 finite fixtures to the
 C++ core. It compares model frequencies, descriptor bytes, payload bytes,
 valid-bit counts and decoded symbols. This does not qualify frames or public
 interfaces. Review corrected a pre-transition-state bit emission error inherited
-from the eight-MiB oracle; the earlier oracle requires a separate re-audit.
+from the eight-MiB oracle; that oracle was separately corrected and passed
+234 fixtures against the eight-MiB C++ core. Neither correction changes codec
+output or a format identity.
 
 ### TVG-1469: eight-MiB position tANS independent vectors
 
