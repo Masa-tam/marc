@@ -34834,3 +34834,8 @@ include the eight-byte-mask descriptor ceiling, 237,568-entry decode bank,
 private token/raw staging, and caller capacities before allocation. The API
 round-trip and failed-second-frame publication tests pass; CLI, benchmark,
 fuzz, and exchange remain open.
+
+The CLI now exposes `lzss-position-distance-tans-32m` and routes it to the
+32 MiB public factory. The updated Clang build includes the selector and help
+inventory. Full CLI round-trip and malformed-file campaign remain pending
+because the profile's measured allocation floor must be recorded first.

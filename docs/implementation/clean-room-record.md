@@ -41315,3 +41315,10 @@ resource constants. No external implementation or source was consulted. API
 resource admission, fixed-capacity processing, round-trip, and failed-frame
 publication tests pass. CLI, benchmark, fuzz, exchange, and similarity review
 remain open; this record makes no legal guarantee.
+
+### CR-1807: 2026-10-15 — Thirty-two-MiB CLI selector
+
+The project agent connected the 32 MiB public factory to the repository CLI
+and verified the selector in the generated help output with the updated Clang
+build. Full CLI round-trip, malformed-input, benchmark, fuzz, and exchange
+qualification remain open; no external implementation or source was consulted.
