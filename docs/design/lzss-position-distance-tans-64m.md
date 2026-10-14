@@ -38,3 +38,15 @@ remain open release gates.
 The updated Clang 22.1.3 build re-ran the ten 64 MiB CLI, benchmark-smoke,
 core, token, frame-format, frame, stream, API, vector, and differential tests;
 all ten passed in 54.38 seconds.
+
+The first corpus measurement completed for the retained `dickens` material:
+position-distance produced 3,150,534 bytes and contextual tANS produced
+3,155,009 bytes, a 4,475-byte position-distance saving. Position encode
+samples were 17.113141/23.8587048/23.1631539 seconds and contextual samples
+were 13.0996804/13.1251859/12.7370649 seconds. Decode samples were
+0.3206042/0.3250113/0.3242852 and 0.2842562/0.2857147/0.2855767 seconds,
+respectively. The queried workspace values were 4,108,825,632 versus
+311,569,567 bytes for encode and 1,692,594,118 versus 1,423,439,767 bytes
+for decode. The remaining eleven materials were not completed because the
+next large-material position run produced no result within the local
+observation window; no corpus total or peak-resident claim is made.
