@@ -2098,3 +2098,20 @@ publication. This is a schema-admission, negative, and self-route result only.
 A second producer, two cross routes, historical schema audit, fixed-Release
 update/closure, hosted CI, external verification, later profiles, and final88
 audit remain unfinished. No push is performed.
+
+## IX-0088: eight-MiB tANS schema75 admission and history
+
+The actual retained prefix is schema74 with84 archives. Schema75 appends
+`lzss-position-distance-tans-8m` as archive85, preserving every earlier entry
+and archive body in order. Its producer and verifier require the exact112-byte
+identity `2/11+1/24+5/6`, an eight-MiB window and frame, grammar3..258,
+55 contexts, and4647 frequencies before decoding.
+
+The schema75 self route restores and re-encodes all85 archives byte for byte.
+It rejects125 manifest and header mutations before codec launch or publication.
+The compatibility route derives and verifies every schema from75 through1, so
+the retained84-entry prefix and the initial81-entry prefix remain covered.
+This records schema admission, self-route, and historical compatibility only.
+Second-producer and cross-route qualification, fixed-Release closure, hosted
+CI, external verification, later profiles, and final88 audit remain unfinished.
+No push is performed.

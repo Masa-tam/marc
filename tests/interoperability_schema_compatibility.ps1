@@ -63,7 +63,8 @@ function Convert-Schema37To36([string]$Source, [string]$Destination) {
 }
 
 $resolvedCli = (Resolve-Path -LiteralPath $MarcCli).Path
-$root = Join-Path ([System.IO.Path]::GetTempPath()) (
+$scratchParent = (Get-Location).Path
+$root = Join-Path $scratchParent (
     'marc-interoperability-' + [System.Guid]::NewGuid().ToString('N'))
 if (-not [string]::IsNullOrEmpty($EvidenceDirectory)) {
     $root = [System.IO.Path]::GetFullPath($EvidenceDirectory)
@@ -84,6 +85,8 @@ $schema70 = Join-Path $root 'schema70'
 $schema71 = Join-Path $root 'schema71'
 $schema72 = Join-Path $root 'schema72'
 $schema73 = Join-Path $root 'schema73'
+$schema74 = Join-Path $root 'schema74'
+$schema75 = Join-Path $root 'schema75'
 $schema60 = Join-Path $root 'schema60'
 $schema60Reordered = Join-Path $root 'schema60-reordered'
 $schema60Identity = Join-Path $root 'schema60-identity'
@@ -261,10 +264,26 @@ try {
     $null = New-Item -ItemType Directory -Path $root
     & (Join-Path $PSScriptRoot 'create_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -OutputDirectory $schema73 `
+        -OutputDirectory $schema75 `
         -Platform 'local-schema-test' `
         -Compiler 'local-schema-test' `
         -SourceRevision ('0' * 40)
+    $latest75 = Get-Content -LiteralPath (Join-Path $schema75 'manifest.json') -Raw | ConvertFrom-Json
+    if ($latest75.schema_version -ne 75 -or $latest75.codec_set -ne 'marc-cli-v75' -or
+            @($latest75.archives).Count -ne 85 -or $latest75.archives[84].codec -ne 'lzss-position-distance-tans-8m') {
+        throw 'Schema 75 must append exactly one 8 MiB position-distance tANS archive'
+    }
+    & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') -MarcCli $resolvedCli -BundleDirectory $schema75 -OutputDirectory (Join-Path $root 'verified75')
+    & (Join-Path $PSScriptRoot 'interoperability_schema75_negatives.ps1') -MarcCli $resolvedCli -BundleDirectory $schema75 -EvidenceDirectory (Join-Path $root 'schema75-negatives')
+    Convert-Bundle $schema75 $schema74 74 'marc-cli-v74' (@($latest75.archives[0..83] | ForEach-Object { $_.codec }))
+    $latest74 = Get-Content -LiteralPath (Join-Path $schema74 'manifest.json') -Raw | ConvertFrom-Json
+    if ($latest74.schema_version -ne 74 -or $latest74.codec_set -ne 'marc-cli-v74' -or
+            @($latest74.archives).Count -ne 84 -or $latest74.archives[83].codec -ne 'lzss-position-distance-tans-4m') {
+        throw 'Schema 74 must append exactly one 4 MiB position-distance tANS archive'
+    }
+    & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') -MarcCli $resolvedCli -BundleDirectory $schema74 -OutputDirectory (Join-Path $root 'verified74')
+    & (Join-Path $PSScriptRoot 'interoperability_schema74_negatives.ps1') -MarcCli $resolvedCli -BundleDirectory $schema74 -EvidenceDirectory (Join-Path $root 'schema74-negatives')
+    Convert-Bundle $schema74 $schema73 73 'marc-cli-v73' (@($latest74.archives[0..82] | ForEach-Object { $_.codec }))
     $latest73 = Get-Content -LiteralPath (Join-Path $schema73 'manifest.json') -Raw | ConvertFrom-Json
     if ($latest73.schema_version -ne 73 -or $latest73.codec_set -ne 'marc-cli-v73' -or
             @($latest73.archives).Count -ne 83 -or $latest73.archives[82].codec -ne 'lzss-position-distance-tans-1m') {
@@ -904,11 +923,11 @@ try {
         -BundleDirectory $schema1 `
         -OutputDirectory (Join-Path $root 'verified1')
 
-    Write-Host 'Verified interoperability schemas 1 through 73'
+    Write-Host 'Verified interoperability schemas 1 through 75'
 } finally {
     if ([string]::IsNullOrEmpty($EvidenceDirectory) -and (Test-Path -LiteralPath $root)) {
         $resolvedRoot = [System.IO.Path]::GetFullPath($root)
-        $temporaryRoot = [System.IO.Path]::GetFullPath([System.IO.Path]::GetTempPath()).TrimEnd(
+        $temporaryRoot = [System.IO.Path]::GetFullPath($scratchParent).TrimEnd(
             [System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar) +
             [System.IO.Path]::DirectorySeparatorChar
         if (-not $resolvedRoot.StartsWith($temporaryRoot, [System.StringComparison]::OrdinalIgnoreCase) -or
