@@ -41246,3 +41246,15 @@ No external implementation, source, or corpus was consulted. A bounded
 sanitizer campaign found no crash, timeout, or sanitizer diagnostic. The
 target does not establish public-boundary, full-frame, exchange, or release
 fuzz completion.
+
+### CR-1802: eight-MiB contextual tANS measurement-control review
+
+The contextual tANS measurement control uses the documented public C API. It
+applies the existing 16 MiB profile, explicitly sets its frame and dictionary
+window to 8 MiB, and independently checks the emitted stream fields before
+asking the matching public decoder to restore the input. The resulting stream
+uses dictionary variant 5 and context variant 4; it is a 16 MiB-profile format
+configured to an 8 MiB working window, not an invented contextual 8 MiB
+profile. This establishes the control's identity and restoration behavior only.
+No external implementation or source was consulted. Compression, timing,
+memory, and exchange conclusions remain unmeasured.

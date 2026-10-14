@@ -84,4 +84,9 @@ and successful-publication-only output. The API exposes the 8 MiB identity and
 reports full-window resource requirements before allocation. CLI, benchmark,
 contextual comparison measurements, and exchange-bundle admission remain
 incomplete. A bounded sanitizer-backed stream decoder fuzz target exists; it
-does not replace full-frame or public-boundary fuzzing.
+does not replace full-frame or public-boundary fuzzing. The contextual tANS
+control uses its 16 MiB public profile with an explicit 8 MiB frame and window:
+the resulting stream identifies dictionary variant 5, context variant 4, and
+tANS algorithm/variant 5/2, and its public decoder restores the source bytes.
+This establishes a usable same-window measurement control; it does not yet
+establish any compression, speed, or peak-memory result.
