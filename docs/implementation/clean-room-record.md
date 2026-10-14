@@ -41282,5 +41282,7 @@ adapted from this repository's eight-MiB contracts by the project agent. No
 external implementation was consulted. The implementation keeps descriptor
 validation, private token/raw scratch, and success-only publication separate;
 the local frame and stream tests cover truncation and invalid-history failure
-invariants. Public API, benchmark, fuzz, exchange, and similarity review are
-still open release gates.
+invariants. The public C boundary and CLI selector were then added using the
+same repository-owned contract, with API and smoke tests for resource
+admission and round-trip behavior. Benchmark, fuzz, exchange, and similarity
+review are still open release gates.

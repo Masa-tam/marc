@@ -2348,6 +2348,36 @@ MARC_API marc_status marc_lzss_position_distance_tans_8m_resource_requirements(
 MARC_API marc_status marc_lzss_position_distance_tans_8m_create(
     const marc_lzss_position_distance_tans_8m_config* config, marc_transform** transform) MARC_NOEXCEPT;
 
+/* Native16MiB position-distance tANS (2/12 + 1/25 + 5/7).
+ * Fixed-five encoder; decoder accepts match lengths3..258.
+ * max_block_size limits binary decisions, not bytes. Other sizes are bytes. */
+typedef struct marc_lzss_position_distance_tans_16m_config {
+    uint32_t struct_size, abi_version;
+    marc_direction direction;
+    uint32_t reserved;
+    uint64_t original_size;
+    uint32_t frame_size, reserved2;
+    uint64_t max_total_output_size, max_frame_size, max_block_size;
+    uint64_t max_compressed_payload_size, max_internal_buffered_bytes;
+    uint64_t max_lz_distance, max_lz_match_length, max_entropy_table_entries;
+    uint64_t max_expansion_ratio, expansion_slack;
+    uint64_t external_retained_bytes, input_capacity_bytes, output_capacity_bytes;
+} marc_lzss_position_distance_tans_16m_config;
+typedef struct marc_lzss_position_distance_tans_16m_resources {
+    uint32_t struct_size, abi_version;
+    uint64_t raw_bytes, token_bytes, serialized_bytes, finder_bytes;
+    uint64_t fixed_working_bytes, external_charge_bytes, minimum_aggregate_bytes;
+    uint64_t private_payload_bytes, private_serialized_bytes, table_bytes;
+    uint64_t owned_buffer_bytes, owner_bytes, metadata_floor_bytes, private_admission_bytes;
+} marc_lzss_position_distance_tans_16m_resources;
+MARC_API marc_status marc_lzss_position_distance_tans_16m_config_init(
+    marc_direction direction, marc_lzss_position_distance_tans_16m_config* config) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_position_distance_tans_16m_resource_requirements(
+    const marc_lzss_position_distance_tans_16m_config* config,
+    marc_lzss_position_distance_tans_16m_resources* resources) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_position_distance_tans_16m_create(
+    const marc_lzss_position_distance_tans_16m_config* config, marc_transform** transform) MARC_NOEXCEPT;
+
 /* Native4MiB position-distance rANS (2/10 + 1/16 + 4/7).
  * Fixed-five encoder; decoder accepts match lengths3..258.
  * Queries account capacities and caller buffers, not OS RSS. */

@@ -58,3 +58,11 @@ frame, invalid history, or entropy failure therefore leaves ordinary frame and
 raw destinations unchanged. The first frame and streaming split-boundary
 tests pass; public API/CLI, measurements, fuzzing, exchange, and full-frame
 corpus qualification remain unfinished.
+
+The public C API now exposes the distinct `2/12 + 1/25 + 5/7` profile and
+reports its bounded ownership and private-admission requirements before
+allocation. The CLI selector is
+`lzss-position-distance-tans-16m`. Fine-grained API processing, a two-frame
+failure-publication regression, and a CLI encode/decode smoke round trip pass
+with the updated implementation. Benchmark, fuzz, exchange, and corpus
+qualification are still open.

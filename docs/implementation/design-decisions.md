@@ -34791,6 +34791,11 @@ has succeeded. The new tests cover a successful one-byte frame, split stream
 input, truncation, and invalid history; public wiring and corpus qualification
 remain separate gates.
 
+The 16 MiB public boundary uses the same fixed-five encoder and full-range
+decoder as the private frame layer. Resource queries include the 233,472-entry
+decode bank and all caller capacities before allocation; the CLI name is an
+explicit selector and does not alias another window.
+
 ### DD-1605: eight-MiB tANS frame ownership and C boundary
 
 The native eight-MiB frame layer buffers a serialized frame, tANS tables,
