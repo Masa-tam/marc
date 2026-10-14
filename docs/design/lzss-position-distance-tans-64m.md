@@ -23,3 +23,8 @@ locally. The public API resource query, fixed-capacity process path, CLI
 selector, deterministic small-input round trips, malformed-input rejection,
 and unpublished failed-frame check now pass locally. Benchmark, fuzz runtime,
 exchange, contextual measurements, and release qualification remain open.
+
+The benchmark smoke emits deterministic position/contextual measurements with
+encode and decode timing plus queried workspace bytes. The fuzz target and
+compile smoke are wired; sanitizer runtime execution is a separate GNU-driver
+qualification step and is not claimed by this milestone.
