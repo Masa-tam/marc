@@ -184,6 +184,13 @@ set(MARC_SOURCES
     src/frame/lzss_position_rans_64k_stream_decoder.cpp
     src/frame/lzss_position_tans_1m_c_factory.cpp
     src/frame/lzss_position_tans_4m_c_factory.cpp
+    src/frame/lzss_position_tans_8m_owned.cpp
+    src/frame/lzss_position_tans_8m_stream_decoder.cpp
+    src/frame/lzss_position_tans_8m_format.cpp
+    src/frame/lzss_position_tans_8m_frame.cpp
+    src/context/lzss_position_tans_8m_tokens.cpp
+    src/entropy/position_tans_8m.cpp
+    src/entropy/position_tans_8m_format.cpp
     src/frame/lzss_position_tans_1m_owned.cpp
     src/frame/lzss_position_tans_1m_stream_decoder.cpp
     src/frame/lzss_position_tans_1m_format.cpp
@@ -9613,6 +9620,27 @@ if(MARC_BUILD_TESTS)
     set_tests_properties(marc_position_tans_8m_frames PROPERTIES TIMEOUT 30)
     add_test(NAME marc_position_tans_8m_stream COMMAND marc_position_tans_8m_frame_tests --stream)
     set_tests_properties(marc_position_tans_8m_stream PROPERTIES TIMEOUT 30)
+    add_executable(marc_position_tans_8m_owned_tests
+        tests/position_tans_8m_owned_tests.cpp
+        src/frame/lzss_position_tans_8m_owned.cpp
+        src/frame/lzss_position_tans_8m_stream_decoder.cpp
+        src/frame/lzss_position_tans_8m_frame.cpp
+        src/frame/lzss_position_tans_8m_format.cpp
+        src/context/lzss_position_tans_8m_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_tans_8m.cpp
+        src/entropy/position_tans_8m_format.cpp
+        src/entropy/tans_tables.cpp
+        src/dictionary/lzss_position_distance_8m_five_prefix_candidate.cpp
+        src/dictionary/lzss_position_distance_8m_five_prefix_finder.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_typed_reconstructor.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_tans_8m_owned_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_8m_owned_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_tans_8m_owned COMMAND marc_position_tans_8m_owned_tests)
+    set_tests_properties(marc_position_tans_8m_owned PROPERTIES TIMEOUT 30)
     add_executable(marc_position_tans_4m_frame_tests
         tests/position_tans_4m_frame_tests.cpp
         tests/position_tans_4m_stream_tests.cpp
