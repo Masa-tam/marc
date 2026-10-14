@@ -9314,7 +9314,12 @@ if(MARC_BUILD_FUZZERS)
         position_tans_1m_payload
         lzss_position_tans_1m_tokens
         lzss_position_tans_1m_stream
-        lzss_position_tans_1m_public)
+        lzss_position_tans_1m_public
+        position_tans_4m_descriptor
+        position_tans_4m_payload
+        lzss_position_tans_4m_tokens
+        lzss_position_tans_4m_stream
+        lzss_position_tans_4m_public)
         add_executable(marc_fuzz_${entry} fuzz/${entry}_fuzz.cpp)
         target_compile_features(marc_fuzz_${entry} PRIVATE cxx_std_20)
         target_include_directories(marc_fuzz_${entry} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)

@@ -1832,3 +1832,26 @@ watchdog; no crash or timeout occurred, and failed decodes left final and
 temporary destinations unpublished. This is a decoder mutation pilot only;
 it is not a sanitizer campaign, does not establish exhaustive malformed
 coverage, and does not replace the required full-window component campaigns.
+
+## FZ-0090: four-MiB position-distance tANS campaigns
+
+Five bounded first-party targets cover descriptor parsing, scalar payload
+decoding, typed-token reconstruction, split streaming decode, and the public
+owning C lifecycle. Each target is linked with AddressSanitizer,
+UndefinedBehaviorSanitizer, and fuzzer coverage. The descriptor target checks
+that a failed parse retains its sentinel destination. The token and stream
+targets compare ordinary and private-scratch paths, guard caller buffers, and
+require stable terminal status under split input/output. The public target
+checks deterministic encoding, round-trip restoration, split decode agreement,
+and terminal error stability.
+
+All five targets completed a 300-run pilot and then 10,000 deterministic runs
+with seed 1603, a ten-second per-unit guard, and a 768MiB instrumented RSS
+limit. No crash, timeout, sanitizer finding, invariant failure, or saved
+artifact occurred. The full-run elapsed times were below one second for
+descriptor and payload, 129 seconds for tokens, 252 seconds for stream, and
+159 seconds for public. Peak instrumented RSS was 34MiB, 34MiB, 333MiB,
+334MiB, and 344MiB respectively. These are instrumented small-input campaigns;
+they do not replace the normal peak-memory measurements or directed full-window
+tests. Exchange/schema, fixed-Release closure, hosted CI, and external paths
+remain separate unfinished gates.

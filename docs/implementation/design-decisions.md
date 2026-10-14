@@ -34703,3 +34703,15 @@ records each member, total archive bytes, three-sample median timing and
 normal process peak separately. The complete12-member run is a compression
 win for position with mixed encode speed and higher normal memory; Dynamic
 Range is not an adoption criterion. Exchange and later windows remain open.
+
+### DD-1599: four-MiB sanitizer fuzz boundary
+
+The four-MiB profile uses five bounded sanitizer fuzz entries aligned with the
+existing 64KiB and one-MiB position-distance tANS layers: descriptor, payload,
+token, stream, and public owning C lifecycle. Failed ordinary destinations
+must retain sentinels; private tables and scratch remain disposable. The
+campaign accepts only stable terminal status and identical split/whole results.
+Each entry has a bounded input domain and a ten-second unit guard, while the
+full campaign runs one target at a time under an instrumented 768MiB cap. Its
+instrumented RSS is evidence for fuzz scheduling only, not a public resource
+default or normal-process memory measurement.

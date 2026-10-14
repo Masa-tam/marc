@@ -41180,3 +41180,13 @@ CLI selectors and first-party benchmark conventions. It compares only
 same-window contextual tANS, verifies restoration against separate expected
 copies, and keeps timing, query and RSS scopes distinct. No external codec
 implementation or copyleft corpus tooling was consulted.
+
+### CR-1795: four-MiB sanitizer fuzz review
+
+The five four-MiB fuzz entries were derived from the repository's already
+qualified 64KiB and one-MiB layer boundaries, public C ABI, and the documented
+private-scratch contract. They exercise repository code only and retain
+sentinel, split-buffer, and terminal-state checks in each applicable layer.
+No external implementation, source, or test corpus was consulted. A successful
+bounded sanitizer campaign does not claim exhaustive malformed-input coverage
+or replace exchange qualification.

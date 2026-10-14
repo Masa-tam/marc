@@ -23737,3 +23737,12 @@ checks, archive sizes, three-sample median timings, queried capacities and
 normal RSS peaks for both directions and both selectors. Totals and the
 all-member smaller-than-contextual assertion are derived from those rows;
 no local path or host detail is part of the public record.
+
+### TVG-1466: four-MiB sanitizer fuzz receipt
+
+Five first-party fuzz entries cover descriptor, payload, token, stream, and
+public lifecycle boundaries. Each full receipt records 10,000 deterministic
+runs with seed 1603, a ten-second unit guard, a 768MiB instrumented cap, and
+no saved artifact. The corresponding pilot and full logs remain generated
+evidence. These randomized inputs complement independent vectors and directed
+full-window cases; they do not replace either class of test.
