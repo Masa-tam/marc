@@ -2043,3 +2043,19 @@ paired normal measurements and five10000-unit fully instrumented campaigns.
 Hosted CI/external qualification remain pending; the latest maintainer
 external evidence remains schema71/81 in IX-0081. Later windows/final88 are
 unfinished, and no push is performed.
+
+## IX-0085:one-MiB tANS final local exchange and history
+
+At committed source revision `b1a920ebc35c38397b357511f0077c31409e16ed`,
+native and Clang producers generate identical schema73/`marc-cli-v73` bundles
+with83 archives. Two self and two cross consumers restore and re-encode all
+archives byte for byte. Each build rejects125 guarded negatives before codec
+launch or publication; the final route audit records250 guarded negatives and
+preserves the frozen82-entry and initial81 prefixes.
+
+Both normal builds complete the actual schema1..73 history. Every historical
+manifest, archive body, decoded raw output and re-encoded archive is rehashed
+against its manifest. The earlier partial Clang attempt is retained but is not
+used as final evidence. This closes the one-MiB local exchange and historical
+compatibility gates; fixed Release update/closure, hosted CI/external83,
+later profiles and final88 remain pending. No push is performed.

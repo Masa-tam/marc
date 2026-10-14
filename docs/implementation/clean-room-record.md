@@ -41103,3 +41103,14 @@ paired normal measurements and five10000-unit fully instrumented campaigns.
 Hosted CI/external qualification remain pending; the latest maintainer
 external evidence remains schema71/81 in IX-0081. Later windows/final88 are
 unfinished, and no push is performed.
+
+### CR-1786: one-MiB final local exchange and history qualification
+
+Using only the repository's independent format, implementation and first-party
+fixtures, both normal producers at committed revision
+`b1a920ebc35c38397b357511f0077c31409e16ed` agree on schema73/83 archive
+bodies. Two self and two cross routes restore and re-encode every archive
+identically. Each rejects125 malformed manifests before launch/publication;
+the final audit covers250 guarded cases. Native and Clang independently
+restore and re-encode schema1..73 and rehash each manifest, body and raw
+output. No external implementation or copyleft test source was consulted.

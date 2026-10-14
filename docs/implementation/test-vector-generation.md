@@ -23659,3 +23659,14 @@ paired normal measurements and five10000-unit fully instrumented campaigns.
 Hosted CI/external qualification remain pending; the latest maintainer
 external evidence remains schema71/81 in IX-0081. Later windows/final88 are
 unfinished, and no push is performed.
+
+### TVG-1457: one-MiB final exchange routes and history
+
+Final native and Clang schema73/83 producer manifests and complete archive
+bodies are identical at committed revision
+`b1a920ebc35c38397b357511f0077c31409e16ed`. Self and cross consumers restore
+all83 archives and reproduce their bytes. Each negative campaign has125
+guarded prelaunch cases and the route audit covers250. Native and Clang
+history evidence covers schema1..73 with raw restoration and complete
+re-encoding hashes. The old partial Clang attempt is retained but not used as
+final evidence.

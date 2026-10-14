@@ -34620,3 +34620,13 @@ paired normal measurements and five10000-unit fully instrumented campaigns.
 Hosted CI/external qualification remain pending; the latest maintainer
 external evidence remains schema71/81 in IX-0081. Later windows/final88 are
 unfinished, and no push is performed.
+
+### DD-1590: one-MiB final local exchange and historical compatibility
+
+Committed revision `b1a920ebc35c38397b357511f0077c31409e16ed` produces
+identical native and Clang schema73/83 bundles. Two self and two cross routes
+restore and re-encode every archive byte for byte. Each route rejects125
+guarded negatives before launch/publication; the final audit covers250 cases.
+Both normal builds complete schema1..73 historical restoration and full
+re-encoding with manifest, body and raw hashes checked. Fixed Release overlay,
+closure, hosted CI, external verification and later profiles remain separate.
