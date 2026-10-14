@@ -961,3 +961,21 @@ decoding and strict trailing checks. Boundary, truncation, deterministic
 re-encode, wrong-profile and destination-preservation tests are connected;
 contextual comparison, paired measurements, fuzz and exchange remain
 separate qualification gates.
+
+### Eight-MiB position-distance tANS
+
+The exact selector `lzss-position-distance-tans-8m` identifies dictionary2/11,
+context1/24 and tANS5/6. Known-size streams reset dictionary and models at
+each eight-MiB frame. Fixed-five encoding preserves longest/nearest matches;
+decoding accepts the specified3..258 grammar and distances through8,388,608.
+The distance-less name `lzss-position-tans-8m` is rejected.
+
+The CLI uses the eight-MiB public factory with a one-GiB aggregate admission,
+65536-byte input/output calls, and65536 declared retained control bytes.
+Resource queries and creation complete before input bytes are consumed.
+Failed frames never drain, and whole-file output is renamed only after
+successful decoding and strict trailing checks. The local selector test covers
+deterministic small-frame round trips, header identity, wrong-profile and
+truncation rejection, and destination preservation. Full-frame measurements,
+coverage-guided fuzzing, contextual comparison, and exchange qualification
+remain separate gates.

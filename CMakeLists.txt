@@ -721,6 +721,15 @@ if(MARC_BUILD_TOOLS)
 endif()
 
 if(MARC_BUILD_TESTS AND TARGET marc_static)
+    add_executable(marc_position_tans_8m_cli_candidate tools/marc_cli.cpp)
+    target_compile_features(marc_position_tans_8m_cli_candidate PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_8m_cli_candidate PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    if(MSVC)
+        target_compile_options(marc_position_tans_8m_cli_candidate PRIVATE /W4 /permissive- /Zc:__cplusplus)
+    else()
+        target_compile_options(marc_position_tans_8m_cli_candidate PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+    target_link_libraries(marc_position_tans_8m_cli_candidate PRIVATE marc::static)
     add_library(marc_position_distance_4m_baseline_c_support STATIC
         src/frame/lzss_position_distance_4m_workspace.cpp
         src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
@@ -7771,6 +7780,10 @@ if(MARC_BUILD_TESTS)
             COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_tans_4m.py
                 $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-tans-4m)
         set_tests_properties(marc_cli_position_tans_4m PROPERTIES TIMEOUT 600 RESOURCE_LOCK marc_position_tans_4m_campaign)
+        add_test(NAME marc_cli_position_tans_8m
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_tans_8m.py
+                $<TARGET_FILE:marc_position_tans_8m_cli_candidate> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-tans-8m)
+        set_tests_properties(marc_cli_position_tans_8m PROPERTIES TIMEOUT 600 RESOURCE_LOCK marc_position_tans_8m_campaign)
         add_test(NAME marc_position_tans_4m_cli_fuzz
             COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_4m_cli_fuzz.py
                 $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/position-tans-4m-cli-fuzz)
