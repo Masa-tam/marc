@@ -207,6 +207,8 @@ set(MARC_SOURCES
     src/entropy/position_tans_16m_format.cpp
     src/context/lzss_position_tans_16m_tokens.cpp
     src/frame/lzss_position_tans_16m_format.cpp
+    src/frame/lzss_position_tans_16m_frame.cpp
+    src/frame/lzss_position_tans_16m_stream_decoder.cpp
     src/frame/lzss_position_tans_1m_owned.cpp
     src/frame/lzss_position_tans_1m_stream_decoder.cpp
     src/frame/lzss_position_tans_1m_format.cpp
@@ -9592,6 +9594,22 @@ if(MARC_BUILD_TESTS)
             COMMAND marc_position_tans_16m_${layer}_tests)
         set_tests_properties(marc_position_tans_16m_${layer} PROPERTIES TIMEOUT 30)
     endforeach()
+    add_executable(marc_position_tans_16m_frame_tests
+        tests/position_tans_16m_frame_tests.cpp)
+    target_compile_features(marc_position_tans_16m_frame_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_16m_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_tans_16m_frame_tests PRIVATE marc::static)
+    add_test(NAME marc_position_tans_16m_frame
+        COMMAND marc_position_tans_16m_frame_tests)
+    set_tests_properties(marc_position_tans_16m_frame PROPERTIES TIMEOUT 60)
+    add_executable(marc_position_tans_16m_stream_tests
+        tests/position_tans_16m_stream_tests.cpp)
+    target_compile_features(marc_position_tans_16m_stream_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_16m_stream_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_tans_16m_stream_tests PRIVATE marc::static)
+    add_test(NAME marc_position_tans_16m_stream
+        COMMAND marc_position_tans_16m_stream_tests)
+    set_tests_properties(marc_position_tans_16m_stream PROPERTIES TIMEOUT 60)
     if(Python3_Interpreter_FOUND)
         add_test(NAME marc_position_tans_16m_vectors
             COMMAND ${Python3_EXECUTABLE} -B ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_16m_vectors.py)

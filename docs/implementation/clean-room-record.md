@@ -41276,3 +41276,11 @@ configured to an 8 MiB working window, not an invented contextual 8 MiB
 profile. This establishes the control's identity and restoration behavior only.
 No external implementation or source was consulted. Compression, timing,
 memory, and exchange conclusions remain unmeasured.
+
+### CR-1803: 2026-10-15 — Sixteen-MiB position-distance tANS frame and stream layer
+adapted from this repository's eight-MiB contracts by the project agent. No
+external implementation was consulted. The implementation keeps descriptor
+validation, private token/raw scratch, and success-only publication separate;
+the local frame and stream tests cover truncation and invalid-history failure
+invariants. Public API, benchmark, fuzz, exchange, and similarity review are
+still open release gates.

@@ -47,3 +47,14 @@ Metadata-only ceiling tests supply explicit limits and allocate no full frame;
 their limits do not establish public defaults or measured resource admission.
 Frame entropy completion, raw reconstruction, streaming quarantine and public
 connection remain separate unfinished gates.
+
+The private 16 MiB frame layer is now implemented. It admits a planned token
+sequence only after bounded validation, writes descriptor and payload bytes to
+private scratch, and publishes the serialized frame only after every stage
+succeeds. The decoder validates the complete descriptor before payload
+buffering, decodes into private tokens, reconstructs into private raw storage,
+and exposes raw bytes only while draining a validated frame. A truncated
+frame, invalid history, or entropy failure therefore leaves ordinary frame and
+raw destinations unchanged. The first frame and streaming split-boundary
+tests pass; public API/CLI, measurements, fuzzing, exchange, and full-frame
+corpus qualification remain unfinished.

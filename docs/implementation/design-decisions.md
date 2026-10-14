@@ -34784,6 +34784,13 @@ public API/CLI, resources, fuzzing and exchange qualification are separate
 unfinished gates. The detailed representation is in
 `docs/design/lzss-position-distance-tans-16m.md`.
 
+The internal frame and stream decoder now use the same quarantine boundary:
+descriptor and payload validation precede entropy decoding, token restoration
+uses private raw storage, and a frame enters draining only after reconstruction
+has succeeded. The new tests cover a successful one-byte frame, split stream
+input, truncation, and invalid history; public wiring and corpus qualification
+remain separate gates.
+
 ### DD-1605: eight-MiB tANS frame ownership and C boundary
 
 The native eight-MiB frame layer buffers a serialized frame, tANS tables,
