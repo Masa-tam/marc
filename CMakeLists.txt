@@ -18,10 +18,21 @@ option(MARC_BUILD_TOOLS "Build marc command-line tools" ${PROJECT_IS_TOP_LEVEL})
 option(MARC_BUILD_BENCHMARKS "Build marc benchmark tools" OFF)
 option(MARC_BUILD_FUZZERS "Build marc Clang/libFuzzer targets" OFF)
 option(MARC_BUILD_ENTROPY_DIAGNOSTICS "Build private entropy comparison tools" OFF)
+set(MARC_FUZZ_DISABLE_STRING_ANNOTATION_DEFAULT OFF)
+set(MARC_FUZZ_DISABLE_VECTOR_ANNOTATION_DEFAULT OFF)
+if(WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "Clang"
+        AND CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "GNU"
+        AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 22)
+    # The Windows LLVM 22 libFuzzer runtime is built without these annotations.
+    set(MARC_FUZZ_DISABLE_STRING_ANNOTATION_DEFAULT ON)
+    set(MARC_FUZZ_DISABLE_VECTOR_ANNOTATION_DEFAULT ON)
+endif()
 option(MARC_FUZZ_DISABLE_STRING_ANNOTATION
-    "Match Windows libFuzzer built without std::string ASan annotations" OFF)
+    "Match Windows libFuzzer built without std::string ASan annotations"
+    ${MARC_FUZZ_DISABLE_STRING_ANNOTATION_DEFAULT})
 option(MARC_FUZZ_DISABLE_VECTOR_ANNOTATION
-    "Match Windows libFuzzer built without std::vector ASan annotations" OFF)
+    "Match Windows libFuzzer built without std::vector ASan annotations"
+    ${MARC_FUZZ_DISABLE_VECTOR_ANNOTATION_DEFAULT})
 option(MARC_MSVC_MULTIPROCESS_COMPILE
     "Compile independent C/C++ translation units concurrently with MSVC /MP"
     OFF)
@@ -3120,18 +3131,18 @@ endif()
 if(MARC_BUILD_FUZZERS)
     add_executable(marc_fuzz_lzss_position_rans_1m_public fuzz/lzss_position_rans_1m_public_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_1m_public PRIVATE cxx_std_20)
-    target_compile_options(marc_fuzz_lzss_position_rans_1m_public PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_1m_public PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_1m_public PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_rans_1m_public PRIVATE marc::static)
     add_executable(marc_fuzz_lzss_position_rans_64k_public fuzz/lzss_position_rans_64k_public_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_64k_public PRIVATE cxx_std_20)
-    target_compile_options(marc_fuzz_lzss_position_rans_64k_public PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_64k_public PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_64k_public PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_rans_64k_public PRIVATE marc::static)
     add_executable(marc_fuzz_lzss_position_distance_4m_public fuzz/lzss_position_distance_4m_public_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_position_distance_4m_public PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_distance_4m_public PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_distance_4m_public PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
+    target_compile_options(marc_fuzz_lzss_position_distance_4m_public PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_position_distance_4m_public PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_distance_4m_public PRIVATE marc::static)
     if(NOT TARGET marc_static)
@@ -3158,7 +3169,7 @@ if(MARC_BUILD_FUZZERS)
     target_compile_features(marc_fuzz_position_tans_8m_stream PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_position_tans_8m_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_position_tans_8m_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_position_tans_8m_stream PRIVATE
         -fsanitize=fuzzer,address,undefined)
@@ -3169,7 +3180,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzss_position_distance_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzss_position_distance_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_position_distance_stream PRIVATE
         -fsanitize=fuzzer,address,undefined)
@@ -3187,7 +3198,7 @@ if(MARC_BUILD_FUZZERS)
     )
     target_compile_features(marc_fuzz_lzss_position_distance_4m_stream PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_distance_4m_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_distance_4m_stream PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
+    target_compile_options(marc_fuzz_lzss_position_distance_4m_stream PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_position_distance_4m_stream PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_distance_4m_stream PRIVATE marc::static)
 
@@ -3216,7 +3227,7 @@ if(MARC_BUILD_FUZZERS)
     )
     target_compile_features(marc_fuzz_lzss_position_distance_4m_encode_stream PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_distance_4m_encode_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_distance_4m_encode_stream PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
+    target_compile_options(marc_fuzz_lzss_position_distance_4m_encode_stream PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_position_distance_4m_encode_stream PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_distance_4m_encode_stream PRIVATE marc::static)
 
@@ -3246,7 +3257,7 @@ if(MARC_BUILD_FUZZERS)
     )
     target_compile_features(marc_fuzz_lzss_position_distance_4m_c PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_distance_4m_c PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_distance_4m_c PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
+    target_compile_options(marc_fuzz_lzss_position_distance_4m_c PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_position_distance_4m_c PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_distance_4m_c PRIVATE marc::static)
 
@@ -3256,7 +3267,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzss_position_distance_1m_frame
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzss_position_distance_1m_frame PRIVATE
-        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_position_distance_1m_frame PRIVATE
         -fsanitize=fuzzer,address,undefined)
@@ -3267,7 +3278,7 @@ if(MARC_BUILD_FUZZERS)
     target_compile_features(marc_fuzz_lzss_position_distance_1m_stream PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_distance_1m_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzss_position_distance_1m_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_position_distance_1m_stream PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_distance_1m_stream PRIVATE marc::static)
 
@@ -3275,7 +3286,7 @@ if(MARC_BUILD_FUZZERS)
     target_compile_features(marc_fuzz_lzss_position_distance_1m_raw PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_distance_1m_raw PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzss_position_distance_1m_raw PRIVATE
-        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_position_distance_1m_raw PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_distance_1m_raw PRIVATE marc::static)
 
@@ -3283,7 +3294,7 @@ if(MARC_BUILD_FUZZERS)
     target_compile_features(marc_fuzz_lzss_position_distance_1m_encode_stream PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_distance_1m_encode_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzss_position_distance_1m_encode_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_position_distance_1m_encode_stream PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_distance_1m_encode_stream PRIVATE marc::static)
 
@@ -3291,7 +3302,7 @@ if(MARC_BUILD_FUZZERS)
     target_compile_features(marc_fuzz_lzss_position_distance_1m_public PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_distance_1m_public PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzss_position_distance_1m_public PRIVATE
-        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_position_distance_1m_public PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_distance_1m_public PRIVATE marc::static)
 
@@ -3300,7 +3311,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lz77_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lz77_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lz77_stream PRIVATE
@@ -3311,7 +3322,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzss_encoder_probe
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzss_encoder_probe PRIVATE
-        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_encoder_probe PRIVATE
         -fsanitize=fuzzer,address,undefined)
@@ -3321,7 +3332,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzss_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzss_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_stream PRIVATE
@@ -3334,7 +3345,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lz77_blocked_huffman_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lz77_blocked_huffman_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lz77_blocked_huffman_stream PRIVATE
@@ -3348,7 +3359,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lz77_adaptive_huffman_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lz77_adaptive_huffman_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lz77_adaptive_huffman_stream PRIVATE
@@ -3362,7 +3373,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lz77_dynamic_range_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lz77_dynamic_range_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lz77_dynamic_range_stream PRIVATE
@@ -3375,7 +3386,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lz77_rans_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lz77_rans_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lz77_rans_stream PRIVATE
@@ -3387,7 +3398,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lz77_tans_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lz77_tans_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lz77_tans_stream PRIVATE
@@ -3399,7 +3410,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzss_tans_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzss_tans_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_tans_stream PRIVATE
@@ -3411,7 +3422,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzss_rans_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzss_rans_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_rans_stream PRIVATE
@@ -3424,7 +3435,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzss_dynamic_range_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzss_dynamic_range_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_dynamic_range_stream PRIVATE
@@ -3442,7 +3453,7 @@ if(MARC_BUILD_FUZZERS)
             ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(
         marc_fuzz_lzss_contextual_dynamic_range_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(
@@ -3461,7 +3472,7 @@ if(MARC_BUILD_FUZZERS)
             ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(
         marc_fuzz_lzss_contextual_rans_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(
@@ -3480,7 +3491,7 @@ if(MARC_BUILD_FUZZERS)
             ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(
         marc_fuzz_lzss_contextual_tans_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(
@@ -3499,7 +3510,7 @@ if(MARC_BUILD_FUZZERS)
             ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(
         marc_fuzz_lzss_contextual_blocked_huffman_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(
@@ -3519,7 +3530,7 @@ if(MARC_BUILD_FUZZERS)
             ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(
         marc_fuzz_lzss_contextual_adaptive_huffman_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(
@@ -3535,7 +3546,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzss_adaptive_huffman_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzss_adaptive_huffman_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_adaptive_huffman_stream PRIVATE
@@ -3549,7 +3560,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lz78_adaptive_huffman_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lz78_adaptive_huffman_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lz78_adaptive_huffman_stream PRIVATE
@@ -3563,7 +3574,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lz78_dynamic_range_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lz78_dynamic_range_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lz78_dynamic_range_stream PRIVATE
@@ -3576,7 +3587,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lz78_rans_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lz78_rans_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lz78_rans_stream PRIVATE
@@ -3588,7 +3599,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lz78_tans_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lz78_tans_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lz78_tans_stream PRIVATE
@@ -3601,7 +3612,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzw_adaptive_huffman_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzw_adaptive_huffman_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzw_adaptive_huffman_stream PRIVATE
@@ -3615,7 +3626,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzw_dynamic_range_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzw_dynamic_range_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzw_dynamic_range_stream PRIVATE
@@ -3630,7 +3641,7 @@ if(MARC_BUILD_FUZZERS)
             ${CMAKE_CURRENT_SOURCE_DIR}/include
             ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzw_rans_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzw_rans_stream PRIVATE
@@ -3644,7 +3655,7 @@ if(MARC_BUILD_FUZZERS)
             ${CMAKE_CURRENT_SOURCE_DIR}/include
             ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzw_tans_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzw_tans_stream PRIVATE
@@ -3658,7 +3669,7 @@ if(MARC_BUILD_FUZZERS)
             ${CMAKE_CURRENT_SOURCE_DIR}/include
             ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzd_rans_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzd_rans_stream PRIVATE
@@ -3672,7 +3683,7 @@ if(MARC_BUILD_FUZZERS)
             ${CMAKE_CURRENT_SOURCE_DIR}/include
             ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzd_tans_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzd_tans_stream PRIVATE
@@ -3686,7 +3697,7 @@ if(MARC_BUILD_FUZZERS)
             ${CMAKE_CURRENT_SOURCE_DIR}/include
             ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzmw_rans_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzmw_rans_stream PRIVATE
@@ -3700,7 +3711,7 @@ if(MARC_BUILD_FUZZERS)
             ${CMAKE_CURRENT_SOURCE_DIR}/include
             ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzmw_tans_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzmw_tans_stream PRIVATE
@@ -3713,7 +3724,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzd_adaptive_huffman_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzd_adaptive_huffman_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzd_adaptive_huffman_stream PRIVATE
@@ -3727,7 +3738,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzd_dynamic_range_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzd_dynamic_range_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzd_dynamic_range_stream PRIVATE
@@ -3741,7 +3752,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzmw_adaptive_huffman_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzmw_adaptive_huffman_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzmw_adaptive_huffman_stream PRIVATE
@@ -3755,7 +3766,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzmw_dynamic_range_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzmw_dynamic_range_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzmw_dynamic_range_stream PRIVATE
@@ -3769,7 +3780,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzss_blocked_huffman_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzss_blocked_huffman_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_blocked_huffman_stream PRIVATE
@@ -3783,7 +3794,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lz78_blocked_huffman_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lz78_blocked_huffman_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lz78_blocked_huffman_stream PRIVATE
@@ -3797,7 +3808,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzw_blocked_huffman_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzw_blocked_huffman_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzw_blocked_huffman_stream PRIVATE
@@ -3811,7 +3822,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzd_blocked_huffman_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzd_blocked_huffman_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzd_blocked_huffman_stream PRIVATE
@@ -3825,7 +3836,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzmw_blocked_huffman_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzmw_blocked_huffman_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzmw_blocked_huffman_stream PRIVATE
@@ -3838,7 +3849,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_checksum_raw_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_checksum_raw_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_checksum_raw_stream PRIVATE
@@ -3851,7 +3862,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_adaptive_huffman_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_adaptive_huffman_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_adaptive_huffman_stream PRIVATE
@@ -3865,7 +3876,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_dynamic_range_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_dynamic_range_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_dynamic_range_stream PRIVATE
@@ -3877,7 +3888,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_rans_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_rans_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_rans_stream PRIVATE
@@ -3888,7 +3899,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_tans_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_tans_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_tans_stream PRIVATE
@@ -3901,7 +3912,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_blocked_huffman_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_blocked_huffman_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_blocked_huffman_stream PRIVATE
@@ -3913,7 +3924,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lz78_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lz78_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lz78_stream PRIVATE
@@ -3924,7 +3935,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzw_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzw_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzw_stream PRIVATE
@@ -3935,7 +3946,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzd_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzd_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzd_stream PRIVATE
@@ -3946,7 +3957,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzmw_stream
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzmw_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined
+        -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzmw_stream PRIVATE
@@ -7015,7 +7026,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_position_distance_16m_frame PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_position_distance_16m_frame PRIVATE
-        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_position_distance_16m_frame PRIVATE
         -fsanitize=fuzzer,address,undefined)
@@ -7047,7 +7058,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_position_distance_16m_stream PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_position_distance_16m_stream PRIVATE
-        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_position_distance_16m_stream PRIVATE
         -fsanitize=fuzzer,address,undefined)
@@ -7079,7 +7090,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_position_distance_16m_reference PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_position_distance_16m_reference PRIVATE
-        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_position_distance_16m_reference PRIVATE
         -fsanitize=fuzzer,address,undefined)
@@ -7112,7 +7123,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_position_distance_16m_indexed PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_position_distance_16m_indexed PRIVATE
-        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_position_distance_16m_indexed PRIVATE
         -fsanitize=fuzzer,address,undefined)
@@ -7144,7 +7155,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_position_distance_16m_token_range PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_position_distance_16m_token_range PRIVATE
-        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_position_distance_16m_token_range PRIVATE
         -fsanitize=fuzzer,address,undefined)
@@ -7182,7 +7193,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_position_distance_16m_token_frame PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_position_distance_16m_token_frame PRIVATE
-        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_position_distance_16m_token_frame PRIVATE
         -fsanitize=fuzzer,address,undefined)
@@ -7209,7 +7220,7 @@ if(MARC_BUILD_FUZZERS)
     target_compile_features(marc_fuzz_position_distance_16m_compact PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_position_distance_16m_compact PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_position_distance_16m_compact PRIVATE
-        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_position_distance_16m_compact PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_position_distance_16m_compact PRIVATE marc::static)
 endif()
@@ -7250,7 +7261,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_position_distance_16m_compact_frame PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_position_distance_16m_compact_frame PRIVATE
-        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_position_distance_16m_compact_frame PRIVATE
         -fsanitize=fuzzer,address,undefined)
@@ -7295,7 +7306,7 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_position_distance_16m_owned PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_position_distance_16m_owned PRIVATE
-        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer
         -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_position_distance_16m_owned PRIVATE
         -fsanitize=fuzzer,address,undefined)
@@ -7332,7 +7343,7 @@ if(MARC_BUILD_FUZZERS AND MARC_BUILD_STATIC)
     add_executable(marc_fuzz_position_distance_16m_public
         tests/lzss_position_distance_16m_public_fuzz.cpp)
     target_compile_features(marc_fuzz_position_distance_16m_public PRIVATE cxx_std_20)
-    target_compile_options(marc_fuzz_position_distance_16m_public PRIVATE -fsanitize=fuzzer,address,undefined)
+    target_compile_options(marc_fuzz_position_distance_16m_public PRIVATE -fsanitize=fuzzer-no-link,address,undefined)
     target_link_options(marc_fuzz_position_distance_16m_public PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_position_distance_16m_public PRIVATE marc::static)
 endif()
@@ -7868,7 +7879,7 @@ if(MARC_BUILD_FUZZERS)
         src/core/limits.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_1m_tokens PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_rans_1m_tokens PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_rans_1m_tokens PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_1m_tokens PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_1m_tokens PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_lzss_position_rans_1m_stream
         fuzz/lzss_position_rans_1m_stream_fuzz.cpp
@@ -7886,7 +7897,7 @@ if(MARC_BUILD_FUZZERS)
         src/core/limits.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_1m_stream PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_rans_1m_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_rans_1m_stream PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_1m_stream PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_1m_stream PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_lzss_position_rans_1m_owned
         fuzz/lzss_position_rans_1m_owned_fuzz.cpp
@@ -7907,7 +7918,7 @@ if(MARC_BUILD_FUZZERS)
         src/core/limits.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_1m_owned PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_rans_1m_owned PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_rans_1m_owned PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_1m_owned PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_1m_owned PRIVATE -fsanitize=fuzzer,address,undefined)
 endif()
 
@@ -7993,7 +8004,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/entropy/position_rans_64k_format.cpp)
     target_compile_features(marc_fuzz_position_rans_64k_descriptor PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_position_rans_64k_descriptor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_position_rans_64k_descriptor PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_position_rans_64k_descriptor PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_position_rans_64k_descriptor PRIVATE -fsanitize=fuzzer,address,undefined)
 endif()
 
@@ -8004,7 +8015,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/entropy/position_rans_64k_decoder.cpp)
     target_compile_features(marc_fuzz_position_rans_64k_payload PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_position_rans_64k_payload PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_position_rans_64k_payload PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_position_rans_64k_payload PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_position_rans_64k_payload PRIVATE -fsanitize=fuzzer,address,undefined)
 endif()
 
@@ -8077,7 +8088,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/entropy/position_rans_4m_format.cpp)
     target_compile_features(marc_fuzz_position_rans_4m_descriptor PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_position_rans_4m_descriptor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_position_rans_4m_descriptor PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_position_rans_4m_descriptor PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_position_rans_4m_descriptor PRIVATE -fsanitize=fuzzer,address,undefined)
 endif()
 
@@ -8088,7 +8099,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/entropy/position_rans_4m_decoder.cpp)
     target_compile_features(marc_fuzz_position_rans_4m_payload PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_position_rans_4m_payload PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_position_rans_4m_payload PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_position_rans_4m_payload PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_position_rans_4m_payload PRIVATE -fsanitize=fuzzer,address,undefined)
 endif()
 
@@ -8234,7 +8245,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/core/limits.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_4m_tokens PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_rans_4m_tokens PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_rans_4m_tokens PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_4m_tokens PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_4m_tokens PRIVATE -fsanitize=fuzzer,address,undefined)
 endif()
 
@@ -8255,7 +8266,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/core/limits.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_4m_stream PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_rans_4m_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_rans_4m_stream PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_4m_stream PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_4m_stream PRIVATE -fsanitize=fuzzer,address,undefined)
 endif()
 
@@ -8332,7 +8343,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/entropy/position_rans_4m_full_literal_format.cpp)
     target_compile_features(marc_fuzz_position_rans_4m_full_literal_descriptor PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_position_rans_4m_full_literal_descriptor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_position_rans_4m_full_literal_descriptor PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_position_rans_4m_full_literal_descriptor PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_position_rans_4m_full_literal_descriptor PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_position_rans_4m_full_literal_payload
         fuzz/position_rans_4m_full_literal_payload_fuzz.cpp
@@ -8340,7 +8351,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/entropy/position_rans_4m_full_literal_decoder.cpp)
     target_compile_features(marc_fuzz_position_rans_4m_full_literal_payload PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_position_rans_4m_full_literal_payload PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_position_rans_4m_full_literal_payload PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_position_rans_4m_full_literal_payload PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_position_rans_4m_full_literal_payload PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_lzss_position_rans_4m_full_literal_tokens
         fuzz/lzss_position_rans_4m_full_literal_tokens_fuzz.cpp
@@ -8354,7 +8365,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/core/limits.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_4m_full_literal_tokens PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_rans_4m_full_literal_tokens PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_rans_4m_full_literal_tokens PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_4m_full_literal_tokens PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_4m_full_literal_tokens PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_lzss_position_rans_4m_full_literal_stream
         fuzz/lzss_position_rans_4m_full_literal_stream_fuzz.cpp
@@ -8372,11 +8383,11 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/core/limits.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_4m_full_literal_stream PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_rans_4m_full_literal_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_rans_4m_full_literal_stream PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_4m_full_literal_stream PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_4m_full_literal_stream PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_lzss_position_rans_4m_full_literal_public fuzz/lzss_position_rans_4m_full_literal_public_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_4m_full_literal_public PRIVATE cxx_std_20)
-    target_compile_options(marc_fuzz_lzss_position_rans_4m_full_literal_public PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_4m_full_literal_public PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_4m_full_literal_public PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_rans_4m_full_literal_public PRIVATE marc::static)
 endif()
@@ -8455,7 +8466,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/entropy/position_rans_8m_full_literal_format.cpp)
     target_compile_features(marc_fuzz_position_rans_8m_full_literal_descriptor PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_position_rans_8m_full_literal_descriptor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_position_rans_8m_full_literal_descriptor PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_position_rans_8m_full_literal_descriptor PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_position_rans_8m_full_literal_descriptor PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_position_rans_8m_full_literal_payload
         fuzz/position_rans_8m_full_literal_payload_fuzz.cpp
@@ -8463,7 +8474,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/entropy/position_rans_8m_full_literal_decoder.cpp)
     target_compile_features(marc_fuzz_position_rans_8m_full_literal_payload PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_position_rans_8m_full_literal_payload PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_position_rans_8m_full_literal_payload PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_position_rans_8m_full_literal_payload PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_position_rans_8m_full_literal_payload PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_lzss_position_rans_8m_full_literal_tokens
         fuzz/lzss_position_rans_8m_full_literal_tokens_fuzz.cpp
@@ -8477,7 +8488,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/core/limits.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_8m_full_literal_tokens PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_rans_8m_full_literal_tokens PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_rans_8m_full_literal_tokens PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_8m_full_literal_tokens PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_8m_full_literal_tokens PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_lzss_position_rans_8m_full_literal_stream
         fuzz/lzss_position_rans_8m_full_literal_stream_fuzz.cpp
@@ -8495,7 +8506,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/core/limits.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_8m_full_literal_stream PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_rans_8m_full_literal_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_rans_8m_full_literal_stream PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_8m_full_literal_stream PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_8m_full_literal_stream PRIVATE -fsanitize=fuzzer,address,undefined)
 endif()
 
@@ -8525,7 +8536,7 @@ endif()
 if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_executable(marc_fuzz_lzss_position_rans_8m_full_literal_public fuzz/lzss_position_rans_8m_full_literal_public_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_8m_full_literal_public PRIVATE cxx_std_20)
-    target_compile_options(marc_fuzz_lzss_position_rans_8m_full_literal_public PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_8m_full_literal_public PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_8m_full_literal_public PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_rans_8m_full_literal_public PRIVATE marc::static)
 endif()
@@ -8656,7 +8667,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/entropy/position_rans_16m_full_literal_format.cpp)
     target_compile_features(marc_fuzz_position_rans_16m_full_literal_descriptor PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_position_rans_16m_full_literal_descriptor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_position_rans_16m_full_literal_descriptor PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_position_rans_16m_full_literal_descriptor PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_position_rans_16m_full_literal_descriptor PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_position_rans_16m_full_literal_payload
         fuzz/position_rans_16m_full_literal_payload_fuzz.cpp
@@ -8664,7 +8675,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/entropy/position_rans_16m_full_literal_decoder.cpp)
     target_compile_features(marc_fuzz_position_rans_16m_full_literal_payload PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_position_rans_16m_full_literal_payload PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_position_rans_16m_full_literal_payload PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_position_rans_16m_full_literal_payload PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_position_rans_16m_full_literal_payload PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_lzss_position_rans_16m_full_literal_tokens
         fuzz/lzss_position_rans_16m_full_literal_tokens_fuzz.cpp
@@ -8678,7 +8689,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/core/limits.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_16m_full_literal_tokens PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_rans_16m_full_literal_tokens PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_rans_16m_full_literal_tokens PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_16m_full_literal_tokens PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_16m_full_literal_tokens PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_lzss_position_rans_16m_full_literal_stream
         fuzz/lzss_position_rans_16m_full_literal_stream_fuzz.cpp
@@ -8696,14 +8707,14 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/core/limits.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_16m_full_literal_stream PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_rans_16m_full_literal_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_rans_16m_full_literal_stream PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_16m_full_literal_stream PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_16m_full_literal_stream PRIVATE -fsanitize=fuzzer,address,undefined)
 endif()
 
 if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_executable(marc_fuzz_lzss_position_rans_16m_full_literal_public fuzz/lzss_position_rans_16m_full_literal_public_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_16m_full_literal_public PRIVATE cxx_std_20)
-    target_compile_options(marc_fuzz_lzss_position_rans_16m_full_literal_public PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_16m_full_literal_public PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_16m_full_literal_public PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_rans_16m_full_literal_public PRIVATE marc::static)
 endif()
@@ -9035,7 +9046,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/entropy/position_rans_32m_full_literal_format.cpp)
     target_compile_features(marc_fuzz_position_rans_32m_full_literal_descriptor PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_position_rans_32m_full_literal_descriptor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_position_rans_32m_full_literal_descriptor PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_position_rans_32m_full_literal_descriptor PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_position_rans_32m_full_literal_descriptor PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_position_rans_32m_full_literal_payload
         fuzz/position_rans_32m_full_literal_payload_fuzz.cpp
@@ -9043,7 +9054,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/entropy/position_rans_32m_full_literal_decoder.cpp)
     target_compile_features(marc_fuzz_position_rans_32m_full_literal_payload PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_position_rans_32m_full_literal_payload PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_position_rans_32m_full_literal_payload PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_position_rans_32m_full_literal_payload PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_position_rans_32m_full_literal_payload PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_lzss_position_rans_32m_full_literal_tokens
         fuzz/lzss_position_rans_32m_full_literal_tokens_fuzz.cpp
@@ -9057,7 +9068,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/core/limits.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_32m_full_literal_tokens PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_rans_32m_full_literal_tokens PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_rans_32m_full_literal_tokens PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_32m_full_literal_tokens PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_32m_full_literal_tokens PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_lzss_position_rans_32m_full_literal_stream
         fuzz/lzss_position_rans_32m_full_literal_stream_fuzz.cpp
@@ -9075,14 +9086,14 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/core/limits.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_32m_full_literal_stream PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_rans_32m_full_literal_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_rans_32m_full_literal_stream PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_32m_full_literal_stream PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_32m_full_literal_stream PRIVATE -fsanitize=fuzzer,address,undefined)
 endif()
 
 if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_executable(marc_fuzz_lzss_position_rans_32m_full_literal_public fuzz/lzss_position_rans_32m_full_literal_public_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_32m_full_literal_public PRIVATE cxx_std_20)
-    target_compile_options(marc_fuzz_lzss_position_rans_32m_full_literal_public PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_32m_full_literal_public PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_32m_full_literal_public PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_rans_32m_full_literal_public PRIVATE marc::static)
 endif()
@@ -9249,7 +9260,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/entropy/position_rans_64m_full_literal_format.cpp)
     target_compile_features(marc_fuzz_position_rans_64m_full_literal_descriptor PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_position_rans_64m_full_literal_descriptor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_position_rans_64m_full_literal_descriptor PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_position_rans_64m_full_literal_descriptor PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_position_rans_64m_full_literal_descriptor PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_position_rans_64m_full_literal_payload
         fuzz/position_rans_64m_full_literal_payload_fuzz.cpp
@@ -9257,7 +9268,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/entropy/position_rans_64m_full_literal_decoder.cpp)
     target_compile_features(marc_fuzz_position_rans_64m_full_literal_payload PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_position_rans_64m_full_literal_payload PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_position_rans_64m_full_literal_payload PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_position_rans_64m_full_literal_payload PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_position_rans_64m_full_literal_payload PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_lzss_position_rans_64m_full_literal_tokens
         fuzz/lzss_position_rans_64m_full_literal_tokens_fuzz.cpp
@@ -9271,7 +9282,7 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/core/limits.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_64m_full_literal_tokens PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_rans_64m_full_literal_tokens PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_rans_64m_full_literal_tokens PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_64m_full_literal_tokens PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_64m_full_literal_tokens PRIVATE -fsanitize=fuzzer,address,undefined)
     add_executable(marc_fuzz_lzss_position_rans_64m_full_literal_stream
         fuzz/lzss_position_rans_64m_full_literal_stream_fuzz.cpp
@@ -9289,14 +9300,14 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         src/core/limits.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_64m_full_literal_stream PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lzss_position_rans_64m_full_literal_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_rans_64m_full_literal_stream PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_64m_full_literal_stream PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_64m_full_literal_stream PRIVATE -fsanitize=fuzzer,address,undefined)
 endif()
 
 if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_executable(marc_fuzz_lzss_position_rans_64m_full_literal_public fuzz/lzss_position_rans_64m_full_literal_public_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_64m_full_literal_public PRIVATE cxx_std_20)
-    target_compile_options(marc_fuzz_lzss_position_rans_64m_full_literal_public PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_compile_options(marc_fuzz_lzss_position_rans_64m_full_literal_public PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_64m_full_literal_public PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_rans_64m_full_literal_public PRIVATE marc::static)
 endif()
@@ -9359,7 +9370,7 @@ if(MARC_BUILD_FUZZERS)
         target_compile_features(marc_fuzz_${entry} PRIVATE cxx_std_20)
         target_include_directories(marc_fuzz_${entry} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_compile_options(marc_fuzz_${entry} PRIVATE
-            -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+            -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
         target_link_options(marc_fuzz_${entry} PRIVATE -fsanitize=fuzzer,address,undefined)
         # MARC_BUILD_FUZZERS instruments every marc_static production object.
         target_link_libraries(marc_fuzz_${entry} PRIVATE marc::static)
