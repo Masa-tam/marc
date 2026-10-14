@@ -2,7 +2,10 @@
 #include "core/endian.hpp"
 #include <algorithm>
 #include <iostream>
+#include <string>
 #include <vector>
+
+int position_tans_8m_stream_tests();
 
 namespace {
 using namespace marc::frame::internal;
@@ -16,7 +19,8 @@ bool marked(std::span<const std::byte> bytes) {
     return std::all_of(bytes.begin(),bytes.end(),[](auto b){return b==marker;});
 }
 }
-int main() {
+int main(int argc,char** argv) {
+    if (argc==2 && std::string(argv[1])=="--stream") return position_tans_8m_stream_tests();
     marc::core::DecoderLimits limits{};limits.max_block_size=UINT64_C(8)*8388608;
     PositionTans8mStreamHeader stream{};stream.original_size=1;
     const PositionTans8mFrameContext context{stream,limits,0,0};
