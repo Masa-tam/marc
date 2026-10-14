@@ -41199,3 +41199,12 @@ new header assertion independently writes and compares every fixed header
 field before decode. No external implementation, source, or test suite was
 consulted. The retained-prefix comparison is a local producer result and does
 not imply external interoperability.
+
+### CR-1797: four-MiB exchange negative review
+
+The schema74 guarded-negative driver follows the repository's prior
+manifest-admission harness while independently selecting the appended 4 MiB
+identity fields and expected failures. It launches a sentinel program in place
+of the codec, so each rejection proves admission occurred before codec launch
+and output publication. No external implementation, source, or test suite was
+consulted.

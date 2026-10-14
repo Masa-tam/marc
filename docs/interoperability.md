@@ -2092,8 +2092,9 @@ Generation and verification require its exact112-byte identity
 frequencies before codec launch.
 
 One local producer and its self consumer restore and completely re-encode all
-84 archives byte-for-byte. This is a schema-admission and self-route result
-only. A second producer, two cross routes, guarded negative campaign,
-historical schema audit, fixed-Release update/closure, hosted CI, external
-verification, later profiles, and final88 audit remain unfinished. No push is
-performed.
+84 archives byte-for-byte. Its 125 guarded negatives mutate manifest admission
+or every fixed-header byte and are rejected before codec launch or output
+publication. This is a schema-admission, negative, and self-route result only.
+A second producer, two cross routes, historical schema audit, fixed-Release
+update/closure, hosted CI, external verification, later profiles, and final88
+audit remain unfinished. No push is performed.

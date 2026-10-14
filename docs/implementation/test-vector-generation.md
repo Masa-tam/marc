@@ -23755,3 +23755,11 @@ verification receipt restores all84 entries and compares complete re-encoded
 archive bytes. Header validation checks the 112-byte fixed identity before
 codec dispatch. Cross-route, historical, and negative receipts remain
 separate unfinished evidence.
+
+### TVG-1468: four-MiB schema74 negative receipt
+
+The retained schema74 negative receipt has 125 cases: thirteen manifest or
+identity cases and every one of the appended archive's 112 fixed header bytes.
+Every case records rejection, zero published output files, and zero codec
+launches. It applies to manifest admission only and does not replace cross or
+historical receipts.

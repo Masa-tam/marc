@@ -34724,3 +34724,12 @@ archives, so the additive profile forms schema74/archive84. Both producer and
 consumer scripts verify the exact four-MiB header identity and parameters
 before codec dispatch. A schema74 self route is not evidence for cross-build,
 historical, negative-input, fixed-Release, hosted, or external qualification.
+
+### DD-1601: four-MiB exchange admission negatives
+
+Schema74 retains the guarded-negative design used by schema73: malformed
+manifest state and each mutation of the appended archive's fixed header are
+rejected before codec launch and before any output is published. The local
+guard runs 125 cases, including all 112 header-byte mutations. It does not
+substitute for a second producer, cross route, historical, fixed-Release,
+hosted, or external audit.
