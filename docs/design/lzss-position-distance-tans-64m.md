@@ -71,10 +71,12 @@ The completed eight-material size comparison is:
 | sao | 5,095,422 | 5,229,206 | 133,784 |
 | x-ray | 5,200,442 | 5,361,523 | 161,081 |
 | xml | 550,133 | 550,977 | 844 |
-| **total** | **24,926,407** | **25,369,295** | **442,888** |
+| samba | 4,709,783 | 4,713,430 | 3,647 |
+| nci | 2,101,645 | 2,103,968 | 2,323 |
+| **total (10 materials)** | **31,737,835** | **32,186,693** | **448,858** |
 
 The 64 MiB profile was smaller for every completed material. The remaining
-four materials (`mozilla`, `nci`, `samba`, and `webster`) have no completed
-pair and are excluded from the total. The benchmark reports queried
+two materials (`mozilla` and `webster`) have no completed pair and are
+excluded from the total. The benchmark reports queried
 workspace bytes and timings, but not peak resident memory; peak-memory
 comparison remains unverified.
