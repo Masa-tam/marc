@@ -190,6 +190,13 @@ set(MARC_SOURCES
     src/context/lzss_position_tans_1m_tokens.cpp
     src/entropy/position_tans_1m.cpp
     src/entropy/position_tans_1m_format.cpp
+    src/frame/lzss_position_tans_4m_owned.cpp
+    src/frame/lzss_position_tans_4m_stream_decoder.cpp
+    src/frame/lzss_position_tans_4m_format.cpp
+    src/frame/lzss_position_tans_4m_frame.cpp
+    src/context/lzss_position_tans_4m_tokens.cpp
+    src/entropy/position_tans_4m.cpp
+    src/entropy/position_tans_4m_format.cpp
     src/frame/lzss_position_tans_64k_c_factory.cpp
     src/frame/lzss_position_tans_64k_owned.cpp
     src/frame/lzss_position_tans_64k_stream_decoder.cpp
@@ -9497,4 +9504,60 @@ if(MARC_BUILD_TESTS)
                 ${CMAKE_CURRENT_BINARY_DIR}/position-tans-1m-public-measurements)
         set_tests_properties(marc_position_tans_1m_public_measurements PROPERTIES TIMEOUT 30 RESOURCE_LOCK marc_position_tans_1m_campaign)
     endif()
+    add_executable(marc_position_tans_4m_core_tests
+        tests/position_tans_4m_core_tests.cpp
+        src/entropy/position_tans_4m_format.cpp
+        src/entropy/position_tans_4m.cpp
+        src/entropy/tans_tables.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_tans_4m_core_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_4m_core_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_tans_4m_core COMMAND marc_position_tans_4m_core_tests)
+    set_tests_properties(marc_position_tans_4m_core PROPERTIES TIMEOUT 30)
+    add_executable(marc_position_tans_4m_token_tests
+        tests/position_tans_4m_token_tests.cpp
+        src/context/lzss_position_tans_4m_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_tans_4m.cpp
+        src/entropy/position_tans_4m_format.cpp
+        src/entropy/tans_tables.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_tans_4m_token_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_4m_token_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_tans_4m_tokens COMMAND marc_position_tans_4m_token_tests)
+    set_tests_properties(marc_position_tans_4m_tokens PROPERTIES TIMEOUT 30)
+    add_executable(marc_position_tans_4m_frame_format_tests
+        tests/position_tans_4m_frame_format_tests.cpp
+        src/frame/lzss_position_tans_4m_format.cpp
+        src/entropy/position_tans_4m_format.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_tans_4m_frame_format_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_4m_frame_format_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_tans_4m_frame_format COMMAND marc_position_tans_4m_frame_format_tests)
+    set_tests_properties(marc_position_tans_4m_frame_format PROPERTIES TIMEOUT 30)
+    add_executable(marc_position_tans_4m_frame_tests
+        tests/position_tans_4m_frame_tests.cpp
+        tests/position_tans_4m_stream_tests.cpp
+        src/frame/lzss_position_tans_4m_stream_decoder.cpp
+        src/frame/lzss_position_tans_4m_frame.cpp
+        src/frame/lzss_position_tans_4m_format.cpp
+        src/context/lzss_position_tans_4m_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_tans_4m.cpp
+        src/entropy/position_tans_4m_format.cpp
+        src/entropy/tans_tables.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_typed_reconstructor.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_tans_4m_frame_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_tans_4m_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_tans_4m_frames COMMAND marc_position_tans_4m_frame_tests)
+    set_tests_properties(marc_position_tans_4m_frames PROPERTIES TIMEOUT 30)
+    add_test(NAME marc_position_tans_4m_stream COMMAND marc_position_tans_4m_frame_tests --stream)
+    set_tests_properties(marc_position_tans_4m_stream PROPERTIES TIMEOUT 30)
 endif()

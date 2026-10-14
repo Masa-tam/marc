@@ -23688,3 +23688,11 @@ vectors and a frozen JSON file, checks the descriptor parser and strict
 normalization, and covers empty entropy, lengths3/4/258, literal history,
 distance boundaries through4194304, all active models and malformed-state
 boundaries. The CMake test runs the oracle with a120-second bound.
+
+### TVG-1460: four-MiB internal differential and failure tests
+
+The CMake suite runs six four-MiB tests: the232-vector oracle, finite
+descriptor/model/automaton checks, typed-token private-scratch and ordinary
+destination rollback, frame-format bounds, frame failure publication and
+stream chunking. All six pass in the current Clang build. Public API and
+exchange vectors are intentionally not claimed by this receipt.

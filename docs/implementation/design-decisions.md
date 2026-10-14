@@ -34652,3 +34652,11 @@ oracle freezes232 mathematical vectors, including isolated distance
 boundaries, length and literal-history cases, all-active models and malformed
 descriptor coverage. No public factory, CLI or bundle entry is admitted by
 this milestone.
+
+### DD-1593: four-MiB internal core and frame qualification
+
+The four-MiB entropy, token and frame implementations use the DD-1592
+identity and preserve ordinary destination commit rules and private failed
+frame quarantine. Clang CMake/CTest passes the mathematical vectors, finite
+core, token rollback, frame format, frame and stream tests. Public factory,
+CLI, measurements, fuzzing and exchange remain separate unfinished gates.

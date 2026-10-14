@@ -41130,3 +41130,12 @@ family specification and integer tANS equations. The parser and inverse table
 enumeration are independent of production sources. No external copyleft
 implementation or test suite was consulted; the new selector remains
 unconnected to public API and exchange output at this milestone.
+
+### CR-1789: four-MiB internal implementation review
+
+The four-MiB production core, token mapping and frame/stream layers were
+derived from the repository-authored DD-1592 equations and the existing
+first-party architecture. CMake/CTest results cover six internal targets,
+including rollback and failed-frame non-publication. No external copyleft
+implementation or test suite was consulted, and public/API qualification is
+not implied.
