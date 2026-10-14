@@ -66,3 +66,11 @@ allocation. The CLI selector is
 failure-publication regression, and a CLI encode/decode smoke round trip pass
 with the updated implementation. Benchmark, fuzz, exchange, and corpus
 qualification are still open.
+
+The 16 MiB benchmark executable and smoke test are present. Its contextual
+control is the published profile 16 configured to a 16 MiB window and frame;
+the measurement harness uses an explicit 512 MiB compressed-payload admission
+limit because the public workspace query measured 176,169,991 bytes for the
+contextual encoded frame. The full twelve-member corpus comparison was
+started but remains pending the process-idle audit; no partial corpus result is
+treated as a qualification receipt.

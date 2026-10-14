@@ -9778,6 +9778,9 @@ if(MARC_BUILD_TESTS)
     add_executable(marc_position_tans_8m_benchmark benchmarks/position_tans_8m_benchmark.cpp)
     target_compile_features(marc_position_tans_8m_benchmark PRIVATE cxx_std_20)
     target_link_libraries(marc_position_tans_8m_benchmark PRIVATE marc::static)
+    add_executable(marc_position_tans_16m_benchmark benchmarks/position_tans_16m_benchmark.cpp)
+    target_compile_features(marc_position_tans_16m_benchmark PRIVATE cxx_std_20)
+    target_link_libraries(marc_position_tans_16m_benchmark PRIVATE marc::static)
     if(Python3_Interpreter_FOUND)
         add_test(NAME marc_position_tans_8m_benchmark_smoke
             COMMAND ${Python3_EXECUTABLE} -B -X utf8
@@ -9786,6 +9789,13 @@ if(MARC_BUILD_TESTS)
                 ${CMAKE_CURRENT_BINARY_DIR}/position-tans-8m-benchmark-smoke)
         set_tests_properties(marc_position_tans_8m_benchmark_smoke PROPERTIES
             TIMEOUT 120 RESOURCE_LOCK marc_position_tans_8m_campaign)
+        add_test(NAME marc_position_tans_16m_benchmark_smoke
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_16m_benchmark_smoke.py
+                $<TARGET_FILE:marc_position_tans_16m_benchmark>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-16m-benchmark-smoke)
+        set_tests_properties(marc_position_tans_16m_benchmark_smoke PROPERTIES
+            TIMEOUT 180 RESOURCE_LOCK marc_position_tans_16m_campaign)
     endif()
     add_executable(marc_position_tans_8m_contextual_probe tests/position_tans_8m_contextual_probe.cpp)
     target_compile_features(marc_position_tans_8m_contextual_probe PRIVATE cxx_std_20)
