@@ -103,26 +103,33 @@ bool run(bool position,marc_direction direction,const std::vector<std::uint8_t>&
 }
 }
 int main(int argc,char** argv) {
-    if (argc==4 && std::string(argv[2])=="all") {
+    if (argc==4 && (std::string(argv[2])=="all" || std::string(argv[2])=="once")) {
         const std::string profile=argv[1];
         if (profile!="position" && profile!="contextual") return 2;
+        const bool once=std::string(argv[2])=="once";
         std::vector<std::uint8_t> raw,wire;
         if (!load(argv[3],raw)) return 2;
         double elapsed{}; std::uint64_t encode_queried{},decode_queried{};
         if (!run(profile=="position",MARC_DIRECTION_ENCODE,raw,nullptr,&wire,elapsed,encode_queried)
             || wire.empty()) return 1;
         std::array<double,3> encode_samples{},decode_samples{};
-        for (std::size_t iteration{};iteration<encode_samples.size();++iteration) {
+        const auto sample_count=once ? std::size_t{1} : encode_samples.size();
+        encode_samples[0]=elapsed;
+        for (std::size_t iteration=once ? sample_count : std::size_t{};
+             iteration<encode_samples.size() && iteration<sample_count;++iteration) {
             if (!run(profile=="position",MARC_DIRECTION_ENCODE,raw,&wire,nullptr,elapsed,encode_queried)) return 1;
             encode_samples[iteration]=elapsed;
         }
         if (!run(profile=="position",MARC_DIRECTION_DECODE,wire,&raw,nullptr,elapsed,decode_queried)) return 1;
-        for (std::size_t iteration{};iteration<decode_samples.size();++iteration) {
+        decode_samples[0]=elapsed;
+        for (std::size_t iteration=once ? sample_count : std::size_t{};
+             iteration<decode_samples.size() && iteration<sample_count;++iteration) {
             if (!run(profile=="position",MARC_DIRECTION_DECODE,wire,&raw,nullptr,elapsed,decode_queried)) return 1;
             decode_samples[iteration]=elapsed;
         }
         std::cout<<std::setprecision(12)<<"{\"verified\":true,\"profile\":\""<<profile
-            <<"\",\"frame_size\":67108864,\"window_size\":67108864,\"warmups\":1"
+            <<"\",\"frame_size\":67108864,\"window_size\":67108864,\"warmups\":"
+            <<(once ? 0 : 1)
             <<",\"compressed_bytes\":"<<wire.size()
             <<",\"encode_queried_bytes\":"<<encode_queried
             <<",\"decode_queried_bytes\":"<<decode_queried

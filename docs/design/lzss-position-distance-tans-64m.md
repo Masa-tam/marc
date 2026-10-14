@@ -51,8 +51,10 @@ for decode. The remaining eleven materials were not completed because the
 next large-material position run produced no result within the local
 observation window; no corpus total or peak-resident claim is made.
 
-An additional `mr` position-only run completed at 3,201,375 bytes with
-encode samples 22.0430174/23.4017857/22.9234037 seconds and decode samples
-0.3163874/0.3125655/0.3157884 seconds. Its contextual counterpart did not
-produce a result in the observation window and was stopped; it is excluded
-from comparison totals.
+An additional `mr` comparison completed with the single-sample mode:
+position-distance produced 3,201,375 bytes and contextual produced 3,316,407
+bytes, a 115,032-byte position-distance saving. Position encode/decode took
+25.2601615/0.3302469 seconds and contextual encode/decode took
+56.316897/0.2969483 seconds. Queried workspace values were
+4,105,241,650/1,692,372,236 versus 301,551,007/1,423,217,885 bytes. These
+are single samples and are not mixed with the three-sample `dickens` results.
