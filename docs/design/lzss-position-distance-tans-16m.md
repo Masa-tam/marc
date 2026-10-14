@@ -36,3 +36,14 @@ The C++ core also agrees with 236 independent oracle fixtures. The oracle
 was corrected to emit bits from the pre-transition state. The inherited
 eight-MiB oracle was separately corrected and passed 234 core fixtures. Frame, public API/CLI,
 benchmark, fuzz and exchange completion remain unproven.
+
+The bounded stream/frame-header validator is implemented. It verifies the
+exact identity, fixed stream layout, known-size partition, sequence, descriptor
+canonicality before payload buffering, and decision/payload ceilings. Tests
+check the singleton literal header bytes, truncations, malformed fields,
+ordinary-output retention, exact private-footprint admission and rejection one
+byte below it. The 233,472 decode-table entries include the uniform bank.
+Metadata-only ceiling tests supply explicit limits and allocate no full frame;
+their limits do not establish public defaults or measured resource admission.
+Frame entropy completion, raw reconstruction, streaming quarantine and public
+connection remain separate unfinished gates.

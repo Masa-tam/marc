@@ -206,6 +206,7 @@ set(MARC_SOURCES
     src/entropy/position_tans_16m.cpp
     src/entropy/position_tans_16m_format.cpp
     src/context/lzss_position_tans_16m_tokens.cpp
+    src/frame/lzss_position_tans_16m_format.cpp
     src/frame/lzss_position_tans_1m_owned.cpp
     src/frame/lzss_position_tans_1m_stream_decoder.cpp
     src/frame/lzss_position_tans_1m_format.cpp
@@ -9581,7 +9582,7 @@ if(MARC_BUILD_TESTS)
     target_include_directories(marc_position_tans_4m_core_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_4m_core COMMAND marc_position_tans_4m_core_tests)
     set_tests_properties(marc_position_tans_4m_core PROPERTIES TIMEOUT 30)
-    foreach(layer IN ITEMS core token)
+    foreach(layer IN ITEMS core token frame_format)
         add_executable(marc_position_tans_16m_${layer}_tests
             tests/position_tans_16m_${layer}_tests.cpp)
         target_compile_features(marc_position_tans_16m_${layer}_tests PRIVATE cxx_std_20)
