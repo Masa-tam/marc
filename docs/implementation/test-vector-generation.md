@@ -23729,3 +23729,11 @@ The generated `dickens` archive crosses the four-MiB frame boundary and is
 decoded back to the recorded raw SHA-256 by both selectors. The corrected
 archive and new output are stored separately from the earlier failed decode
 artifact. The regression does not claim the full corpus or bundle gates.
+
+### TVG-1465: four-MiB complete comparison receipt
+
+The receipt contains12 member rows, source and archive hashes, restored-hash
+checks, archive sizes, three-sample median timings, queried capacities and
+normal RSS peaks for both directions and both selectors. Totals and the
+all-member smaller-than-contextual assertion are derived from those rows;
+no local path or host detail is part of the public record.

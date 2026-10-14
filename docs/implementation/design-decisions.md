@@ -34695,3 +34695,11 @@ uses six valid bits and reserves only its upper two bits. The parser now checks
 `0xC0`; valid bits previously rejected by `0xF0` are accepted. Independent
 format/frame/stream/CLI tests, a500-case mutation pilot and a multi-frame
 Silesia member then pass. Full corpus measurement and exchange remain open.
+
+### DD-1598: four-MiB complete paired measurement
+
+The four-MiB gate uses the actual same-window contextual tANS selector and
+records each member, total archive bytes, three-sample median timing and
+normal process peak separately. The complete12-member run is a compression
+win for position with mixed encode speed and higher normal memory; Dynamic
+Range is not an adoption criterion. Exchange and later windows remain open.

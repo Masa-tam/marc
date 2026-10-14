@@ -41172,3 +41172,11 @@ The final-mask correction was derived from the repository's own declared
 descriptor parser and independent vectors. The multi-frame regression used
 the existing first-party corpus and public selectors; no external codec
 implementation or test suite was consulted.
+
+### CR-1794: four-MiB complete measurement review
+
+The paired measurement driver was written from the repository's public C ABI,
+CLI selectors and first-party benchmark conventions. It compares only
+same-window contextual tANS, verifies restoration against separate expected
+copies, and keeps timing, query and RSS scopes distinct. No external codec
+implementation or copyleft corpus tooling was consulted.

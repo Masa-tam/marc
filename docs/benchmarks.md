@@ -11304,6 +11304,39 @@ All restored SHA-256 values equal the raw member. This is one multi-frame
 member, not the required twelve-member total; queries and normal RSS are
 separate accounting scopes.
 
+### BM-0243:four-MiB complete twelve-member paired comparison
+
+The complete12-member corpus was measured with the actual selectors
+`lzss-position-distance-tans-4m` and `lzss-contextual-tans-4m`. Every member
+restored to its dedicated expected SHA-256, and position was smaller for all
+12 members. Totals are position61,315,238 bytes versus contextual62,480,743
+bytes, a1.8653827% reduction. Sum of member median timings is encode
+105.1898/139.9699 seconds and decode3.8933/4.7781 seconds (P/C).
+Normal peak RSS maxima are117924/68136 KiB for encode and62024/49744 KiB for
+decode. Queries and normal RSS are separate scopes; neither is a public
+memory grant.
+
+| Member | Raw bytes | Archive bytes P/C | Encode median seconds P/C | Decode median seconds P/C | Encode peak KiB P/C | Decode peak KiB P/C |
+|---|---:|---:|---:|---:|---:|---:|
+| dickens | 10192446 | 3260516/3265904 | 5.686/6.842 | 0.239/0.251 | 112304/34608 | 60096/16424 |
+| mozilla | 51220480 | 18252213/18955382 | 23.318/37.867 | 1.057/1.429 | 117924/68136 | 62024/49744 |
+| mr | 9970564 | 3269153/3386690 | 9.499/23.111 | 0.233/0.278 | 112432/37300 | 60196/19008 |
+| nci | 33553445 | 2461370/2465045 | 10.074/19.482 | 0.194/0.212 | 109364/29516 | 59064/11272 |
+| ooffice | 6152192 | 3023030/3029022 | 2.484/1.512 | 0.196/0.256 | 114636/46428 | 60976/27936 |
+| osdb | 10085684 | 3266705/3286994 | 3.637/1.839 | 0.206/0.256 | 112296/40116 | 60124/21804 |
+| reymont | 6627202 | 1588686/1591205 | 7.118/8.017 | 0.124/0.129 | 111044/32288 | 59860/14172 |
+| samba | 21606400 | 4847106/4852002 | 5.674/6.937 | 0.293/0.370 | 113496/46112 | 60336/28040 |
+| sao | 7251944 | 5137540/5270379 | 4.529/2.099 | 0.259/0.371 | 117108/59500 | 61732/41136 |
+| webster | 41458703 | 10363889/10378396 | 28.560/29.743 | 0.709/0.764 | 111284/33476 | 59672/15332 |
+| x-ray | 8474240 | 5296754/5450554 | 3.895/1.788 | 0.331/0.399 | 116004/49968 | 61340/31720 |
+| xml | 5345280 | 548276/549170 | 0.715/0.733 | 0.053/0.063 | 109344/29544 | 59216/11564 |
+
+Position has a compression advantage on every member and a decode-speed
+advantage on every member in this run. Encode speed is mixed (position is
+slower on ooffice, osdb, sao and x-ray), while normal encode/decode RSS is
+higher for position on every member. These observations are limited to this
+paired run and do not establish universal throughput or memory behavior.
+
 | Member | Encode seconds P/C | Decode seconds P/C | Encode peak KiB P/C | Decode peak KiB P/C |
 |---|---:|---:|---:|---:|
 | dickens | 2.389312/2.340090 | 0.243186/0.269735 | 30988/23676 | 17568/17600 |
