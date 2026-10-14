@@ -89,6 +89,7 @@ $schema74 = Join-Path $root 'schema74'
 $schema75 = Join-Path $root 'schema75'
 $schema76 = Join-Path $root 'schema76'
 $schema77 = Join-Path $root 'schema77'
+$schema78 = Join-Path $root 'schema78'
 $schema60 = Join-Path $root 'schema60'
 $schema60Reordered = Join-Path $root 'schema60-reordered'
 $schema60Identity = Join-Path $root 'schema60-identity'
@@ -266,14 +267,22 @@ try {
     $null = New-Item -ItemType Directory -Path $root
     & (Join-Path $PSScriptRoot 'create_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -OutputDirectory $schema77 `
+        -OutputDirectory $schema78 `
         -Platform 'local-schema-test' `
         -Compiler 'local-schema-test' `
         -SourceRevision ('0' * 40)
+    $latest78 = Get-Content -LiteralPath (Join-Path $schema78 'manifest.json') -Raw | ConvertFrom-Json
+    if ($latest78.schema_version -ne 78 -or $latest78.codec_set -ne 'marc-cli-v78' -or
+            @($latest78.archives).Count -ne 88 -or $latest78.archives[87].codec -ne 'lzss-position-distance-tans-64m') {
+        throw 'Schema 78 must append exactly one 64 MiB position-distance tANS archive'
+    }
+    & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') -MarcCli $resolvedCli -BundleDirectory $schema78 -OutputDirectory (Join-Path $root 'verified78')
+    & (Join-Path $PSScriptRoot 'interoperability_schema78_negatives.ps1') -MarcCli $resolvedCli -BundleDirectory $schema78 -EvidenceDirectory (Join-Path $root 'schema78-negatives')
+    Convert-Bundle $schema78 $schema77 77 'marc-cli-v77' (@($latest78.archives[0..86] | ForEach-Object { $_.codec }))
     $latest77 = Get-Content -LiteralPath (Join-Path $schema77 'manifest.json') -Raw | ConvertFrom-Json
     if ($latest77.schema_version -ne 77 -or $latest77.codec_set -ne 'marc-cli-v77' -or
             @($latest77.archives).Count -ne 87 -or $latest77.archives[86].codec -ne 'lzss-position-distance-tans-32m') {
-        throw 'Schema 77 must append exactly one 32 MiB position-distance tANS archive'
+        throw 'Schema 77 must retain the 32 MiB position-distance tANS archive after schema-78 conversion'
     }
     & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') -MarcCli $resolvedCli -BundleDirectory $schema77 -OutputDirectory (Join-Path $root 'verified77')
     & (Join-Path $PSScriptRoot 'interoperability_schema77_negatives.ps1') -MarcCli $resolvedCli -BundleDirectory $schema77 -EvidenceDirectory (Join-Path $root 'schema77-negatives')
@@ -934,7 +943,7 @@ try {
         -BundleDirectory $schema1 `
         -OutputDirectory (Join-Path $root 'verified1')
 
-    Write-Host 'Verified interoperability schemas 1 through 75'
+    Write-Host 'Verified interoperability schemas 1 through 78'
 } finally {
     if ([string]::IsNullOrEmpty($EvidenceDirectory) -and (Test-Path -LiteralPath $root)) {
         $resolvedRoot = [System.IO.Path]::GetFullPath($root)

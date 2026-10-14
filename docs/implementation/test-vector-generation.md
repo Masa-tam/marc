@@ -23786,3 +23786,13 @@ literal history, boundary lengths, isolated distance classes through the
 8,388,608-byte grammar boundary, an all-active dense descriptor, and seeded
 finite decision streams. Exact-window isolated vectors exercise grammar only;
 they do not claim a reset frame can produce such a reference.
+
+### TVG-1470: sixty-four-MiB position-distance tANS vectors and exchange
+
+The DD-1608 oracle freezes 237 finite vectors, including empty entropy,
+descriptor density at the 9,334-byte ceiling, and distance boundaries for the
+64 MiB grammar. The schema78 receipt retains the prior 87 archive entries and
+adds one 64 MiB archive; its 125 malformed manifest/header cases are rejected
+before codec launch and publish no output. These receipts are local evidence;
+cross-producer, hosted-CI, external-route, sanitizer runtime, and corpus-wide
+measurements remain separate gates.

@@ -11271,3 +11271,12 @@ parser written from the descriptor specification, hand-checked complete empty
 and initial-A descriptors and explicit boundaries above the old window.
 No production codec calls, external compression source or restricted reference
 provide the frozen bytes. External conformance/FSE compatibility is not claimed.
+
+### IR-1291: sixty-four-MiB position-distance tANS independent specialization
+
+Use the repository-owned DD-1556 tANS equations and DD-1532/1536 field
+partition, extended to the explicit `2/14 + 1/27 + 5/9` tuple. The bounded
+oracle and forward descriptor parser were written independently from the
+format definition and do not call production code. No external compression
+implementation or restricted source was consulted; FSE compatibility and
+external conformance are not claimed.

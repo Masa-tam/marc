@@ -21,10 +21,17 @@ boundaries and a dense descriptor at the declared 9,334-byte limit. Clang core,
 token, frame-format, frame, stream, vector, and oracle-differential tests pass
 locally. The public API resource query, fixed-capacity process path, CLI
 selector, deterministic small-input round trips, malformed-input rejection,
-and unpublished failed-frame check now pass locally. Benchmark, fuzz runtime,
-exchange, contextual measurements, and release qualification remain open.
+and unpublished failed-frame check pass locally. The local schema-78 bundle
+contains 88 archives, preserves the preceding order, and passed self
+verification, 125 manifest/header rejection cases before codec launch, and
+the schema-1 through schema-78 compatibility audit. The benchmark smoke also
+passed, but its recorded small fixture is 1,125 bytes for position-distance
+versus 1,104 bytes for the contextual control, so the smaller-than-contextual
+target is not met by that fixture and no corpus-wide claim is made.
 
 The benchmark smoke emits deterministic position/contextual measurements with
 encode and decode timing plus queried workspace bytes. The fuzz target and
 compile smoke are wired; sanitizer runtime execution is a separate GNU-driver
-qualification step and is not claimed by this milestone.
+qualification step and is not claimed by this milestone. Cross-producer,
+hosted-CI, external-route, full-corpus measurement, and similarity review
+remain open release gates.

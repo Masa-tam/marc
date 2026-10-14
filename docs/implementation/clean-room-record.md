@@ -41298,6 +41298,19 @@ was consulted. Cross-producer, fixed-Release, hosted-CI, external-route,
 full-corpus, and similarity qualification remain open; this record makes no
 legal guarantee.
 
+### CR-1810: 2026-10-15 — Sixty-four-MiB position-distance tANS
+
+The project agent independently adapted the repository-owned tANS and
+position-distance contracts to the explicit 64 MiB tuple. The finite oracle,
+core/API/CLI tests, and private-scratch failure tests were written from the
+format and design documents; no external implementation or restricted source
+was consulted. Schema78 adds one archive after the unchanged schema77 prefix,
+and local self-verification, malformed-input admission, and schema1..78
+compatibility checks pass. The contextual size target is not claimed from the
+small fixture, and sanitizer runtime, cross-producer, hosted-CI, external,
+full-corpus, and similarity reviews remain open. This record makes no legal
+guarantee.
+
 ### CR-1805: 2026-10-15 — Thirty-two-MiB position-distance tANS format and core
 
 The project agent adapted the repository-owned sixteen-MiB contracts and

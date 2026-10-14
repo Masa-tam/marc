@@ -34854,3 +34854,14 @@ bundle contains 87 archives; its appended 3,235-byte archive has SHA-256
 Self-verification passed. The schema77 negative campaign and a schema77 to
 schema76 compatibility conversion were run locally; the full historical
 schema1..75 audit remains pending after the script integration is corrected.
+
+### DD-1608: sixty-four-MiB position-distance tANS
+
+The 64 MiB profile fixes identity `2/14 + 1/27 + 5/9`, 58 adaptive contexts,
+4,680 frequencies, an eight-byte descriptor mask, and a 9,334-byte descriptor
+ceiling. It retains private descriptor/token/raw staging and publishes a
+decoded frame only after all validation and reconstruction succeed. The local
+API, CLI, benchmark smoke, schema78 self-verifier, 125-case negative campaign,
+and schema1..78 compatibility audit pass. The small benchmark fixture is
+larger than its contextual control (1,125 versus 1,104 bytes), so the
+smaller-than-contextual requirement remains open for corpus measurement.
