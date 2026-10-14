@@ -41306,3 +41306,12 @@ No external implementation or source was consulted. The independent vector
 oracle, core/token/frame/stream tests, and differential fixtures pass with
 Clang 22.1.3. Public API/CLI, benchmark, fuzz, exchange, and similarity review
 remain open; this record makes no legal guarantee.
+
+### CR-1806: 2026-10-15 — Thirty-two-MiB public C boundary
+
+The project agent added the 32 MiB C factory from the repository-owned 16 MiB
+boundary contract, correcting all identity, window, table, descriptor, and
+resource constants. No external implementation or source was consulted. API
+resource admission, fixed-capacity processing, round-trip, and failed-frame
+publication tests pass. CLI, benchmark, fuzz, exchange, and similarity review
+remain open; this record makes no legal guarantee.

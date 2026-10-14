@@ -34827,3 +34827,10 @@ implementation preserves private descriptor, token, and raw staging and
 success-only frame publication. The format/vector/core stage is locally
 verified; public wiring, measurements, fuzzing, and exchange are separate
 unfinished gates.
+
+The 32 MiB public boundary now exposes the distinct `2/13 + 1/26 + 5/8`
+profile through `marc_lzss_position_distance_tans_32m_*`. Resource queries
+include the eight-byte-mask descriptor ceiling, 237,568-entry decode bank,
+private token/raw staging, and caller capacities before allocation. The API
+round-trip and failed-second-frame publication tests pass; CLI, benchmark,
+fuzz, and exchange remain open.
