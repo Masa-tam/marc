@@ -19,5 +19,9 @@ scratch and leaves ordinary destinations unchanged.
 
 The independent oracle derives 236 vectors, including the 32 MiB distance
 boundaries. Clang core, token, frame-format, frame, stream, vector, and
-oracle-differential tests pass locally. Public API/CLI, benchmark, fuzz,
-exchange, contextual measurements, and release qualification remain open.
+oracle-differential tests pass locally. The public API and CLI now have
+deterministic round-trip and malformed-input coverage; the updated Clang
+build also passes the new 16/32 MiB CLI campaigns. Benchmark smoke, fuzz
+compile smoke, and schema77 exchange admission are recorded separately.
+Corpus comparison, sanitizer runtime, cross-producer, hosted-CI, external
+routes, and release similarity remain open.

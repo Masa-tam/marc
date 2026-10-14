@@ -121,6 +121,11 @@ Preserve all artifacts and the prior fixed Release runtime before updates.
 Only after all seven local profiles and final audit pass does the maintainer
 push and obtain CI success and88-archive external four-route evidence.
 
+The updated Clang build also runs explicit CLI campaigns for the 16 MiB and
+32 MiB selectors. Both passed deterministic empty/one-byte/256-byte round
+trips, identity checks, malformed-input rejection, trailing-data rejection,
+wrong-profile rejection, and failed-output retention.
+
 ### Updated compiler revalidation — 2026-10-15
 
 After the LLVM update, the Clang 22.1.3 build recompiled the seven position-

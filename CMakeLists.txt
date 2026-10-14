@@ -7859,6 +7859,14 @@ if(MARC_BUILD_TESTS)
             COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_tans_8m.py
                 $<TARGET_FILE:marc_position_tans_8m_cli_candidate> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-tans-8m)
         set_tests_properties(marc_cli_position_tans_8m PROPERTIES TIMEOUT 600 RESOURCE_LOCK marc_position_tans_8m_campaign)
+        add_test(NAME marc_cli_position_tans_16m
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_tans_16m.py
+                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-tans-16m)
+        set_tests_properties(marc_cli_position_tans_16m PROPERTIES TIMEOUT 600 RESOURCE_LOCK marc_position_tans_16m_campaign)
+        add_test(NAME marc_cli_position_tans_32m
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_tans_32m.py
+                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-tans-32m)
+        set_tests_properties(marc_cli_position_tans_32m PROPERTIES TIMEOUT 600 RESOURCE_LOCK marc_position_tans_32m_campaign)
         add_test(NAME marc_cli_position_tans_64m
             COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_tans_64m.py
                 $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-tans-64m)
