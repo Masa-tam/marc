@@ -41208,3 +41208,10 @@ identity fields and expected failures. It launches a sentinel program in place
 of the codec, so each rejection proves admission occurred before codec launch
 and output publication. No external implementation, source, or test suite was
 consulted.
+
+### CR-1798: eight-MiB tANS format and vector review
+
+The eight-MiB specialization derives its identifiers, dimensions, grammar,
+and bounds directly from the repository's DD-1556 family definition. The
+separate vector oracle is written from those mathematical rules. No external
+implementation, source, or test suite was consulted.

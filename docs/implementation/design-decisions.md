@@ -34733,3 +34733,13 @@ rejected before codec launch and before any output is published. The local
 guard runs 125 cases, including all 112 header-byte mutations. It does not
 substitute for a second producer, cross route, historical, fixed-Release,
 hosted, or external audit.
+
+### DD-1602: eight-MiB format admission and independent vectors
+
+The eight-MiB position-distance tANS specialization reserves selector
+`lzss-position-distance-tans-8m`, dictionary `2/11`, context `1/24`, and
+entropy `5/6`. It fixes the 55-context, 4,647-frequency descriptor and does
+not alter prior formats. The independent mathematical oracle is a separate
+gate before any production implementation. Contextual tANS has no public
+eight-MiB profile; comparison admission must be determined by an actual API
+configuration and restoration check, not inferred from nearby profiles.

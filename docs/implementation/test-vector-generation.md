@@ -23763,3 +23763,12 @@ identity cases and every one of the appended archive's 112 fixed header bytes.
 Every case records rejection, zero published output files, and zero codec
 launches. It applies to manifest admission only and does not replace cross or
 historical receipts.
+
+### TVG-1469: eight-MiB position tANS independent vectors
+
+The eight-MiB oracle derives active models, canonical descriptor records, and
+tANS inverse transitions without calling marc. It freezes empty entropy,
+literal history, boundary lengths, isolated distance classes through the
+8,388,608-byte grammar boundary, an all-active dense descriptor, and seeded
+finite decision streams. Exact-window isolated vectors exercise grammar only;
+they do not claim a reset frame can produce such a reference.
