@@ -41298,6 +41298,17 @@ was consulted. Cross-producer, fixed-Release, hosted-CI, external-route,
 full-corpus, and similarity qualification remain open; this record makes no
 legal guarantee.
 
+### CR-1811: 2026-10-15 — Sixty-four-MiB qualification extensions
+
+The project agent added a bounded public CLI mutation pilot and a benchmark
+peak-resident-memory field from the repository-owned contracts. The pilot ran
+100 deterministic malformed-stream cases with no crash, timeout, or failed
+output publication. The benchmark keeps its prior three-sample measurements
+and adds a single-sample mode for long materials; no external implementation
+or restricted source was consulted. Corpus rows that did not finish and
+sanitizer runtime execution remain explicitly unclaimed. This record makes no
+legal guarantee.
+
 ### CR-1810: 2026-10-15 — Sixty-four-MiB position-distance tANS
 
 The project agent independently adapted the repository-owned tANS and
