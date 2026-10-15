@@ -32,7 +32,12 @@ auto fields(const PositionRans64mFullLiteralFrameHeader& h) {
         h.payload_size,h.descriptor_size,h.side_data_size,h.trailer_size};
 }
 std::vector<std::byte> encode(std::span<const Token> tokens,const PositionRans64mFullLiteralFrameContext& context) {
-    std::vector<std::byte> bytes(20*static_cast<std::size_t>(context.stream.frame_size)+9398,std::byte{0xa5});
+    // The planner reports the exact size before rejecting an empty output span.
+    // Full-window match fixtures need far less space than a literal-only frame.
+    const auto planned=encode_position_rans_64m_full_literal_frame(tokens,context,{});
+    check(planned.error==Error::serialized_output_too_small,"frame size query");
+    if (planned.error!=Error::serialized_output_too_small) std::exit(1);
+    std::vector<std::byte> bytes(planned.requirements.serialized_size,std::byte{0xa5});
     const auto result=encode_position_rans_64m_full_literal_frame(tokens,context,bytes);
     check(result.error==Error::none,"frame encode");
     if (result.error!=Error::none) std::exit(1);
