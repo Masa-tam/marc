@@ -41298,30 +41298,6 @@ was consulted. Cross-producer, fixed-Release, hosted-CI, external-route,
 full-corpus, and similarity qualification remain open; this record makes no
 legal guarantee.
 
-### CR-1811: 2026-10-15 — Sixty-four-MiB qualification extensions
-
-The project agent added a bounded public CLI mutation pilot and a benchmark
-peak-resident-memory field from the repository-owned contracts. The pilot ran
-100 deterministic malformed-stream cases with no crash, timeout, or failed
-output publication. The benchmark keeps its prior three-sample measurements
-and adds a single-sample mode for long materials; no external implementation
-or restricted source was consulted. Corpus rows that did not finish and
-sanitizer runtime execution remain explicitly unclaimed. This record makes no
-legal guarantee.
-
-### CR-1810: 2026-10-15 — Sixty-four-MiB position-distance tANS
-
-The project agent independently adapted the repository-owned tANS and
-position-distance contracts to the explicit 64 MiB tuple. The finite oracle,
-core/API/CLI tests, and private-scratch failure tests were written from the
-format and design documents; no external implementation or restricted source
-was consulted. Schema78 adds one archive after the unchanged schema77 prefix,
-and local self-verification, malformed-input admission, and schema1..78
-compatibility checks pass. The contextual size target is not claimed from the
-small fixture, and sanitizer runtime, cross-producer, hosted-CI, external,
-full-corpus, and similarity reviews remain open. This record makes no legal
-guarantee.
-
 ### CR-1805: 2026-10-15 — Thirty-two-MiB position-distance tANS format and core
 
 The project agent adapted the repository-owned sixteen-MiB contracts and
@@ -41366,27 +41342,29 @@ schema1..75 compatibility audit and cross-producer checks remain open; no
 external implementation or source was consulted and this record makes no
 legal guarantee.
 
-### CR-1811: 2026-10-16 — Seeded large-window tANS sanitizer campaigns
+### CR-1810: 2026-10-15 — Sixty-four-MiB position-distance tANS
 
-The project agent added an optional seed export to the repository-owned
-32 MiB and 64 MiB stream tests, retaining their existing successful decode
-and truncation/non-publication assertions. The exported seed is the same
-validated literal stream preceded by the harness schedule byte. Existing
-stream fuzz harnesses and every decoder dependency were instrumented with
-AddressSanitizer and UndefinedBehaviorSanitizer and each completed 4,096
-libFuzzer runs (FZ-0092). A supplementary 64 KiB token run also passed.
-No external implementation, source or test corpus was consulted. This
-records a bounded campaign, not full-window or public-factory fuzz closure;
-the overall goal and release similarity review remain unfinished.
+The project agent independently adapted the repository-owned tANS and
+position-distance contracts to the explicit 64 MiB tuple. The finite oracle,
+core/API/CLI tests, and private-scratch failure tests were written from the
+format and design documents; no external implementation or restricted source
+was consulted. Schema78 adds one archive after the unchanged schema77 prefix,
+and local self-verification, malformed-input admission, and schema1..78
+compatibility checks pass. The contextual size target is not claimed from the
+small fixture, and sanitizer runtime, cross-producer, hosted-CI, external,
+full-corpus, and similarity reviews remain open. This record makes no legal
+guarantee.
 
-### CR-1813: 2026-10-16 — Extended 64 KiB token sanitizer campaign
+### CR-1811: 2026-10-15 — Sixty-four-MiB qualification extensions
 
-The project agent repeated the repository-owned 64 KiB token harness from
-its retained corpus with a 1,024-byte input ceiling and 4,096 libFuzzer
-runs under AddressSanitizer and UndefinedBehaviorSanitizer. It completed in
-55 seconds without a finding and reached input length 14 bytes. No external
-implementation, source or test corpus was consulted. This bounded extension
-does not establish full-window or public-factory fuzz completion.
+The project agent added a bounded public CLI mutation pilot and a benchmark
+peak-resident-memory field from the repository-owned contracts. The pilot ran
+100 deterministic malformed-stream cases with no crash, timeout, or failed
+output publication. The benchmark keeps its prior three-sample measurements
+and adds a single-sample mode for long materials; no external implementation
+or restricted source was consulted. Corpus rows that did not finish and
+sanitizer runtime execution remain explicitly unclaimed. This record makes no
+legal guarantee.
 
 ### CR-1812: 2026-10-16 — Sixty-four-MiB corpus retry boundary
 
@@ -41397,13 +41375,14 @@ no partial timing or output was recorded. The corpus total remains limited
 to the ten completed materials; no external source or implementation was
 consulted and no performance conclusion is inferred.
 
-### CR-1816: 2026-10-16 — Sixty-four-MiB mozilla extended observation
+### CR-1813: 2026-10-16 — Extended 64 KiB token sanitizer campaign
 
-The remaining `mozilla` position-distance benchmark was observed for five
-minutes after the earlier 120-second attempt. It still emitted no result and
-was stopped without retaining partial output. The material remains excluded
-from the completed corpus total; no performance value was inferred and no
-external implementation or source was consulted.
+The project agent repeated the repository-owned 64 KiB token harness from
+its retained corpus with a 1,024-byte input ceiling and 4,096 libFuzzer
+runs under AddressSanitizer and UndefinedBehaviorSanitizer. It completed in
+55 seconds without a finding and reached input length 14 bytes. No external
+implementation, source or test corpus was consulted. This bounded extension
+does not establish full-window or public-factory fuzz completion.
 
 ### CR-1814: 2026-10-16 — Sixty-four-MiB public resource floor
 
@@ -41428,6 +41407,14 @@ and sanitizer documentation updates. It passed schema78 with 88 archives,
 the unchanged 81-entry prefix, the seven required appended selectors, and
 both fixed Release executable hashes. This is local reproducibility evidence;
 no external implementation or source was consulted.
+
+### CR-1816: 2026-10-16 — Sixty-four-MiB mozilla extended observation
+
+The remaining `mozilla` position-distance benchmark was observed for five
+minutes after the earlier 120-second attempt. It still emitted no result and
+was stopped without retaining partial output. The material remains excluded
+from the completed corpus total; no performance value was inferred and no
+external implementation or source was consulted.
 
 ### CR-1817: 2026-10-16 — Post-external targeted stream retest
 
@@ -41485,15 +41472,6 @@ the clean-room statement that those implementations were intentionally not
 consulted. This is a local hygiene check and is not a substitute for the
 final source-expression similarity review.
 
-### CR-1823: 2026-10-16 — Large-window fuzz compile smoke rerun
-
-The MSVC Release build successfully rebuilt the registered 32 MiB and 64 MiB
-stream fuzz compile-smoke targets. This confirms that the fuzz harnesses and
-their decoder dependencies remain compilable in the current tree; it is not a
-runtime sanitizer campaign and does not close the public-factory fuzz,
-corpus, or source-expression similarity gates. No external implementation or
-source was consulted.
-
 ### CR-1822: 2026-10-16 — Large-window CLI fuzz regression rerun
 
 The registered CLI malformed-input regressions for the 4, 8, 16, 32, and 64
@@ -41503,6 +41481,15 @@ This is CLI rejection and failure-invariance evidence; it is distinct from
 sanitizer runtime fuzzing and does not close the remaining corpus or
 source-expression similarity gates. No external implementation or source was
 consulted.
+
+### CR-1823: 2026-10-16 — Large-window fuzz compile smoke rerun
+
+The MSVC Release build successfully rebuilt the registered 32 MiB and 64 MiB
+stream fuzz compile-smoke targets. This confirms that the fuzz harnesses and
+their decoder dependencies remain compilable in the current tree; it is not a
+runtime sanitizer campaign and does not close the public-factory fuzz,
+corpus, or source-expression similarity gates. No external implementation or
+source was consulted.
 
 ### CR-1824: 2026-10-16 — Recorded emitted 64 MiB tANS identity
 
@@ -41682,3 +41669,30 @@ BM-0248 records separate process peaks and time; CTest uses the existing
 shared heavy-test lock. These are ordinary maximum-frame receipts and do
 not establish maximum-frame sanitizer fuzz coverage. No external source or
 implementation was consulted, and no production codec or stream changed.
+
+### CR-1836: 2026-10-16 — Seeded large-window tANS sanitizer campaigns
+
+The project agent added an optional seed export to the repository-owned
+32 MiB and 64 MiB stream tests, retaining their existing successful decode
+and truncation/non-publication assertions. The exported seed is the same
+validated literal stream preceded by the harness schedule byte. Existing
+stream fuzz harnesses and every decoder dependency were instrumented with
+AddressSanitizer and UndefinedBehaviorSanitizer and each completed 4,096
+libFuzzer runs (FZ-0092). A supplementary 64 KiB token run also passed.
+No external implementation, source or test corpus was consulted. This
+records a bounded campaign, not full-window or public-factory fuzz closure;
+the overall goal and release similarity review remain unfinished.
+
+### CR-1837: 2026-10-16 — Audit all implementation ledger headings
+
+The original documentation checker skipped later heading styles in the
+design, provenance, reference and vector ledgers, as it had in BM/FZ records.
+It now validates every numbered heading, including historical plain and
+titled styles. Reordered existing DD-1605/1606 and late provenance records
+without changing their text. Two distinct entries used CR-1811: the original
+qualification extension retains that number, while the later seeded sanitizer
+receipt is now CR-1836. No other document referenced the ambiguous number.
+The duplicate is retained in full under its new unique identifier; no runtime
+result was changed or inferred. Positive and negative parser fixtures verify
+that later-style gaps, duplicates and unsupported headings cannot be skipped.
+

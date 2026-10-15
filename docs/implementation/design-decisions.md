@@ -34771,6 +34771,20 @@ encode plan and an empty payload access in the test; the test now stops at
 the failed prerequisite. Frame, stream, oracle differential, public API, CLI,
 resource measurements, fuzz, and exchange qualification remain unfinished.
 
+### DD-1605: eight-MiB tANS frame ownership and C boundary
+
+The native eight-MiB frame layer buffers a serialized frame, tANS tables,
+typed tokens, and restored raw bytes in separate private regions. It parses
+and validates the full descriptor before payload admission, completes entropy
+decoding into private tokens, restores into private raw storage, and begins
+draining only after all stages succeed. The owning adapter computes every
+component before allocation and rejects a one-byte-short budget without
+altering the caller's requirements result. The public C API has distinct
+8 MiB configuration and resource structures, reports its full-window
+requirement before allocation, and retains the fixed-five encoder plus
+full-range decoder contract. CLI, benchmark, fuzzing, contextual comparison,
+and exchange remain separate gates.
+
 ### DD-1606: sixteen-MiB tANS specialization
 
 The sixteen-MiB specialization reserves dictionary `2/12`, context `1/25`,
@@ -34803,20 +34817,6 @@ bundle rejection ahead of codec launch and output publication. The local
 schema76 producer, self verifier, 125-case negative campaign, and schema1..75
 compatibility audit are recorded separately from the remaining cross-producer,
 fixed-Release, CI, external, and corpus gates.
-
-### DD-1605: eight-MiB tANS frame ownership and C boundary
-
-The native eight-MiB frame layer buffers a serialized frame, tANS tables,
-typed tokens, and restored raw bytes in separate private regions. It parses
-and validates the full descriptor before payload admission, completes entropy
-decoding into private tokens, restores into private raw storage, and begins
-draining only after all stages succeed. The owning adapter computes every
-component before allocation and rejects a one-byte-short budget without
-altering the caller's requirements result. The public C API has distinct
-8 MiB configuration and resource structures, reports its full-window
-requirement before allocation, and retains the fixed-five encoder plus
-full-range decoder contract. CLI, benchmark, fuzzing, contextual comparison,
-and exchange remain separate gates.
 
 ### DD-1607: thirty-two-MiB tANS specialization
 
