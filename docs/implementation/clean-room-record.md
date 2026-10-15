@@ -41485,6 +41485,15 @@ the clean-room statement that those implementations were intentionally not
 consulted. This is a local hygiene check and is not a substitute for the
 final source-expression similarity review.
 
+### CR-1823: 2026-10-16 — Large-window fuzz compile smoke rerun
+
+The MSVC Release build successfully rebuilt the registered 32 MiB and 64 MiB
+stream fuzz compile-smoke targets. This confirms that the fuzz harnesses and
+their decoder dependencies remain compilable in the current tree; it is not a
+runtime sanitizer campaign and does not close the public-factory fuzz,
+corpus, or source-expression similarity gates. No external implementation or
+source was consulted.
+
 ### CR-1822: 2026-10-16 — Large-window CLI fuzz regression rerun
 
 The registered CLI malformed-input regressions for the 4, 8, 16, 32, and 64
