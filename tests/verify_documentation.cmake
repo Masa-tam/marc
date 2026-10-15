@@ -1692,7 +1692,7 @@ foreach(stale_position_distance_contract IN ITEMS
         message(FATAL_ERROR "Stale position-distance status: ${stale_position_distance_contract}")
     endif()
 endforeach()
-math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 3 + 2 + 2 + 2 + 2 + 7 + 2 + 1 + 1")
+math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 3 + 2 + 2 + 2 + 2 + 7 + 7")
 foreach(one_mib_contract IN ITEMS
         "marc_lzss_position_distance_dynamic_range_1m_config_init()"
         "marc_lzss_position_distance_dynamic_range_1m_workspace_requirements()"
@@ -1814,12 +1814,21 @@ foreach(tans_8m_contract IN ITEMS
         message(FATAL_ERROR "Missing eight-MiB tANS API contract: ${tans_8m_contract}")
     endif()
 endforeach()
+foreach(tans_window IN ITEMS 16m 32m 64m)
+    set(c_api_position_tans_large_initializers ${c_api_config_initializers})
+    list(FILTER c_api_position_tans_large_initializers INCLUDE REGEX
+        "marc_lzss_position_distance_tans_${tans_window}_config_init")
+    list(LENGTH c_api_position_tans_large_initializers c_api_position_tans_large_count)
+    if(NOT c_api_position_tans_large_count EQUAL 1)
+        message(FATAL_ERROR "Missing additive ${tans_window} position-distance tANS initializer")
+    endif()
+endforeach()
 if(NOT c_api_profile_count EQUAL expected_c_api_profile_count)
     message(FATAL_ERROR
         "C API initializer count ${c_api_profile_count} must contain the "
         "${cli_profile_count} CLI profiles plus five experimental profiles "
         "and three existing public position-distance families plus "
-        "two separate eight-MiB, two separate sixteen-MiB and two separate thirty-two-MiB and two separate sixty-four-MiB direction initializers plus seven owning position rANS initializers and four owning64KiB/one-MiB/four-MiB/eight-MiB position tANS initializers")
+        "two separate eight-MiB, two separate sixteen-MiB and two separate thirty-two-MiB and two separate sixty-four-MiB direction initializers plus seven owning position rANS initializers and seven owning position tANS initializers")
 endif()
 list(FILTER c_api_config_initializers INCLUDE REGEX
     "marc_lzss_contextual_(dynamic_range|rans|tans|adaptive_huffman|blocked_huffman)_config_init")
