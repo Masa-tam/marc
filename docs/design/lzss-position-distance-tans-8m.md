@@ -125,3 +125,11 @@ Its measured process peak working set was larger for every member.  The
 per-member sample arrays and peaks are retained with the measurement evidence;
 these observations describe this measurement only and do not establish a
 general throughput or memory guarantee.
+
+BM-0249 publishes the audited per-member timing medians and process peaks
+from that retained receipt. The maxima are 317,353,984/242,679,808 bytes
+(position/contextual), both on mozilla. These are combined encode/decode
+process peaks with retained buffers; directional peaks remain unmeasured
+in this corpus campaign. TVG-1471 and BM-0248 separately qualify actual
+maximum frames, late failures and public F-1/F/F+1 boundaries with fresh
+per-direction processes. The two measurement scopes are not interchangeable.

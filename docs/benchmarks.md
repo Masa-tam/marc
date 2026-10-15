@@ -11446,3 +11446,39 @@ tests are serialized with other heavy tests through the shared CTest resource
 lock and allowed 300 seconds each for all fourteen invocations. These bounds
 provide headroom from the measured pilot; hosted-runner time is not inferred.
 No production default memory grant or encoding format was changed.
+
+### BM-0249: eight-MiB complete paired timing and process peaks
+
+The retained complete twelve-member receipt was audited against the actual
+corpus lengths and SHA-256 values. Both factories restored every member with
+an 8,388,608-byte frame and window. The contextual API uses its 16 MiB profile
+configured to those sizes; its emitted identity was checked by the dedicated
+control probe recorded in the [design](design/lzss-position-distance-tans-8m.md).
+Compression is 60,386,573/61,561,630 bytes (position/contextual), smaller on
+all twelve members. These are the completed measurements previously pending
+at BM-0244; no rerun or new timing sample is implied by this receipt audit.
+
+Each timing is the median of three samples after one warmup. Peak working set
+is the combined encode/decode process with retained input/archive storage;
+it is not a separate directional peak or a queried workspace allowance.
+
+| Member | Encode seconds P/C | Decode seconds P/C | Process peak bytes P/C |
+| --- | ---: | ---: | ---: |
+| dickens | 8.963938/9.224366 | 0.194710/0.275562 | 240,316,416/170,024,960 |
+| mozilla | 37.660446/56.489448 | 0.899741/1.475876 | 317,353,984/242,679,808 |
+| mr | 16.554112/39.882620 | 0.188612/0.282139 | 239,628,288/169,963,520 |
+| nci | 19.138134/36.667224 | 0.155224/0.210055 | 257,040,384/191,303,680 |
+| ooffice | 3.045059/1.855733 | 0.163104/0.256430 | 208,556,032/128,356,352 |
+| osdb | 7.066926/2.555706 | 0.169103/0.263489 | 239,718,400/169,947,136 |
+| reymont | 12.673323/12.537040 | 0.098105/0.133841 | 209,166,336/133,906,432 |
+| samba | 8.623761/9.182940 | 0.240990/0.377193 | 253,472,768/183,447,552 |
+| sao | 8.451092/2.962456 | 0.219284/0.380220 | 234,946,560/155,922,432 |
+| webster | 43.019205/45.676327 | 0.575387/0.844249 | 280,485,888/211,345,408 |
+| xml | 0.810774/0.761735 | 0.043943/0.055266 | 185,257,984/119,230,464 |
+| x-ray | 5.443398/2.140811 | 0.279665/0.436120 | 251,801,600/176,529,408 |
+
+Sum of member medians is encode 171.450167/219.936406 seconds and decode
+3.227867/4.990440 seconds. Maximum process peaks are 317,353,984/242,679,808
+bytes, both on mozilla. Position decode is faster on every member; encode is
+faster on six, and position memory is higher on every member. These are
+corpus-specific observations, not universal performance guarantees.

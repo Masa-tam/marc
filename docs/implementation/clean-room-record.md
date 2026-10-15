@@ -41696,3 +41696,13 @@ The duplicate is retained in full under its new unique identifier; no runtime
 result was changed or inferred. Positive and negative parser fixtures verify
 that later-style gaps, duplicates and unsupported headings cannot be skipped.
 
+### CR-1838: 2026-10-16 — Eight-MiB retained peak receipt audit
+
+Audited all twelve member lengths and SHA-256 values in the retained paired
+measurement receipt, including mozilla and webster. Both actual frame/window
+settings, successful restoration, all archive pairs and totals agree with
+the existing design record. BM-0249 publishes the missing member peak and
+median table while distinguishing combined process peaks from directional
+probes, API queries and sanitizer RSS. No new runtime sample, external source
+or compression implementation was used. The earlier BM-0244 pending status
+is a milestone superseded by this completed receipt.
