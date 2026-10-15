@@ -41531,3 +41531,16 @@ timings, queried extents and measured process peaks are recorded in the
 records are retained separately. No production codec or fixed Release CLI
 changed, and no external implementation or source was consulted. Remaining
 webster and peak-memory measurements are not inferred complete.
+
+### CR-1826: 2026-10-16 — Completed webster and 64 MiB size comparison
+
+The resumed sequential benchmark completed both webster profiles with exact
+raw reconstruction and retained actual headers. The position/contextual
+archives are 9,482,549/9,495,419 bytes; complete timings, queried extents and
+process peaks are recorded in the 64 MiB design. The prior ten completed
+members plus mozilla and webster total 59,368,796/60,569,849 bytes, with
+position smaller on every member. These observations do not erase the
+small-fixture target miss or establish a universal size or speed advantage.
+The other ten members' renewed peak measurements and the updated benchmark
+smokes remain pending. No production codec, fixed Release CLI, external
+implementation or external source was changed or consulted.

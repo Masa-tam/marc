@@ -188,3 +188,30 @@ bytes have a different accounting scope. Combining the completed member with
 the preceding ten-member size table gives position 49,886,247 bytes versus
 contextual 51,074,430 bytes for eleven members. `webster` and the other
 members' renewed peak-memory measurements remain pending.
+
+### Completed webster comparison and twelve-member size total
+
+The resumed `webster` pair also completed and reconstructed the source under
+the same 64 MiB frame/window settings. Its emitted position/contextual headers
+confirm the complete tuples `2/14 + 1/26 + 5/9` and `2/6 + 1/5 + 5/2`.
+
+| webster measurement | position-distance | contextual |
+| --- | ---: | ---: |
+| Archive bytes | 9,482,549 | 9,495,419 |
+| Encode seconds | 701.60281 | 706.8131465 |
+| Decode seconds | 0.6278241 | 1.3774476 |
+| Process peak resident bytes | 1,436,499,968 | 915,247,104 |
+| Encode queried bytes | 4,136,729,789 | 1,246,195,181 |
+| Decode queried bytes | 1,731,845,362 | 1,731,126,469 |
+
+Position-distance saves 12,870 bytes on this member. Both timing directions
+are faster in these single samples, while process peak memory is higher.
+The small encode-time difference is not a stable speedup claim. The peak
+covers the combined encode/decode process, not separate directional peaks.
+
+All twelve members now have completed size pairs. Adding these two members
+to the preceding ten-member table yields **59,368,796 position bytes** versus
+**60,569,849 contextual bytes**, a **1,201,053-byte saving**. Position is smaller
+on each member in this corpus; the earlier small-fixture target miss still
+stands and no universal compression claim follows. The renewed peak-memory
+campaign for the other ten members remains in progress.
