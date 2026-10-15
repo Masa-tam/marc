@@ -182,3 +182,50 @@ normal tests supplement the bounded sanitizer campaigns; they do not claim
 maximum-frame sanitizer fuzz coverage. The shared large-window CTest lock
 serializes these tests with existing heavy tests, with a 300-second test
 timeout chosen after the normal pilot, rather than unmeasured parallelism.
+
+### Resumed local qualification status
+
+All seven windows now have complete twelve-member same-window contextual
+comparisons with verified restoration, member sizes, totals, encode/decode
+timing and measured process peaks. The 8/32 MiB controls use admitted existing
+APIs with both window and frame explicitly changed; they are not assumed
+unpublished profiles. Detailed controls, actual identities and limitations
+remain in the member records.
+
+| Window | Position bytes | Contextual bytes | Members smaller | Measurement records |
+| --- | ---: | ---: | ---: | --- |
+| 64 KiB | 80,237,027 | 81,200,703 | 7/12 | BM-0233/0235 |
+| 1 MiB | 64,055,526 | 65,192,805 | 12/12 | BM-0237/0240 |
+| 4 MiB | 61,315,238 | 62,480,743 | 12/12 | BM-0243 |
+| 8 MiB | 60,386,573 | 61,561,630 | 12/12 | BM-0249 |
+| 16 MiB | 59,908,903 | 61,093,071 | 12/12 | BM-0245 |
+| 32 MiB | 59,599,681 | 60,785,038 | 12/12 | BM-0247 |
+| 64 MiB | 59,368,796 | 60,569,849 | 12/12 | BM-0246 |
+
+The 64 KiB per-member goal still misses dickens, nci, reymont, webster and
+xml. Retain the explicit profile and the misses; their causes have not been
+established. Any future representation change requires a new specified
+variant. The aggregate improvement is not a promise that every source is
+smaller. Encode speed is workload-dependent, and the large-window position
+profiles use more measured resident memory on every corpus member. No Dynamic
+Range compression comparison is an adoption condition. The 8/16/32/64 MiB
+corpus peaks combine both directions and retained buffers; independent
+directional corpus peaks were not measured. BM-0248's directed boundary
+processes provide a different, explicitly separated directional peak scope.
+
+FZ-0087/0088/0090 supply the smaller-window sanitizer campaigns. FZ-0095
+completes all four large-window public campaigns, 16,384 runs in total;
+FZ-0096 adds 56 directed maximum-frame sanitizer cases. These complement the
+ordinary component/API/CLI, split-buffer, differential, malformed-input and
+publication tests. None claims randomized full-window or exhaustive coverage.
+CR-1831 records the production expression/provenance review.
+
+IX-0095 verifies actual 88-archive and baseline 81-archive bodies, prefix/tail
+order and retained executable hashes. Earlier local self/cross routes and
+historical-schema/negative-admission evidence remain valid. The resumed work
+changes tests, measurement/reporting infrastructure and documentation; no
+production codec implementation or stream representation changed. The only
+public-header change corrects the documented 64 MiB context variant to its
+already emitted value. CI and external four-route evidence remain tied to
+`28c980a8507aac9ef75b2b5e07c545f01ec91e7b`; the subsequent local commits
+require their own post-push CI confirmation. No push was performed here.

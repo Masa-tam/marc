@@ -1956,16 +1956,18 @@ inputs. Legal frame sizes remain 32 through 64 bytes under the harness's
 | 8 | 4096 | 279 | 1345 | 5186 | 348 |
 | 16 | 4096 | 306 | 1341 | 5198 | 348 |
 | 32 | 4096 | 316 | 1352 | 5193 | 349 |
+| 64 | 4096 | 302 | 1344 | 5175 | 348 |
 
-These three campaigns completed without a sanitizer diagnostic, invariant
+All four campaigns completed without a sanitizer diagnostic, invariant
 failure, crash, timeout or saved failing artifact. Generated input lengths
 reached the configured 128-byte cap. Public encode determinism, exact raw
 restoration, whole/split malformed decoding, sticky status/error position,
 output guards and exact truncation publication prefixes remain assertions
 inside each invocation. Instrumented RSS is distinct from API resource queries
-and normal benchmark peaks. The 64 MiB public campaign is still running;
-no result is claimed for it yet. Directed maximum-frame sanitizer tests are
-separate from these bounded fuzz campaigns.
+and normal benchmark peaks. The receipt audit verifies binary hashes,
+unchanged harness/header sources, all 624 instrumented production units and
+empty failure-artifact directories for all four windows. Directed maximum-
+frame sanitizer tests are separate from these bounded fuzz campaigns.
 
 ## FZ-0096: directed maximum-frame sanitizer qualification
 

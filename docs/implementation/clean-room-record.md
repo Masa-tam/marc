@@ -41751,3 +41751,18 @@ instrumented peaks. Serial execution and per-process watchdogs follow the
 measured ordinary pilots; the bounded small-frame fuzzer RSS cap is not
 misapplied to these larger cases. This is directed sanitizer validation,
 not randomized maximum-frame fuzzing. No external implementation was consulted.
+
+### CR-1843: 2026-10-16 — Complete resumed local tANS qualification audit
+
+The 64 MiB public campaign completed 4,096 runs without a finding, closing
+FZ-0095's fourth window. Receipt audit verifies all four binary hashes,
+unchanged harness/header sources, sanitizer coverage on 624 production units,
+run counts and empty failure-artifact directories. FZ-0096 independently
+qualifies 56 directed maximum-frame sanitizer cases and ordinary-build byte
+agreement. The family status index reconciles all seven corpus comparisons,
+measured peak scopes, 64 KiB compression misses and the unchanged exchange
+bodies with the retained local evidence. It distinguishes the previously
+reported CI/external revision from subsequent local-only commits. Production
+codec sources remain unchanged from that revision; the public header changes
+only its corrected identity comment. No new external validation or exhaustive
+fuzz coverage is inferred, and no external implementation was consulted.
