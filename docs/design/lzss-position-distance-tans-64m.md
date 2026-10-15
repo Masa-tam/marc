@@ -147,14 +147,17 @@ position-distance encode result was emitted. It was stopped at that measured
 limit without retaining a partial output. This strengthens the measured
 resource/time boundary but does not turn `mozilla` into a completed pair.
 
-The public 64 MiB factory was probed with a one-byte input to establish its
-resource floor. The benchmark queried 4,095,271,087 bytes for encode and
+The public 64 MiB factory was probed with a one-byte input and the default
+full-size frame. The benchmark queried 4,095,271,087 bytes for encode and
 1,679,039,787 bytes for decode, with a 214-byte encoded result. These are
-fixed-window workspace requirements rather than input-sized fuzz buffers.
-Consequently a sanitizer public-factory fuzz target under the 1,024 MiB
-instrumented RSS limit would not be a valid bounded campaign. Public-factory
-fuzz remains unclaimed; the CLI mutation and stream sanitizer campaigns are
-the bounded evidence for this profile.
+default-frame workspace requirements rather than an input-size measurement
+or a lower bound across every legal frame configuration. The later public
+factory smoke uses legal 32/64-byte frames under an 8 MiB logical budget;
+all four large-window factories pass their round-trip and failed-frame
+publication assertions. For 64 MiB, frame64 queries 1,569,262/1,254,548 bytes
+(encode/decode). Small-frame public sanitizer fuzz is therefore feasible,
+but does not replace maximum-frame qualification. Normal query bytes and
+instrumented physical RSS must remain distinct.
 
 ### Resumed mozilla comparison
 

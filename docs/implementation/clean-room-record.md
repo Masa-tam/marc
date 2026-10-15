@@ -41658,3 +41658,14 @@ from measurements and combined peaks from unmeasured directional peaks.
 All twelve position archives are smaller, with mixed encode timing and higher
 RSS. This closes the missing 32 MiB corpus receipt, not the public-factory
 sanitizer or maximum-frame gates. No external implementation was consulted.
+
+### CR-1834: 2026-10-16 — Large-window public lifecycle fuzz scaffolding
+
+Added four public libFuzzer targets and four ordinary smoke executables
+using a shared repository-derived harness. All four normal smokes pass,
+including resource queries, whole/split round trips, guarded output and
+exact prior-frame publication after truncation. FZ-0094 distinguishes these
+receipts from sanitizer runtime and maximum-frame qualification. Corrected
+the overly broad interpretation of the 64 MiB default-frame query: legal
+small frames demonstrably fit a bounded public fuzz campaign. No production
+format or codec behavior changed. No external source was consulted.

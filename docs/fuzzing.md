@@ -1922,3 +1922,20 @@ completed in 30 seconds without a finding, checking ordinary destination
 invariance against private scratch decoding. It reached 760 coverage counters,
 1,642 features and 334 MiB instrumented RSS; generated lengths reached only
 six bytes, so this result is supplementary rather than broad token coverage.
+
+## FZ-0094: large-window public lifecycle harness qualification
+
+The repository-owned 4 MiB public lifecycle harness was extended to the
+8/16/32/64 MiB public factories. All four ordinary smoke executables pass
+27 deterministic input recipes each, covering lengths 0, 1, 31, 32, 63,
+64, 65, 127 and 128. They compare whole/split encoding, exact restoration,
+malformed terminal status and position, sticky termination and output guards.
+Truncating the last encoded frame must fail while publishing exactly the
+complete preceding raw-frame prefix. Failed-frame bytes remain private.
+
+Legal frames of 32/64 bytes keep each measured resource query below 1.6 MB
+with an 8 MiB configured logical budget. A large window alone does not force
+the default full-frame resource query. These four smoke tests passed in
+1.27 seconds together. This record establishes ordinary harness execution;
+sanitizer campaigns and maximum-frame coverage are separate gates. No
+instrumented runtime result is inferred from compilation or ordinary tests.

@@ -11281,3 +11281,12 @@ oracle and forward descriptor parser were written independently from the
 format definition and do not call production code. No external compression
 implementation or restricted source was consulted; FSE compatibility and
 external conformance are not claimed.
+
+### IR-1292: bounded large-window public tANS lifecycle harness
+
+Extend the repository-owned 4 MiB public harness and the documented C API
+lifecycle to the 8/16/32/64 MiB factories. Use legal small frames, explicit
+logical limits and charged caller buffers. Compare whole/split schedules,
+guard output tails and assert the precise publication prefix after a final
+frame truncation. No external implementation or restricted test suite was
+consulted. Full-frame qualification remains independent of bounded fuzzing.

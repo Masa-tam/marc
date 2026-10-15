@@ -9464,6 +9464,18 @@ if(MARC_BUILD_FUZZERS)
         # MARC_BUILD_FUZZERS instruments every marc_static production object.
         target_link_libraries(marc_fuzz_${entry} PRIVATE marc::static)
     endforeach()
+    foreach(window IN ITEMS 8m 16m 32m 64m)
+        add_executable(marc_fuzz_lzss_position_tans_${window}_public
+            fuzz/lzss_position_tans_large_public_fuzz.cpp)
+        target_compile_features(marc_fuzz_lzss_position_tans_${window}_public PRIVATE cxx_std_20)
+        target_compile_definitions(marc_fuzz_lzss_position_tans_${window}_public PRIVATE
+            MARC_TANS_WINDOW=${window})
+        target_compile_options(marc_fuzz_lzss_position_tans_${window}_public PRIVATE
+            -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
+        target_link_options(marc_fuzz_lzss_position_tans_${window}_public PRIVATE
+            -fsanitize=fuzzer,address,undefined)
+        target_link_libraries(marc_fuzz_lzss_position_tans_${window}_public PRIVATE marc::static)
+    endforeach()
 endif()
 
 if(MARC_BUILD_TESTS)
@@ -10006,5 +10018,18 @@ if(MARC_BUILD_TESTS)
         target_link_libraries(marc_position_tans_4m_c_${linkage} PRIVATE marc::${linkage})
         add_test(NAME marc_position_tans_4m_c_${linkage} COMMAND marc_position_tans_4m_c_${linkage})
         set_tests_properties(marc_position_tans_4m_c_${linkage} PROPERTIES TIMEOUT 60)
+    endforeach()
+    foreach(window IN ITEMS 8m 16m 32m 64m)
+        add_executable(marc_position_tans_${window}_public_fuzz_smoke
+            fuzz/lzss_position_tans_large_public_fuzz.cpp
+            tests/position_tans_large_public_fuzz_smoke.cpp)
+        target_compile_features(marc_position_tans_${window}_public_fuzz_smoke PRIVATE cxx_std_20)
+        target_compile_definitions(marc_position_tans_${window}_public_fuzz_smoke PRIVATE
+            MARC_TANS_WINDOW=${window})
+        target_link_libraries(marc_position_tans_${window}_public_fuzz_smoke PRIVATE marc::static)
+        add_test(NAME marc_position_tans_${window}_public_fuzz_smoke
+            COMMAND marc_position_tans_${window}_public_fuzz_smoke)
+        set_tests_properties(marc_position_tans_${window}_public_fuzz_smoke PROPERTIES
+            TIMEOUT 120 RESOURCE_LOCK marc_position_tans_public_fuzz_campaign)
     endforeach()
 endif()
