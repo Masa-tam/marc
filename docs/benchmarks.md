@@ -11411,3 +11411,17 @@ remains recorded. The contextual harness retains its selected profile's
 bounded payload ceiling; its previous 512 MiB override refused the mozilla
 resource query. Both actual stream identities and the resulting correction
 to the documented native context variant are recorded with the results.
+
+### BM-0247: thirty-two-MiB complete same-window tANS comparison
+
+The [thirty-two-MiB record](design/lzss-position-distance-tans-32m.md) contains
+all twelve members, verified restoration, actual complete stream identities,
+equal windows/frames, single encode/decode samples and process peak RSS.
+Totals are 59,599,681/60,785,038 bytes (position/contextual), a 1.950080%
+saving. Sum of encode samples is 724.480748/773.747992 seconds; decode is
+3.792732/5.143081 seconds. Process peak maxima are 969,367,552/678,350,848
+bytes. Position is smaller on all members, encode is mixed, decode is faster
+on eleven members, and resident memory is higher on every member. Peaks
+include retained buffers and both directions; separate directional peaks
+were not measured. The contextual control uses the existing public API
+configured to a 32 MiB frame and window, rather than assuming a profile name.

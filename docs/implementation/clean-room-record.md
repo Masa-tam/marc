@@ -41646,3 +41646,15 @@ unsupported heading level and missing title; all six receipts are retained.
 No campaign result, count, identifier or historical title was altered to pass
 the check. This strengthens record validation and supplies no new runtime
 fuzz claim. No external source or implementation was consulted.
+
+### CR-1833: 2026-10-16 — Complete thirty-two-MiB corpus measurements
+
+The sequential repository-owned benchmark completed both actual profiles on
+all twelve Silesia members, including mozilla and webster. The receipt audit
+checks source hashes, original sizes, frame/window equality, full emitted
+identities and exact restoration. BM-0247 and the design record give member
+sizes, timings and resident process peaks, distinguishing admission queries
+from measurements and combined peaks from unmeasured directional peaks.
+All twelve position archives are smaller, with mixed encode timing and higher
+RSS. This closes the missing 32 MiB corpus receipt, not the public-factory
+sanitizer or maximum-frame gates. No external implementation was consulted.
