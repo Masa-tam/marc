@@ -91,3 +91,45 @@ mutations before codec launch and before output publication. The compatibility
 audit restores and re-encodes schemas 1 through 75 after deriving schema76.
 Independent second-producer, fixed-Release, hosted-CI, external-route,
 full-corpus measurement, and release similarity gates remain open.
+
+### Completed same-window corpus and resident-memory measurement
+
+The resumed sequential campaign completed all twelve Silesia members with
+exact raw restoration. The stored headers confirm native tuple
+`2/12 + 1/25 + 5/7` and contextual tuple `2/5 + 1/4 + 5/2`. Both use a
+16,777,216-byte frame and window. The control applies the public 16 MiB
+profile with a 512 MiB compressed-payload admission limit, 1 GiB internal
+limit, 9 times the frame size as its decision limit and known original size.
+Those limits are not physical memory measurements.
+
+Each cell is position/contextual. Timings are single samples, including
+creation and processing. Process peak RSS covers the whole encode/decode
+process and retained input/archive buffers; it is not a direction-specific
+peak or an API query. MiB is 1,048,576 bytes.
+
+| Member | Archive bytes P/C | Encode seconds P/C | Decode seconds P/C | Process peak MiB P/C |
+| --- | ---: | ---: | ---: | ---: |
+| dickens | 3,150,509/3,154,985 | 12.478/12.902 | 0.203/0.276 | 348.81/223.07 |
+| mozilla | 18,140,320/18,860,594 | 89.964/107.477 | 0.935/1.581 | 508.84/369.67 |
+| mr | 3,201,347/3,316,381 | 21.596/54.746 | 0.208/0.283 | 345.96/222.93 |
+| nci | 2,211,420/2,214,379 | 40.505/77.048 | 0.164/0.204 | 445.45/317.16 |
+| ooffice | 3,014,573/3,019,638 | 3.141/1.911 | 0.202/0.264 | 293.91/215.13 |
+| osdb | 3,178,299/3,197,718 | 10.605/3.147 | 0.187/0.269 | 347.52/224.99 |
+| reymont | 1,535,543/1,538,735 | 10.521/12.038 | 0.112/0.142 | 294.48/213.24 |
+| samba | 4,774,836/4,778,760 | 12.523/13.192 | 0.261/0.392 | 445.18/312.24 |
+| sao | 5,095,405/5,229,190 | 6.989/3.067 | 0.238/0.395 | 319.82/223.40 |
+| webster | 9,856,122/9,870,235 | 103.593/87.131 | 0.581/0.975 | 472.70/339.03 |
+| xml | 550,100/550,945 | 0.792/0.762 | 0.056/0.063 | 272.33/209.33 |
+| x-ray | 5,200,429/5,361,511 | 5.236/2.204 | 0.300/0.434 | 337.02/224.03 |
+
+Totals are **59,908,903/61,093,071 bytes**, a **1,184,168-byte (1.938302%)**
+position saving, with position smaller on every corpus member. Sum of sample
+encode times is 317.942859/375.625776 seconds and decode times
+3.447699/5.276111 seconds. Maximum process peaks are
+533,553,152/387,629,056 bytes, both on mozilla. Position decode is faster on
+all twelve members in this run. Encode is faster on six members and slower
+on ooffice, osdb, sao, webster, xml and x-ray. Position resident memory is
+higher for every member. These corpus-specific single samples do not
+establish universal speed or size advantages. Public-factory/full-window
+sanitizer qualification and source-expression review remain separate gates;
+IX-0093 records the reported CI and external exchange evidence.

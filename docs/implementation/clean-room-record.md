@@ -41575,3 +41575,31 @@ Production codec semantics, ABI, fixed Release CLI and stream bytes are
 unchanged. The 16/32 MiB corpus campaigns have started separately; their
 results are not inferred from these small-fixture tests. Only first-party
 sources were used; no external compression implementation was consulted.
+
+### CR-1829: 2026-10-16 — Completed sixteen-MiB paired corpus campaign
+
+The resumed sequential campaign completed all twelve position/contextual
+16 MiB pairs, reconstructed every source, and retained source hashes, actual
+stream headers, queries, single encode/decode timings and process peaks.
+The actual tuples are 2/12 + 1/25 + 5/7 versus 2/5 + 1/4 + 5/2 with
+equal 16 MiB windows and frames. Totals are 59,908,903/61,093,071 bytes;
+maximum process peaks are 533,553,152/387,629,056 bytes. The design records
+every member and the mixed encode-speed/higher-memory tradeoff. Normal RSS
+is separated from queried quantities and future sanitizer RSS. No external
+implementation was consulted. The separate 32 MiB campaign is still running;
+new large-window public-fuzz scaffolding is not yet runtime-qualified.
+
+### CR-1830: 2026-10-16 — Benchmark record audit coverage correction
+
+The benchmark document's actual BM-0001 through BM-0246 headings form one
+contiguous sequence. The prior checker recognized only 124 earlier headings,
+silently excluding 120 existing records using historical level-two headings
+or no space after the colon. The two new records exposed that omission.
+The checker now collects every numbered benchmark heading, accepts the two
+existing heading levels and optional colon whitespace, and rejects unsupported
+levels or blank titles. All 246 records pass the full repository document
+check. An isolated execution of the actual parser accepts a mixed-style
+sequence and rejects level-two gaps/duplicates, a no-space gap, an unsupported
+level and a missing title. All six fixture outcomes are retained locally.
+No benchmark values or historical record IDs were changed to bypass the
+checker. No external implementation or source was consulted.

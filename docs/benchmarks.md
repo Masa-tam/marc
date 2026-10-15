@@ -11382,3 +11382,32 @@ existing result. Its local JSON schema retains member hashes, exact control
 identity, compressed bytes, timing samples, queried quantities, and the child
 process peak working set. A one-member pilot and the complete twelve-member
 campaign remain pending.
+
+### BM-0245: sixteen-MiB complete same-window tANS comparison
+
+The [sixteen-MiB measurement record](design/lzss-position-distance-tans-16m.md)
+contains all twelve members, actual native/contextual header tuples, equal
+16 MiB frame/window settings, successful restoration, single encode/decode
+samples and measured process RSS. Totals are 59,908,903/61,093,071 bytes
+(position/contextual), a 1.938302% saving. Sum of encode samples is
+317.942859/375.625776 seconds; decode is 3.447699/5.276111 seconds.
+Process-peak maxima are 533,553,152/387,629,056 bytes. Position is smaller
+on all twelve members and has lower decode times in this run; encode is
+mixed and resident memory is higher on every member. Process peaks combine
+encode/decode and retained raw/archive storage, not separate directional
+peaks. Queries and sanitizer RSS are distinct quantities.
+
+### BM-0246: sixty-four-MiB complete same-window tANS comparison
+
+The [sixty-four-MiB measurement record](design/lzss-position-distance-tans-64m.md)
+now includes the formerly unfinished mozilla and webster pairs and process
+peaks for all twelve members. Totals are 59,368,796/60,569,849 bytes, a
+1.982922% saving. Sum of single encode samples is
+1,341.977742/1,414.795231 seconds and decode is 4.526109/6.116046 seconds.
+Process-peak maxima are 1,618,812,928/984,731,648 bytes. Position is smaller
+on all corpus members, has lower decode times on ten members, and uses more
+resident memory on every member. The earlier small-fixture compression miss
+remains recorded. The contextual harness retains its selected profile's
+bounded payload ceiling; its previous 512 MiB override refused the mozilla
+resource query. Both actual stream identities and the resulting correction
+to the documented native context variant are recorded with the results.
