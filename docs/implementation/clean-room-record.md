@@ -41412,3 +41412,11 @@ reported paired encode/decode timings and process peak RSS: 969,093,120
 bytes for position-distance and 837,902,336 bytes for contextual tANS.
 This is representative evidence only; corpus-wide peak memory remains
 unclaimed. No external implementation or source was consulted.
+
+### CR-1815: 2026-10-16 — Schema78 reproducible audit rerun
+
+The project agent reran the repository release audit after the measurement
+and sanitizer documentation updates. It passed schema78 with 88 archives,
+the unchanged 81-entry prefix, the seven required appended selectors, and
+both fixed Release executable hashes. This is local reproducibility evidence;
+no external implementation or source was consulted.

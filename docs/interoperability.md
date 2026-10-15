@@ -2188,3 +2188,13 @@ independent inspection of these hosted jobs or external binaries is not
 claimed. Earlier pending statements are milestone history. This report does
 not establish unfinished corpus measurements, corpus peak-memory results,
 sanitizer fuzz execution, or similarity review. Those remain separate gates.
+
+## IX-0094: schema78 final audit rerun
+
+After the local measurement and sanitizer documentation updates, the
+reproducible release audit was rerun against the retained schema78 bundle.
+It passed with schema version 78, 88 archives, an unchanged 81-archive
+prefix, and the seven appended selectors in the required order. The fixed
+Release executable and its pre-update backup were both present with the
+previously recorded hashes. This is a local reproducibility check and does
+not change the maintainer-reported CI or external-route evidence in IX-0093.
