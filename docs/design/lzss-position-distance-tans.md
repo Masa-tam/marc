@@ -129,6 +129,13 @@ wrong-profile rejection, and failed-output retention.
 The complete seven-selector CLI CTest set (64 KiB through 64 MiB) then passed
 in the updated Clang build: 7/7 tests, 96.79 seconds.
 
+The local final audit now covers the schema-78 88-archive bundle, identical
+first-81 prefix, required seven-entry tail order, fixed Release executable,
+pre-update backup, fixed Release self-verification, and updated-Clang
+cross-route verification. These are local results only. Hosted CI success and
+the four external archive routes have not been inferred and remain separate
+post-push evidence.
+
 ### Updated compiler revalidation — 2026-10-15
 
 After the LLVM update, the Clang 22.1.3 build recompiled the seven position-
