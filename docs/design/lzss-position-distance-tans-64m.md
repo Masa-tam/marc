@@ -102,3 +102,8 @@ updated Clang CLI, independently of the fixed Release verifier. All 88
 archives restored and re-encoded successfully; the bundle order and archive
 hashes remained accepted. Hosted CI and external four-route verification are
 still separate gates.
+
+The final local bundle audit confirms that its first 81 archive entries are
+byte-identical to the retained schema-77 source, followed by the seven
+position-distance tANS selectors in the required order. The fixed Release
+executable and its pre-update backup are both present.
