@@ -41441,3 +41441,15 @@ not production codec sources. The distinction between local evidence and the
 reported external revision remains explicit. No external implementation or
 source was consulted, and the remaining corpus, resource, sanitizer-scope,
 and similarity gates are not inferred complete.
+
+### CR-1818: 2026-10-16 — Large-window registered test completion
+
+The first seven-profile CTest selection exposed missing local test
+executables for several 4/16/32/64 MiB targets; those cases were reported as
+not run and the two differential launches consequently failed before process
+creation. The missing targets were then built explicitly. A corrected
+selection of 24 registered 4/16/32/64 MiB core, token, frame-format, frame,
+stream, API, and differential tests completed with 24/24 passing in 120.66
+seconds. This distinguishes build-directory incompleteness from codec test
+failure. No external implementation or source was consulted; corpus,
+resource, sanitizer-scope, and similarity gates remain separate.
