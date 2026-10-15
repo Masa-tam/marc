@@ -136,6 +136,11 @@ stage produced no result during a 120-second observation window and was
 stopped without retaining a partial measurement. `mozilla` therefore remains
 excluded from the corpus total; no speed, size or memory value is inferred.
 
+A further retry was observed for five minutes with the same result: no
+position-distance encode result was emitted. It was stopped at that measured
+limit without retaining a partial output. This strengthens the measured
+resource/time boundary but does not turn `mozilla` into a completed pair.
+
 The public 64 MiB factory was probed with a one-byte input to establish its
 resource floor. The benchmark queried 4,095,271,087 bytes for encode and
 1,679,039,787 bytes for decode, with a 214-byte encoded result. These are

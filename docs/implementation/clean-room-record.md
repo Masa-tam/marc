@@ -41397,6 +41397,14 @@ no partial timing or output was recorded. The corpus total remains limited
 to the ten completed materials; no external source or implementation was
 consulted and no performance conclusion is inferred.
 
+### CR-1816: 2026-10-16 — Sixty-four-MiB mozilla extended observation
+
+The remaining `mozilla` position-distance benchmark was observed for five
+minutes after the earlier 120-second attempt. It still emitted no result and
+was stopped without retaining partial output. The material remains excluded
+from the completed corpus total; no performance value was inferred and no
+external implementation or source was consulted.
+
 ### CR-1814: 2026-10-16 — Sixty-four-MiB public resource floor
 
 The one-byte 64 MiB public-factory probe queried 4,095,271,087 encode bytes
