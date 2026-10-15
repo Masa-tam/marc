@@ -41453,3 +41453,14 @@ stream, API, and differential tests completed with 24/24 passing in 120.66
 seconds. This distinguishes build-directory incompleteness from codec test
 failure. No external implementation or source was consulted; corpus,
 resource, sanitizer-scope, and similarity gates remain separate.
+
+### CR-1819: 2026-10-16 — Seven-window registered test matrix rerun
+
+With the previously missing test executables built, the repository reran the
+major registered matrix for all seven position-distance tANS windows. The
+selection covered vectors, core, differential, frame-format, frame, stream,
+API, token, and token-vector cases where registered. All 52 selected tests
+passed in 284.96 seconds under the MSVC Release build. This is local test
+evidence only; benchmark corpus completion, public-factory sanitizer scope,
+and similarity review remain separate gates. No external implementation or
+source was consulted.
