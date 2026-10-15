@@ -41428,3 +41428,16 @@ and sanitizer documentation updates. It passed schema78 with 88 archives,
 the unchanged 81-entry prefix, the seven required appended selectors, and
 both fixed Release executable hashes. This is local reproducibility evidence;
 no external implementation or source was consulted.
+
+### CR-1817: 2026-10-16 — Post-external targeted stream retest
+
+After the maintainer reported successful hosted CI and four external
+88-archive routes for revision `28c980a8507aac9ef75b2b5e07c545f01ec91e7b`,
+the current local tree rebuilt the modified 32 MiB and 64 MiB stream-test
+executables and reran their registered tests. Both passed. The local tree is
+eight commits ahead of that externally verified revision; its intervening
+changes are confined to test harness options and append-only documentation,
+not production codec sources. The distinction between local evidence and the
+reported external revision remains explicit. No external implementation or
+source was consulted, and the remaining corpus, resource, sanitizer-scope,
+and similarity gates are not inferred complete.
