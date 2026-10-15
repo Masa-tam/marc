@@ -41397,6 +41397,15 @@ no partial timing or output was recorded. The corpus total remains limited
 to the ten completed materials; no external source or implementation was
 consulted and no performance conclusion is inferred.
 
+### CR-1814: 2026-10-16 — Sixty-four-MiB public resource floor
+
+The one-byte 64 MiB public-factory probe queried 4,095,271,087 encode bytes
+and 1,679,039,787 decode bytes. The result establishes the fixed-window
+resource floor used when deciding not to add a misleading sanitizer public
+fuzzer under a 1,024 MiB RSS limit. This is a resource-policy observation,
+not a public-factory fuzz result; no external implementation or source was
+consulted.
+
 The current benchmark was rerun once for the completed `dickens` material
 under both 64 MiB profiles. It reproduced the recorded compressed sizes and
 reported paired encode/decode timings and process peak RSS: 969,093,120

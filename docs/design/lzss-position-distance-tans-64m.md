@@ -135,3 +135,12 @@ benchmark after the external qualification. The position-distance encode
 stage produced no result during a 120-second observation window and was
 stopped without retaining a partial measurement. `mozilla` therefore remains
 excluded from the corpus total; no speed, size or memory value is inferred.
+
+The public 64 MiB factory was probed with a one-byte input to establish its
+resource floor. The benchmark queried 4,095,271,087 bytes for encode and
+1,679,039,787 bytes for decode, with a 214-byte encoded result. These are
+fixed-window workspace requirements rather than input-sized fuzz buffers.
+Consequently a sanitizer public-factory fuzz target under the 1,024 MiB
+instrumented RSS limit would not be a valid bounded campaign. Public-factory
+fuzz remains unclaimed; the CLI mutation and stream sanitizer campaigns are
+the bounded evidence for this profile.
