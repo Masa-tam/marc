@@ -41464,3 +41464,13 @@ passed in 284.96 seconds under the MSVC Release build. This is local test
 evidence only; benchmark corpus completion, public-factory sanitizer scope,
 and similarity review remain separate gates. No external implementation or
 source was consulted.
+
+### CR-1820: 2026-10-16 — Seven-window CLI registration rerun
+
+The current MSVC Release build reran the registered CLI round-trip tests for
+all seven position-distance tANS selectors: 64 KiB, 1 MiB, 4 MiB, 8 MiB,
+16 MiB, 32 MiB, and 64 MiB. All 7/7 passed in 335.44 seconds with the
+registered 300-second per-test limit. This confirms local CLI selector and
+round-trip behavior; corpus benchmark completion, public-factory sanitizer
+scope, and similarity review remain separate. No external implementation or
+source was consulted.
