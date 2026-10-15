@@ -34832,13 +34832,14 @@ The 32 MiB public boundary now exposes the distinct `2/13 + 1/26 + 5/8`
 profile through `marc_lzss_position_distance_tans_32m_*`. Resource queries
 include the eight-byte-mask descriptor ceiling, 237,568-entry decode bank,
 private token/raw staging, and caller capacities before allocation. The API
-round-trip and failed-second-frame publication tests pass; CLI, benchmark,
-fuzz, and exchange remain open.
+round-trip and failed-second-frame publication tests pass. CLI round-trip,
+malformed-input, and 500-case mutation campaigns also pass; benchmark smoke,
+fuzz compile smoke, and exchange admission are recorded separately.
 
 The CLI now exposes `lzss-position-distance-tans-32m` and routes it to the
 32 MiB public factory. The updated Clang build includes the selector and help
-inventory. Full CLI round-trip and malformed-file campaign remain pending
-because the profile's measured allocation floor must be recorded first.
+inventory. Full CLI round-trip, malformed-file, and 500-case mutation
+campaigns pass with the selector's exact identity.
 
 The 32 MiB benchmark reports compression size, encode/decode timing samples,
 and queried workspace bytes for both profiles. No published contextual
@@ -34863,5 +34864,8 @@ ceiling. It retains private descriptor/token/raw staging and publishes a
 decoded frame only after all validation and reconstruction succeed. The local
 API, CLI, benchmark smoke, schema78 self-verifier, 125-case negative campaign,
 and schema1..78 compatibility audit pass. The small benchmark fixture is
-larger than its contextual control (1,125 versus 1,104 bytes), so the
-smaller-than-contextual requirement remains open for corpus measurement.
+larger than its contextual control (1,125 versus 1,104 bytes). Ten of twelve
+corpus materials have now been compared; their totals are 31,737,835 bytes
+for position-distance and 32,186,693 bytes for contextual, with a 448,858-byte
+position-distance saving. Two materials and corpus peak-resident measurements
+remain open.
