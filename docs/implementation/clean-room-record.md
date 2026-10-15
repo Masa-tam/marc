@@ -41728,3 +41728,14 @@ separate copied bundles reject a changed byte, changed length and changed
 baseline body; original artifacts and fixed Release/backup hashes are
 unchanged. IX-0095 records the local evidence boundary. No external
 implementation, new CI result or new external execution was inferred.
+
+### CR-1841: 2026-10-16 — Instrumented large-window public lifecycle receipts
+
+All 624 production units and the shared public harness have verified sanitizer
+and fuzzer coverage flags. FZ-0095 records completed 8/16/32 MiB campaigns,
+4,096 runs each, with preserved source/binary hashes, initial seeds, mutated
+corpora and logs. No diagnostic or failing artifact occurred. The 64 MiB
+campaign remains in progress, and directed maximum-frame sanitizer tests
+remain separate evidence. Public-factory runtime is not inferred from a
+successful build or from the previously qualified stream-only harnesses.
+No external implementation or restricted source was consulted.

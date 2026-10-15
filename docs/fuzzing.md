@@ -1939,3 +1939,30 @@ the default full-frame resource query. These four smoke tests passed in
 1.27 seconds together. This record establishes ordinary harness execution;
 sanitizer campaigns and maximum-frame coverage are separate gates. No
 instrumented runtime result is inferred from compilation or ordinary tests.
+
+## FZ-0095: instrumented large-window public lifecycle campaigns
+
+The FZ-0094 entry points link all 624 production static-library units with
+verified fuzzer coverage, AddressSanitizer and UndefinedBehaviorSanitizer
+flags. Each campaign uses 4,096 runs, seed 161026, maximum raw input 128
+bytes, a ten-second per-input watchdog and a 1,024 MiB instrumented RSS cap.
+Twenty-four initial recipes cover repeated, sequential and mixed bytes at
+lengths 1, 31, 32, 63, 64, 65, 127 and 128; mutation can also reach empty
+inputs. Legal frame sizes remain 32 through 64 bytes under the harness's
+8 MiB logical resource allowance. Campaigns run one at a time.
+
+| Window MiB | Completed runs | Fuzzer seconds | Coverage counters | Features | Instrumented peak MiB |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 8 | 4096 | 279 | 1345 | 5186 | 348 |
+| 16 | 4096 | 306 | 1341 | 5198 | 348 |
+| 32 | 4096 | 316 | 1352 | 5193 | 349 |
+
+These three campaigns completed without a sanitizer diagnostic, invariant
+failure, crash, timeout or saved failing artifact. Generated input lengths
+reached the configured 128-byte cap. Public encode determinism, exact raw
+restoration, whole/split malformed decoding, sticky status/error position,
+output guards and exact truncation publication prefixes remain assertions
+inside each invocation. Instrumented RSS is distinct from API resource queries
+and normal benchmark peaks. The 64 MiB public campaign is still running;
+no result is claimed for it yet. Directed maximum-frame sanitizer tests are
+separate from these bounded fuzz campaigns.
