@@ -155,3 +155,36 @@ Consequently a sanitizer public-factory fuzz target under the 1,024 MiB
 instrumented RSS limit would not be a valid bounded campaign. Public-factory
 fuzz remains unclaimed; the CLI mutation and stream sanitizer campaigns are
 the bounded evidence for this profile.
+
+### Resumed mozilla comparison
+
+The local corpus verifier accepted all twelve members, including `mozilla`
+and `webster`; corpus availability was not a blocker. A completed `mozilla`
+position run required 389.1171579 seconds to encode, exceeding the earlier
+five-minute observation boundary. It reconstructed the complete source.
+
+The contextual measurement initially failed its resource query with
+`MARC_STATUS_LIMIT_EXCEEDED`: the harness overrode the selected profile's
+payload ceiling with 512 MiB, below the worst-case query for this member.
+Retaining the existing 64 MiB profile's bounded payload ceiling admits the
+control. This changes measurement admission only, not a codec or wire format.
+The control's emitted header confirms dictionary `2/6`, context `1/5`, entropy
+`5/2`, and a 67,108,864-byte window and frame. It also reconstructs the source.
+
+| mozilla measurement | position-distance | contextual |
+| --- | ---: | ---: |
+| Archive bytes | 18,148,412 | 18,887,737 |
+| Encode seconds | 389.1171579 | 378.4464305 |
+| Decode seconds | 1.0962841 | 1.5511791 |
+| Process peak resident bytes | 1,618,812,928 | 984,731,648 |
+| Encode queried bytes | 4,146,491,566 | 1,539,048,487 |
+| Decode queried bytes | 1,755,790,997 | 1,755,072,104 |
+
+Position-distance saves 739,325 bytes on this member. Encode is slower and
+process peak memory is higher; decode is faster in these single samples.
+The process peak covers the complete encode/decode run including retained
+raw/archive storage; it is not a separate per-direction memory peak. Queried
+bytes have a different accounting scope. Combining the completed member with
+the preceding ten-member size table gives position 49,886,247 bytes versus
+contextual 51,074,430 bytes for eleven members. `webster` and the other
+members' renewed peak-memory measurements remain pending.

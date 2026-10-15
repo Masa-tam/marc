@@ -41515,3 +41515,19 @@ dictionary and entropy variants distinguish it from the 32 MiB tuple.
 No codec bytes or accepted decoder identities were changed. This correction
 uses first-party source and retained artifacts only; no external implementation
 or source was consulted.
+
+### CR-1825: 2026-10-16 — Resumed mozilla paired measurement
+
+The repository corpus verifier accepted all twelve Silesia members. The
+previous corpus-absence conclusion arose from a search that excluded ignored
+files and was incorrect. The retained benchmark completed the mozilla
+position run beyond the former observation boundary, reproducing its complete
+raw input. Diagnostic harness output then identified the contextual resource
+query refusal as the harness's 512 MiB payload override. Retaining the
+selected profile's bounded ceiling admitted the control; its complete source
+also reconstructed. Archive sizes are 18,148,412 versus 18,887,737 bytes;
+timings, queried extents and measured process peaks are recorded in the
+64 MiB design. Failure receipts, the prior executable and fresh measurement
+records are retained separately. No production codec or fixed Release CLI
+changed, and no external implementation or source was consulted. Remaining
+webster and peak-memory measurements are not inferred complete.
