@@ -9292,10 +9292,12 @@ if(MARC_BUILD_TESTS)
             marc_position_rans_64m_full_literal_stream_differential
             marc_position_rans_64m_full_literal_owned_differential
             PROPERTIES RESOURCE_LOCK marc_large_window)
-        # The 211-fixture campaign took 92 s on hosted Ubuntu and exceeded
-        # 120 s on hosted Windows. Preserve the lock and per-fixture timeout;
-        # allow time for independent Python generation and fixture file I/O.
-        set_tests_properties(marc_position_rans_64m_full_literal_frame_differential
+        # Both 211-fixture campaigns took 87-92 s on hosted Ubuntu and
+        # exceeded 120 s on hosted Windows. Preserve the lock and per-fixture
+        # timeout; allow time for independent Python generation and file I/O.
+        set_tests_properties(
+            marc_position_rans_64m_full_literal_token_differential
+            marc_position_rans_64m_full_literal_frame_differential
             PROPERTIES TIMEOUT 300)
     endif()
 endif()
