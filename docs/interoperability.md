@@ -2162,3 +2162,29 @@ compatibility audit all pass. This closes the first local exchange gate for the
 sixteen-MiB profile. A second producer and cross routes, fixed-Release closure,
 hosted CI, external verification, and later 32/64 MiB profiles remain open.
 No push is performed.
+
+## IX-0093: maintainer-reported schema78 external verification
+
+On 2026-10-16 the maintainer reports push and successful hosted CI for
+`28c980a8507aac9ef75b2b5e07c545f01ec91e7b`, followed by four successful
+88-archive verification reports for that same revision:
+
+| Producer bundle | Consumer | Verified archives |
+| --- | --- | ---: |
+| windows-msvc-x64, MSVC via Visual Studio 2026 | Ubuntu | 88 |
+| ubuntu-ninja-x64, default Ubuntu 24.04 compiler via Ninja | Ubuntu | 88 |
+| ubuntu-26.04-ninja-x64, Ubuntu Clang 21.1.8 via Ninja | Ubuntu | 88 |
+| ubuntu-26.04-ninja-x64, Ubuntu Clang 21.1.8 via Ninja | Windows | 88 |
+
+The consumer mapping follows the maintainer's previously stated four-route
+procedure. The repeated Ubuntu producer label represents self-consumption
+and consumption on Windows. Both local HEAD and the tracked remote branch
+match the reported revision. The schema78 bundle contains the retained
+81-archive prefix followed by all seven position-distance tANS profiles.
+
+This closes the hosted-CI and external four-route evidence gates for that
+revision. Evidence is maintainer-reported CI success and console output;
+independent inspection of these hosted jobs or external binaries is not
+claimed. Earlier pending statements are milestone history. This report does
+not establish unfinished corpus measurements, corpus peak-memory results,
+sanitizer fuzz execution, or similarity review. Those remain separate gates.

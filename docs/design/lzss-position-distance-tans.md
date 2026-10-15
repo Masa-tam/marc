@@ -143,3 +143,12 @@ distance tANS core-test targets. The four vector checks available in the
 current build and all seven core checks passed (14 tests total, 106.40 seconds).
 This is local compiler revalidation; it does not substitute for the remaining
 per-profile API/CLI, fuzz, measurement, and external-route gates.
+
+### Hosted CI and external verification — 2026-10-16
+
+The maintainer reports successful hosted CI and four successful 88-archive
+external routes for `28c980a8507aac9ef75b2b5e07c545f01ec91e7b`.
+Both local HEAD and the tracked remote branch match that revision. IX-0093
+records the producer/consumer routes and the evidence boundary. This closes
+the CI and external-route gates previously left pending here; remaining
+measurement, sanitizer fuzz, and review work is not inferred complete.

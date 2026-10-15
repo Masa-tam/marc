@@ -107,3 +107,10 @@ The final local bundle audit confirms that its first 81 archive entries are
 byte-identical to the retained schema-77 source, followed by the seven
 position-distance tANS selectors in the required order. The fixed Release
 executable and its pre-update backup are both present.
+
+On 2026-10-16 the maintainer reports successful hosted CI and all four
+88-archive external routes at `28c980a8507aac9ef75b2b5e07c545f01ec91e7b`
+(IX-0093). This supplies the CI and external-route evidence left pending
+above. The two unmeasured corpus pairs, corpus peak-memory measurements,
+sanitizer runtime fuzzing, and similarity review remain open; these exchange
+results do not establish those separate completion criteria.
