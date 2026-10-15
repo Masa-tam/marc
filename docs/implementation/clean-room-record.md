@@ -41474,3 +41474,13 @@ registered 300-second per-test limit. This confirms local CLI selector and
 round-trip behavior; corpus benchmark completion, public-factory sanitizer
 scope, and similarity review remain separate. No external implementation or
 source was consulted.
+
+### CR-1821: 2026-10-16 — Local release hygiene recheck
+
+The current worktree passed `git diff --check` and contains no production
+source, public-header, CMake, or cmake-script changes after the externally
+verified revision. A repository search found no GPL, LGPL, or AGPL reference in
+the implementation, test, benchmark, or implementation-record paths beyond
+the clean-room statement that those implementations were intentionally not
+consulted. This is a local hygiene check and is not a substitute for the
+final source-expression similarity review.
