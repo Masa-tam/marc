@@ -81,6 +81,11 @@ excluded from the total. The benchmark reports queried
 workspace bytes and timings, but not peak resident memory; peak-memory
 comparison remains unverified.
 
+The long `webster` run was retried with the MSVC Release benchmark build as
+an independent local execution path and again produced no result within the
+observation window. It remains unmeasured; no compiler-specific performance
+conclusion is inferred.
+
 The benchmark now also reports peak resident memory. On its 256-byte probe,
 position-distance reported 812,380,160 bytes and contextual tANS reported
 811,724,800 bytes. These are process peaks for the paired single-sample run,
