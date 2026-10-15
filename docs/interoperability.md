@@ -2198,3 +2198,15 @@ prefix, and the seven appended selectors in the required order. The fixed
 Release executable and its pre-update backup were both present with the
 previously recorded hashes. This is a local reproducibility check and does
 not change the maintainer-reported CI or external-route evidence in IX-0093.
+
+## IX-0095: schema78 archive-body preservation audit
+
+The final local release audit now checks actual lengths and SHA-256 values
+for all 88 archive bodies and the baseline's retained 81 bodies, in addition
+to the manifest prefix and seven-selector tail order. The unchanged bundle
+passes. Separate preserved copies with a changed archive byte, changed
+archive length, or changed baseline body are rejected. Original artifacts
+remain unchanged. The fixed Release executable and its pre-update backup
+retain the previously recorded hashes. This verifies local artifact
+preservation; it supplies no new hosted CI or external-route evidence for
+the subsequent test, benchmark and documentation commits.

@@ -41718,3 +41718,13 @@ format. Record numbering must remain contiguous across both styles. Positive
 and negative extracted-parser fixtures verify mixed headings, gaps,
 duplicates, missing titles, unsupported levels and repeated explicit schema
 numbers. No bundle, evidence claim or external validation result was changed.
+
+### CR-1840: 2026-10-16 — Verify actual preserved exchange bodies
+
+Strengthened the local release auditor to verify actual archive lengths and
+SHA-256 values, rather than only comparing manifest declarations and checking
+file existence. All 88 current bodies and 81 baseline bodies pass. Three
+separate copied bundles reject a changed byte, changed length and changed
+baseline body; original artifacts and fixed Release/backup hashes are
+unchanged. IX-0095 records the local evidence boundary. No external
+implementation, new CI result or new external execution was inferred.

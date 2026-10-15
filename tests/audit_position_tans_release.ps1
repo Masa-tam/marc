@@ -46,8 +46,22 @@ for ($index = 0; $index -lt $expected.Count; ++$index) {
     }
 }
 foreach ($entry in $manifest.archives) {
-    if (-not (Test-Path -LiteralPath (Join-Path $bundle $entry.file))) {
+    $archivePath = Join-Path $bundle $entry.file
+    if (-not (Test-Path -LiteralPath $archivePath -PathType Leaf)) {
         throw "Missing archive: $($entry.file)"
+    }
+    if ((Get-Item -LiteralPath $archivePath).Length -ne $entry.bytes -or
+        (Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant() -ne $entry.sha256) {
+        throw "Archive body mismatch: $($entry.file)"
+    }
+}
+for ($index = 0; $index -lt 81; ++$index) {
+    $entry = $old.archives[$index]
+    $archivePath = Join-Path $baseline $entry.file
+    if (-not (Test-Path -LiteralPath $archivePath -PathType Leaf) -or
+        (Get-Item -LiteralPath $archivePath).Length -ne $entry.bytes -or
+        (Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant() -ne $entry.sha256) {
+        throw "Baseline archive body mismatch: $($entry.file)"
     }
 }
 [pscustomobject]@{
