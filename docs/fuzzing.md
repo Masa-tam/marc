@@ -1903,6 +1903,19 @@ These bounded small-frame campaigns do not establish full-window sanitizer
 coverage, public-factory fuzz coverage or normal process peak memory.
 Corpus measurements and similarity review remain separate unfinished work.
 
+## FZ-0093: extended 64 KiB position tANS token campaign
+
+The supplementary 64 KiB token campaign was repeated from its saved corpus
+with 4,096 libFuzzer runs, maximum input length 1,024, ten-second per-input
+timeout and a 1,024 MiB instrumented RSS limit. ASan and UBSan reported no
+finding. The run completed in 55 seconds, reached 769 coverage counters and
+1,832 feature edges, and used 334 MiB instrumented RSS. The generated input
+length reached 14 bytes (up from six bytes in the initial pilot); this is a
+measured improvement but remains far below the 4,096-byte harness admission
+limit. The ordinary destination and private scratch invariants remain those
+checked by the harness. This is still bounded token coverage, not a full
+window or public-factory fuzz qualification.
+
 A supplementary 64 KiB token campaign used 2,000 runs and seed 160016,
 with the same sanitizers and resource limits and maximum length 256. It
 completed in 30 seconds without a finding, checking ordinary destination

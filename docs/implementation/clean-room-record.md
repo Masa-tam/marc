@@ -41379,6 +41379,15 @@ No external implementation, source or test corpus was consulted. This
 records a bounded campaign, not full-window or public-factory fuzz closure;
 the overall goal and release similarity review remain unfinished.
 
+### CR-1813: 2026-10-16 — Extended 64 KiB token sanitizer campaign
+
+The project agent repeated the repository-owned 64 KiB token harness from
+its retained corpus with a 1,024-byte input ceiling and 4,096 libFuzzer
+runs under AddressSanitizer and UndefinedBehaviorSanitizer. It completed in
+55 seconds without a finding and reached input length 14 bytes. No external
+implementation, source or test corpus was consulted. This bounded extension
+does not establish full-window or public-factory fuzz completion.
+
 ### CR-1812: 2026-10-16 — Sixty-four-MiB corpus retry boundary
 
 The project agent retried the remaining 64 MiB `mozilla` position-distance
