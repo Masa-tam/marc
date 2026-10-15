@@ -41632,3 +41632,17 @@ This is a local expression/provenance review without external source
 comparison, not a legal guarantee. It does not infer completion of runtime
 fuzz, maximum-frame tests, measurements or the final public-claims audit;
 the new public-fuzz scaffolding still requires compilation and execution.
+
+### CR-1832: 2026-10-16 — Complete fuzz-record heading audit
+
+The same heading omission found in CR-1830 also affected fuzz records: the
+earlier checker recognized 58 records while the document contains a contiguous
+FZ-0001 through FZ-0093 sequence. The checker now collects every numbered
+fuzz heading, accepts the two historical levels and colon-spacing styles,
+and rejects unsupported levels or blank titles. All 93 existing records pass
+the full documentation check. The actual extracted parser accepts a mixed
+valid sequence and rejects a level-two gap, no-space gap, duplicate,
+unsupported heading level and missing title; all six receipts are retained.
+No campaign result, count, identifier or historical title was altered to pass
+the check. This strengthens record validation and supplies no new runtime
+fuzz claim. No external source or implementation was consulted.
