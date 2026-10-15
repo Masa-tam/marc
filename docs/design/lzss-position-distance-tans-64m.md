@@ -91,3 +91,9 @@ The public 64 MiB decoder mutation pilot ran 100 deterministic truncation,
 bit-flip, insertion, and replacement cases. It completed without a crash or
 timeout and retained the no-output-on-failure contract. This is a bounded
 pilot and does not claim sanitizer runtime coverage.
+
+The existing schema-78 88-archive bundle was also verified through the
+updated Clang CLI, independently of the fixed Release verifier. All 88
+archives restored and re-encoded successfully; the bundle order and archive
+hashes remained accepted. Hosted CI and external four-route verification are
+still separate gates.
