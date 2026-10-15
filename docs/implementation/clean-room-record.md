@@ -41603,3 +41603,32 @@ sequence and rejects level-two gaps/duplicates, a no-space gap, an unsupported
 level and a missing title. All six fixture outcomes are retained locally.
 No benchmark values or historical record IDs were changed to bypass the
 checker. No external implementation or source was consulted.
+
+### CR-1831: 2026-10-16 — Native tANS production expression review
+
+Author/reviewer: Codex. The review covers the 98 production files in the
+seven position-distance tANS specializations, their first-party tANS table
+primitive, and the recorded DD-1556/1532/1536 mathematical/field contracts.
+An exact-path SHA-256 inventory is retained locally. The task was to account
+for source reuse, unexplained attribution markers, mathematical terminology,
+serialization and publication contracts before final profile qualification.
+External compression implementation source, source-derived vendor tests and
+copyleft implementations were intentionally not consulted. The separately
+licensed GoogleTest dependency remains outside first-party expression review.
+
+No unexplained copyright/copyleft or external implementation-name marker was
+found in the scoped production, test, fuzz or benchmark sources. Normalizing
+window labels, numeric specializations, comments and whitespace gives the same
+entropy-kernel structure for all seven windows: deliberate reuse of the
+repository-owned implementation. Layer differences were traced to unused mask
+bit handling (also checked by canonical reserialization), the suffixless
+64 KiB public API, and its earlier first-party finder entry point. The shared
+tANS spread/inverse-table construction and integer normalization match the
+recorded equations; the private staging/publication structure is documented
+first-party reuse. The emitted 64 MiB context-ID documentation discrepancy
+was corrected separately in CR-1824.
+
+This is a local expression/provenance review without external source
+comparison, not a legal guarantee. It does not infer completion of runtime
+fuzz, maximum-frame tests, measurements or the final public-claims audit;
+the new public-fuzz scaffolding still requires compilation and execution.

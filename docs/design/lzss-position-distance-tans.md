@@ -158,3 +158,12 @@ Both local HEAD and the tracked remote branch match that revision. IX-0093
 records the producer/consumer routes and the evidence boundary. This closes
 the CI and external-route gates previously left pending here; remaining
 measurement, sanitizer fuzz, and review work is not inferred complete.
+
+### Production expression review — 2026-10-16
+
+CR-1831 records the local production-family expression/provenance review,
+including a source inventory, accounted first-party reuse, and the
+mathematical table/field contracts. It does not compare external implementation
+source or supply a legal guarantee. Final public-claims reconciliation,
+remaining runtime sanitizer scope and maximum-frame qualification still
+require their own evidence.
