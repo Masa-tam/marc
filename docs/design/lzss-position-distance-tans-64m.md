@@ -3,12 +3,18 @@
 ## DD-1608: exact sixty-four-MiB specialization
 
 The native position-distance tANS specialization uses `F = 67,108,864` and
-`N = 26`. Its identity is dictionary `2/14`, context `1/27`, and entropy
+`N = 26`. Its emitted identity is dictionary `2/14`, context `1/26`, and entropy
 `5/9`. The alphabet sequence is `[2]*3 + [256]*17 + [9]*3 + [27]*9 + [2]*26`,
 with 58 adaptive contexts and 4,680 frequencies. The descriptor keeps the
 24-byte prefix, uses an eight-byte active mask, and has a maximum extent of
 9,334 bytes. States are 4096 through 8191, table log is 12, and payload bits
 are LSB-first after the little-endian final-state delta.
+
+The original design reserved context variant 27, but the implemented stream
+serializer, parser, fixed header test, and retained schema78 archive all use
+26. The dictionary/entropy variants distinguish this complete tuple from the
+32 MiB tuple `2/13 + 1/26 + 5/8`. The documentation now records the emitted
+tuple; no existing stream bytes or accepted identities are changed.
 
 Frames reset dictionary and entropy state. For token count `T`, raw extent `R`,
 and decision count `D`, the validator requires `2T <= D <= min(34T, 10R)`.

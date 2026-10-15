@@ -41503,3 +41503,15 @@ This is CLI rejection and failure-invariance evidence; it is distinct from
 sanitizer runtime fuzzing and does not close the remaining corpus or
 source-expression similarity gates. No external implementation or source was
 consulted.
+
+### CR-1824: 2026-10-16 — Recorded emitted 64 MiB tANS identity
+
+The resumed corpus measurement audit compared the serializer, parser, fixed
+header test and the retained schema78 archive. All four use dictionary 2/14,
+context 1/26 and entropy 5/9; the initial design reservation stated context
+1/27. The design summary and format description now record the exchanged
+tuple and explicitly explain the original reservation discrepancy. Distinct
+dictionary and entropy variants distinguish it from the 32 MiB tuple.
+No codec bytes or accepted decoder identities were changed. This correction
+uses first-party source and retained artifacts only; no external implementation
+or source was consulted.

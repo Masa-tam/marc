@@ -15,7 +15,13 @@ reserve distinct formats; reservations do not admit public factories.
 | 8388608 | 8m | 2/11 | 1/24 | 5/6 | 55 | 4647 | 7 | 9270 |
 | 16777216 | 16m | 2/12 | 1/25 | 5/7 | 56 | 4658 | 7 | 9291 |
 | 33554432 | 32m | 2/13 | 1/26 | 5/8 | 57 | 4669 | 8 | 9313 |
-| 67108864 | 64m | 2/14 | 1/27 | 5/9 | 58 | 4680 | 8 | 9334 |
+| 67108864 | 64m | 2/14 | 1/26 | 5/9 | 58 | 4680 | 8 | 9334 |
+
+For 64 MiB, the original context-27 reservation differs from the implemented
+and exchanged context-26 header. This table records the actual emitted tuple,
+confirmed against the serializer, parser, fixed header test and schema78
+archive. Existing streams retain their representation; the complete
+dictionary/context/entropy tuple distinguishes the 32 MiB and 64 MiB profiles.
 
 Selectors are lzss-position-distance-tans and its -1m/-4m/-8m/-16m/-32m/
 -64m extensions. Implement and qualify in that order. Grammar lengths are

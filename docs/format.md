@@ -9237,7 +9237,7 @@ admits no public API, CLI selector or exchange entry.
 ### DD-1608: sixty-four-MiB position-distance tANS exact specialization
 
 [The sixty-four-MiB specialization](design/lzss-position-distance-tans-64m.md)
-defines dictionary `2/14`, context `1/27`, entropy `5/9`, window 67,108,864,
+defines dictionary `2/14`, context `1/26`, entropy `5/9`, window 67,108,864,
 58 contexts and 4,680 frequencies. Its eight-byte mask uses 58 adaptive bits,
 and its descriptor maximum is 9,334 bytes. The uniform binary model occupies
 an additional table bank. The family grammar, canonical normalization and
@@ -9246,6 +9246,12 @@ and CLI selector are `lzss-position-distance-tans-64m`; schema78 appends its
 archive after the unchanged schema77 prefix. The local 88-archive exchange
 and schema compatibility evidence are recorded separately; hosted and
 cross-producer qualification remain open.
+
+The context-27 reservation in the initial design was not the implemented
+header: the serializer, parser, fixed header test and retained schema78
+archive use context 26. The complete tuple above records the exchanged
+representation, including its distinct dictionary and entropy variants.
+This documentation correction changes neither existing bytes nor decoding.
 
 ### DD-1573: one-MiB position-distance tANS exact specialization
 
