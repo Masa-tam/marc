@@ -10031,5 +10031,25 @@ if(MARC_BUILD_TESTS)
             COMMAND marc_position_tans_${window}_public_fuzz_smoke)
         set_tests_properties(marc_position_tans_${window}_public_fuzz_smoke PROPERTIES
             TIMEOUT 120 RESOURCE_LOCK marc_position_tans_public_fuzz_campaign)
+        add_executable(marc_position_tans_${window}_full_frame_probe
+            tests/position_tans_large_full_frame_probe.cpp)
+        target_compile_features(marc_position_tans_${window}_full_frame_probe PRIVATE cxx_std_20)
+        target_compile_definitions(marc_position_tans_${window}_full_frame_probe PRIVATE
+            MARC_TANS_WINDOW=${window})
+        target_link_libraries(marc_position_tans_${window}_full_frame_probe PRIVATE marc::static)
+        if(WIN32)
+            target_link_libraries(marc_position_tans_${window}_full_frame_probe PRIVATE psapi)
+        endif()
+        if(Python3_Interpreter_FOUND)
+            string(REPLACE "m" "" full_frame_mib "${window}")
+            add_test(NAME marc_position_tans_${window}_full_frame
+                COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                    ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_large_full_frame_smoke.py
+                    --probe $<TARGET_FILE:marc_position_tans_${window}_full_frame_probe>
+                    --window ${full_frame_mib}
+                    --output ${CMAKE_CURRENT_BINARY_DIR}/position-tans-full-frame)
+            set_tests_properties(marc_position_tans_${window}_full_frame PROPERTIES
+                TIMEOUT 300 RESOURCE_LOCK marc_large_window)
+        endif()
     endforeach()
 endif()

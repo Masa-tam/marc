@@ -41669,3 +41669,16 @@ receipts from sanitizer runtime and maximum-frame qualification. Corrected
 the overly broad interpretation of the 64 MiB default-frame query: legal
 small frames demonstrably fit a bounded public fuzz campaign. No production
 format or codec behavior changed. No external source was consulted.
+
+### CR-1835: 2026-10-16 — Independent maximum-frame public qualification
+
+Added the TVG-1471 independent fixture generator and public probe/driver for
+8/16/32/64 MiB. Fourteen scalar-table crosschecks qualify the accelerated
+mathematical oracle; no production calls supply fixture bytes. All 56 normal
+runtime cases pass, including nearly full token scratch, distance F-5, late
+raw expansion rejection with zero publication, exact prior-frame publication
+after tail corruption, schedule agreement and encoder F-1/F/F+1 boundaries.
+BM-0248 records separate process peaks and time; CTest uses the existing
+shared heavy-test lock. These are ordinary maximum-frame receipts and do
+not establish maximum-frame sanitizer fuzz coverage. No external source or
+implementation was consulted, and no production codec or stream changed.

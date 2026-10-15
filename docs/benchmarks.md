@@ -11425,3 +11425,24 @@ on eleven members, and resident memory is higher on every member. Peaks
 include retained buffers and both directions; separate directional peaks
 were not measured. The contextual control uses the existing public API
 configured to a 32 MiB frame and window, rather than assuming a profile name.
+
+### BM-0248: large-window public maximum-frame qualification resources
+
+The TVG-1471 directed fixtures and public F-1/F/F+1 encoder boundaries pass
+fourteen cases per window. Each invocation is a fresh process; decode checks
+streamed output without retaining a full expected raw buffer, while encode
+retains its synthetic source. Peaks are measured RSS, not workspace queries.
+They describe these synthetic qualification cases, not corpus comparisons.
+
+| Window MiB | Sum of fourteen process samples, seconds | Maximum encode peak bytes | Maximum decode peak bytes |
+| ---: | ---: | ---: | ---: |
+| 8 | 2.065 | 224,817,152 | 115,408,896 |
+| 16 | 4.041 | 443,019,264 | 224,538,624 |
+| 32 | 9.530 | 879,562,752 | 442,814,464 |
+| 64 | 25.792 | 1,752,301,568 | 879,284,224 |
+
+The largest measured invocation is under four seconds, while full-window
+tests are serialized with other heavy tests through the shared CTest resource
+lock and allowed 300 seconds each for all fourteen invocations. These bounds
+provide headroom from the measured pilot; hosted-runner time is not inferred.
+No production default memory grant or encoding format was changed.

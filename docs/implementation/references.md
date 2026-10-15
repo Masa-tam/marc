@@ -11290,3 +11290,12 @@ logical limits and charged caller buffers. Compare whole/split schedules,
 guard output tails and assert the precise publication prefix after a final
 frame truncation. No external implementation or restricted test suite was
 consulted. Full-frame qualification remains independent of bounded fuzzing.
+
+### IR-1293: independent maximum-frame tANS fixture derivation
+
+Use the published repository tANS equations and its independent mathematical
+table oracle to derive the binary [4095,1] repeated transition cycle. Build
+explicit little-endian stream/frame headers from the documented field layout,
+without production calls. TVG-1471 describes token recipes, scalar crosschecks
+and late semantic failures. No external implementation, restricted source or
+imported test suite was consulted.

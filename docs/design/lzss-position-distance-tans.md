@@ -167,3 +167,18 @@ mathematical table/field contracts. It does not compare external implementation
 source or supply a legal guarantee. Final public-claims reconciliation,
 remaining runtime sanitizer scope and maximum-frame qualification still
 require their own evidence.
+
+### Maximum-frame public qualification
+
+TVG-1471 adds independent maximum-frame near-literal fixtures for 8/16/32/64
+MiB. All 56 normal cases pass: valid and late-failing fixtures under two
+schedules, plus public encoder round trips at F-1/F/F+1. The fixture's final
+match reaches distance F-5 after F-5 literals, exercising nearly full token
+scratch. A declared expansion overflow exposes zero bytes; corruption after
+a valid maximum frame exposes exactly that earlier frame. Error positions,
+sticky terminal status and untouched output tails agree across schedules.
+BM-0248 records measured direction-specific probe peaks and time. These
+normal tests supplement the bounded sanitizer campaigns; they do not claim
+maximum-frame sanitizer fuzz coverage. The shared large-window CTest lock
+serializes these tests with existing heavy tests, with a 300-second test
+timeout chosen after the normal pilot, rather than unmeasured parallelism.

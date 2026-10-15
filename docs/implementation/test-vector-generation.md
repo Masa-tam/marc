@@ -23796,3 +23796,22 @@ adds one 64 MiB archive; its 125 malformed manifest/header cases are rejected
 before codec launch and publish no output. These receipts are local evidence;
 cross-producer, hosted-CI, external-route, sanitizer runtime, and corpus-wide
 measurements remain separate gates.
+
+### TVG-1471: independent near-literal maximum-frame tANS fixtures
+
+For each 8/16/32/64 MiB frame F=2^N, generate F-5 literal-zero tokens followed
+by a length-five match at distance F-5. This expands to exactly F zero bytes,
+uses F-4 tokens and 2F+N-8 decisions, and reaches the largest usable distance
+class within a reset frame. Singleton models surround the binary [4095,1]
+kind model. The independent oracle accelerates repeated zero transitions
+through its 2814-symbol cycle; fourteen explicit-table scalar crosschecks
+cover initial transitions and cycle boundaries before any fixture is emitted.
+No production encoder or serializer supplies these bytes.
+
+Four fixtures per window cover valid output, a late expansion beyond the
+declared F-1 raw extent, a valid F-byte frame plus one literal tail, and that
+same tail with an impossible final state. Whole and split public decoding
+must agree on output, terminal category and error position. The late-expansion
+fixture must expose zero bytes; the corrupt tail must expose exactly F bytes.
+Separate public encoder tests round-trip F-1, F and F+1 bytes. Artifacts,
+hashes and measured process peaks are preserved by the test driver.
