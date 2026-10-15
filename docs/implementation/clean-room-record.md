@@ -41706,3 +41706,15 @@ median table while distinguishing combined process peaks from directional
 probes, API queries and sanitizer RSS. No new runtime sample, external source
 or compression implementation was used. The earlier BM-0244 pending status
 is a milestone superseded by this completed receipt.
+
+### CR-1839: 2026-10-16 — Complete interoperability evidence heading audit
+
+The interoperability checker formerly counted only the first fifty exact
+Schema headings. It now validates all 94 numbered evidence records, including
+later titled qualification and maintainer-reported CI/external receipts.
+Explicit Schema headings retain their strictly increasing schema check;
+follow-up evidence may describe an existing schema without inventing a new
+format. Record numbering must remain contiguous across both styles. Positive
+and negative extracted-parser fixtures verify mixed headings, gaps,
+duplicates, missing titles, unsupported levels and repeated explicit schema
+numbers. No bundle, evidence claim or external validation result was changed.

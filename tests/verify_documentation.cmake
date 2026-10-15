@@ -1468,18 +1468,21 @@ foreach(required_current_interoperability_term IN ITEMS
     endif()
 endforeach()
 file(STRINGS "${interoperability_document}" interoperability_headings
-    REGEX "^### IX-[0-9]+: Schema [0-9]+$")
+    REGEX "^#+[ \t]+IX-[0-9]+")
 if(NOT interoperability_headings)
     message(FATAL_ERROR "No interoperability evidence records were found")
 endif()
 set(expected_interoperability_record 1)
 set(previous_interoperability_schema 0)
 foreach(heading IN LISTS interoperability_headings)
-    if(NOT heading MATCHES "^### IX-([0-9]+): Schema ([0-9]+)$")
+    if(NOT heading MATCHES "^##(#)?[ \t]+IX-([0-9]+):[ \t]*[^ \t].*$")
         message(FATAL_ERROR "Invalid interoperability heading: ${heading}")
     endif()
-    set(interoperability_record_number "${CMAKE_MATCH_1}")
-    set(interoperability_schema_number "${CMAKE_MATCH_2}")
+    set(interoperability_record_number "${CMAKE_MATCH_2}")
+    set(interoperability_schema_number "")
+    if(heading MATCHES ": Schema ([0-9]+)$")
+        set(interoperability_schema_number "${CMAKE_MATCH_1}")
+    endif()
     string(REGEX REPLACE "^0+" "" interoperability_record_number
         "${interoperability_record_number}")
     if(interoperability_record_number STREQUAL "")
@@ -1491,7 +1494,7 @@ foreach(heading IN LISTS interoperability_headings)
             "Interoperability record numbers must be contiguous: "
             "${heading}")
     endif()
-    if(interoperability_schema_number LESS_EQUAL
+    if(NOT interoperability_schema_number STREQUAL "" AND interoperability_schema_number LESS_EQUAL
        previous_interoperability_schema)
         message(FATAL_ERROR
             "Interoperability schema records must be strictly increasing: "
@@ -1499,8 +1502,10 @@ foreach(heading IN LISTS interoperability_headings)
     endif()
     math(EXPR expected_interoperability_record
         "${expected_interoperability_record} + 1")
-    set(previous_interoperability_schema
-        "${interoperability_schema_number}")
+    if(NOT interoperability_schema_number STREQUAL "")
+        set(previous_interoperability_schema
+            "${interoperability_schema_number}")
+    endif()
 endforeach()
 list(LENGTH interoperability_headings interoperability_record_count)
 
