@@ -7887,6 +7887,10 @@ if(MARC_BUILD_TESTS)
             COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_32m_cli_fuzz.py
                 $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/position-tans-32m-cli-fuzz)
         set_tests_properties(marc_position_tans_32m_cli_fuzz PROPERTIES TIMEOUT 900 RESOURCE_LOCK marc_position_tans_32m_campaign)
+        add_test(NAME marc_position_tans_64m_cli_fuzz
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_64m_cli_fuzz.py
+                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/position-tans-64m-cli-fuzz)
+        set_tests_properties(marc_position_tans_64m_cli_fuzz PROPERTIES TIMEOUT 1200 RESOURCE_LOCK marc_position_tans_64m_campaign)
         add_test(NAME marc_cli_position_tans_64k
             COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_tans_64k.py
                 $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-tans-64k)

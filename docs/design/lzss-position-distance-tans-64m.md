@@ -86,3 +86,8 @@ position-distance reported 812,380,160 bytes and contextual tANS reported
 811,724,800 bytes. These are process peaks for the paired single-sample run,
 not the corpus peak values; the completed corpus rows above therefore retain
 their explicit peak-memory-unverified status.
+
+The public 64 MiB decoder mutation pilot ran 100 deterministic truncation,
+bit-flip, insertion, and replacement cases. It completed without a crash or
+timeout and retained the no-output-on-failure contract. This is a bounded
+pilot and does not claim sanitizer runtime coverage.
