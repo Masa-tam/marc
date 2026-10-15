@@ -121,3 +121,9 @@ It checks split/whole equivalence, output guards and sticky terminal errors,
 starting from a successfully reconstructed literal frame. This closes the
 bounded stream-runtime pilot; full-window and public-factory sanitizer
 coverage and the remaining measurement/review gates are still unproven.
+
+The 64 MiB `mozilla` corpus comparison was retried with the single-sample
+benchmark after the external qualification. The position-distance encode
+stage produced no result during a 120-second observation window and was
+stopped without retaining a partial measurement. `mozilla` therefore remains
+excluded from the corpus total; no speed, size or memory value is inferred.

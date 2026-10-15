@@ -41378,3 +41378,12 @@ libFuzzer runs (FZ-0092). A supplementary 64 KiB token run also passed.
 No external implementation, source or test corpus was consulted. This
 records a bounded campaign, not full-window or public-factory fuzz closure;
 the overall goal and release similarity review remain unfinished.
+
+### CR-1812: 2026-10-16 — Sixty-four-MiB corpus retry boundary
+
+The project agent retried the remaining 64 MiB `mozilla` position-distance
+single-sample comparison using the repository benchmark. No result was
+produced during a 120-second observation window, so the run was stopped and
+no partial timing or output was recorded. The corpus total remains limited
+to the ten completed materials; no external source or implementation was
+consulted and no performance conclusion is inferred.
