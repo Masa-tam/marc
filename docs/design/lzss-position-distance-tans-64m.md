@@ -114,3 +114,10 @@ On 2026-10-16 the maintainer reports successful hosted CI and all four
 above. The two unmeasured corpus pairs, corpus peak-memory measurements,
 sanitizer runtime fuzzing, and similarity review remain open; these exchange
 results do not establish those separate completion criteria.
+
+The subsequent 2026-10-16 seeded stream sanitizer campaign completes 4,096
+libFuzzer runs with all decoder dependencies under ASan and UBSan (FZ-0092).
+It checks split/whole equivalence, output guards and sticky terminal errors,
+starting from a successfully reconstructed literal frame. This closes the
+bounded stream-runtime pilot; full-window and public-factory sanitizer
+coverage and the remaining measurement/review gates are still unproven.

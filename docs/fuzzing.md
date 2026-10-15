@@ -1870,3 +1870,42 @@ edges, with a 329 MiB sanitizer-reported peak. It exercises bounded malformed
 stream admission and split-output failure behavior. It does not qualify public
 API/CLI fuzzing, full-frame memory behavior, coverage of all entropy states,
 or exchange interoperability.
+
+## FZ-0092: seeded thirty-two/sixty-four-MiB tANS stream campaigns
+
+On 2026-10-16 both existing stream harnesses ran with libFuzzer,
+AddressSanitizer and UndefinedBehaviorSanitizer. All decoder, frame, token,
+entropy, reconstruction and limit implementation sources were instrumented.
+Each corpus started with a validated 215-byte literal stream, including the
+leading split-schedule selector. The stream test executables can now export
+that seed with `--write-fuzz-seed FILE` after their normal round-trip and
+truncation assertions pass. The seed SHA-256 values are:
+
+- 32 MiB: `af09bb8ead89f98aa062833effbb9929cedc2784e35411be27fe9304ca46e2d0`.
+- 64 MiB: `4f1a5c0f08027cb0cfe43273ba23aa022facf1a1c9f8627f19540b000e5a7441`.
+
+Each campaign used 4,096 runs, maximum input length 10,000, a ten-second
+per-input timeout and a 1,024 MiB instrumented RSS limit, sequentially.
+The deterministic PRNG seeds were 160032 and 160064 respectively. Both
+completed without a crash, timeout, sanitizer report or failure artifact.
+
+| Window | Seconds | Coverage counters | Features | Instrumented RSS |
+| --- | ---: | ---: | ---: | ---: |
+| 32 MiB | 16 | 594 | 1,166 | 331 MiB |
+| 64 MiB | 22 | 598 | 1,188 | 331 MiB |
+
+The harness compares whole and split schedules, consumed bytes, emitted
+bytes, terminal status and stable errors, and guards unproduced output.
+The initial valid seed exercises successful payload reconstruction as well
+as mutation-driven rejection. Generated inputs reached 215 bytes in these
+runs; the configured maximum is not a claim of achieved length coverage.
+These bounded small-frame campaigns do not establish full-window sanitizer
+coverage, public-factory fuzz coverage or normal process peak memory.
+Corpus measurements and similarity review remain separate unfinished work.
+
+A supplementary 64 KiB token campaign used 2,000 runs and seed 160016,
+with the same sanitizers and resource limits and maximum length 256. It
+completed in 30 seconds without a finding, checking ordinary destination
+invariance against private scratch decoding. It reached 760 coverage counters,
+1,642 features and 334 MiB instrumented RSS; generated lengths reached only
+six bytes, so this result is supplementary rather than broad token coverage.

@@ -26,3 +26,10 @@ compile smoke, the 16/32 MiB 500-case CLI mutation campaigns, and schema77
 exchange admission are recorded separately.
 Corpus comparison, sanitizer runtime, cross-producer, hosted-CI, external
 routes, and release similarity remain open.
+
+The 2026-10-16 seeded stream sanitizer campaign completes 4,096 libFuzzer
+runs with every decoder dependency under ASan and UBSan (FZ-0092).
+Its seed passes the normal stream round-trip and truncation assertions.
+This supplies bounded stream runtime evidence, while full-window and
+public-factory fuzz qualification and corpus measurement remain open.
+IX-0093 separately supplies the reported hosted-CI and external-route evidence.

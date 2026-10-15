@@ -1,6 +1,8 @@
 #include "frame/lzss_position_tans_64m_stream_decoder.hpp"
 #include <algorithm>
+#include <fstream>
 #include <iostream>
+#include <string_view>
 #include <vector>
 
 namespace {
@@ -26,7 +28,9 @@ DecoderLimits limits() {
     return value;
 }
 }
-int main() {
+int main(int argc,char** argv) {
+    const bool write_seed=argc==3 && std::string_view(argv[1])=="--write-fuzz-seed";
+    if (argc!=1 && !write_seed) return 2;
     const auto configured = limits();
     PositionTans64mStreamHeader stream{};
     stream.frame_size = 1;
@@ -60,5 +64,13 @@ int main() {
         output, flag_value(ProcessFlags::end_input));
     check(failed.status == StreamStatus::error && output[0] == std::byte{0x5a},
         "truncated stream does not publish raw output");
-    return failures == 0 ? 0 : 1;
+    if (failures) return 1;
+    if (write_seed) {
+        // Fuzz inputs begin with a split-schedule selector, then the stream.
+        std::ofstream seed(argv[2],std::ios::binary);
+        seed.put('\0');
+        seed.write(reinterpret_cast<const char*>(header.data()),header.size());
+        if (!seed) return 1;
+    }
+    return 0;
 }

@@ -41365,3 +41365,16 @@ launch. A schema77 to schema76 conversion also verifies 86 archives. The full
 schema1..75 compatibility audit and cross-producer checks remain open; no
 external implementation or source was consulted and this record makes no
 legal guarantee.
+
+### CR-1811: 2026-10-16 — Seeded large-window tANS sanitizer campaigns
+
+The project agent added an optional seed export to the repository-owned
+32 MiB and 64 MiB stream tests, retaining their existing successful decode
+and truncation/non-publication assertions. The exported seed is the same
+validated literal stream preceded by the harness schedule byte. Existing
+stream fuzz harnesses and every decoder dependency were instrumented with
+AddressSanitizer and UndefinedBehaviorSanitizer and each completed 4,096
+libFuzzer runs (FZ-0092). A supplementary 64 KiB token run also passed.
+No external implementation, source or test corpus was consulted. This
+records a bounded campaign, not full-window or public-factory fuzz closure;
+the overall goal and release similarity review remain unfinished.
