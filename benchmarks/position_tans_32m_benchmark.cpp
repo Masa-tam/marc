@@ -11,6 +11,15 @@
 #include <new>
 #include <string>
 #include <vector>
+#ifdef _WIN32
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#include <psapi.h>
+#else
+#include <sys/resource.h>
+#endif
 
 namespace {
 using Clock=std::chrono::steady_clock;
@@ -22,6 +31,17 @@ bool load(const char* path,std::vector<std::uint8_t>& out) {
     return n==0 || static_cast<bool>(file.read(reinterpret_cast<char*>(out.data()),n));
 }
 double seconds(Clock::time_point t) { return std::chrono::duration<double>(Clock::now()-t).count(); }
+std::uint64_t peak_resident_bytes() {
+#ifdef _WIN32
+    PROCESS_MEMORY_COUNTERS counters{};
+    if (!GetProcessMemoryInfo(GetCurrentProcess(),&counters,sizeof(counters))) return 0;
+    return static_cast<std::uint64_t>(counters.PeakWorkingSetSize);
+#else
+    rusage counters{};
+    if (getrusage(RUSAGE_SELF,&counters)) return 0;
+    return static_cast<std::uint64_t>(counters.ru_maxrss)*1024;
+#endif
+}
 bool run(bool position,marc_direction direction,const std::vector<std::uint8_t>& input,
          const std::vector<std::uint8_t>* expected,std::vector<std::uint8_t>* generated,
          double& elapsed,std::uint64_t& queried) {
@@ -103,31 +123,41 @@ bool run(bool position,marc_direction direction,const std::vector<std::uint8_t>&
 }
 }
 int main(int argc,char** argv) {
-    if (argc==4 && std::string(argv[2])=="all") {
+    if (argc==4 && (std::string(argv[2])=="all" || std::string(argv[2])=="once")) {
         const std::string profile=argv[1];
         if (profile!="position" && profile!="contextual") return 2;
+        const bool once=std::string(argv[2])=="once";
         std::vector<std::uint8_t> raw,wire;
         if (!load(argv[3],raw)) return 2;
         double elapsed{}; std::uint64_t encode_queried{},decode_queried{};
         if (!run(profile=="position",MARC_DIRECTION_ENCODE,raw,nullptr,&wire,elapsed,encode_queried)
             || wire.empty()) return 1;
         std::array<double,3> encode_samples{},decode_samples{};
-        for (std::size_t iteration{};iteration<encode_samples.size();++iteration) {
+        const auto sample_count=once ? std::size_t{1} : encode_samples.size();
+        encode_samples[0]=elapsed;
+        for (std::size_t iteration=once ? sample_count : std::size_t{};
+             iteration<sample_count;++iteration) {
             if (!run(profile=="position",MARC_DIRECTION_ENCODE,raw,&wire,nullptr,elapsed,encode_queried)) return 1;
             encode_samples[iteration]=elapsed;
         }
         if (!run(profile=="position",MARC_DIRECTION_DECODE,wire,&raw,nullptr,elapsed,decode_queried)) return 1;
-        for (std::size_t iteration{};iteration<decode_samples.size();++iteration) {
+        decode_samples[0]=elapsed;
+        for (std::size_t iteration=once ? sample_count : std::size_t{};
+             iteration<sample_count;++iteration) {
             if (!run(profile=="position",MARC_DIRECTION_DECODE,wire,&raw,nullptr,elapsed,decode_queried)) return 1;
             decode_samples[iteration]=elapsed;
         }
         std::cout<<std::setprecision(12)<<"{\"verified\":true,\"profile\":\""<<profile
-            <<"\",\"frame_size\":33554432,\"window_size\":33554432,\"warmups\":1"
+            <<"\",\"frame_size\":33554432,\"window_size\":33554432,\"warmups\":"<<(once ? 0 : 1)
             <<",\"compressed_bytes\":"<<wire.size()
             <<",\"encode_queried_bytes\":"<<encode_queried
             <<",\"decode_queried_bytes\":"<<decode_queried
             <<",\"encode_seconds\":["<<encode_samples[0]<<','<<encode_samples[1]<<','<<encode_samples[2]
-            <<"],\"decode_seconds\":["<<decode_samples[0]<<','<<decode_samples[1]<<','<<decode_samples[2]<<"]}\n";
+            <<"],\"decode_seconds\":["<<decode_samples[0]<<','<<decode_samples[1]<<','<<decode_samples[2]
+            <<"],\"peak_resident_bytes\":"<<peak_resident_bytes()<<",\"stream_header_hex\":\"";
+        for (std::size_t i=0;i<std::min(std::size_t{112},wire.size());++i)
+            std::cout<<std::hex<<std::setw(2)<<std::setfill('0')<<static_cast<unsigned>(wire[i]);
+        std::cout<<std::dec<<"\"}\n";
         return 0;
     }
     if (argc!=5) return 2;
@@ -142,6 +172,7 @@ int main(int argc,char** argv) {
     std::cout<<std::setprecision(12)<<"{\"verified\":true,\"profile\":\""<<profile
         <<"\",\"mode\":\""<<mode<<"\",\"frame_size\":33554432,\"window_size\":33554432"
         <<",\"warmups\":1,\"queried_bytes\":"<<queried<<",\"seconds\":["
-        <<samples[0]<<','<<samples[1]<<','<<samples[2]<<"]}\n";
+        <<samples[0]<<','<<samples[1]<<','<<samples[2]<<"],\"peak_resident_bytes\":"
+        <<peak_resident_bytes()<<"}\n";
 }
 

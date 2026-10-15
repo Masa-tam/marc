@@ -41544,3 +41544,34 @@ small-fixture target miss or establish a universal size or speed advantage.
 The other ten members' renewed peak measurements and the updated benchmark
 smokes remain pending. No production codec, fixed Release CLI, external
 implementation or external source was changed or consulted.
+
+### CR-1827: 2026-10-16 — Complete 64 MiB corpus resident-memory record
+
+All twelve source-verified corpus pairs completed in a sequential campaign.
+The ten prior members reproduced their compressed sizes. Actual stream
+headers, queried quantities, single-sample encode/decode times and combined
+process peaks are retained per run. Maximum measured resident bytes are
+1,618,812,928/984,731,648 for position/contextual; the twelve-member table
+records the speed/memory tradeoffs and preserves the small-fixture size miss.
+The emitted-identity correction also aligns the public header's comment and
+the earlier design/reference records, without ABI or codec changes.
+An initial follow-up CMake configuration failed because a benchmark's psapi
+link setting preceded its target definition. That placement was corrected;
+the failed follow-up launched no later corpus campaign and is excluded from
+qualification. Updated benchmark build/smoke completion and the remaining
+16/32 MiB campaigns are recorded separately after execution.
+
+### CR-1828: 2026-10-16 — Qualified large-window benchmark reporting
+
+The 16/32 MiB benchmark harnesses now support the existing 64 MiB harness's
+single-sample mode and report measured process RSS plus the actual serialized
+stream header. The 64 MiB control keeps the selected profile's bounded payload
+ceiling, removing the measured mozilla query refusal, and prints diagnostic
+stage/status on failure. Three updated registered smokes pass (3/3, 7.01
+seconds): they check actual complete identities, frame/window/original size,
+positive RSS, sampling mode, and unchanged header/size between repeated and
+single-sample operation. Corrected CMake target ordering is build-qualified.
+Production codec semantics, ABI, fixed Release CLI and stream bytes are
+unchanged. The 16/32 MiB corpus campaigns have started separately; their
+results are not inferred from these small-fixture tests. Only first-party
+sources were used; no external compression implementation was consulted.

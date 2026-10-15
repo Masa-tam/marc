@@ -215,3 +215,46 @@ to the preceding ten-member table yields **59,368,796 position bytes** versus
 on each member in this corpus; the earlier small-fixture target miss still
 stands and no universal compression claim follows. The renewed peak-memory
 campaign for the other ten members remains in progress.
+
+### Completed twelve-member peak-memory campaign
+
+The sequential resumed campaign completed all twelve pairs. Every run
+reconstructed its original bytes; the ten previously measured members retained
+their compressed sizes. Fresh headers confirm both profiles' actual identities
+and 64 MiB frame/window configuration. The earlier mozilla position receipt
+comes from the retained pre-diagnostic benchmark executable; codec sources and
+the owning API are unchanged. The contextual control retains its selected
+profile's payload ceiling of 805,306,370 bytes and 4 GiB internal admission
+limit. These are bounded admission settings, not measured physical peaks.
+
+Each cell below is position/contextual. Timings are single samples including
+creation and processing, not repeated medians. RSS is the measured maximum
+for the combined encode/decode process, including raw/archive storage; it does
+not establish separate encode and decode peaks. MiB is 1,048,576 bytes.
+
+| Member | Archive bytes P/C | Encode seconds P/C | Decode seconds P/C | Process peak MiB P/C |
+| --- | ---: | ---: | ---: | ---: |
+| dickens | 3,150,534/3,155,009 | 16.078/13.657 | 0.295/0.316 | 924.85/801.07 |
+| mozilla | 18,148,412/18,887,737 | 389.117/378.446 | 1.096/1.551 | 1543.82/939.11 |
+| mr | 3,201,375/3,316,407 | 23.190/58.229 | 0.300/0.331 | 921.40/798.95 |
+| nci | 2,101,645/2,103,968 | 123.883/210.201 | 0.230/0.252 | 1232.31/841.62 |
+| ooffice | 3,014,606/3,019,670 | 3.893/1.989 | 0.283/0.314 | 870.47/791.22 |
+| osdb | 3,178,327/3,197,744 | 14.801/3.479 | 0.283/0.330 | 923.53/801.02 |
+| reymont | 1,535,568/1,538,759 | 21.854/12.331 | 0.196/0.187 | 871.21/789.23 |
+| samba | 4,709,783/4,713,430 | 25.042/21.823 | 0.328/0.417 | 1083.86/823.91 |
+| sao | 5,095,422/5,229,206 | 10.883/4.703 | 0.319/0.438 | 896.45/797.48 |
+| webster | 9,482,549/9,495,419 | 701.603/706.813 | 0.628/1.377 | 1369.95/872.85 |
+| x-ray | 5,200,442/5,361,523 | 10.639/2.268 | 0.378/0.493 | 912.35/802.07 |
+| xml | 550,133/550,977 | 0.994/0.855 | 0.191/0.109 | 848.31/785.41 |
+
+The size saving is 1.982922% over the contextual total. Sum of single-sample
+encode times is 1,341.977742/1,414.795231 seconds and decode times
+4.526109/6.116046 seconds. Process-peak maxima are
+1,618,812,928/984,731,648 bytes, both observed on mozilla. Position uses more
+resident memory on every member. Its encode time is lower on mr, nci and
+webster; decode is lower on ten members and higher on reymont and xml.
+These are corpus-specific tradeoffs, not universal speed claims. The earlier
+small-fixture compression miss remains a known limitation of explicit profile
+selection; any later format-overhead change requires its own variant and
+qualification. Public-factory/full-window sanitizer scope and source-expression
+review remain separate unfinished gates.

@@ -11275,7 +11275,8 @@ provide the frozen bytes. External conformance/FSE compatibility is not claimed.
 ### IR-1291: sixty-four-MiB position-distance tANS independent specialization
 
 Use the repository-owned DD-1556 tANS equations and DD-1532/1536 field
-partition, extended to the explicit `2/14 + 1/27 + 5/9` tuple. The bounded
+partition, originally reserving `2/14 + 1/27 + 5/9`. The implemented and
+exchanged tuple is `2/14 + 1/26 + 5/9`, as audited in CR-1824. The bounded
 oracle and forward descriptor parser were written independently from the
 format definition and do not call production code. No external compression
 implementation or restricted source was consulted; FSE compatibility and

@@ -34858,7 +34858,7 @@ schema1..75 audit remains pending after the script integration is corrected.
 
 ### DD-1608: sixty-four-MiB position-distance tANS
 
-The 64 MiB profile fixes identity `2/14 + 1/27 + 5/9`, 58 adaptive contexts,
+The 64 MiB profile's emitted identity is `2/14 + 1/26 + 5/9`, 58 adaptive contexts,
 4,680 frequencies, an eight-byte descriptor mask, and a 9,334-byte descriptor
 ceiling. It retains private descriptor/token/raw staging and publishes a
 decoded frame only after all validation and reconstruction succeed. The local
@@ -34869,3 +34869,9 @@ corpus materials have now been compared; their totals are 31,737,835 bytes
 for position-distance and 32,186,693 bytes for contextual, with a 448,858-byte
 position-distance saving. Two materials and corpus peak-resident measurements
 remain open.
+
+The initial context-27 reservation differs from the actual context-26
+serializer, parser, fixed header test and retained schema78 archive; CR-1824
+records that correction without changing wire bytes. The later resumed
+mozilla/webster measurements and twelve-member total are recorded in the
+64 MiB design rather than inferred from this earlier ten-member milestone.

@@ -69,12 +69,12 @@ bool run(bool position,marc_direction direction,const std::vector<std::uint8_t>&
         status=marc_lzss_contextual_tans_config_apply_profile(&cc,MARC_LZSS_CONTEXTUAL_PROFILE_64M);
         if (status!=MARC_STATUS_OK) return false;
         cc.frame_size=cc.window_size=67108864;
-        // Frames use the 32 MiB comparison window; no published contextual 32 MiB profile exists.
         // This is an admission limit only; it does not enlarge a frame workspace.
         cc.max_total_output_size=UINT64_C(1)<<30;
         cc.max_frame_size=67108864;
         cc.max_block_size=UINT64_C(9)*67108864;
-        cc.max_compressed_payload_size=UINT64_C(512)<<20;
+        // Keep the selected profile's bounded payload ceiling. A 512 MiB
+        // override rejects the worst-case query for the mozilla member.
         cc.max_internal_buffered_bytes=UINT64_C(4)<<30;
         cc.max_lz_distance=67108864;
         cc.max_lz_match_length=258;
@@ -85,7 +85,11 @@ bool run(bool position,marc_direction direction,const std::vector<std::uint8_t>&
         queried=cr.primary_bytes+cr.secondary_bytes+cr.views_bytes
             +65536+input.capacity()+(expected==nullptr ? 0 : expected->capacity());
     }
-    if (status!=MARC_STATUS_OK) return false;
+    if (status!=MARC_STATUS_OK) {
+        std::cerr<<"resource query failed: profile="<<(position ? "position" : "contextual")
+            <<" direction="<<static_cast<int>(direction)<<" status="<<static_cast<int>(status)<<'\n';
+        return false;
+    }
     auto start=Clock::now();
     if (position) status=marc_lzss_position_distance_tans_64m_create(&pc,&raw);
     else {
@@ -98,7 +102,11 @@ bool run(bool position,marc_direction direction,const std::vector<std::uint8_t>&
             {secondary.get(),cr.secondary_bytes},
             {reinterpret_cast<std::uint8_t*>(views.data()),cr.views_bytes},&raw);
     }
-    elapsed=seconds(start); if (status!=MARC_STATUS_OK || !raw) return false;
+    elapsed=seconds(start); if (status!=MARC_STATUS_OK || !raw) {
+        std::cerr<<"create failed: profile="<<(position ? "position" : "contextual")
+            <<" direction="<<static_cast<int>(direction)<<" status="<<static_cast<int>(status)<<'\n';
+        return false;
+    }
     std::unique_ptr<marc_transform,void(*)(marc_transform*)> transform(raw,marc_transform_destroy);
     std::array<std::uint8_t,chunk> output{}; std::size_t consumed{},produced{};
     std::vector<std::uint8_t> captured;
@@ -110,7 +118,12 @@ bool run(bool position,marc_direction direction,const std::vector<std::uint8_t>&
         elapsed+=seconds(start);
         if (r.input_consumed>count || r.output_produced>output.size() || r.status>=MARC_STATUS_INVALID_ARGUMENT
             || (expected!=nullptr && (produced>expected->size() || r.output_produced>expected->size()-produced
-                || !std::equal(output.begin(),output.begin()+r.output_produced,expected->begin()+produced)))) return false;
+                || !std::equal(output.begin(),output.begin()+r.output_produced,expected->begin()+produced)))) {
+            std::cerr<<"process failed: profile="<<(position ? "position" : "contextual")
+                <<" direction="<<static_cast<int>(direction)<<" status="<<static_cast<int>(r.status)
+                <<" consumed="<<consumed<<" produced="<<produced<<'\n';
+            return false;
+        }
         consumed+=r.input_consumed; produced+=r.output_produced;
         if (generated!=nullptr) captured.insert(captured.end(),output.begin(),output.begin()+r.output_produced);
         if (r.status==MARC_STATUS_END_OF_STREAM) {
@@ -155,7 +168,11 @@ int main(int argc,char** argv) {
             <<",\"decode_queried_bytes\":"<<decode_queried
             <<",\"encode_seconds\":["<<encode_samples[0]<<','<<encode_samples[1]<<','<<encode_samples[2]
             <<"],\"decode_seconds\":["<<decode_samples[0]<<','<<decode_samples[1]<<','<<decode_samples[2]
-            <<"],\"peak_resident_bytes\":"<<peak_resident_bytes()<<"}\n";
+            <<"],\"peak_resident_bytes\":"<<peak_resident_bytes()
+            <<",\"stream_header_hex\":\"";
+        for (std::size_t i=0;i<std::min(std::size_t{112},wire.size());++i)
+            std::cout<<std::hex<<std::setw(2)<<std::setfill('0')<<static_cast<unsigned>(wire[i]);
+        std::cout<<std::dec<<"\"}\n";
         return 0;
     }
     if (argc!=5) return 2;

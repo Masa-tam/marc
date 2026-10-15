@@ -9713,6 +9713,7 @@ if(MARC_BUILD_TESTS)
     target_link_libraries(marc_position_tans_64m_benchmark PRIVATE marc::static)
     if(WIN32)
         target_link_libraries(marc_position_tans_64m_benchmark PRIVATE psapi)
+        target_link_libraries(marc_position_tans_32m_benchmark PRIVATE psapi)
     endif()
     if(Python3_Interpreter_FOUND)
         add_test(NAME marc_position_tans_64m_benchmark_smoke
@@ -9976,6 +9977,9 @@ if(MARC_BUILD_TESTS)
     add_executable(marc_position_tans_16m_benchmark benchmarks/position_tans_16m_benchmark.cpp)
     target_compile_features(marc_position_tans_16m_benchmark PRIVATE cxx_std_20)
     target_link_libraries(marc_position_tans_16m_benchmark PRIVATE marc::static)
+    if(WIN32)
+        target_link_libraries(marc_position_tans_16m_benchmark PRIVATE psapi)
+    endif()
     if(Python3_Interpreter_FOUND)
         add_test(NAME marc_position_tans_8m_benchmark_smoke
             COMMAND ${Python3_EXECUTABLE} -B -X utf8

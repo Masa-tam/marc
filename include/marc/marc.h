@@ -2408,7 +2408,7 @@ MARC_API marc_status marc_lzss_position_distance_tans_32m_resource_requirements(
 MARC_API marc_status marc_lzss_position_distance_tans_32m_create(
     const marc_lzss_position_distance_tans_32m_config* config, marc_transform** transform) MARC_NOEXCEPT;
 
-/* Native64MiB position-distance tANS (2/14 + 1/27 + 5/9).
+/* Native64MiB position-distance tANS (2/14 + 1/26 + 5/9).
  * Fixed-five encoder; decoder accepts match lengths3..258.
  * max_block_size limits binary decisions, not bytes. Other sizes are bytes. */
 typedef struct marc_lzss_position_distance_tans_64m_config {
