@@ -23815,3 +23815,10 @@ must agree on output, terminal category and error position. The late-expansion
 fixture must expose zero bytes; the corrupt tail must expose exactly F bytes.
 Separate public encoder tests round-trip F-1, F and F+1 bytes. Artifacts,
 hashes and measured process peaks are preserved by the test driver.
+
+The same 56 directed cases subsequently passed under ASan and UBSan.
+FZ-0096 records the measured instrumented peaks and watchdogs. Archive hashes,
+publication counts, terminal categories and error positions agree across
+ordinary and instrumented builds, including every public encoder boundary.
+This complements bounded randomized campaigns without claiming randomized
+maximum-frame coverage.

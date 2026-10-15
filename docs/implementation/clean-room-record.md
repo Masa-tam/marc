@@ -41739,3 +41739,15 @@ campaign remains in progress, and directed maximum-frame sanitizer tests
 remain separate evidence. Public-factory runtime is not inferred from a
 successful build or from the previously qualified stream-only harnesses.
 No external implementation or restricted source was consulted.
+
+### CR-1842: 2026-10-16 — Directed maximum-frame sanitizer receipts
+
+The TVG-1471 probe and full production library were instrumented with ASan,
+UBSan and coverage. All 56 directed maximum-frame cases pass; audit binds
+source/binary hashes, checks empty diagnostic streams and compares each
+archive hash, consumption/publication count and terminal/error position with
+the ordinary build. FZ-0096 records actual time and direction-specific
+instrumented peaks. Serial execution and per-process watchdogs follow the
+measured ordinary pilots; the bounded small-frame fuzzer RSS cap is not
+misapplied to these larger cases. This is directed sanitizer validation,
+not randomized maximum-frame fuzzing. No external implementation was consulted.

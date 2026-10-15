@@ -1966,3 +1966,28 @@ inside each invocation. Instrumented RSS is distinct from API resource queries
 and normal benchmark peaks. The 64 MiB public campaign is still running;
 no result is claimed for it yet. Directed maximum-frame sanitizer tests are
 separate from these bounded fuzz campaigns.
+
+## FZ-0096: directed maximum-frame sanitizer qualification
+
+The TVG-1471 public probes also link the fully instrumented production library
+and run fourteen directed cases for each 8/16/32/64 MiB window. All 56 pass
+with ASan and UBSan, empty diagnostic streams and no failing process. Every
+case agrees with its ordinary-build counterpart on archive SHA-256, consumed
+and published bytes, terminal status and error position. This includes public
+encoder F-1/F/F+1 round trips and independent near-literal fixtures whose
+last match uses distance F-5. Late expansion failure publishes zero bytes;
+bad-tail failure publishes exactly the preceding complete maximum frame.
+
+| Window MiB | Cases | Sum of samples, seconds | Largest case, seconds | Instrumented encode peak bytes | Instrumented decode peak bytes |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 8 | 14 | 18.064 | 2.075 | 234,840,064 | 125,829,120 |
+| 16 | 14 | 36.636 | 4.143 | 453,709,824 | 236,507,136 |
+| 32 | 14 | 73.196 | 8.327 | 890,404,864 | 454,868,992 |
+| 64 | 14 | 147.355 | 16.643 | 1,763,766,272 | 891,256,832 |
+
+These directed cases run serially with a 120-second per-process watchdog.
+They do not use the small-frame fuzzer's 1,024 MiB RSS cap: full-frame normal
+pilots already exceeded that cap. Their measured instrumented peaks remain
+distinct from normal BM-0248 peaks, API queries and memory grants. This is
+directed maximum-frame sanitizer evidence, not randomized full-window fuzzing
+or an exhaustive malformed-stream proof.
