@@ -92,6 +92,14 @@ position-distance reported 812,380,160 bytes and contextual tANS reported
 not the corpus peak values; the completed corpus rows above therefore retain
 their explicit peak-memory-unverified status.
 
+The current benchmark was also rerun once for the completed `dickens`
+material with both profiles. Position-distance reproduced 3,150,534 bytes
+and measured 18.9698882 seconds encode, 0.3649101 seconds decode, and
+969,093,120 bytes peak resident memory. Contextual tANS reproduced 3,155,009
+bytes and measured 15.1092503 seconds encode, 0.3208361 seconds decode, and
+837,902,336 bytes peak resident memory. This is representative paired
+evidence; it does not promote the peak values to a corpus-wide maximum.
+
 The public 64 MiB decoder mutation pilot ran 100 deterministic truncation,
 bit-flip, insertion, and replacement cases. It completed without a crash or
 timeout and retained the no-output-on-failure contract. This is a bounded

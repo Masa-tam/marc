@@ -41396,3 +41396,10 @@ produced during a 120-second observation window, so the run was stopped and
 no partial timing or output was recorded. The corpus total remains limited
 to the ten completed materials; no external source or implementation was
 consulted and no performance conclusion is inferred.
+
+The current benchmark was rerun once for the completed `dickens` material
+under both 64 MiB profiles. It reproduced the recorded compressed sizes and
+reported paired encode/decode timings and process peak RSS: 969,093,120
+bytes for position-distance and 837,902,336 bytes for contextual tANS.
+This is representative evidence only; corpus-wide peak memory remains
+unclaimed. No external implementation or source was consulted.
