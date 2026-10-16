@@ -133,3 +133,17 @@ floor dominates. These are finite test charges, not public defaults or RSS.
 No fuzz execution is performed. Raw reconstruction, failed-frame publication,
 stream owners, public API/CLI, normal measurements and exchange remain open.
 
+### Frame and stream publication qualification
+
+TVG-1516 qualifies exact stream/frame envelopes, complete descriptor preflight,
+private raw reconstruction and the streaming publication controller. All70
+independent positive streams/frames and7 invalid frames pass;69 production
+frames are decoded independently and normal/instrumented bytes agree. Fixed
+reserved bytes52/53, maximum metadata without payload allocation, a full
+8388608-byte zero-payload literal frame, every small split, one-byte I/O,
+exact/one-short quotas and late-second-frame publication guards pass.
+An invalid descriptor is rejected before consuming/storing its payload.
+Normal4/4 and two14-unit direct ASan/UBSan closures pass independent artifact
+audit. Fuzz is omitted by request. Owners, normal resource precursors, public
+API/CLI, comparisons/peaks and schema82 exchange remain open.
+

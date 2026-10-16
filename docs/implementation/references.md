@@ -11739,3 +11739,13 @@ exact entropy/raw/history completion. Derive test storage from supplied spans,
 qualify maximum valid history, late invalid references and full-frame literal/
 overlap cases with directed and independent differential tests. Use no external
 implementation or restricted suite. Fuzz execution remains omitted by request.
+
+### IR-1336: eight-MiB Huffman frames and publication quarantine
+
+Specialize the first-party four-MiB envelopes, token-frame adapter and bounded
+stream controller to DD-1616. Retain fixed reserved offsets52..63, validate
+the full descriptor before buffering payload, and restore raw only in private
+storage after exact entropy/history completion. Construct independent complete
+frames, check actual header identities, malformed late frames, every small
+split, exact/one-short grants and full-frame boundaries. Use only first-party
+code and mathematical fixtures; no external implementation or fuzz execution.

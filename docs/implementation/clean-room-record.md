@@ -42416,3 +42416,15 @@ full-frame cases, normal/instrumented equality and ten-unit sanitizer coverage.
 Audit every fixture and source/binary hash; preserve fixed runtime artifacts.
 No external implementation or restricted suite was consulted and no fuzz was
 executed. Raw-frame quarantine and subsequent qualifications remain open.
+
+### CR-1891: 2026-10-17 — eight-MiB native Huffman frame quarantine
+
+Author/reviewer: Codex. Follow IR-1336 using first-party exact envelopes,
+private-token/raw reconstruction and stream-controller patterns. Specialize
+DD-1616 identity and33T/9R bounds while retaining reserved offsets52..63.
+TVG-1516 qualifies70 positive/7 negative independently supplied frames,
+69 independent production decodes, normal/instrumented byte equality and
+direct full-frame, split-stream and late-failure publication guards. Audit
+source/binary/fixture hashes and fixed-runtime preservation. No external
+implementation or restricted suite was consulted; no fuzz was executed.
+Owned/public/resource/measurement/exchange gates remain open.

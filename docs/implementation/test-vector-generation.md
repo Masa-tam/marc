@@ -24823,3 +24823,20 @@ passes in22.01 seconds; ten direct instrumented units and independent audit
 pass without diagnostics. Fuzz is omitted by user request. Frame-level raw
 reconstruction/publication, owners and the later public/measurement/exchange
 qualifications remain pending.
+
+### TVG-1516: eight-MiB frames, reconstruction and publication quarantine
+
+Supply70 independently constructed positive streams/frames and7 valid-envelope
+but invalid-history/length frames. Require exact identity/parameters, expected
+raw bytes, zero publication counts and ordinary output preservation on failure.
+Independently decode69 production frames and compare normal/instrumented bodies.
+Directed tests check every fixed stream field and reserved bytes52/53, header/
+payload cuts, whole descriptor admission before payload, exact/one-short limits,
+aliases, maximum metadata bounds without allocating its payload, complete
+eight-MiB literal-frame reconstruction, partition resets, all small splits,
+one-byte and zero-capacity output, strict EOS, sticky error/EOS and failed-second-
+frame quarantine while retaining prior valid bytes. Normal4/4 passes in19.54
+seconds; both14-unit direct ASan/UBSan closures and independent hash/fixture
+audit pass without diagnostics. No fuzz is executed. Owned transforms, public
+resource/default qualification, API/CLI, full measurements and exchange remain
+pending.
