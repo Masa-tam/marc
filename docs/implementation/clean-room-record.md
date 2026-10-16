@@ -42270,3 +42270,19 @@ records the resulting public-boundary design, whose actual API admission still
 requires implementation/tests. No external implementation, restricted source or
 imported suite was consulted. Existing formats/artifacts and the fixed runtime
 remain unchanged; full corpus, fuzz and exchange qualification remain open.
+
+### CR-1879: 2026-10-17 —four-MiB native public Huffman factory
+
+Author/reviewer: Codex. Follow IR-1325 and DD-1615 with additive first-party
+C factory/types and qualified four-MiB owners. TVG-1504 checks public logical
+charges, unchanged prior declarations, default/exact/one-short creation,
+allocation rollback, no-allocation process and failure quarantine. All499
+independent public fixtures agree with internal-owned and directly instrumented
+output. Normal static/shared and prior-profile regression tests pass; direct
+ASan/UBSan compiles18 production units plus its test. Prior88/current90 archives
+retain exact restoration/re-encoding through the updated shared runtime.
+Correct documentation-heading ordering and the public-initializer count, adding
+explicit four-MiB contract checks while retaining failed evidence. No external
+implementation, restricted source or imported suite was
+consulted. Previous runtime artifacts are preserved before updates. Four-MiB
+CLI, full comparison/peaks, fuzz and exchange remain unqualified.

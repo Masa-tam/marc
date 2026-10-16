@@ -1352,3 +1352,34 @@ peaks, coverage-guided fuzz and exchange have separate completion records.
 The complete one-MiB local qualification is recorded at
 [IX-0098](interoperability.md); final family and hosted/external gates remain
 separate from that local result.
+
+## Native four-MiB position-distance Blocked Huffman
+
+`marc_lzss_position_distance_blocked_huffman_4m_config_init()`,
+`marc_lzss_position_distance_blocked_huffman_4m_resource_requirements()` and
+`marc_lzss_position_distance_blocked_huffman_4m_create()` select the additive
+tuple `2/10+1/30+2/5`. Corresponding `_4m_config` and `_4m_resources` types
+retain the established native field layouts; prior ABI definitions are unchanged.
+Decoder grammar is3..258 and encoding uses fixed-five longest/nearest matches.
+
+Defaults are4194304-byte frame/window,37748736 decisions,70778880 payload
+bytes,30149 codebook entries, maximum distance4194304 and match length258.
+Expansion ratio is1024 with4194304 slack bytes. Declared input/output capacities
+are65536 each and external retention defaults0. DD-1615's320MiB logical grant
+follows owner queries and normal resource precursors. It charges actual public
+controls, declared I/O and retained caller storage; it is not a process RSS cap.
+Use the query for the configured scope and actual ABI/layout.
+
+Queries distinguish owned buffers, owner controls, fixed working allowance,
+metadata floor and external charges. `max_block_size` is a decision admission
+ceiling and budget floor rather than another allocated buffer. Query refusal
+preserves its destination. Create refuses known-invalid configurations before
+allocation, clears the handle on failure except config/handle overlap, and
+releases all partial allocations. Smaller active-codebook limits can admit
+creation and reject a later descriptor according to actual use.
+
+Direction is immutable. Process allocates nothing, enforces declared call
+capacities and retains sticky error/EOS. Flush is neutral; ResetBlock is
+unsupported. Only completely validated raw frames enter the public draining
+state. CLI, complete contextual comparisons/physical peaks, coverage fuzz and
+exchange remain separately qualified gates.

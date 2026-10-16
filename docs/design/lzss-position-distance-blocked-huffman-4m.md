@@ -198,3 +198,17 @@ to actual use. Direction is immutable, process allocates nothing, declared I/O
 capacities are enforced, Flush is neutral and ResetBlock unsupported. Sticky
 error/EOS and failed-frame quarantine remain unchanged. Public API/CLI, full
 same-window contextual comparisons and peaks, fuzz and exchange remain open.
+
+### Public C API qualification checkpoint
+
+TVG-1504 qualifies additive configuration/resource/factory functions with
+unchanged prior declarations and established field layouts. Actual public
+admission includes owner requirements, adapter/handle/control work, declared
+I/O and retained caller storage. Default320MiB admits both complete default
+configurations; exact/one-short grants, all constructor failures, aliases,
+decision floor and no-allocation process calls pass. All499 independent raw
+fixtures agree across internal-owned/public-normal/public-instrumented paths.
+Prior64KiB/one-MiB shared/CLI regression and88/90 archive identity checks pass;
+direct19-unit ASan/UBSan qualification retains failed-frame quarantine. The
+four-MiB CLI, full contextual comparisons/peaks, fuzz and schema81 exchange are
+subsequent unqualified gates.

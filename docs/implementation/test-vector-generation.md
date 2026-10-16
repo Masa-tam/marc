@@ -24601,3 +24601,42 @@ all seven outputs, identities, hashes and restoration. DD-1615 selects a320MiB
 logical public default with room for additive public controls; API integration
 must verify its actual resource query. Full corpus comparisons, ordinary public
 peaks, fuzz and exchange remain separate gates.
+
+### TVG-1504: four-MiB native public Huffman API
+
+Exercise DD-1615 through additive C configuration, resource query and factory
+functions, static/shared C consumers and the independent raw oracle. All499
+fixtures produce identical internal-owned, public-normal and public-ASan/UBSan
+archives. Fixture tests explicitly declare64MiB retained caller storage and
+query under a384MiB ceiling before using exact reported grants; each process
+call checks actual vector capacities including transient growth. These
+qualification grants do not change the320MiB public default.
+
+Check config/resource ABI extents, every configured default, actual additive
+charges, decision-ceiling floor and exact/one-short admission. With65536
+retained bytes and65536-byte input/output capacities, the qualified layout
+reports318646557 encode and125847838 decode aggregate bytes, both below320MiB.
+Unmodified default configurations create successfully in static/shared C tests.
+At128MiB the full-frame encoder refuses while the decoder admits; additional
+retention remains separately charged. Queries preserve failed destinations,
+known-invalid creates allocate nothing, all ten encoder/seven decoder allocation
+failures roll back, and config/handle/result aliases retain the documented
+failure behavior. Prior header declarations remain textually identical.
+
+Process calls allocate nothing. Test full-frame-minus-one/exact/plus-one and
+partial frames, chunk determinism, byte/zero output, neutral Flush, unsupported
+reset, call-capacity refusal, strict termination and every small truncation.
+Failed frames never publish; valid preceding frames remain available. Reduced
+active-codebook quota fails at the complete descriptor before payload/publication.
+Foreign native identities refuse before frame output.
+
+Eight implementation/regression CTests pass, including prior64KiB/one-MiB
+shared C/CLI paths. An initial documentation check catches a misplaced new
+reference heading; reorder it and update the explicit public-initializer count
+from two to three native Huffman profiles. Add four-MiB API contract checks and
+recheck documentation, retaining earlier evidence. Direct instrumentation compiles18 production translation units plus
+the API test, without a normal codec archive. Units and499 public fixtures pass
+without sanitizer findings. Verify prior88 and current90 archives through the
+updated shared runtime for exact restoration and re-encoding identity. CLI
+connection for four-MiB, full same-window comparisons/peaks, fuzz and schema81
+exchange remain open.

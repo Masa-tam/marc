@@ -11633,3 +11633,13 @@ pattern, seeded noise, overlapping references and an independently assembled
 full literal zero-payload frame. Record actual identities, restoration and
 normal physical high-water marks separately from logical admission. Consult
 no external implementation, restricted source or imported suite.
+
+### IR-1325: four-MiB native Huffman public factory and resource boundary
+
+Specialize the first-party one-MiB C factory and tests to DD-1615 with additive
+configuration/resource types. Preserve previous ABI definitions and delegate
+only to the qualified four-MiB owned transforms. Check actual public charges,
+exact/one-short admission, aliases, allocation rollback and allocation-free
+processing. Exercise independent raw fixtures through the public boundary and
+compile the full direct implementation closure with sanitizers. Consult no
+external implementation, restricted source or imported suite.
