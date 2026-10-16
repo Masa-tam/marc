@@ -299,3 +299,33 @@ floor is distinguished from encoder-owned buffers. TVG-1478 records split,
 allocation-failure, exact-budget and495 independent raw-wire checks. Public
 factories/CLI, randomized fuzzing, physical peaks, corpus comparisons and
 exchange qualification remain unfinished.
+
+## DD-1611:64KiB public API and resource boundary
+
+The additive C API is `marc_lzss_position_distance_blocked_huffman_config_init`,
+`marc_lzss_position_distance_blocked_huffman_resource_requirements` and
+`marc_lzss_position_distance_blocked_huffman_create`. It selects only the
+specified native tuple and immutable encode/decode direction. Encoding requires
+the known original size. Frame capacity is1..65536; match eligibility stays5
+while decoding accepts3..258. Default limits are65536 raw frame bytes,458752
+decisions per block,860160 compressed payload bytes and27083 entropy entries
+(53*511). Entry admission uses the actual active model count at frame prefix
+time. A smaller entry cap does not change the preallocated table-span size.
+
+The initial8MiB aggregate grant follows full-frame internal resource admission
+and normal zero/periodic/pseudorandom resource probes. It is logical admission,
+not process peak/resident memory. Resource queries separately expose private
+payload, serialized staging, table bank, owned buffers, owner and fixed working
+charges, nonallocated metadata floor and public/external charges. Minimum
+aggregate is max(private admission, configured block ceiling) plus public/
+external charge. Call capacities default65536 bytes each; retained caller
+storage must be declared separately. Larger declared retention can require a
+larger grant even though the raw window is unchanged.
+
+Failed resource queries retain their output. Creation sets a null handle on
+refusal except config/handle overlap, which leaves the overlapping storage
+unchanged. Every construction allocation is reversible. Calls beyond declared
+capacities reject before consuming or producing bytes. Guarded one-byte and
+zero-output calls retain the core status contract; failed frames never drain.
+Public C static/shared checks and independent raw-wire checks qualify this
+API stage separately from CLI, fuzz, corpus measurements and exchange.

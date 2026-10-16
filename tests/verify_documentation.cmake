@@ -1702,7 +1702,7 @@ foreach(stale_position_distance_contract IN ITEMS
         message(FATAL_ERROR "Stale position-distance status: ${stale_position_distance_contract}")
     endif()
 endforeach()
-math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 3 + 2 + 2 + 2 + 2 + 7 + 7")
+math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 3 + 2 + 2 + 2 + 2 + 7 + 7 + 1")
 foreach(one_mib_contract IN ITEMS
         "marc_lzss_position_distance_dynamic_range_1m_config_init()"
         "marc_lzss_position_distance_dynamic_range_1m_workspace_requirements()"
@@ -1833,12 +1833,30 @@ foreach(tans_window IN ITEMS 16m 32m 64m)
         message(FATAL_ERROR "Missing additive ${tans_window} position-distance tANS initializer")
     endif()
 endforeach()
+set(c_api_position_huffman_initializers ${c_api_config_initializers})
+list(FILTER c_api_position_huffman_initializers INCLUDE REGEX
+    "marc_lzss_position_distance_blocked_huffman_config_init")
+list(LENGTH c_api_position_huffman_initializers c_api_position_huffman_count)
+if(NOT c_api_position_huffman_count EQUAL 1)
+    message(FATAL_ERROR "Missing additive64KiB position-distance Blocked Huffman initializer")
+endif()
+foreach(position_huffman_contract IN ITEMS
+        "marc_lzss_position_distance_blocked_huffman_config_init()"
+        "marc_lzss_position_distance_blocked_huffman_resource_requirements()"
+        "marc_lzss_position_distance_blocked_huffman_create()"
+        "2/8+1/28+2/3" "860160" "27083" "8MiB"
+        "Reduced entry caps" "failed frames never")
+    string(FIND "${c_api_content}" "${position_huffman_contract}" position_huffman_contract_offset)
+    if(position_huffman_contract_offset EQUAL -1)
+        message(FATAL_ERROR "Missing64KiB position Huffman API contract: ${position_huffman_contract}")
+    endif()
+endforeach()
 if(NOT c_api_profile_count EQUAL expected_c_api_profile_count)
     message(FATAL_ERROR
         "C API initializer count ${c_api_profile_count} must contain the "
         "${cli_profile_count} CLI profiles plus five experimental profiles "
         "and three existing public position-distance families plus "
-        "two separate eight-MiB, two separate sixteen-MiB and two separate thirty-two-MiB and two separate sixty-four-MiB direction initializers plus seven owning position rANS initializers and seven owning position tANS initializers")
+        "two separate eight-MiB, two separate sixteen-MiB and two separate thirty-two-MiB and two separate sixty-four-MiB direction initializers plus seven owning position rANS initializers, seven owning position tANS initializers and one owning position Blocked Huffman initializer")
 endif()
 list(FILTER c_api_config_initializers INCLUDE REGEX
     "marc_lzss_contextual_(dynamic_range|rans|tans|adaptive_huffman|blocked_huffman)_config_init")

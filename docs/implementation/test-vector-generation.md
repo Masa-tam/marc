@@ -23995,3 +23995,36 @@ production translation units directly instrumented by ASan/UBSan. Audited
 source/executable hashes match and diagnostic streams are empty. The
 allocation-site/rollback and process-allocation assertions remain enabled.
 This does not qualify public factory/CLI boundaries or a fuzz campaign.
+
+### TVG-1479:64KiB Huffman public resource and guarded C calls
+
+The additive C API is exercised with guarded byte output, zero output capacity,
+one-byte input/output, neutral flush, immutable direction and sticky terminal
+states. No process allocation is allowed. Exact query budgets create; one byte
+less rejects before allocation and retains the resource destination. Every
+one of ten encoder and seven decoder public allocation sites is failed with
+rollback checks. Both throwing and nothrow allocation test hooks are explicit.
+Invalid structs/ABI/reserved fields, direction, capacities, window limits,
+external-size overflow and config/result/handle overlap reject safely.
+
+Tests cover empty and65535/65536/65537-byte input, chunk-independent streams,
+all truncations of two reset frames and withholding the failed later frame.
+A511-entry cap admits creation but rejects the first complete two-codebook
+prefix before payload/output; a foreign context identity rejects at the
+stream header. Pure C static and shared consumers verify exact tuple bytes,
+empty input and guarded one-byte round trips. The independent495 raw fixtures
+also pass through the public API, with caller-retention bounds checked while
+the Python oracle verifies the production header/decisions/payload/finish.
+
+Normal full-frame resource precursors use zero, periodic and pseudorandom
+raw input in separate encode/decode processes and verify restoration. Owned
+admission, actual owned buffers and process peak are recorded separately;
+these precursors justify the initial grant without claiming corpus coverage.
+The existing schema78/88 archives still restore and re-encode byte-identically
+with the updated shared library. Earlier runtime artifacts are preserved.
+
+The public units and495 raw fixtures also pass direct ASan/UBSan with all21
+reachable production translation units instrumented, including the selected
+factory and generic C process/destroy boundary. Source, executable and fixture
+hashes match; diagnostics are empty. No uninstrumented codec archive is linked.
+This directed evidence is not randomized fuzzing or CLI/corpus qualification.

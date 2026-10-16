@@ -1174,6 +1174,38 @@ uses fixed-five matching, while the format accepts lengths3..258. Ordinary
 destinations commit on success; failed private token scratch is discarded
 and failed frames are never drained. Earlier APIs remain unchanged.
 
+## Sixty-four-KiB owning position-distance Blocked Huffman
+
+DD-1611 adds `marc_lzss_position_distance_blocked_huffman_config_init()`,
+`marc_lzss_position_distance_blocked_huffman_resource_requirements()` and
+`marc_lzss_position_distance_blocked_huffman_create()` for dictionary2/8,
+context1/28 and entropy2/3 (2/8+1/28+2/3). Use the declared config/resources struct sizes
+and ABI version. Window is65536 bytes, frame capacity1..65536, direction
+immutable and encode original size known. The encoder uses fixed-five
+longest/nearest matching; decoder wire lengths are3..258 with frame resets.
+
+Default8MiB is logical admission, not RSS or physical peak. Default limits
+are65536 raw frame bytes,458752 decisions per block,860160 payload bytes and
+27083 entropy entries. Code length is fixed at most15. Only max_block_size
+counts decisions; other sizes are bytes. Prefix validation charges511 entries
+per active codebook before payload decoding. Reduced entry caps may admit
+creation and then refuse a frame prefix without publishing that frame.
+
+Resources separate owned buffers, private payload/serialization, tables,
+owner, bounded nested work, nonallocated decoder metadata floor and public/
+external charges. Minimum aggregate is max(private admission, configured
+block ceiling) plus public/external charge. Call capacities default65536 each;
+caller-retained storage is additional. Exact query budgets admit creation;
+one byte less refuses before allocation. A failed query leaves resources
+unchanged. Refused creation nulls the handle except config/handle overlap,
+which leaves overlapping storage unchanged. Partial allocations roll back.
+
+Process calls allocate nothing. Capacity violations fail before consumption/
+output; Flush is neutral and ResetBlock/unknown flags are unsupported. Errors
+and EOS are sticky. Only fully validated frames drain, with prior valid
+frames preserved on a later error. These APIs do not imply CLI, fuzz, corpus,
+physical peak or exchange qualification; later windows remain separate gates.
+
 ## Sixty-four-KiB owning position-distance tANS
 
 DD-1566 adds marc_lzss_position_distance_tans_config_init(),

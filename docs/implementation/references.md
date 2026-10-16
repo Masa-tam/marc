@@ -11379,3 +11379,13 @@ Huffman tables and the105-bits-per-raw-byte payload bound. Each frame enters
 draining only after private entropy/history/raw validation succeeds. TVG-1478
 uses a separately written greedy parser to verify the production event sequence
 and code stream, without importing an external implementation or test suite.
+
+### IR-1301:64KiB Huffman public factory and C ABI boundary
+
+Use DD-1611's configuration/resource semantics and first-party tANS public
+boundary, generic transform dispatch and C smoke-test contracts as references.
+Derive bounds from the Huffman representation and query its owned full-frame
+requirements before choosing an initial8MiB grant. Keep admission and normal
+process peak distinct. Preserve earlier layouts/selectors and use exact-size
+struct/ABI checks. Independently supplied frames and the separate greedy raw
+parser remain the wire oracle. No external or restricted source was consulted.

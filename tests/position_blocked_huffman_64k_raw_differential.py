@@ -34,6 +34,7 @@ def parse(raw):
 
 def main():
     exe=Path(sys.argv[1]).resolve()
+    public='--public' in sys.argv[3:]
     root=Path(sys.argv[2]);root.mkdir(parents=True,exist_ok=True)
     run=Path(tempfile.mkdtemp(prefix='run-',dir=root))
     cases=[bytes([i]) for i in range(256)]
@@ -56,7 +57,7 @@ def main():
         fixture=struct.pack('<II',len(native),len(raw))+oracle.stream_header(len(raw))+native+raw
         path=run/f'{i:03}.bin';path.write_bytes(fixture)
         hashes[path.name]=hashlib.sha256(fixture).hexdigest()
-        result=subprocess.run([str(exe),'--owning-raw-fixture',str(path)],capture_output=True,timeout=15)
+        result=subprocess.run([str(exe),'--public-raw-fixture' if public else '--owning-raw-fixture',str(path)],capture_output=True,timeout=15)
         (run/f'{i:03}.stdout').write_bytes(result.stdout);(run/f'{i:03}.stderr').write_bytes(result.stderr)
         assert result.returncode==0,(i,len(raw),result.returncode,result.stdout,result.stderr)
         encoded=Path(str(path)+'.encoded').read_bytes()
@@ -71,7 +72,7 @@ def main():
             assert len(encoded)==112
     result={'passed':True,'fixtures':len(cases),'seed':1478,'seeded_inputs':100,
         'all_one_byte_values':256,'binary_exhaustive_max_length':6,
-        'independent_raw_parse_and_production_wire_check':True,'fixture_sha256':hashes}
+        'independent_raw_parse_and_production_wire_check':True,'public_api':public,'fixture_sha256':hashes}
     (run/'receipt.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps({k:v for k,v in result.items() if k!='fixture_sha256'}))
 

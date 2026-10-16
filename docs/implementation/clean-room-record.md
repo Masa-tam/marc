@@ -41905,3 +41905,19 @@ The owned units/raw fixtures also pass direct ASan/UBSan on19 production
 translation units, with retained and audited source/executable hashes. No
 external or restricted implementation was consulted. Public factory/CLI,
 randomized fuzzing, comparative corpus measurements and exchange remain open.
+
+### CR-1852: 2026-10-17 —64KiB Huffman public C factory
+
+Author/reviewer: Codex. Added the native C config/resource/factory boundary
+under DD-1611 without changing existing layouts/selectors. IR-1301 records
+first-party references; TVG-1479 records guarded calls, exact resource budgets,
+allocation faults, static/shared C consumers and independent495 raw fixtures.
+Full-frame normal resource probes separately record logical admission and
+physical peak; the initial8MiB grant is not a process RSS ceiling or a corpus
+measurement claim. Reduced model quotas refuse at prefix admission. The
+public unit/raw suites pass direct ASan/UBSan on21 production units with
+source/executable/fixture hashes audited. The earlier runtime is saved, and
+all88 retained schema78 archives restore/re-encode byte-identically after the
+shared-library addition. No external/restricted implementation was consulted.
+CLI, randomized fuzzing, corpus comparisons, final peaks and new bundle entry
+remain unfinished; later windows remain reservations.

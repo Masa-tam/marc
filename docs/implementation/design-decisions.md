@@ -34897,3 +34897,18 @@ frame resets dictionary and Huffman models; known-size112-byte MARC2.0 and
 and payload accounting, fixed-five public encoder policy and every reserved
 field are defined before implementation. This milestone admits no public
 factory, CLI or exchange entry; measurements and later windows remain open.
+
+### DD-1611:64KiB position Huffman public resource and process boundary
+
+Add the native tuple2/8+1/28+2/3 C configuration, resource query and factory
+without changing earlier ABI layouts. Default admission is8MiB after the
+bounded full-frame resource query and normal resource precursor, not an RSS
+limit or an inherited ANS memory claim. Query distinguishes owned buffers,
+owner, nested work, metadata floor, external retained storage and declared
+input/output capacities. The configured decision ceiling is an admission
+floor, not another buffer. Frame prefix parsing charges511 entries per active
+codebook; a smaller cap may admit construction and reject a later descriptor.
+Factory refusals precede allocations where sizes/limits are already known.
+Direction remains immutable, process never allocates, Flush is neutral,
+ResetBlock is unsupported and failed frames never publish. See the
+[family design](../design/lzss-position-distance-blocked-huffman.md).
