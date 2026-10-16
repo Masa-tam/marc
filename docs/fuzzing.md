@@ -2027,3 +2027,35 @@ Compiled source/header, executable and original seed hashes are rechecked.
 This completes the bounded small-input coverage-guided lane; directed maximum-
 frame cases remain complementary. Normal corpus/peak measurements and exchange
 remain separate gates.
+
+## FZ-0098: one-MiB position-distance Blocked Huffman campaigns
+
+Five first-party targets cover descriptor validation, payload/bit reading,
+guarded ordinary/private typed-token decoding, split-stream publication and
+public owning lifecycle. All640 actual production static-library translation
+units and five entries have audited coverage/ASan/UBSan compilation and object
+files. Source/header, binary and original seed hashes are checked. The670
+original seeds include256 positive and66 negative independent vectors in each
+descriptor/payload lane, plus8 token,10 stream and8 public seeds.
+
+Each pilot completes600 units with seed1612, leaving mutation room beyond
+the322-file descriptor/payload initialization sets. Maximum inputs are2548
+bytes for descriptor,65536 for payload with at most8192 decisions,4096 for
+token/stream and128 raw bytes for public round trips. Stream frames remain
+bounded by512 raw bytes and public frames by32..64; directed full-one-MiB
+sanitizer qualification is separate complementary evidence. Native format
+limits use57 tables,2547 descriptor bytes and8R decisions. The96MiB logical
+stream/public admission follows DD-1613 and is not a physical RSS limit.
+
+All3000 pilot units complete without sanitizer/invariant findings or saved
+crash/hang/leak/oom artifacts. In descriptor/payload/token/stream/public order,
+elapsed times are1.322/1.373/7.183/12.042/22.063 seconds and instrumented peaks
+are42/138/217/252/233MiB. Independent receipt/source/binary/seed audit passes.
+These are instrumented pilot observations, not normal physical codec peaks.
+
+The subsequent10000-unit campaigns use the same verified binaries, one target
+at a time. Pilot-derived RSS guards including quarantine/headroom are384/576/
+704/704/704MiB; unit guards are ten seconds and process watchdogs derive from
+pilot durations. Full campaigns and their final artifact audit remain pending
+at this checkpoint. Normal paired corpus/physical-peak results are recorded
+separately at BM-0251; schema80 exchange and final profile audit remain open.

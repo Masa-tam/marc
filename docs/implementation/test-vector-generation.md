@@ -24388,3 +24388,17 @@ for position/contextual. BM-0251 records every member's size, encode/decode
 speed and physical directional peak, including decode/memory disadvantages.
 The measurement audit passes; fuzz, exchange and the final profile audit are
 separate incomplete gates.
+
+### TVG-1496: one-MiB native Huffman fuzz infrastructure and measured pilots
+
+FZ-0098 qualifies five first-party entry points using670 immutable independent
+and generated seeds. Bound descriptor/payload/typed-token/stream/public lanes
+separately, guard output and terminal-state contracts, compare ordinary/private
+token results and chunked publication, and verify public round-trip byte identity.
+Audit all640 production units plus the five actual entry objects for coverage,
+ASan and UBSan instrumentation. Each pilot completes600 units with seed1612,
+3000 total; original source/header, executable and seed hashes remain equal.
+Independent audit finds no sanitizer/invariant or saved failure artifact. Pilot
+time and instrumented RSS inform separate serial10000-unit campaign guards;
+those full campaigns remain pending here. Directed full-frame sanitizer tests
+and BM-0251's ordinary physical peak measurements remain distinct evidence.

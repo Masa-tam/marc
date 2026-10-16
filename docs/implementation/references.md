@@ -11551,3 +11551,14 @@ settings, CLI byte identity and restoration before accepting measurements.
 Use one warmup and three timing samples, excluding file I/O and comparison,
 and fresh normal processes for directional physical peaks. Consult no external
 implementation, restricted source or imported test suite.
+
+### IR-1317: one-MiB pooled Huffman coverage-guided qualification
+
+Adapt the first-party64KiB descriptor, payload/bit-reader, token, stream and
+public lifecycle fuzz harnesses to the qualified one-MiB representation.
+Seed descriptor/payload paths with independently authored one-MiB vectors,
+including upper contexts and distance classes. Compare guarded ordinary and
+private token results, chunked stream publication and public round-trip/error
+behavior. Instrument the actual production closure; select campaign guards
+from measured pilots and keep sanitizer RSS separate from normal physical
+peaks. Consult no external implementation, restricted source or imported suite.

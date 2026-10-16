@@ -42142,3 +42142,15 @@ physical peaks, including the small size advantage and decode/memory costs.
 No external implementation, restricted source or imported suite was consulted.
 Coverage-guided fuzz, schema80 exchange and final profile audit remain open;
 this closes only the complete paired measurement gate.
+
+### CR-1869: 2026-10-17 —one-MiB native Huffman fuzz infrastructure and pilots
+
+Author/reviewer: Codex. Follow IR-1317 using first-party bounded descriptor,
+payload, token, stream and public fuzz entries plus independent one-MiB wires.
+TVG-1496/FZ-0098 verify actual coverage/ASan/UBSan production compilation,
+670 immutable seeds, guarded failure/publication contracts and five successful
+600-unit pilots. Independently audit object/source/binary/seed binding and
+preserve logs and working corpora. No external implementation, restricted
+source or imported suite was consulted. Use measured pilots for serial full
+campaign limits; those campaigns and final audit remain pending. Exchange and
+the complete profile remain subsequent gates.

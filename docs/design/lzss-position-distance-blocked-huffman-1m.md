@@ -268,3 +268,12 @@ retain both explicit selectors and report the tradeoff. Original observations
 and isolated repeats for three overlapping auxiliary-generation intervals
 remain preserved. Source/build, body and restoration audits pass. Fuzz,
 schema80/90-archive exchange and final profile audit remain open.
+
+### Coverage-guided pilot checkpoint
+
+TVG-1496/FZ-0098 qualify five bounded fuzz entries and640 actual instrumented
+production units. All3000 pilot units pass, with unchanged source/binary/seed
+hashes and no sanitizer/invariant or saved failure artifact. Measured pilot
+RSS/time determine serial full-campaign guards; they do not replace normal
+physical peaks. Full10000-unit campaigns per entry, their final artifact audit,
+schema80 exchange and final profile audit remain open at this checkpoint.
