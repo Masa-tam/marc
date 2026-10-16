@@ -24477,3 +24477,33 @@ are compiled with ASan/UBSan without a normal archive. Directed units and all
 all300 normal/instrumented plans agree under independent audit. Token/history,
 frame/stream quarantine, owning/public resources/API/CLI, corpus measurements,
 coverage-guided fuzz and schema81 exchange remain open.
+
+### TVG-1500: four-MiB typed tokens, history and private scratch
+
+Construct64 valid and7 malformed history/length wires with the independent
+four-MiB event oracle, alternating supplied pooled/override and dense models.
+Cover24 real-history distance boundaries through4194301 (full frame minus3),
+short3/4 and maximum258 lengths, seeded mixed tokens, first/late invalid
+references and a class22 grammar endpoint without sufficient history. The
+private decoder assigns each token only after history validation; check the
+exact retained prefix and that the failed token slot is untouched. Ordinary
+destinations remain unchanged on any late token or entropy-finish error.
+Independently decode all64 production-selected wires and compare normal/
+instrumented descriptor/payload bytes.
+
+Directed tests retain exact/one-short budgets, aliases, output guards, count
+and padding failures, invalid fields and committed-size overflow. Full4194304
+raw-byte literal and overlapping-reference cases restore their token sequences.
+Their decode span/control charges are103067496 bytes for4194304 literals and
+710784 bytes for16258 overlapping-case tokens. Minimum test admission also
+honors the existing block-ceiling<=grant configuration rule:103067496 and
+4194304 bytes respectively. Both exact admission and one-byte-short refusal
+preserve the specified destinations. These are scoped logical test charges,
+not public grants or process RSS. The initial inconsistent test quota is
+corrected without changing production logic; its evidence is retained.
+
+Normal5/5 passes in15.01 seconds. Ten directly compiled ASan/UBSan translation
+units pass full-frame units and all71 fixtures, with empty diagnostic streams.
+Independent audit rechecks source/binary hashes, exact quotas, all wire pairs
+and normal/instrumented bytes. Raw reconstruction/frame quarantine, owners,
+public admission and remaining measurement/fuzz/exchange gates stay open.

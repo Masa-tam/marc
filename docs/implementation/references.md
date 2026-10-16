@@ -11592,3 +11592,13 @@ ordinary-destination failure invariants, guarded scratch, aliases, exact quotas,
 padding, model usage and sticky terminal behavior. Instrument the complete
 direct implementation closure separately. Consult no external implementation,
 restricted source or imported suite.
+
+### IR-1321: four-MiB Huffman typed tokens and private history validation
+
+Adapt the first-party one-MiB token event adapter and success-only ordinary
+wrapper to DD-1614 and the existing four-MiB short-length-escape grammar.
+Validate each complete reference before assigning private tokens, then require
+exact entropy/token/raw completion before copying any ordinary output. Derive
+workspace charges from actual types and supplied span capacities; independently
+construct valid far-history and malformed late-reference wires. Consult no
+external implementation, restricted source or imported suite.

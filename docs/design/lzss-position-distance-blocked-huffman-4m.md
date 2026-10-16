@@ -129,3 +129,16 @@ and finite maximum zero-bit entropy blocks. Normal8/8 and direct ASan/UBSan
 qualification pass; token/history and frame publication remain separate
 unimplemented gates. Public admission, resource defaults, all-member paired
 measurements, coverage-guided fuzz and schema81 exchange remain open.
+
+### Private token/history qualification checkpoint
+
+TVG-1500 qualifies single-pass private token scratch and the success-only
+ordinary copy, checking complete reference history before each assignment.
+All64 independent valid and7 malformed wires pass, with exact private failure
+prefixes and independently decoded production output. Full-frame literal and
+overlapping-reference token cases pass calculated exact/one-short admission,
+including the shared block/grant floor. Normal5/5, ten direct ASan/UBSan units
+and independent artifact audit pass. These are logical scope checks, not
+normal process peaks or public defaults. Raw reconstruction/frame quarantine,
+streaming/owners, public API/CLI, all-member measurements, fuzz and exchange
+remain unqualified.

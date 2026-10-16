@@ -42216,3 +42216,17 @@ independently audited. No external implementation, restricted source or
 imported suite was consulted. This is an internal entropy-core checkpoint;
 token/history/frame/public contracts and subsequent measurement/fuzz/exchange
 gates remain incomplete. The fixed runtime is unchanged.
+
+### CR-1875: 2026-10-17 —four-MiB private token/history qualification
+
+Author/reviewer: Codex. Follow IR-1321 with first-party token adapters and the
+existing four-MiB short-length grammar. TVG-1500 qualifies64 independent valid
+wires,7 invalid histories/lengths, exact private prefixes, ordinary failure
+retention, aliases and full-frame token cases. Calculate scope charges and
+honor the existing block/grant configuration floor; correct the initial test
+quota without production changes. Normal5/5 and ten direct ASan/UBSan units
+pass. Independently audit source/binary binding, all generated wires and
+diagnostic streams, retaining earlier test/tool evidence. No external
+implementation, restricted source or imported suite was consulted. Frame/raw
+publication, owning/public resources and later qualification remain open;
+the fixed runtime is unchanged.
