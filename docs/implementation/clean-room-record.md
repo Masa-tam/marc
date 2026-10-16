@@ -42166,3 +42166,14 @@ failure artifacts. No external implementation, restricted source or imported
 suite was consulted. This closes the bounded coverage-guided gate alongside
 the retained full-frame sanitizer cases; schema80 exchange and the complete
 profile audit remain subsequent gates.
+
+### CR-1871: 2026-10-17 —one-MiB exchange admission and history checkpoint
+
+Author/reviewer: Codex. Apply IR-1318's first-party append-only exchange and
+entire-header admission design. TVG-1497/IX-0098 qualify90 Windows-produced
+archives, self restoration/re-encoding, original88/current89 prefix preservation,
+125 pre-launch/output admission negatives and historical schemas1..80. Keep
+all prior bundles and new historical evidence. No external implementation,
+restricted source or imported suite was consulted. Separate-producer self,
+both cross routes and final complete profile audit remain pending; this local
+checkpoint does not claim hosted CI or external verification.

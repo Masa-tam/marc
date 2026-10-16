@@ -24410,3 +24410,15 @@ RSS/time guards. No sanitizer/invariant or saved failure artifact is found.
 FZ-0098 records all campaign times and instrumented peaks. This completes the
 bounded coverage-guided lane, with directed maximum-frame tests retained;
 exchange and the final profile audit remain incomplete.
+
+### TVG-1497: one-MiB exchange admission and historical schema checkpoint
+
+Produce schema80's90 archives through the qualified public CLI, appending
+the one-MiB codec after the retained89-entry prefix. Verify complete native
+headers, restore and re-encode every archive identically. Independently check
+both retained89-entry and original88-entry prefixes for equal values, property
+order, input descriptors and all bytes. All125 admission negatives, including
+all112 header bytes, refuse before a guarded codec can launch or output files
+can appear. Convert and execute every historical schema1..80 with retained
+evidence. These Windows tests pass; separate-producer self/cross execution and
+the final complete one-MiB audit remain pending at this checkpoint.

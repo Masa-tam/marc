@@ -11562,3 +11562,13 @@ private token results, chunked stream publication and public round-trip/error
 behavior. Instrument the actual production closure; select campaign guards
 from measured pilots and keep sanitizer RSS separate from normal physical
 peaks. Consult no external implementation, restricted source or imported suite.
+
+### IR-1318: one-MiB pooled Huffman exchange qualification
+
+Extend first-party schema79 bundle creation/admission/history tests by one
+appended one-MiB profile. Retain every preceding entry, property order and
+archive body. Validate the entire112-byte one-MiB header before launching a
+codec or publishing decoded output. Independently mutate every header byte,
+manifest ordering/identity/hash/size and schema admission. Qualify retained
+prefixes, historical schemas and local self/cross execution through unchanged
+public CLI paths. Consult no external implementation or imported suite.

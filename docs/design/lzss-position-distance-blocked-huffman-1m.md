@@ -287,3 +287,12 @@ calculations, without sanitizer/invariant or saved failure artifacts. Directed
 maximum-frame sanitizer evidence remains complementary. All-member ordinary
 measurements and bounded fuzz qualification are now complete; schema80 exchange
 and the final one-MiB audit remain open.
+
+### Windows exchange checkpoint
+
+TVG-1497/IX-0098 qualify schema80's appended one-MiB entry,90-archive Windows
+self restoration/re-encoding, retained88/89-prefix values/order/bytes,125
+pre-launch/output admission refusals and historical execution of schemas1..80.
+The separate producer's self execution, both local cross routes and final
+one-MiB audit remain pending. This checkpoint is not complete local or hosted
+qualification; preceding ordinary corpus/resource and fuzz gates are complete.
