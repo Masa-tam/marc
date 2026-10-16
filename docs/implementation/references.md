@@ -11791,3 +11791,16 @@ reference wires, full-frame boundaries, malformed metadata/models/padding,
 foreign selectors and late failures. Preserve fixed-runtime backups and all
 previous archive bodies. Consult no external implementation or restricted
 suite; execute no fuzz tests.
+
+### IR-1341: eight-MiB native Huffman paired public measurements
+
+Specialize the first-party paired timing and ordinary streaming peak drivers.
+Probe all existing contextual profile configurations at an eight-MiB window
+and frame; qualify admitted configurations by actual wire identifiers and
+restoration. Use the existing sixteen-MiB contextual profile with window/frame
+and decoder limits reduced to eight MiB as the same-window control. Preserve
+its distinct field model rather than labeling it a new public profile. Check
+all twelve corpus members, repeated output and restored bytes, creation/process/
+destruction timing and separate fresh-process physical peaks. Record actual
+configuration, source/binary bindings, per-member sizes and aggregate tradeoffs.
+Consult no external or restricted implementation and execute no fuzz tests.

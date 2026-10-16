@@ -219,3 +219,16 @@ independent artifact audit pass. Fuzz remains omitted by user request.
 All-member same-window comparisons, ordinary peaks, schema82 exchange and
 final audit remain open.
 
+### Same-window control and measurement infrastructure
+
+TVG-1521 qualifies normal paired measurement paths on five boundary extents.
+The existing contextual sixteen-MiB profile admits an8388608-byte window/frame;
+its actual identity remains dictionary2/5, context1/4, entropy2/2. Set maximum
+frame/distance8388608, decision limit58720256 and payload limit110100480,
+retaining the profile's512MiB logical bound. Actual headers and restoration
+qualify this configuration as the same-window control, despite the absence
+of a public contextual8MiB selector. Its different field model is retained.
+Normal2/2 and independent artifact audit pass. Full twelve-member compression,
+speed and ordinary peak results, schema82 exchange and final audit remain
+open. Fuzz is omitted by user request.
+

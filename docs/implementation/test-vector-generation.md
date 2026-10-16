@@ -24926,3 +24926,25 @@ ordinary output and temporary files. Both commands restore and reproduce all
 independent artifact audit binds binaries, inputs, wires and retained results.
 Fuzz is omitted by user request. All-member paired comparisons, ordinary
 peaks, schema82 exchange and final audit remain open.
+
+### TVG-1521: eight-MiB paired public measurement paths
+
+Probe all five existing contextual Blocked Huffman profiles with frame/window
+8388608 through public configuration/workspace queries. Sixteen-MiB and64-MiB
+encoder configurations are admitted; smaller profiles retain insufficient
+limits. A successful decoder workspace query alone does not prove acceptance
+of the intended stream. Qualify the existing sixteen-MiB profile at window/
+frame8388608 with max frame/distance8388608, decision limit58720256 and payload
+limit110100480, retaining its512MiB logical limit and original field model.
+
+Through normal public drivers verify five extents0/1/F-1/F/F+1 in both
+directions. Actual identities are native2/11+1/31+2/6 and contextual
+2/5+1/4+2/2. Check every known size, frame/window, repeated encoded body and
+restoration. Native repeat uses the public CLI; contextual repeat uses the
+existing API configuration because no public contextual8MiB selector exists.
+Each timing invocation verifies all produced bytes, one warmup and three
+positive samples. Qualify ordinary process peaks separately, caller comparison
+charges, wrong-comparison refusal, pre-existing output retention and a failed
+frame with zero published output. Normal2/2 and independent artifact audit
+pass. Full twelve-member observations and aggregate audit remain pending.
+No fuzz is executed.

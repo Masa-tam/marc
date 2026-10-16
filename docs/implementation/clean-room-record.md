@@ -42479,3 +42479,16 @@ Preserve the previous fixed-runtime artifacts before replacement. No external
 or restricted implementation was consulted; no fuzz was executed and no push
 or external validation is claimed. Comparisons, ordinary peaks and exchange
 remain open.
+
+### CR-1896: 2026-10-17 — eight-MiB paired measurement infrastructure
+
+Author/reviewer: Codex. Follow IR-1341 using only first-party public measurement
+drivers and corpus verification metadata. Probe existing profile configurations
+rather than infer support from CLI names. TVG-1521 verifies actual native and
+contextual identities, five boundary restorations, repeated bytes, timing and
+ordinary peak paths, and failure/output preservation. Use an existing
+sixteen-MiB contextual field model with an actual eight-MiB window/frame and
+eight-MiB decoder limits; do not describe it as a newly defined public profile.
+Normal2/2 and independent artifact audit pass. Full corpus measurements and
+exchange remain unfinished. No external or restricted implementation was
+consulted, no fuzz was executed and no external CI result is claimed.
