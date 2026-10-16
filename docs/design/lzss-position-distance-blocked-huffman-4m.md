@@ -117,3 +117,15 @@ All396 positive/123 negative earlier expectations remain unchanged. Windows
 vectors/documentation4/4 and a separate mathematical execution pass. Production
 parsing, scalar/reference coding and every later qualification gate remain open;
 this checkpoint selects no public memory default and updates no executable.
+
+### Bounded entropy-core checkpoint
+
+TVG-1499 qualifies descriptor validation/parsing, scalar/reference encoding
+and decoding, deterministic pooled/override planning and private writing.
+All300 independent wires and64 malformed cases pass, with independently
+decoded production plans and identical normal/instrumented bytes. Directed
+guards cover upper contexts/classes, exact quotas, aliases, padding/finish
+and finite maximum zero-bit entropy blocks. Normal8/8 and direct ASan/UBSan
+qualification pass; token/history and frame publication remain separate
+unimplemented gates. Public admission, resource defaults, all-member paired
+measurements, coverage-guided fuzz and schema81 exchange remain open.

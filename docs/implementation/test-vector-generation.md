@@ -24451,3 +24451,29 @@ both empty headers unchanged. Windows vectors/documentation4/4 and a separate
 Python environment pass. This is independent format qualification; production
 parsing/encoding, failure guarantees, resources, public admission, measurements,
 fuzz and exchange remain open.
+
+### TVG-1499: four-MiB bounded entropy core and differential qualification
+
+Replay all300 independent wires and64 malformed descriptor/payload cases
+through production parsing, scalar decoding and reference encoding. Every
+accepted wire serializes byte-identically, decoded symbols match, failed
+ordinary destinations remain unchanged and guards survive. Independently
+decode all300 production plans and compare normal/instrumented plan bytes.
+Also compare private writer output with reference output for supplied and
+planned descriptors.
+
+Directed cases cover59-codebook scratch, context53/mask bit5, unused mask
+bits6/7, distance class22 and rejection of23, malformed metadata/tables/padding,
+count/model usage and sticky completion, aliases and exact/one-short quotas.
+Exercise finite37748736-decision zero-bit decode/planning/private writing
+without allocating a decision array; this is an entropy-block bound test,
+not a valid-history or public full-frame claim. Hand weighted/dense/skewed
+codes and strict16/17-bit override thresholds, including contexts23/53, pass.
+
+The normal vector/core/documentation/regression selection passes8/8 in39.89
+seconds. Six direct translation units, five production plus the test entry,
+are compiled with ASan/UBSan without a normal archive. Directed units and all
+364 fixtures pass, with empty diagnostic streams; source/binary hashes and
+all300 normal/instrumented plans agree under independent audit. Token/history,
+frame/stream quarantine, owning/public resources/API/CLI, corpus measurements,
+coverage-guided fuzz and schema81 exchange remain open.

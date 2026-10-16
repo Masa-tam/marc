@@ -11581,3 +11581,14 @@ context alphabets, descriptor/decision/payload bounds and exact envelopes.
 Extend the mathematical oracle with four-MiB parameters without production
 codec calls, and reproduce both earlier frozen vector sets unchanged. Consult
 no external implementation, restricted source or imported suite.
+
+### IR-1320: four-MiB pooled Huffman bounded entropy core
+
+Specialize the qualified first-party one-MiB descriptor/scalar/planner/private
+writer with DD-1614's54 contexts,59 codebooks and checked four-MiB bounds.
+Retain shared model/error/decision types without invoking earlier coding paths.
+Compare every independently supplied wire and generated plan, and qualify
+ordinary-destination failure invariants, guarded scratch, aliases, exact quotas,
+padding, model usage and sticky terminal behavior. Instrument the complete
+direct implementation closure separately. Consult no external implementation,
+restricted source or imported suite.

@@ -42202,3 +42202,17 @@ No external implementation, restricted source or imported suite was consulted.
 The new selector remains a format reservation, not public admission; production
 decoders/encoders, resource defaults, API/CLI, measurements/fuzz and exchange
 remain future gates. No runtime artifact is replaced at this checkpoint.
+
+### CR-1874: 2026-10-17 —four-MiB bounded Huffman entropy core
+
+Author/reviewer: Codex. Apply IR-1320 to the qualified first-party one-MiB
+descriptor/scalar/planner/private-writer structures, specializing DD-1614
+without changing earlier coding paths. TVG-1499 qualifies300 independent
+wires,64 malformed cases, independently decoded production plans, guarded
+failure destinations, aliases/quotas, upper contexts/classes and finite maximum
+zero-bit blocks. Normal8/8 and six direct ASan/UBSan translation units pass;
+source/binary binding, diagnostic streams and normal/instrumented plans are
+independently audited. No external implementation, restricted source or
+imported suite was consulted. This is an internal entropy-core checkpoint;
+token/history/frame/public contracts and subsequent measurement/fuzz/exchange
+gates remain incomplete. The fixed runtime is unchanged.
