@@ -24862,3 +24862,28 @@ units and an independent source/binary/fixture/query audit pass. Test constructi
 uses grants derived from actual requirements rather than selecting a public
 default. Physical peaks, normal resource precursors, API/CLI, all-member paired
 measurements and exchange remain unqualified; fuzz is omitted by user request.
+
+### TVG-1518: eight-MiB normal resource precursors
+
+Run seven serial fresh normal processes with65536-byte input/output buffers:
+full-frame pattern, fixed-seed noise and overlap in both directions, plus an
+independently assembled full-literal zero-payload decode. Each process queries
+before construction, uses the exact owner grant, completes and restores the
+source. Validate actual2/11+1/31+2/6 headers, known8388608-byte extent,
+declared parameters, file hashes, normal build flags and source/binary binding.
+
+| Input | Encode peak bytes | Decode peak bytes |
+| --- | ---: | ---: |
+| Pattern | 216236032 | 114593792 |
+| Fixed-seed noise | 244523008 | 124076032 |
+| Overlap | 216227840 | 114585600 |
+| Independent full literal | not measured | 114577408 |
+
+The owner grants635644855/250956718 plus131072 I/O and65536 control bytes
+give trial totals635841463/251153326. The independent audit verifies all seven
+observations, exact restoration, build and artifact hashes. DD-1617 selects
+640MiB logical default subject to verification of additive public controls
+and actual API admission. These finite precursors are separate from all-corpus
+measurements and are not a physical-memory ceiling. Fuzz is omitted by request.
+Public API/CLI, all-member comparisons/peaks, exchange and final audit remain
+pending.

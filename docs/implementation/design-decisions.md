@@ -34972,3 +34972,16 @@ The33T/9R bounds reflect the complete isolated short-length grammar; history
 and frame publication remain separate checks. Resource defaults require
 normal queries and measurement. Fuzz execution is omitted for the remainder
 of this goal at the user's explicit request; do not label that gate passed.
+
+### DD-1617: eight-MiB Huffman planned public resource boundary
+
+The [eight-MiB public boundary](../design/lzss-position-distance-blocked-huffman-8m.md)
+selects640MiB logical default after actual full-frame owner queries and seven
+serial normal resource processes (TVG-1518). Separate owned buffers, owner
+controls, nested work, metadata floor and caller I/O/retention charges. The
+trial total635841463 bytes includes131072 I/O and65536 control bytes;
+physical peaks are independently recorded. Additive public wrapper charges
+and actual default construction remain to be verified by API tests. Preserve
+success-only outputs, rollback, immutable direction, allocation-free process,
+capacity checks, sticky terminal status and failed-frame quarantine. No fuzz
+is executed. All-member comparison/peaks and exchange remain separate gates.

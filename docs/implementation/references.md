@@ -11760,3 +11760,13 @@ Qualify allocation rollback, allocation-free process calls, exact/one-short
 grants, fixed longest/nearest parsing, frame boundaries and quarantine using
 first-party directed/differential tests. Select no public resource default
 before normal measurements. No external implementation or fuzz is used.
+
+### IR-1338: eight-MiB Huffman normal resource precursors
+
+Use the qualified owning transforms in fresh ordinary streaming processes over
+full-frame pattern, fixed-seed noise and overlap data plus an independently
+assembled full-literal decode. Query first and allocate under the exact owner
+grant, reporting caller I/O/control charges separately from process peaks.
+Validate actual headers and restoration, normal build flags and source/binary
+binding before proposing a public default. Use first-party measurement methods
+only; no external implementation or fuzz execution is involved.

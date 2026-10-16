@@ -42441,3 +42441,15 @@ preserve earlier artifacts and the fixed runtime. No external/restricted
 implementation was consulted and no fuzz campaign was executed. Public defaults
 require normal resource precursors; API/CLI, full measurements and exchange
 remain pending.
+
+### CR-1893: 2026-10-17 — eight-MiB normal resource precursors
+
+Author/reviewer: Codex. Follow IR-1338 with first-party streaming measurement
+drivers and an independently assembled full-literal archive. Seven fresh
+serial ordinary processes complete under exact owner grants. TVG-1518 audits
+actual headers, restoration, source/binary hashes and ordinary build flags,
+while reporting physical peaks separately from logical owner/I/O/control
+charges. DD-1617's planned640MiB default derives from these qualified queries
+and precursors; actual public wrapper charges and construction remain open.
+No external implementation or restricted suite was consulted and no fuzz
+was executed. All-corpus paired measurements and exchange remain unfinished.

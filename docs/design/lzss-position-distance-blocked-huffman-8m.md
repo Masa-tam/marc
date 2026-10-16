@@ -161,3 +161,33 @@ are neither measured process peaks nor public defaults. Normal3/3 and a
 omitted by request. Normal resource precursors must precede default selection;
 public API/CLI, comparisons/peaks and schema82 exchange remain open.
 
+## DD-1617: planned public resource and process boundary
+
+Add `marc_lzss_position_distance_blocked_huffman_8m_config_init`,
+`marc_lzss_position_distance_blocked_huffman_8m_resource_requirements` and
+`marc_lzss_position_distance_blocked_huffman_8m_create`, with additive
+`_8m_config`/`_8m_resources` types preserving the previous field layouts.
+Default frame/window8388608, wire minimum3/maximum258, encoder eligibility5,
+decision ceiling75497472, payload141557760, table entries30660 (60*511),
+distance8388608, total output2^40, expansion ratio1024 and slack8388608.
+Declare input/output capacities65536 each; retained caller storage defaults0.
+
+TVG-1518 qualifies seven serial normal processes under exact owner grants:
+pattern, fixed-seed noise and overlap encode/decode plus an independent full-
+literal decode. All actual identities and source restorations match. The
+largest observed ordinary peaks are244523008 encode and124076032 decode
+bytes. Owner queries plus separately charged131072 I/O and65536 control bytes
+require635841463 encode and251153326 decode logical bytes. Select640MiB
+(671088640 bytes) as the planned logical default, leaving35247177 bytes above
+the encode trial for additive public controls and declared charges. Actual
+API queries and default construction must verify those costs before public
+admission. These finite precursors establish neither an RSS ceiling nor an
+all-corpus comparison; physical peaks and logical grants remain distinct.
+
+Preserve immutable direction, checked refusal before invalid allocations,
+success-only queries, constructor rollback, allocation-free process calls,
+declared I/O capacities and private-frame quarantine. Flush remains neutral;
+ResetBlock is unsupported. Public API/CLI, actual ABI/default qualification,
+all-member same-window contextual comparisons and ordinary peaks, schema82
+exchange and final local audit remain open. Fuzz is omitted by user request.
+
