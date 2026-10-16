@@ -42298,3 +42298,16 @@ and restore exact source bytes. Normal5/5 and independent artifact audit pass.
 Preserve pre-update runtime artifacts and the fixed Release path. Consult no
 external implementation, restricted source or imported suite. Full comparison,
 normal physical peaks, coverage fuzz and exchange remain open.
+
+### CR-1881: 2026-10-17 —four-MiB paired normal measurement foundation
+
+Author/reviewer: Codex. Follow IR-1327 using first-party public timing/resource
+drivers and the existing contextual four-MiB profile. TVG-1506 establishes the
+actual context1/3 identity from output bytes, correcting a copied measurement
+expectation without changing production formats. Twenty boundary/profile/
+direction paths, CLI identity/restoration, exact query differences, wrong
+comparison and file-publication guards pass. Verify normal Release flags and
+source/binary binding independently; normal2/2 passes. The twelve supplied
+corpus files pass their manifest. Consult no external implementation, restricted
+source or imported suite. All-member measurement results, coverage fuzz and
+exchange remain open; existing runtime artifacts remain unchanged.

@@ -223,3 +223,14 @@ archives exactly. Normal5/5 and independent artifact audit pass. Whole-file
 transactional publication and prior generated artifacts are retained. Full
 same-window contextual comparisons and normal peaks, coverage fuzz and schema81
 exchange remain required before four-MiB local completion.
+
+### Paired measurement foundation checkpoint
+
+TVG-1506 qualifies the actual public contextual four-MiB profile, tuple
+2/4+1/3+2/2, against native2/10+1/30+2/5. Both use4194304-byte frame/window
+and fixed-five encoding; wire minima remain5/3 respectively. Five boundaries
+in both directions verify resource-driver/CLI bytes and restoration, timing
+comparison guards and separate caller charges. One warmup/three timed samples
+exclude I/O/comparison, while physical peaks use separate normal streaming
+processes. Normal2/2 and independent artifact audit pass. The full twelve-file
+corpus is verified but all-member measurements, fuzz and exchange remain open.

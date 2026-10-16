@@ -24666,3 +24666,31 @@ binary/source hashes and all retained archive bodies. The existing fixed
 Release path remains the validated command path; older artifacts are retained.
 Full same-window contextual comparisons/physical peaks, coverage fuzz and
 schema81 exchange remain separate unqualified gates.
+
+### TVG-1506: four-MiB public paired measurement foundation
+
+Apply the existing public contextual four-MiB profile and verify actual tuple
+2/4+1/3+2/2,4194304-byte frame/window and wire grammar5..258. The new native
+profile has tuple2/10+1/30+2/5 and grammar3..258; both encoders use fixed-five
+eligibility. A preliminary expectation copied context1/2 from one-MiB; actual
+headers catch the mismatch and establish context1/3 before corpus measurement.
+Correct only measurement expectations and retain the failed evidence.
+
+Five raw boundaries0,1,4194303,4194304,4194305 exercise both profiles and both
+directions. Streaming resource output equals public CLI bytes; timing compares
+every produced byte with the expected archive/raw data. Incorrect comparison
+buffers and existing destinations fail. A late bad native frame retains only
+the driver's newly created empty temporary, with no ordinary output.
+
+Timing uses one warmup plus three samples and includes allocations, creation,
+process and destruction, excluding file I/O and comparison. Comparison vectors
+and declared caller/control/I/O storage are charged separately. Peak drivers
+use fresh normal streaming processes, without timing vectors or sanitizers;
+their observed peaks are separate from logical queries and grants. Native
+queries are318646557/125847838 bytes for encode/decode and include declared
+I/O plus65536 control-retention bytes. Instrumentation-free normal build flags,
+all twenty profile/direction/boundary outputs, identities, queries, scopes and
+failure guards pass independent artifact audit. Normal2/2 passes in6.11 seconds.
+All12 supplied Silesia files pass the existing manifest checks, totaling
+211938580 bytes. All-member sizes, timings and peaks remain unmeasured at this
+checkpoint; coverage fuzz and exchange also remain open.

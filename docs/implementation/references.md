@@ -11654,3 +11654,14 @@ wires, malformed metadata/models/padding, foreign selectors and late failures
 through shared and static executables. Preserve previous generated archives
 and verify their restoration/re-encoding. Consult no external implementation,
 restricted source or imported suite.
+
+### IR-1327: four-MiB paired normal Huffman measurement paths
+
+Adapt the first-party one-MiB public timing and streaming-resource drivers to
+the actual four-MiB profiles. Verify public profile application, frame/window,
+complete identities and restoration rather than inferring wider-window context
+IDs from earlier profiles. Separate allocation/create/process/destroy timing
+from comparison/I/O, and normal process peaks from logical resource queries.
+Check boundary outputs against CLI bytes and refuse incorrect comparison
+buffers or existing destinations. Record command intervals for later serial
+all-member measurements. Consult no external implementation or imported suite.
