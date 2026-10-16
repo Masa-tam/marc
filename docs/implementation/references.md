@@ -11446,3 +11446,14 @@ production C++. No ANS state, normalization or payload is reused. The new
 oracle calls no production codec. Exact counts, residual mask padding and
 checked frame ceilings are derived from the new52-context partition. No
 external implementation, restricted source or imported test suite is used.
+
+### IR-1307: one-MiB bounded pooled Huffman reference core
+
+Specialize the first-party64KiB descriptor validator and scalar coding paths
+to DD-1612's52 contexts and57 model slots. Reuse only the existing bounded
+canonical Huffman primitives and common model/error/decision types. Keep the
+reference encoder's validation/sizing pass before ordinary output writes;
+decoder symbol output commits only after a complete successful read. The
+independent256/66 frozen expectations are external to the production core.
+Preserve the original64KiB sources and wire expectations. No external source,
+restricted implementation or imported test suite is consulted.

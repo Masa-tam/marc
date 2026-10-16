@@ -112,3 +112,15 @@ parameterized oracle also reproduces the old140 positives and rejects the
 old57 negatives without modifying their generator or frozen values. None
 of these finite entropy cases demonstrates valid frame history or qualifies
 a production implementation, memory grant, public codec or exchange bundle.
+
+### Bounded reference-core checkpoint
+
+TVG-1485 qualifies the production descriptor parser/serializer and finite
+scalar encoder/decoder against every frozen expectation. It includes guarded
+transactional destinations, exact/one-short resource limits, new upper mask
+bits, context51/class20 endpoints,15-bit fallback and the maximum finite
+zero-bit decision count. The reached implementation also passes direct
+ASan/UBSan builds and replay. Original64KiB core checks remain unchanged.
+This checkpoint admits no public one-MiB codec or frame output: model planning,
+incremental writing, dictionary/history quarantine, owned streaming, public
+connection, actual resource measurements, corpus/fuzz and exchange stay open.

@@ -24132,3 +24132,24 @@ existing frozen positives and rejects all57 frozen negatives. The original
 64KiB generator and frozen bytes remain untouched. Production validators,
 failure/differential tests, public connection, measurements/fuzz and exchange
 are still pending for the one-MiB profile.
+
+### TVG-1485: one-MiB descriptor/scalar core differential qualification
+
+Replay all256 DD-1612 positives and66 independent negatives through the C++
+descriptor parser, serializer, reference encoder and scalar decoder. Positive
+payload and descriptor bytes match exactly. Rejected parses retain the entire
+ordinary descriptor; failed reads retain symbols, and failed encodes retain
+all output bytes and counts. Guarded outputs, exact/one-short budgets,
+short tables, all small-descriptor cuts, overlap-before-write and sticky errors
+are checked. The new context51 override sets mask byte6 bit3; each high unused
+bit rejects without altering the destination. Distance class20 is accepted
+in isolation and21 rejects. Complete15-bit codes exercise bounded fallback.
+
+A separately limited8388608-decision zero-bit block reaches exact finish;
+one-short decision admission refuses. This is a scalar entropy boundary test,
+not proof of dictionary history or a full public frame. The same units and
+322 finite differential cases pass with all reached production translation
+units directly built under ASan/UBSan; no normal archive is linked into that
+instrumented closure. Existing64KiB core/vectors/differential checks also pass.
+Model planning, incremental private writing, token/history/frame integration,
+API/CLI, corpus/fuzz and exchange remain open for one-MiB.

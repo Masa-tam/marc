@@ -41989,3 +41989,17 @@ full initial-A envelope, and preserves140/57 older frozen expectations.
 No external implementation, restricted source or imported suite was consulted.
 This is mathematical format/oracle qualification only; no production
 one-MiB codec, API, CLI, performance or exchange completion is claimed.
+
+### CR-1858: 2026-10-17 —one-MiB bounded Huffman descriptor and scalar core
+
+Author/reviewer: Codex. Specialize IR-1307's first-party validator and reference
+coding paths with explicit52-context/57-table storage and transactional
+ordinary destinations. Retain original64KiB sources and share only the
+established common types and bounded canonical primitives. TVG-1485 qualifies
+256 exact wires and66 refusals, boundary/alias/budget guards and a finite
+8388608-decision zero-bit block. Direct sanitizer compilation includes the
+entire reached core/format/canonical/decode-table/limits implementation;
+units and finite differential replay report no ASan/UBSan finding. No external
+implementation, restricted code or imported test suite was consulted. This
+stage does not qualify token history, private-frame integration, planning,
+public APIs/CLI, measurements, coverage-guided fuzzing or exchange.
