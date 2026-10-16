@@ -24777,3 +24777,14 @@ models, all distance classes through8,388,608, complete fifteen-bit codes,
 descriptor truncation/metadata rejection and the full-frame checked bounds.
 The vector script passes without production codec calls; implementation and
 later qualification gates remain open.
+
+### TVG-1513: eight-MiB independent-vector audit correction
+
+Preserve the preceding196 positive wires exactly, then add55 explicit upper
+context cases and a complete fifteen-bit hand code. Replace negative-label
+storage with62 actual malformed descriptor/payload wires, including cuts,
+noncanonical/invalid tables, unused mask/model declarations, padding and
+terminal bit checks. The former44 labels did not provide replayable production
+negative fixtures, and earlier coverage prose overstated individual upper
+context and hand-code checks. Default test execution now verifies frozen
+expectations rather than rewriting them. The252/62 finite set passes.

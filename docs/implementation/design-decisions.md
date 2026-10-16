@@ -34961,3 +34961,14 @@ output, constructor rollback, allocation-free process calls, declared capacity
 checks, neutral Flush, unsupported ResetBlock and private-frame quarantine.
 The actual public query and all declared defaults require API tests; public
 implementation/CLI, full corpus comparisons, fuzz and exchange remain open.
+
+### DD-1616: eight-MiB native Huffman exact specialization
+
+The [eight-MiB design](../design/lzss-position-distance-blocked-huffman-8m.md)
+specializes the established independent pooled/override representation with
+55 contexts,60 codebooks and explicit2/11+1/31+2/6 identity. Validate whole
+descriptors before payload and commit ordinary results only after success.
+The33T/9R bounds reflect the complete isolated short-length grammar; history
+and frame publication remain separate checks. Resource defaults require
+normal queries and measurement. Fuzz execution is omitted for the remainder
+of this goal at the user's explicit request; do not label that gate passed.

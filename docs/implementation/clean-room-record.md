@@ -42380,3 +42380,13 @@ first-party parameterized oracle generated and decoded196 positive cases and
 rejected44 negative cases, including all distance classes and descriptor
 limits. No production implementation or external/restricted source was used;
 all later gates remain open.
+
+### CR-1888: 2026-10-17 — eight-MiB independent-vector correction
+
+Author/reviewer: Codex. Correct the specification's distance residual wording
+to match the independently authored family and oracle: position-context
+Huffman decisions, rather than uniform bits. Preserve all196 preceding
+positive wires, append56 directed cases and freeze62 actual negative wires.
+TVG-1513 records the preceding coverage limitations explicitly. Use only the
+first-party mathematical oracle and existing format definitions; no external
+or restricted implementation was consulted. No fuzz execution is performed.

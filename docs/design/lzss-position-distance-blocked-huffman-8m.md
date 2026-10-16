@@ -13,8 +13,9 @@ required. Earlier selectors and generated bodies are unchanged.
 Each nonempty frame is an independently reset typed-event Huffman block.
 Frame size is configurable1..8,388,608 raw bytes. The event grammar is the
 same field grammar as the preceding family variants: preceding token kind,
-literal value, length class and distance class are modeled; length and distance
-residuals are LSB-first uniform bits. Contexts are 0..54 with alphabets
+literal value, length class and distance class are modeled. Length residuals
+are LSB-first uniform bits; distance residual bit p uses binary Huffman context
+32+p, low bit first. Contexts are 0..54 with alphabets
 `[2]*3 + [256]*17 + [9]*3 + [24]*9 + [2]*23`; pooled fields are
 `[2,256,9,24,2]`. The alphabet extent is4647. Distance class23 is the
 isolated grammar endpoint and cannot be emitted by a nonempty reset frame whose
@@ -64,3 +65,42 @@ checks the55-context partition,4647 extent,2563-byte descriptor ceiling,
 distance classes through8,388,608, the33T/9R decision bounds and exact header
 identity. No production source, API, CLI, measurement, exchange or fuzz work
 is claimed by this checkpoint.
+
+### Exact envelope and model completion rules
+
+Use DD-1610's exact canonical model records, package ordering and strict
+override saving rule. A cost tie retains the pool. Context groups0..2,
+3..19,20..22,23..31 and32..54 map to fields0..4; table slots0..4 are pools
+and5..59 overrides. Every declared field and override must be used at exact
+completion. Empty entropy is31 zero-model descriptor bytes with no payload
+and final_valid_bits0; otherwise payload padding is zero and valid bits1..8.
+
+The112-byte stream header has u16@4/6/8/10=2/0/64/1,
+u16@12/14/16/18=2/11/2/6, frame_size u32@20, u32@28/32/48=16,
+known original_size u64@40, dictionary u32@64/68/72/76=8388608/3/258/0,
+u8@80/81=15/5, context_count55 u16@82, alphabet_extent4647 u32@84,
+and context u16@96/98=1/31. All other bytes are zero, including52..63.
+MRF2 has magic@0, extent64 u16@4, flags0 u16@6, sequence u64@8,
+raw/token/event/decision u32@16/20/24/28 and payload/descriptor/side/trailer
+sizes u32@32/36/40/44. Side/trailer and bytes48..63 are zero. Descriptor
+precedes payload. Sequences start0; dictionaries and models reset per frame.
+All offset arithmetic and allocations must be checked before use.
+
+### Qualification policy
+
+At the user's request, no further fuzz execution is performed during this
+goal. Directed unit, independent differential, malformed-input, failure
+retention and sanitizer tests remain required. Record fuzz as omitted by
+request rather than as passed. Token/history and failed-frame publication
+tests follow the entropy core; the scalar entropy core alone establishes
+neither valid LZ history nor frame publication safety.
+
+### Independent-vector audit correction
+
+The preceding196 positive wires are preserved in their original order. That
+checkpoint stored44 negative labels rather than replayable negative wires and
+did not individually exercise all upper contexts or the hand fifteen-bit
+code. The strengthened frozen set contains252 positives and62 actual negative
+descriptor/payload cases. Its default check compares against the frozen JSON;
+it no longer overwrites expected values during ordinary test execution.
+

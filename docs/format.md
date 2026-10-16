@@ -9302,3 +9302,15 @@ frame envelopes with no coder state. The linked design fixes every offset,
 zero field and count/history rule, including 2T<=D<=min(32T,9R) and checked
 full-frame payload/frame ceilings70778880/70781505. This format checkpoint
 does not add public API/CLI or modify an earlier representation.
+
+### DD-1616: native eight-MiB position-distance Blocked Huffman
+
+The [eight-MiB representation](design/lzss-position-distance-blocked-huffman-8m.md)
+defines tuple2/11+1/31+2/6,8388608-byte window,55 contexts,4647 alphabet
+extent,60 codebooks and descriptor31..2563 bytes. Seven mask bytes have one
+unused high bit. Length residuals are uniform; distance bits use their binary
+position contexts. The linked specification fixes every header offset,
+model record, count and terminal usage rule. Require2T<=D<=min(33T,9R),
+payload<=ceil(15D/8), and full-frame payload/frame ceilings141557760/141560387.
+This additive format leaves prior bytes unchanged. Public API/CLI, resource
+defaults and exchange require later qualification.

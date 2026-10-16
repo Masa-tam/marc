@@ -48331,52 +48331,1778 @@
       ],
       "descriptor": "4200000006000000030f051f370000002712000000000000c973fcffef7375011102100016041704340446044a0457046904710475049f04ac04c104ca04d804f004fd04010002022002013000334004400444044040040111011102020057019f01006900c1020200d801f001020400160246024a027502020200170171010202003401fd0100ca005700ac00020100000100010007020300050108020b0200130202000c01150100070016000102020004010f0100100202000e010f0101110000000000000000000100000000000000000001000000010111011101110001",
       "payload": "b43378e83b07"
+    },
+    {
+      "label": "context-0-upper-symbol",
+      "requests": [
+        [
+          0,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05013700000027120000000000000100000000000000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-1-upper-symbol",
+      "requests": [
+        [
+          1,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05013700000027120000000000000200000000000000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-2-upper-symbol",
+      "requests": [
+        [
+          2,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05013700000027120000000000000400000000000000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-3-upper-symbol",
+      "requests": [
+        [
+          3,
+          255
+        ]
+      ],
+      "descriptor": "0100000000000000000f05023700000027120000000000000800000000000000ff00ff",
+      "payload": ""
+    },
+    {
+      "label": "context-4-upper-symbol",
+      "requests": [
+        [
+          4,
+          255
+        ]
+      ],
+      "descriptor": "0100000000000000000f05023700000027120000000000001000000000000000ff00ff",
+      "payload": ""
+    },
+    {
+      "label": "context-5-upper-symbol",
+      "requests": [
+        [
+          5,
+          255
+        ]
+      ],
+      "descriptor": "0100000000000000000f05023700000027120000000000002000000000000000ff00ff",
+      "payload": ""
+    },
+    {
+      "label": "context-6-upper-symbol",
+      "requests": [
+        [
+          6,
+          255
+        ]
+      ],
+      "descriptor": "0100000000000000000f05023700000027120000000000004000000000000000ff00ff",
+      "payload": ""
+    },
+    {
+      "label": "context-7-upper-symbol",
+      "requests": [
+        [
+          7,
+          255
+        ]
+      ],
+      "descriptor": "0100000000000000000f05023700000027120000000000008000000000000000ff00ff",
+      "payload": ""
+    },
+    {
+      "label": "context-8-upper-symbol",
+      "requests": [
+        [
+          8,
+          255
+        ]
+      ],
+      "descriptor": "0100000000000000000f05023700000027120000000000000001000000000000ff00ff",
+      "payload": ""
+    },
+    {
+      "label": "context-9-upper-symbol",
+      "requests": [
+        [
+          9,
+          255
+        ]
+      ],
+      "descriptor": "0100000000000000000f05023700000027120000000000000002000000000000ff00ff",
+      "payload": ""
+    },
+    {
+      "label": "context-10-upper-symbol",
+      "requests": [
+        [
+          10,
+          255
+        ]
+      ],
+      "descriptor": "0100000000000000000f05023700000027120000000000000004000000000000ff00ff",
+      "payload": ""
+    },
+    {
+      "label": "context-11-upper-symbol",
+      "requests": [
+        [
+          11,
+          255
+        ]
+      ],
+      "descriptor": "0100000000000000000f05023700000027120000000000000008000000000000ff00ff",
+      "payload": ""
+    },
+    {
+      "label": "context-12-upper-symbol",
+      "requests": [
+        [
+          12,
+          255
+        ]
+      ],
+      "descriptor": "0100000000000000000f05023700000027120000000000000010000000000000ff00ff",
+      "payload": ""
+    },
+    {
+      "label": "context-13-upper-symbol",
+      "requests": [
+        [
+          13,
+          255
+        ]
+      ],
+      "descriptor": "0100000000000000000f05023700000027120000000000000020000000000000ff00ff",
+      "payload": ""
+    },
+    {
+      "label": "context-14-upper-symbol",
+      "requests": [
+        [
+          14,
+          255
+        ]
+      ],
+      "descriptor": "0100000000000000000f05023700000027120000000000000040000000000000ff00ff",
+      "payload": ""
+    },
+    {
+      "label": "context-15-upper-symbol",
+      "requests": [
+        [
+          15,
+          255
+        ]
+      ],
+      "descriptor": "0100000000000000000f05023700000027120000000000000080000000000000ff00ff",
+      "payload": ""
+    },
+    {
+      "label": "context-16-upper-symbol",
+      "requests": [
+        [
+          16,
+          255
+        ]
+      ],
+      "descriptor": "0100000000000000000f05023700000027120000000000000000010000000000ff00ff",
+      "payload": ""
+    },
+    {
+      "label": "context-17-upper-symbol",
+      "requests": [
+        [
+          17,
+          255
+        ]
+      ],
+      "descriptor": "0100000000000000000f05023700000027120000000000000000020000000000ff00ff",
+      "payload": ""
+    },
+    {
+      "label": "context-18-upper-symbol",
+      "requests": [
+        [
+          18,
+          255
+        ]
+      ],
+      "descriptor": "0100000000000000000f05023700000027120000000000000000040000000000ff00ff",
+      "payload": ""
+    },
+    {
+      "label": "context-19-upper-symbol",
+      "requests": [
+        [
+          19,
+          255
+        ]
+      ],
+      "descriptor": "0100000000000000000f05023700000027120000000000000000080000000000ff00ff",
+      "payload": ""
+    },
+    {
+      "label": "context-20-upper-symbol",
+      "requests": [
+        [
+          20,
+          8
+        ]
+      ],
+      "descriptor": "0100000000000000000f05043700000027120000000000000000100000000000080008",
+      "payload": ""
+    },
+    {
+      "label": "context-21-upper-symbol",
+      "requests": [
+        [
+          21,
+          8
+        ]
+      ],
+      "descriptor": "0100000000000000000f05043700000027120000000000000000200000000000080008",
+      "payload": ""
+    },
+    {
+      "label": "context-22-upper-symbol",
+      "requests": [
+        [
+          22,
+          8
+        ]
+      ],
+      "descriptor": "0100000000000000000f05043700000027120000000000000000400000000000080008",
+      "payload": ""
+    },
+    {
+      "label": "context-23-upper-symbol",
+      "requests": [
+        [
+          23,
+          23
+        ]
+      ],
+      "descriptor": "0100000000000000000f05083700000027120000000000000000800000000000170017",
+      "payload": ""
+    },
+    {
+      "label": "context-24-upper-symbol",
+      "requests": [
+        [
+          24,
+          23
+        ]
+      ],
+      "descriptor": "0100000000000000000f05083700000027120000000000000000000100000000170017",
+      "payload": ""
+    },
+    {
+      "label": "context-25-upper-symbol",
+      "requests": [
+        [
+          25,
+          23
+        ]
+      ],
+      "descriptor": "0100000000000000000f05083700000027120000000000000000000200000000170017",
+      "payload": ""
+    },
+    {
+      "label": "context-26-upper-symbol",
+      "requests": [
+        [
+          26,
+          23
+        ]
+      ],
+      "descriptor": "0100000000000000000f05083700000027120000000000000000000400000000170017",
+      "payload": ""
+    },
+    {
+      "label": "context-27-upper-symbol",
+      "requests": [
+        [
+          27,
+          23
+        ]
+      ],
+      "descriptor": "0100000000000000000f05083700000027120000000000000000000800000000170017",
+      "payload": ""
+    },
+    {
+      "label": "context-28-upper-symbol",
+      "requests": [
+        [
+          28,
+          23
+        ]
+      ],
+      "descriptor": "0100000000000000000f05083700000027120000000000000000001000000000170017",
+      "payload": ""
+    },
+    {
+      "label": "context-29-upper-symbol",
+      "requests": [
+        [
+          29,
+          23
+        ]
+      ],
+      "descriptor": "0100000000000000000f05083700000027120000000000000000002000000000170017",
+      "payload": ""
+    },
+    {
+      "label": "context-30-upper-symbol",
+      "requests": [
+        [
+          30,
+          23
+        ]
+      ],
+      "descriptor": "0100000000000000000f05083700000027120000000000000000004000000000170017",
+      "payload": ""
+    },
+    {
+      "label": "context-31-upper-symbol",
+      "requests": [
+        [
+          31,
+          23
+        ]
+      ],
+      "descriptor": "0100000000000000000f05083700000027120000000000000000008000000000170017",
+      "payload": ""
+    },
+    {
+      "label": "context-32-upper-symbol",
+      "requests": [
+        [
+          32,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000001000000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-33-upper-symbol",
+      "requests": [
+        [
+          33,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000002000000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-34-upper-symbol",
+      "requests": [
+        [
+          34,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000004000000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-35-upper-symbol",
+      "requests": [
+        [
+          35,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000008000000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-36-upper-symbol",
+      "requests": [
+        [
+          36,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000010000000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-37-upper-symbol",
+      "requests": [
+        [
+          37,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000020000000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-38-upper-symbol",
+      "requests": [
+        [
+          38,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000040000000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-39-upper-symbol",
+      "requests": [
+        [
+          39,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000080000000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-40-upper-symbol",
+      "requests": [
+        [
+          40,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000000010000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-41-upper-symbol",
+      "requests": [
+        [
+          41,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000000020000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-42-upper-symbol",
+      "requests": [
+        [
+          42,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000000040000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-43-upper-symbol",
+      "requests": [
+        [
+          43,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000000080000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-44-upper-symbol",
+      "requests": [
+        [
+          44,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000000100000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-45-upper-symbol",
+      "requests": [
+        [
+          45,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000000200000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-46-upper-symbol",
+      "requests": [
+        [
+          46,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000000400000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-47-upper-symbol",
+      "requests": [
+        [
+          47,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000000800000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-48-upper-symbol",
+      "requests": [
+        [
+          48,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000000000100010001",
+      "payload": ""
+    },
+    {
+      "label": "context-49-upper-symbol",
+      "requests": [
+        [
+          49,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000000000200010001",
+      "payload": ""
+    },
+    {
+      "label": "context-50-upper-symbol",
+      "requests": [
+        [
+          50,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000000000400010001",
+      "payload": ""
+    },
+    {
+      "label": "context-51-upper-symbol",
+      "requests": [
+        [
+          51,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000000000800010001",
+      "payload": ""
+    },
+    {
+      "label": "context-52-upper-symbol",
+      "requests": [
+        [
+          52,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000000001000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-53-upper-symbol",
+      "requests": [
+        [
+          53,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000000002000010001",
+      "payload": ""
+    },
+    {
+      "label": "context-54-upper-symbol",
+      "requests": [
+        [
+          54,
+          1
+        ]
+      ],
+      "descriptor": "0100000000000000000f05103700000027120000000000000000000000004000010001",
+      "payload": ""
+    },
+    {
+      "label": "complete-fifteen-bit-code",
+      "requests": [
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          7
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          3,
+          11
+        ],
+        [
+          3,
+          12
+        ],
+        [
+          3,
+          13
+        ],
+        [
+          3,
+          14
+        ],
+        [
+          3,
+          15
+        ]
+      ],
+      "descriptor": "1000000011000000070f050237000000271200000000000000000000000000021000000101020203030404050506060707080809090a0a0b0b0c0c0d0d0e0e0f0f0f",
+      "payload": "dabdeff7f7efbffffddffffbfffe7fff7f"
     }
   ],
-  "negative_labels": [
-    "truncated-0",
-    "truncated-1",
-    "truncated-2",
-    "truncated-3",
-    "truncated-4",
-    "truncated-5",
-    "truncated-6",
-    "truncated-7",
-    "truncated-8",
-    "truncated-9",
-    "truncated-10",
-    "truncated-11",
-    "truncated-12",
-    "truncated-13",
-    "truncated-14",
-    "truncated-15",
-    "truncated-16",
-    "truncated-17",
-    "truncated-18",
-    "truncated-19",
-    "truncated-20",
-    "truncated-21",
-    "truncated-22",
-    "truncated-23",
-    "truncated-24",
-    "truncated-25",
-    "truncated-26",
-    "truncated-27",
-    "truncated-28",
-    "truncated-29",
-    "truncated-30",
-    "truncated-31",
-    "truncated-32",
-    "truncated-33",
-    "truncated-34",
-    "trailing-descriptor",
-    "metadata-9",
-    "metadata-10",
-    "metadata-11",
-    "metadata-14",
-    "metadata-16",
-    "metadata-20",
-    "metadata-32",
-    "metadata-8"
-  ]
+  "negative_vectors": [
+    {
+      "label": "truncated-0",
+      "descriptor": "",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-1",
+      "descriptor": "02",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-2",
+      "descriptor": "0200",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-3",
+      "descriptor": "020000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-4",
+      "descriptor": "02000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-5",
+      "descriptor": "0200000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-6",
+      "descriptor": "020000000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-7",
+      "descriptor": "02000000000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-8",
+      "descriptor": "0200000000000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-9",
+      "descriptor": "020000000000000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-10",
+      "descriptor": "0200000000000000000f",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-11",
+      "descriptor": "0200000000000000000f05",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-12",
+      "descriptor": "0200000000000000000f0503",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-13",
+      "descriptor": "0200000000000000000f050337",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-14",
+      "descriptor": "0200000000000000000f05033700",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-15",
+      "descriptor": "0200000000000000000f0503370000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-16",
+      "descriptor": "0200000000000000000f050337000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-17",
+      "descriptor": "0200000000000000000f05033700000027",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-18",
+      "descriptor": "0200000000000000000f0503370000002712",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-19",
+      "descriptor": "0200000000000000000f050337000000271200",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-20",
+      "descriptor": "0200000000000000000f05033700000027120000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-21",
+      "descriptor": "0200000000000000000f0503370000002712000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-22",
+      "descriptor": "0200000000000000000f050337000000271200000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-23",
+      "descriptor": "0200000000000000000f05033700000027120000000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-24",
+      "descriptor": "0200000000000000000f0503370000002712000000000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-25",
+      "descriptor": "0200000000000000000f050337000000271200000000000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-26",
+      "descriptor": "0200000000000000000f05033700000027120000000000000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-27",
+      "descriptor": "0200000000000000000f0503370000002712000000000000000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-28",
+      "descriptor": "0200000000000000000f050337000000271200000000000000000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-29",
+      "descriptor": "0200000000000000000f05033700000027120000000000000000000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-30",
+      "descriptor": "0200000000000000000f0503370000002712000000000000000000000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-31",
+      "descriptor": "0200000000000000000f050337000000271200000000000000000000000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-32",
+      "descriptor": "0200000000000000000f05033700000027120000000000000000000000000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-33",
+      "descriptor": "0200000000000000000f0503370000002712000000000000000000000000000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "truncated-34",
+      "descriptor": "0200000000000000000f050337000000271200000000000000000000000000000000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "trailing-descriptor",
+      "descriptor": "0200000000000000000f0503370000002712000000000000000000000000000000004100",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "metadata-or-singleton-9",
+      "descriptor": "0200000000000000001005033700000027120000000000000000000000000000000041",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "metadata-or-singleton-10",
+      "descriptor": "0200000000000000000f04033700000027120000000000000000000000000000000041",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "metadata-or-singleton-11",
+      "descriptor": "0200000000000000000f05803700000027120000000000000000000000000000000041",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "metadata-or-singleton-12",
+      "descriptor": "0200000000000000000f05033600000027120000000000000000000000000000000041",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "metadata-or-singleton-14",
+      "descriptor": "0200000000000000000f05033700010027120000000000000000000000000000000041",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "metadata-or-singleton-16",
+      "descriptor": "0200000000000000000f05033700000000120000000000000000000000000000000041",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "metadata-or-singleton-20",
+      "descriptor": "0200000000000000000f05033700000027120000010000000000000000000000000041",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "metadata-or-singleton-32",
+      "descriptor": "0200000000000000000f05033700000027120000000000000000000000000000020041",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "metadata-or-singleton-8",
+      "descriptor": "0200000000000000010f05033700000027120000000000000000000000000000000041",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "unused-mask-bit-7",
+      "descriptor": "0200000000000000000f05033700000027120000000000000000000000008000000041",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "sparse-36-66",
+      "descriptor": "0400000001000000020f050337000000271200000000000000000000000000000002020042014201",
+      "payload": "02",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          8,
+          66
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "sparse-38-65",
+      "descriptor": "0400000001000000020f050337000000271200000000000000000000000000000002020041014101",
+      "payload": "02",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          8,
+          66
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "sparse-37-0",
+      "descriptor": "0400000001000000020f050337000000271200000000000000000000000000000002020041004201",
+      "payload": "02",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          8,
+          66
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "sparse-37-15",
+      "descriptor": "0400000001000000020f0503370000002712000000000000000000000000000000020200410f4201",
+      "payload": "02",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          8,
+          66
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "odd-dense-padding-20",
+      "descriptor": "0900000004000000050f0504370000002712000000000000000000000000000133333343f4",
+      "payload": "a09cee1e",
+      "requests": [
+        [
+          20,
+          0
+        ],
+        [
+          20,
+          1
+        ],
+        [
+          20,
+          2
+        ],
+        [
+          20,
+          3
+        ],
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          5
+        ],
+        [
+          20,
+          6
+        ],
+        [
+          20,
+          7
+        ],
+        [
+          20,
+          8
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "binary-sparse",
+      "descriptor": "0200000001000000020f05013700000027120000000000000000000000000002020000010101",
+      "payload": "02",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "incomplete",
+      "descriptor": "0200000001000000020f0501370000002712000000000000000000000000000112",
+      "payload": "02",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "one-length",
+      "descriptor": "0200000001000000020f0501370000002712000000000000000000000000000101",
+      "payload": "02",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "empty-model",
+      "descriptor": "0200000001000000020f0501370000002712000000000000000000000000000100",
+      "payload": "02",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "unknown-mode",
+      "descriptor": "0200000001000000020f0501370000002712000000000000000000000000000300",
+      "payload": "02",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "oversubscribed-dense",
+      "descriptor": "0900000004000000050f050437000000271200000000000000000000000000011101000000",
+      "payload": "a09cee1e",
+      "requests": [
+        [
+          20,
+          0
+        ],
+        [
+          20,
+          1
+        ],
+        [
+          20,
+          2
+        ],
+        [
+          20,
+          3
+        ],
+        [
+          20,
+          4
+        ],
+        [
+          20,
+          5
+        ],
+        [
+          20,
+          6
+        ],
+        [
+          20,
+          7
+        ],
+        [
+          20,
+          8
+        ]
+      ],
+      "stage": "descriptor"
+    },
+    {
+      "label": "payload-padding",
+      "descriptor": "0300000001000000030f050037000000271200000000000000000000000000",
+      "payload": "85",
+      "requests": [
+        [
+          -1,
+          1
+        ],
+        [
+          -1,
+          0
+        ],
+        [
+          -1,
+          1
+        ]
+      ],
+      "stage": "finish"
+    },
+    {
+      "label": "unused-bit",
+      "descriptor": "0300000001000000040f050037000000271200000000000000000000000000",
+      "payload": "05",
+      "requests": [
+        [
+          -1,
+          1
+        ],
+        [
+          -1,
+          0
+        ],
+        [
+          -1,
+          1
+        ]
+      ],
+      "stage": "finish"
+    },
+    {
+      "label": "premature-payload",
+      "descriptor": "0300000000000000000f050037000000271200000000000000000000000000",
+      "payload": "",
+      "requests": [
+        [
+          -1,
+          1
+        ],
+        [
+          -1,
+          0
+        ],
+        [
+          -1,
+          1
+        ]
+      ],
+      "stage": "finish"
+    },
+    {
+      "label": "unused-field",
+      "descriptor": "0200000000000000000f051337000000271200000000000000000000000000000000410000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "finish"
+    },
+    {
+      "label": "unused-override",
+      "descriptor": "0200000000000000000f050337000000271200000000000002000000000000000000410000",
+      "payload": "",
+      "requests": [
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          65
+        ]
+      ],
+      "stage": "finish"
+    }
+  ],
+  "empty_stream": "4d415243020000004000010002000b00020006000000800000000000100000001000000000000000000000000000000010000000000000000000000000000000000080000300000002010000000000000f05370027120000000000000000000001001f00000000000000000000000000",
+  "single_A_stream": "4d415243020000004000010002000b00020006000000800000000000100000001000000000000000010000000000000010000000000000000000000000000000000080000300000002010000000000000f05370027120000000000000000000001001f000000000000000000000000004d5246324000000000000000000000000100000001000000020000000200000000000000230000000000000000000000000000000000000000000000000000000200000000000000000f05033700000027120000000000000000000000000000000041"
 }
