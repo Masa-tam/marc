@@ -42428,3 +42428,16 @@ direct full-frame, split-stream and late-failure publication guards. Audit
 source/binary/fixture hashes and fixed-runtime preservation. No external
 implementation or restricted suite was consulted; no fuzz was executed.
 Owned/public/resource/measurement/exchange gates remain open.
+
+### CR-1892: 2026-10-17 — eight-MiB Huffman owning transforms
+
+Author/reviewer: Codex. Follow IR-1337 using qualified first-party frame/token
+layers and the established eight-MiB five-prefix candidate. Derive every
+bounded buffer and admission charge before allocation. TVG-1517 establishes
+499 independent raw parses/wire checks, normal/instrumented byte equality,
+logical query agreement, full-window partition cases, constructor rollback
+and allocation-free processing. Independently audit hashes and scope charges;
+preserve earlier artifacts and the fixed runtime. No external/restricted
+implementation was consulted and no fuzz campaign was executed. Public defaults
+require normal resource precursors; API/CLI, full measurements and exchange
+remain pending.

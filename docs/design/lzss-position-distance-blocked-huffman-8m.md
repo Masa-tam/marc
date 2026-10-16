@@ -147,3 +147,17 @@ Normal4/4 and two14-unit direct ASan/UBSan closures pass independent artifact
 audit. Fuzz is omitted by request. Owners, normal resource precursors, public
 API/CLI, comparisons/peaks and schema82 exchange remain open.
 
+### Owned transforms and logical resource qualification
+
+TVG-1517 qualifies bounded raw owners with the existing eight-MiB fixed-five
+longest/nearest finder. All499 independently parsed raw fixtures agree across
+normal and directly instrumented paths. Constructor rollback, allocation-free
+process calls, exact/one-short admission, all small splits, full-window
+partitions and failed-frame quarantine pass. Full-frame logical requirements
+are635644855 encode and250956718 decode bytes. Report actual owned buffers,
+owner controls, working storage and metadata floors separately; these queries
+are neither measured process peaks nor public defaults. Normal3/3 and a
+17-unit direct ASan/UBSan closure pass independent artifact audit. Fuzz remains
+omitted by request. Normal resource precursors must precede default selection;
+public API/CLI, comparisons/peaks and schema82 exchange remain open.
+

@@ -11749,3 +11749,14 @@ storage after exact entropy/history completion. Construct independent complete
 frames, check actual header identities, malformed late frames, every small
 split, exact/one-short grants and full-frame boundaries. Use only first-party
 code and mathematical fixtures; no external implementation or fuzz execution.
+
+### IR-1337: eight-MiB Huffman owners and logical resource queries
+
+Connect the qualified frame/stream transforms to bounded owning buffers and
+the existing eight-MiB fixed-five finder. Derive raw/token/serialized/payload/
+table/finder capacities with checked arithmetic before allocation, expose
+metadata admission floors separately and preserve success-only queries.
+Qualify allocation rollback, allocation-free process calls, exact/one-short
+grants, fixed longest/nearest parsing, frame boundaries and quarantine using
+first-party directed/differential tests. Select no public resource default
+before normal measurements. No external implementation or fuzz is used.

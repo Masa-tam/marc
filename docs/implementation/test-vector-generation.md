@@ -24840,3 +24840,25 @@ seconds; both14-unit direct ASan/UBSan closures and independent hash/fixture
 audit pass without diagnostics. No fuzz is executed. Owned transforms, public
 resource/default qualification, API/CLI, full measurements and exchange remain
 pending.
+
+### TVG-1517: eight-MiB owning transforms and logical admission
+
+The first-party raw oracle parses499 finite inputs independently using
+fixed-five eligibility, exact longest matches and nearest ties. All byte values,
+exhaustive binary inputs through length6, fixed pattern/boundary inputs and100
+fixed-seed raw inputs produce normal/instrumented identical archives and exact
+restoration. Check every original fixture hash and independently decode each
+production wire. No input-mutation or coverage-guided fuzz campaign is used.
+
+Directed tests inject all8 encoder/5 decoder allocation failures with cleanup,
+forbid allocation during process, verify success-only queries and preallocation
+refusal one byte below the actual required grant, arbitrary small splits,
+byte I/O, empty streams, F-1/F/F+1 partitions, aliases, strict end flags and
+failed-second-frame quarantine. Full logical queries report encode635644855
+and decode250956718 bytes; they expose owned buffers635272326/250857811,
+owner520/616, working372009/98291 and metadata floor250939718 separately.
+Normal3/3 passes in69.16 seconds; seventeen directly instrumented ASan/UBSan
+units and an independent source/binary/fixture/query audit pass. Test construction
+uses grants derived from actual requirements rather than selecting a public
+default. Physical peaks, normal resource precursors, API/CLI, all-member paired
+measurements and exchange remain unqualified; fuzz is omitted by user request.
