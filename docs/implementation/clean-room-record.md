@@ -42339,3 +42339,16 @@ normal physical peaks and public logical admission. Consult no external
 implementation, restricted source or imported suite. Full campaigns, final
 fuzz audit, schema81 exchange and final profile audit remain open; production
 formats and the validated runtime are unchanged.
+
+### CR-1884: 2026-10-17 — four-MiB Huffman bounded fuzz campaign
+
+Author/reviewer: Codex. Follow IR-1330 and TVG-1509 with only first-party
+entries, frozen independent seeds and the existing production sources. The
+five serial campaigns completed 50,000 units under measured pilot-derived
+guards; every row passed. The full auditor verified648 production compile
+units, source/object/executable/original-seed hashes, raw receipts and absence
+of sanitizer, invariant, crash, hang, leak, OOM or saved failure artifacts.
+Coverage limits are recorded as harness guards and are not presented as normal
+RSS or logical resource limits. No external implementation, restricted source
+or imported suite was consulted. Schema81 exchange and the final four-MiB audit
+remain unfinished; existing formats and generated artifacts are preserved.

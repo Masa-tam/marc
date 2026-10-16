@@ -259,3 +259,17 @@ sanitizer tests complement these bounded lanes. Measured pilot RSS/time selects
 serial main guards, distinct from normal process peaks and logical codec
 admission. The full campaigns, final fuzz audit, schema81 exchange and final
 four-MiB audit remain required for local completion.
+
+### Bounded coverage-guided campaign checkpoint
+
+The five first-party sanitizer entries completed the measured main campaign:
+50,000 serial units, 10,000 per entry, with seed1614. Descriptor, payload,
+private/ordinary token, split-stream and public API lanes all passed. Peak
+instrumented RSS was51,342,344,346 and353MiB respectively; elapsed times were
+4.126984,5.630805,24.267102,80.072636 and221.247455 seconds. These values are
+campaign guards and are not ordinary process peaks or logical admission limits.
+The independent audit confirms648 production compile units, source/object/
+binary/original-seed hash equality, and no sanitizer, invariant, crash, hang,
+leak, OOM or saved failure artifact. The four-MiB schema81 exchange and final
+four-MiB audit remain open; existing formats and generated artifacts remain
+unchanged.

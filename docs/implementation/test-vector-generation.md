@@ -24738,3 +24738,15 @@ and calculated main guards are recorded at FZ-0099, separately from ordinary
 BM-0252 peaks. Verify all raw logs and unchanged754 original seeds after the
 pilots. The10000-unit-per-entry campaigns, final fuzz artifact audit, schema81
 exchange and final four-MiB audit remain open.
+
+### TVG-1509: four-MiB Huffman bounded fuzz campaign
+
+The five entries completed 10,000 serial units each (50,000 total, seed1614)
+under the pilot-derived descriptor448MiB, payload576MiB, token640MiB and
+stream/public704MiB RSS guards. All rows passed; elapsed times were recorded
+as4.126984,5.630805,24.267102,80.072636 and221.247455 seconds, with observed
+instrumented peaks51,342,344,346 and353MiB. The independent full auditor passed
+648 production units, all source/object/binary/original-seed hashes and the
+absence of sanitizer/invariant or saved failure artifacts. This is a bounded
+coverage result, separate from ordinary peaks and logical admission. Schema81
+exchange and the final four-MiB audit remain pending.

@@ -2109,3 +2109,9 @@ are448/576/640/704/704MiB, with ten-second unit guards and process watchdogs
 180/239/817/974/1792 seconds. Full campaigns and their final artifact audit
 remain pending at this checkpoint. Schema81 exchange and final four-MiB audit
 also remain open; no hosted/external result is claimed.
+
+The main campaigns completed all50,000 units successfully. The independent
+full audit verified all648 production objects, source/binary/original-seed
+hashes and no sanitizer, invariant or saved failure artifacts. Campaign RSS
+and watchdog values remain harness guards, separate from normal peaks and
+logical admission. Schema81 exchange and the final four-MiB audit remain open.

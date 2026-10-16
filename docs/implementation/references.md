@@ -11687,3 +11687,12 @@ grammar cases. Compile every actual production object with coverage/ASan/UBSan,
 verify object freshness and source/header/binary/seed hashes, then run serial
 pilots before choosing measured main-campaign guards. Consult no external
 implementation, restricted source or imported suite.
+
+### IR-1330: four-MiB Huffman bounded fuzz campaign
+
+Run the first-party descriptor, payload, token, stream and public sanitizer
+entries serially for10,000 units each with seed1614 after pilot-derived guards.
+Retain the exact campaign receipts and independent auditor. Treat coverage
+campaign RSS and watchdog limits as harness guards only; they do not replace
+normal peak measurements or public resource admission. Consult no external
+implementation, restricted source or imported suite.
