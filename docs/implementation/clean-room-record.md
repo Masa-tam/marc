@@ -42466,3 +42466,16 @@ quarantine. Normal9/9 and19 direct ASan/UBSan units pass artifact audit; prior
 No external or restricted implementation was consulted, no fuzz was executed,
 and no push or external validation is claimed. CLI and later profile gates
 remain open.
+
+### CR-1895: 2026-10-17 — eight-MiB native Huffman CLI boundary
+
+Author/reviewer: Codex. Follow IR-1340 by specializing the first-party CLI
+adapter for the qualified eight-MiB C factory and retaining transactional
+whole-file publication. TVG-1520 qualifies static/shared byte equality, seven
+boundaries,211 truncations, independent reference streams and late-failure
+output preservation. Both commands restore and reproduce the91 preceding
+archive bodies exactly; normal4/4 and independent artifact audit pass.
+Preserve the previous fixed-runtime artifacts before replacement. No external
+or restricted implementation was consulted; no fuzz was executed and no push
+or external validation is claimed. Comparisons, ordinary peaks and exchange
+remain open.

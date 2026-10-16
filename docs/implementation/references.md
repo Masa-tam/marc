@@ -11781,3 +11781,13 @@ fault rollback, aliases, process capacities and failed-frame quarantine.
 Replay independent raw fixtures through ordinary and directly instrumented
 public paths and retain previous runtime artifacts. Consult no external or
 restricted implementation; execute no fuzz tests.
+
+### IR-1340: eight-MiB native Huffman CLI connection
+
+Specialize the first-party native CLI adapter for the exact eight-MiB public
+factory and retain whole-file temporary/rename publication. Verify shared and
+static command paths against independent stream headers and short/max-length
+reference wires, full-frame boundaries, malformed metadata/models/padding,
+foreign selectors and late failures. Preserve fixed-runtime backups and all
+previous archive bodies. Consult no external implementation or restricted
+suite; execute no fuzz tests.

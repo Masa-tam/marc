@@ -1874,6 +1874,16 @@ foreach(four_mib_huffman_contract IN ITEMS
         message(FATAL_ERROR "Missing four-MiB position Huffman API contract: ${four_mib_huffman_contract}")
     endif()
 endforeach()
+foreach(eight_mib_position_huffman_cli_contract IN ITEMS
+        "### Eight-MiB position-distance Blocked Huffman"
+        "lzss-position-distance-blocked-huffman-8m"
+        "dictionary2/11, context1/31 and entropy2/6" "640MiB"
+        "first/failed" "second frame")
+    string(FIND "${cli_content}" "${eight_mib_position_huffman_cli_contract}" eight_mib_position_huffman_cli_offset)
+    if(eight_mib_position_huffman_cli_offset EQUAL -1)
+        message(FATAL_ERROR "Missing eight-MiB native Huffman CLI contract: ${eight_mib_position_huffman_cli_contract}")
+    endif()
+endforeach()
 foreach(eight_mib_huffman_contract IN ITEMS
         "marc_lzss_position_distance_blocked_huffman_8m_config_init()"
         "marc_lzss_position_distance_blocked_huffman_8m_resource_requirements()"

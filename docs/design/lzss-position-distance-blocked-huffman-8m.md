@@ -206,3 +206,16 @@ restoration/re-encoding and independent artifact audit pass. CLI, all-member
 comparisons/ordinary peaks, schema82 exchange and final audit remain open.
 Fuzz is omitted by request.
 
+### Command-line qualification
+
+TVG-1520 qualifies the exact selector
+`lzss-position-distance-blocked-huffman-8m` through static and shared commands.
+Seven boundaries,211 truncations, independent short/max-length reference
+streams and malformed identity/model/padding/size cases pass. A valid first
+frame is decoded independently before checking failed-second-frame whole-file
+quarantine; existing ordinary and temporary outputs are retained. Both paths
+restore and reproduce all91 preceding archive bodies exactly. Normal4/4 and
+independent artifact audit pass. Fuzz remains omitted by user request.
+All-member same-window comparisons, ordinary peaks, schema82 exchange and
+final audit remain open.
+

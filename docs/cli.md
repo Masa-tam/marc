@@ -1043,3 +1043,24 @@ a short tail, exact identity, independent short/max-length references, every
 small-stream cut, malformed fields/tables/padding, foreign profiles and a valid
 first/failed second frame. Full contextual comparisons/physical peaks, fuzz and
 schema81 exchange remain separate qualification gates.
+
+### Eight-MiB position-distance Blocked Huffman
+
+The exact selector `lzss-position-distance-blocked-huffman-8m` selects native
+dictionary2/11, context1/31 and entropy2/6 with8388608-byte window/reset frames.
+It uses the eight-MiB public C factory, fixed-five longest/nearest encoding and
+length3..258 decoding. Distance-less spellings, upper-case8M and an extra64k
+suffix are not aliases. Previous profiles retain their exact representations.
+
+The logical grant is640MiB with65536-byte input/output arrays and65536
+declared control-retention bytes. Actual public admission is635845671 encode
+and251157534 decode bytes on the qualified layouts; these are not RSS limits.
+Admission precedes transform consumption. Only completely validated private
+frames drain; whole-file rename follows exact EOS, strict trailing checks and
+successful sink close. Existing output and temporary files stay unchanged on
+refusal; only the current run's new temporary file is removed after failure.
+Shared/static checks cover seven boundaries through two full frames plus a
+tail, exact identity, independent short/max-length references, every small cut,
+malformed fields/tables/padding, foreign profiles and a valid first/failed
+second frame. Full contextual comparisons/ordinary peaks, schema82 exchange
+and final audit remain separate gates. Fuzz is omitted by user request.

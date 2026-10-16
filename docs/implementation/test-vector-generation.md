@@ -24910,3 +24910,19 @@ seconds, including preceding shared factories and four-MiB CLI regression;
 The fixed existing CLI/new library restore and re-encode all prior88 and91
 archive bodies exactly. Fuzz is omitted by request. Eight-MiB CLI, all-member
 comparison/ordinary peaks, exchange and final audit remain open.
+
+### TVG-1520: eight-MiB native Huffman command boundary
+
+Qualify the exact selector `lzss-position-distance-blocked-huffman-8m`
+through static and shared-library commands. Seven source extents0,1,256,
+8388607,8388608,8388609 and16777233 restore exactly and repeat byte-for-byte;
+independent112-byte headers and length3/4/258 reference streams agree.
+All211 truncations, changed identities/reserved fields, oversized metadata,
+unknown model modes, nonzero padding, foreign profiles and near spellings
+are rejected without publishing output. Independently decode the valid first
+frame before checking a late malformed second frame. Preserve pre-existing
+ordinary output and temporary files. Both commands restore and reproduce all
+91 preceding archive bodies exactly. Normal4/4 passes in89.04 seconds and
+independent artifact audit binds binaries, inputs, wires and retained results.
+Fuzz is omitted by user request. All-member paired comparisons, ordinary
+peaks, schema82 exchange and final audit remain open.
