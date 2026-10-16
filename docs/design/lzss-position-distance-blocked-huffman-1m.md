@@ -256,3 +256,15 @@ emits dictionary2/3, context1/2, entropy2/2; native emits2/9,1/29,2/4. Both
 encoders use minimum match5, while their wire minima remain5 and3 respectively.
 Corpus results, normal directional peaks and the full receipt audit remain
 pending at this checkpoint. Fuzz and schema80 exchange are subsequent gates.
+
+### Complete paired measurement checkpoint
+
+TVG-1495 and [BM-0251](../benchmarks.md) qualify all12 Silesia members through
+the actual same-window public profiles. Position/contextual complete sizes are
+66632432/66651672 bytes; every member is smaller, with a small aggregate
+0.0288665% reduction. Encode sum of medians improves30.2711%; decode grows
+9.3743%. Directional normal physical peaks are higher on all12 members, so
+retain both explicit selectors and report the tradeoff. Original observations
+and isolated repeats for three overlapping auxiliary-generation intervals
+remain preserved. Source/build, body and restoration audits pass. Fuzz,
+schema80/90-archive exchange and final profile audit remain open.

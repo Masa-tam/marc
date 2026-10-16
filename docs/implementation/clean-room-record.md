@@ -42129,3 +42129,16 @@ The ordinary optimized build and documentation checks pass. No external
 implementation, restricted source or imported suite was consulted. Full12-member
 comparison/audit, coverage-guided fuzz and schema80 exchange remain pending;
 this checkpoint does not claim complete one-MiB qualification or hosted results.
+
+### CR-1868: 2026-10-17 —one-MiB complete paired corpus measurements
+
+Author/reviewer: Codex. Use IR-1316's first-party public measurement paths and
+TVG-1495's independent artifact audit. Verify all12 actual same-window profile
+headers, CLI bodies and restored hashes, normal build flags and unchanged
+sources/binaries/library. Preserve initial observations and repeat three
+members whose intervals overlap auxiliary seed generation before accepting
+their timing/peak values. BM-0251 records all member sizes, totals, timing and
+physical peaks, including the small size advantage and decode/memory costs.
+No external implementation, restricted source or imported suite was consulted.
+Coverage-guided fuzz, schema80 exchange and final profile audit remain open;
+this closes only the complete paired measurement gate.

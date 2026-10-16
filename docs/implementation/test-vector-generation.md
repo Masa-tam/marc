@@ -24372,3 +24372,19 @@ targets remain unchanged, and a late malformed entropy frame must not publish
 a whole-file target. All five boundary cases pass for both profiles and both
 directions. Full-corpus measurements and their independent receipt audit are
 separate, still pending at this checkpoint; fuzz and exchange also remain open.
+
+### TVG-1495: one-MiB complete paired corpus and resource audit
+
+Run TVG-1494's qualified public measurement paths on all12 verified Silesia
+members. Check dictionary/context/entropy identities, one-MiB windows/frames,
+match parameters, every CLI/resource archive pair and every restored hash.
+Audit source/binary/library hashes, ordinary optimized build configuration,
+all individual timing/resource observations and recomputed aggregates.
+Retain initial observations and independently repeat all profile/directional
+paths for the three members overlapping auxiliary seed generation; accepted
+timing/peak observations come from isolated runs. Both sets remain preserved.
+All12 members are strictly smaller, with complete sizes66632432/66651672 bytes
+for position/contextual. BM-0251 records every member's size, encode/decode
+speed and physical directional peak, including decode/memory disadvantages.
+The measurement audit passes; fuzz, exchange and the final profile audit are
+separate incomplete gates.
