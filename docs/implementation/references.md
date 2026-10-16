@@ -11457,3 +11457,12 @@ decoder symbol output commits only after a complete successful read. The
 independent256/66 frozen expectations are external to the production core.
 Preserve the original64KiB sources and wire expectations. No external source,
 restricted implementation or imported test suite is consulted.
+
+### IR-1308: one-MiB bounded pooled Huffman model planning
+
+Use DD-1612's bounded decision grammar and the first-party64KiB planner's
+frequency accumulation, deterministic package primitive and strict serialized
+override-cost comparison. Specialize to52 contexts/57 codebooks with8388608
+maximum decisions. Check planning independently from dictionary history and
+frame publication. Reuse existing canonical primitives and mathematical wire
+oracle; consult no external implementation or restricted source.

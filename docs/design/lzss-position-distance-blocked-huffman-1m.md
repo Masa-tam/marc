@@ -124,3 +124,14 @@ ASan/UBSan builds and replay. Original64KiB core checks remain unchanged.
 This checkpoint admits no public one-MiB codec or frame output: model planning,
 incremental writing, dictionary/history quarantine, owned streaming, public
 connection, actual resource measurements, corpus/fuzz and exchange stay open.
+
+### Bounded model-planning checkpoint
+
+TVG-1486 qualifies the57-codebook frequency accumulator, bounded weighted
+length construction and strict override choice through hand expectations,
+upper-context cost ties and independent decoding of256 emitted plans.
+Maximum8388608-decision and exact/one-short workspace checks pass alongside
+direct ASan/UBSan replay. This is a finite model-planning stage; incremental
+private writing, token/history/frame quarantine, owned/public connection,
+normal resource/corpus measurements, coverage-guided fuzz and exchange remain
+future gates. No memory default is inferred from these format/counter tests.

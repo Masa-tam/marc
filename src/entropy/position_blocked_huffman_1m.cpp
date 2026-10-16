@@ -43,6 +43,86 @@ std::uint64_t valid_bits(const Descriptor& d) noexcept {
     return d.payload_size ? UINT64_C(8)*(d.payload_size-1)+d.final_valid_bits : 0;
 }
 } // namespace
+PositionBlockedHuffman1mModelBuilder::PositionBlockedHuffman1mModelBuilder(std::uint32_t maximum) noexcept
+    : maximum_decisions_(maximum) {
+    if (maximum>8388608) error_=Error::limit_exceeded;
+}
+PositionBlockedHuffmanError PositionBlockedHuffman1mModelBuilder::add(int context,std::uint32_t symbol) noexcept {
+    if (error_!=Error::none) return error_;
+    if (decisions_>=maximum_decisions_) return error_=Error::limit_exceeded;
+    if (context==-1) {
+        if (symbol>1) return error_=Error::invalid_symbol;
+        ++uniform_bits_;
+    } else {
+        if (context<0 || context>=52) return error_=Error::invalid_context;
+        const auto c=static_cast<std::size_t>(context);
+        if (symbol>=position_blocked_huffman_1m_alphabets[c]) return error_=Error::invalid_symbol;
+        // Each counter is at most the bounded total decisions, so the
+        // uint64 frequencies cannot overflow before the admission guard.
+        ++counts_[position_blocked_huffman_1m_field(c)][symbol];++counts_[5+c][symbol];
+    }
+    ++decisions_;return Error::none;
+}
+PositionBlockedHuffmanError PositionBlockedHuffman1mModelBuilder::finish(
+    const core::DecoderLimits& limits,Descriptor& output) const noexcept {
+    const std::array<Region,3> regions{{{this,sizeof(*this)},{&limits,sizeof(limits)},{&output,sizeof(output)}}};
+    if (const auto e=separate(regions);e!=Error::none) return e;
+    if (error_!=Error::none) return error_;
+    if (core::validate_limits(limits)!=core::LimitError::none || decisions_>limits.max_block_size) return Error::limit_exceeded;
+    // The first-party package primitive has bounded 256-symbol/15-level
+    // temporary storage. This is a conservative workspace charge, not RSS.
+    if (sizeof(*this)+UINT64_C(2)*sizeof(Descriptor)+131072+2547>limits.max_internal_buffered_bytes) return Error::limit_exceeded;
+    Descriptor planned{};planned.decision_count=decisions_;
+    auto build=[](const HuffmanFrequencies& counts,PositionBlockedHuffmanModel& model) noexcept {
+        std::size_t present{};std::uint16_t sole{};
+        for (std::size_t s=0;s<counts.size();++s) if (counts[s]) { ++present;sole=static_cast<std::uint16_t>(s); }
+        if (!present) return Error::inactive_context;
+        if (present==1) { model.single_symbol=sole;return Error::none; }
+        return build_length_limited_code_lengths(counts,model.lengths)==HuffmanBuildError::none ? Error::none : Error::invalid_model;
+    };
+    auto cost=[](const HuffmanFrequencies& counts,const PositionBlockedHuffmanModel& model,std::uint64_t& bits) noexcept {
+        bits=0;
+        for (std::size_t s=0;s<counts.size();++s) {
+            std::uint64_t contribution{};
+            if (!core::checked_multiply(counts[s],static_cast<std::uint64_t>(model.lengths[s]),contribution)
+                || !core::checked_add(bits,contribution,bits)) return Error::arithmetic_overflow;
+        }
+        return Error::none;
+    };
+    for (std::size_t f=0;f<5;++f) {
+        const auto e=build(counts_[f],planned.models[f]);
+        if (e==Error::inactive_context) continue;
+        if (e!=Error::none) return e;
+        planned.field_mask|=static_cast<std::uint8_t>(1U<<f);
+    }
+    std::uint64_t payload_bits=uniform_bits_;
+    for (std::size_t c=0;c<52;++c) {
+        PositionBlockedHuffmanModel alternative{};
+        const auto e=build(counts_[5+c],alternative);
+        if (e==Error::inactive_context) continue;
+        if (e!=Error::none) return e;
+        const auto f=position_blocked_huffman_1m_field(c);
+        std::uint64_t base_bits{},context_bits{};
+        if (const auto status=cost(counts_[5+c],planned.models[f],base_bits);status!=Error::none) return status;
+        if (const auto status=cost(counts_[5+c],alternative,context_bits);status!=Error::none) return status;
+        const auto a=position_blocked_huffman_1m_alphabets[c];
+        const auto present=static_cast<std::size_t>(std::count_if(alternative.lengths.begin(),alternative.lengths.end(),[](auto n){return n!=0;}));
+        const auto record_bytes=alternative.single_symbol!=position_blocked_huffman_no_single ? std::size_t{2}
+            : std::min(std::size_t{1}+(a+1)/2,std::size_t{3}+2*present);
+        const bool use_override=base_bits>context_bits && base_bits-context_bits>UINT64_C(8)*record_bytes;
+        if (use_override) {
+            planned.override_mask|=UINT64_C(1)<<c;planned.models[5+c]=alternative;
+        }
+        if (!core::checked_add(payload_bits,use_override ? context_bits : base_bits,payload_bits)) return Error::arithmetic_overflow;
+    }
+    const auto payload_bytes=(payload_bits+7)/8;
+    if (payload_bytes>UINT32_MAX) return Error::arithmetic_overflow;
+    planned.payload_size=static_cast<std::uint32_t>(payload_bytes);
+    planned.final_valid_bits=payload_bits ? static_cast<std::uint8_t>((payload_bits-1)%8+1) : 0;
+    std::size_t extent{};
+    if (const auto e=validate_position_blocked_huffman_1m_descriptor(planned,limits,extent);e!=Error::none) return e;
+    output=planned;return Error::none;
+}
 PositionBlockedHuffmanError encode_position_blocked_huffman_1m(
     const Descriptor& d,std::span<const PositionBlockedHuffmanDecision> requests,const core::DecoderLimits& limits,
     std::span<CanonicalHuffmanTable> tables,std::span<std::byte> output,std::size_t& written) noexcept {

@@ -33,6 +33,20 @@ struct PositionBlockedHuffman1mDescriptor {
 [[nodiscard]] PositionBlockedHuffmanError parse_position_blocked_huffman_1m_descriptor(
     std::span<const std::byte>,std::uint32_t decisions,std::uint32_t payload,
     const core::DecoderLimits&,PositionBlockedHuffman1mDescriptor&) noexcept;
+class PositionBlockedHuffman1mModelBuilder {
+public:
+    // 8*1048576 is the format-derived maximum per reset frame.
+    explicit PositionBlockedHuffman1mModelBuilder(std::uint32_t maximum_decisions=8388608) noexcept;
+    [[nodiscard]] PositionBlockedHuffmanError add(int context,std::uint32_t symbol) noexcept;
+    // A finite accumulator: repeated finish is deterministic; subsequent add
+    // remains permitted. Ordinary descriptor commits only on successful finish.
+    [[nodiscard]] PositionBlockedHuffmanError finish(const core::DecoderLimits&,
+        PositionBlockedHuffman1mDescriptor&) const noexcept;
+private:
+    std::array<HuffmanFrequencies,57> counts_{};
+    std::uint32_t decisions_{},uniform_bits_{},maximum_decisions_{};
+    PositionBlockedHuffmanError error_{};
+};
 // Private tables may change on refusal. Ordinary output is written only after
 // exact sizing, symbol/model usage and all aliases/limits have been validated.
 [[nodiscard]] PositionBlockedHuffmanError encode_position_blocked_huffman_1m(

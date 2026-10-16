@@ -24153,3 +24153,25 @@ units directly built under ASan/UBSan; no normal archive is linked into that
 instrumented closure. Existing64KiB core/vectors/differential checks also pass.
 Model planning, incremental private writing, token/history/frame integration,
 API/CLI, corpus/fuzz and exchange remain open for one-MiB.
+
+### TVG-1486: one-MiB bounded pooled-model planning
+
+The bounded planner counts57 pooled/context codebooks without allocating a
+decision array. Hand expectations cover5/2/1 literal weights and a006 payload,
+uniform-only05, equal-weight full-byte lengths8,15-bit length-limited skew,
+all-override zero-bit payload and active pools with no direct pooled lookup.
+Savings16 bits retain the pool;17 bits select a two-byte singleton override.
+Repeat this boundary for distance-class20 contexts and upper residual context51.
+Repeated finish, exact/one-short workspace, invalid symbols/contexts and sticky
+admission failures retain ordinary outputs. Exactly8388608 zero-bit decisions
+plan successfully with an explicit decision limit; an excess decision or
+constructor bound8388609 rejects and preserves the previous descriptor.
+
+For each of256 independent finite request sequences, emit the production
+planned descriptor and reference payload, then decode them with the separate
+Python oracle and require exact symbols. Also replay all256 original frozen
+wires and66 negatives. The reached implementation passes direct ASan/UBSan
+units and the same fixture/plan replay; retained artifact audit independently
+rechecks all256 plans. Existing64KiB qualification checks remain green.
+These entropy-only tests supply no dictionary-history, private-frame, public
+API/CLI, physical-peak, coverage-guided fuzz or exchange completion claim.

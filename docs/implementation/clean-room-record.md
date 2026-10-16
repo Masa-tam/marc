@@ -42003,3 +42003,18 @@ units and finite differential replay report no ASan/UBSan finding. No external
 implementation, restricted code or imported test suite was consulted. This
 stage does not qualify token history, private-frame integration, planning,
 public APIs/CLI, measurements, coverage-guided fuzzing or exchange.
+
+### CR-1859: 2026-10-17 —one-MiB pooled Huffman bounded model planner
+
+Author/reviewer: Codex. Apply IR-1308's first-party deterministic weighted
+model construction and strict override-cost rule to52 contexts/57 codebooks.
+The finite accumulator enforces8388608 decisions before counter updates,
+uses bounded existing package primitives and commits plans only on successful
+finish. TVG-1486 checks hand codes/cost ties, exact/one-short limits, upper
+context and distance alphabets, full decision count and retained failures.
+All256 production plans restore through the independent mathematical decoder;
+256 frozen positives and66 negatives still pass. Direct sanitizer execution
+of the entire reached implementation reports no ASan/UBSan finding. No
+external source, restricted implementation or imported suite was consulted.
+Incremental private writing and the subsequent token/frame/public/performance/
+fuzz/exchange gates remain open.
