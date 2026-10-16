@@ -24094,3 +24094,19 @@ The complete12-member corpus passes manifest size/MD5 checks, actual identity,
 CLI-body equality and SHA-256 restoration checks. Source/executable/library
 hashes and totals are audited. BM-0250 records every size, median and peak,
 including four per-member size misses and their response.
+
+### TVG-1483:64KiB Huffman exchange append and prelaunch negatives
+
+Generate schema79 with89 archives by appending the exact64KiB public selector
+after schema78's88 entries. The producer checks the native112-byte header and
+restoration. The verifier independently checks all112 header bytes, including
+reserved bytes, before launching any codec. A launch-guard suite rejects125
+cases: spelling, schema downgrade, codec set, missing/duplicate/reordered
+entries, input/archive hash and size, identity fields, truncation and each
+individual header-byte mutation. Every rejected case retains zero codec
+launches and zero published files. Retain the baseline and compare every old
+entry's values and property order, input descriptor and all89 existing files
+(88 archives plus input) byte-for-byte, in both producer bundles. Convert the
+appended bundle back to schema78 and through the existing historical chain;
+schema76 now also has an explicit decode/re-encode verification call. Later
+windows and hosted/external validation remain separate gates.

@@ -41961,3 +41961,18 @@ members pass; BM-0250 records per-member/totals, timing scope, separate physical
 peaks, four size misses and retained-selector policy. No external/restricted
 implementation was consulted, and corpus bytes were not used as algorithm
 references. Exchange admission/final64KiB audit and later windows remain open.
+
+### CR-1856: 2026-10-17 —64KiB Huffman exchange admission and preservation
+
+Author/reviewer: Codex. Extend IR-1305's first-party producer, admission and
+historical conversion paths, with TVG-1483's independent launch guard and
+retained-prefix audit. Native112-byte header validation is implemented in
+both producer and verifier. Both producer bundles preserve the starting88
+entries and all original bodies; four local89-archive self/cross paths pass.
+The125 admission negatives produce no codec launch or output; final17-test
+qualification passes. No external source, restricted implementation, imported
+test suite or new algorithm reference was consulted. Schemas1 through79
+complete historical conversion and decode/re-encode qualification, including
+the added explicit schema76 call. An artifact audit rechecks all historical
+and four local-route bodies and restorations. The next six windows and final
+hosted/external gates remain open.

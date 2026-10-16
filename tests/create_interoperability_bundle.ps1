@@ -283,6 +283,25 @@ function Assert-PositionTans64mHeader([byte[]]$Bytes, [uint64]$OriginalBytes) {
     }
 }
 
+function Assert-PositionBlockedHuffman64kHeader([byte[]]$Bytes, [uint64]$OriginalBytes) {
+    if ($Bytes.Length -lt 112) { throw '64 KiB position Blocked Huffman archive header is truncated' }
+    $expected = [byte[]]::new(112)
+    [System.Text.Encoding]::ASCII.GetBytes('MARC').CopyTo($expected, 0)
+    foreach ($field in @(@(4,2,2), @(8,2,64), @(10,2,1), @(12,2,2), @(14,2,8),
+            @(16,2,2), @(18,2,3), @(20,4,65536), @(28,4,16), @(32,4,16),
+            @(40,8,$OriginalBytes), @(48,4,16), @(64,4,65536), @(68,4,3), @(72,4,258),
+            @(80,1,15), @(81,1,5), @(82,2,48), @(84,4,4570), @(96,2,1), @(98,2,28))) {
+        for ($index = 0; $index -lt $field[1]; ++$index) {
+            $expected[$field[0] + $index] = [byte](([uint64]$field[2] -shr (8 * $index)) -band 255)
+        }
+    }
+    for ($index = 0; $index -lt 112; ++$index) {
+        if ($Bytes[$index] -ne $expected[$index]) {
+            throw '64 KiB position Blocked Huffman archive does not carry exact identity and parameters'
+        }
+    }
+}
+
 function Get-Sha256([string]$Path) {
     $stream = [System.IO.File]::OpenRead($Path)
     try {
@@ -433,7 +452,8 @@ $profiles = @(
     'lzss-position-distance-tans-8m',
     'lzss-position-distance-tans-16m',
     'lzss-position-distance-tans-32m',
-    'lzss-position-distance-tans-64m'
+    'lzss-position-distance-tans-64m',
+    'lzss-position-distance-blocked-huffman'
 )
 $entries = @()
 foreach ($profile in $profiles) {
@@ -552,6 +572,9 @@ foreach ($profile in $profiles) {
     }
     if ($profile -eq 'lzss-position-distance-tans-64m') {
         Assert-PositionTans64mHeader ([System.IO.File]::ReadAllBytes($archivePath)) ([uint64]$fixture.Length)
+    }
+    if ($profile -eq 'lzss-position-distance-blocked-huffman') {
+        Assert-PositionBlockedHuffman64kHeader ([System.IO.File]::ReadAllBytes($archivePath)) ([uint64]$fixture.Length)
     }
     if ($profile -eq 'lzss-position-distance-rans-8m') {
         Assert-PositionRans8mHeader ([System.IO.File]::ReadAllBytes($archivePath)) ([uint64]$fixture.Length)
@@ -846,8 +869,8 @@ foreach ($profile in $profiles) {
 }
 
 $manifest = [ordered]@{
-    schema_version = 78
-    codec_set = 'marc-cli-v78'
+    schema_version = 79
+    codec_set = 'marc-cli-v79'
     source_revision = $SourceRevision
     platform = $Platform
     compiler = $Compiler

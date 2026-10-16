@@ -10,19 +10,19 @@ marc-interoperability-windows-msvc-x64
 marc-interoperability-ubuntu-ninja-x64
 ```
 
-The current local schema-73 bundle contains the same generated `input.bin`, the
+The current local schema-79 bundle contains the same generated `input.bin`, the
 frozen 42 stable-profile archives, twenty-five preceding experimental Format 2
 archives, seven position-distance Dynamic Range archives, seven
-position-distance rANS archives, two position-distance tANS archives, and
-`manifest.json`. The manifest declares codec set `marc-cli-v73` and records
+position-distance rANS archives, seven position-distance tANS archives, one
+64 KiB position-distance Blocked Huffman archive, and `manifest.json`.
+The manifest declares codec set `marc-cli-v79` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.
 
 The latest maintainer-confirmed hosted CI and external four-route result is
-schema71 with81 archives (IX-0081). Schema72's82 archives are locally complete
-as described in IX-0083. Schema73's83 archives have producer/admission and
-self-path qualification in IX-0084, with cross/history/runtime closure pending.
-No hosted or external82/83-archive result is claimed.
+schema78 with88 archives (IX-0096). Schema79 adds the first Blocked Huffman
+profile locally. Its qualification is recorded separately; no hosted CI or
+external89-archive result is claimed.
 
 Download and extract a bundle from a successful GitHub Actions run. Build marc
 at the same commit on the platform being tested, then use an output directory
@@ -2238,3 +2238,31 @@ compatibility evidence remains separate from this external report. Earlier
 pending statements describe their respective milestones and are superseded
 by this receipt and the final family status. The following documentation-only
 recording commit does not imply another CI or external execution.
+
+## IX-0097:64KiB position-distance Blocked Huffman local exchange qualification
+
+Schema79/`marc-cli-v79` appends `lzss-position-distance-blocked-huffman`
+at index88. The preserved starting point is schema78 with88 archives, rather
+than the older81-archive prefix. Both independently built producer bundles
+retain all88 original entry values and property order, input descriptor,
+input bytes and archive bytes. The new native header is checked byte-for-byte
+as identity2/8+1/28+2/3, window/frame65536, contexts48 and alphabet extent4570.
+
+All89 archives restore and re-encode identically in four local paths:
+Windows self, Ubuntu self, Windows producer to Ubuntu consumer, and Ubuntu
+producer to Windows consumer. The125 schema79 admission negatives, including
+every112-byte header position, reject before codec launch and publish no
+files. The17-test64KiB qualification passes, including independent vectors,
+differential paths, private-frame failure guarantees, public APIs and CLI.
+Historical conversion and decode/re-encode qualification passes for schemas
+1 through79, including an explicit schema76 execution check. All original
+bundles and generated historical evidence remain retained.
+The fixed Windows runtime remains byte-identical to its previously qualified
+version; its pre-update artifacts remain preserved.
+
+BM-0250 and FZ-0097 provide the paired12-member corpus, normal physical peaks
+and50000 bounded instrumented fuzz units. Size is smaller in aggregate but
+four individual members miss the contextual-size target; both selectors and
+the documented tradeoffs remain explicit. The remaining six windows, final95
+local audit, user push, hosted CI and external four-route95-archive result
+remain open. These four local paths do not supply those external results.

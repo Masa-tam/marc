@@ -353,3 +353,17 @@ target is met; four per-member misses and slower/higher-memory cases remain
 visible, with both selectors retained. This checkpoint leaves exchange
 extension, historical-schema/self/cross compatibility and the final64KiB
 audit open. Later windows remain reservations until those gates pass.
+
+### 64KiB local qualification closure
+
+IX-0097 closes the exchange and historical/self/cross gates with89 archives:
+both producers preserve the original88 bodies and entry representations;
+all four local routes restore and re-encode exactly. Schemas1 through79 pass
+conversion/execution,125 admission negatives reject before codec launch,
+and the final17-test qualification passes. The retained-artifact audit checks
+the actual bodies and restorations, beyond console success alone. The fixed
+Windows runtime retains its qualified bytes. Together with BM-0250 and
+FZ-0097, this completes the64KiB local profile and permits1MiB format work.
+The four member-specific size misses and mixed speed/memory results remain
+documented; local completion does not imply universal compression benefit.
+The remaining six profiles and final95 local/hosted/external gates stay open.

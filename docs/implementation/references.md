@@ -11424,3 +11424,13 @@ as arbitrary compression input rather than implementation references. Time
 allocation/create/process/destroy separately from file I/O and comparison;
 measure physical peak in separate normal streaming processes. No external
 implementation, restricted source or imported test suite was consulted.
+
+### IR-1305:64KiB Huffman exchange admission and retained-prefix audit
+
+Use only the repository's first-party schema78 producer, verifier and historical
+conversion tests, together with the independently documented native header and
+TVG-1482's qualified CLI. Append the exact public selector at index88; admit
+the complete112-byte native header before any codec launch. Compare the old
+88 entry objects, their property order, input and every archive byte against
+the retained baseline. Extend the existing launch-guard mutation procedure
+to schema79; no external implementation or imported test suite is used.
