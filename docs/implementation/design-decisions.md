@@ -34923,3 +34923,16 @@ implementation. Maximum descriptor is2547 bytes, full-frame decisions8388608,
 payload15728640 and serialized frame15731251. These are mathematical format
 limits, not measured memory grants. Earlier formats remain unchanged; public
 factory/CLI, benchmarks, fuzz and exchange are subsequent gates.
+
+### DD-1613: one-MiB Huffman public resource/process contract
+
+The [one-MiB public boundary](../design/lzss-position-distance-blocked-huffman-1m.md)
+will add configuration, resource query and factory functions with the established
+native Huffman ABI field layout. Use a96MiB logical default, selected after
+full-frame owner queries and normal fresh-process resource precursors, not
+inherited from ANS. Charge adapter/handle controls, declared input/output
+capacities and retained caller bytes in addition to owner requirements.
+Refuse before allocation when admission is known to fail, preserve failed
+query destinations and retain the existing overlap, direction, no-allocation
+process and private-frame publication contracts. Physical process peaks are
+reported separately from logical admission. Implementation/tests remain open.

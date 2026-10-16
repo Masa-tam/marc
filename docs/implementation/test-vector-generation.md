@@ -24281,3 +24281,26 @@ Direct ASan/UBSan compilation covers all17 reached implementation/test units,
 including the actual five-prefix finder; units and499-case replay pass.
 Public admission, normal physical precursors/corpus measurements, fuzz and
 exchange remain open.
+
+### TVG-1491: one-MiB normal resource precursor before public defaults
+
+Run distinct normal encode/decode processes over a1048576-byte repeated-byte
+pattern and a seed1491 full-frame noise sample. The driver streams65536-byte
+I/O buffers, declares65536 control allowance and uses a96MiB trial logical
+grant. It includes no allocation-test overrides or sanitizer instrumentation.
+A separate orchestrator verifies the actual tuple2/9+1/29+2/4, frame/window,
+lengths, Huffman parameters and exact restored SHA-256 before accepting rows.
+
+| Sample | Encode process peak bytes | Decode process peak bytes |
+| --- | ---: | ---: |
+| Repeated all-byte pattern | 32673792 | 19148800 |
+| Seed1491 noise | 35811328 | 20246528 |
+
+These are fresh-process high-water values including runtime, streaming I/O
+and codec lifetime; logical owner requirements remain74642023/29692570 bytes,
+plus declared I/O/control and future adapter charges. Normal build flags,
+source/library/executable hashes, exact commands, sample/archive/restoration
+bytes and identities are retained for audit. No all-member comparison,
+universal peak bound, throughput conclusion or public implementation completion
+is inferred. DD-1613 selects a96MiB logical default after this precursor;
+actual public-query, allocation/alias and process tests are subsequent gates.

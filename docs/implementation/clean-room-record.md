@@ -42077,3 +42077,15 @@ retained with the resource query arithmetic audit. No external implementation,
 restricted source or imported suite was consulted. Logical requirements are
 recorded separately from pending physical peaks and public-default selection;
 API/CLI, corpus/fuzz and exchange remain unfinished.
+
+### CR-1864: 2026-10-17 —one-MiB normal resource precursor and public plan
+
+Author/reviewer: Codex. Adapt IR-1313's first-party streaming driver to the
+qualified internal one-MiB owners, with separate fresh normal processes for
+each direction. TVG-1491 records two full-frame samples, actual identities,
+bounded I/O, exact restored hashes and physical peaks separately from logical
+queries. Record DD-1613's additive public contract and96MiB default after the
+query/normal precursor evidence, keeping actual adapter admission/tests open.
+No external implementation, restricted source or imported suite was consulted.
+This precursor neither substitutes for all12 same-window contextual comparisons
+nor closes API/CLI, final corpus/peaks, fuzz or exchange qualification.

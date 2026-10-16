@@ -184,3 +184,40 @@ and control/workspace costs: the qualified full-frame logical aggregates are
 public default grants. Actual physical precursors before public admission,
 API/CLI, all-member corpus/peak measurements, coverage-guided fuzz and schema80
 exchange qualification remain subsequent gates.
+
+## DD-1613: planned public resource and process boundary
+
+Add `marc_lzss_position_distance_blocked_huffman_1m_config_init`,
+`marc_lzss_position_distance_blocked_huffman_1m_resource_requirements` and
+`marc_lzss_position_distance_blocked_huffman_1m_create`, with additive
+`_1m_config`/`_1m_resources` types retaining the64KiB native field layouts.
+Do not alter previous ABI layouts or stream identities. Default frame/window
+is1048576; grammar minimum/maximum remains3/258, encoder eligibility5.
+Default decision admission is8388608, payload15728640, table entries29127
+(57*511), distance1048576, output total2^40, expansion ratio1024 and slack
+1048576. Input/output capacities are65536 each; caller retention defaults0.
+
+Default logical memory grant is96MiB. The full-frame internal queries require
+74642023 encode and29692570 decode bytes in the qualified layout. Two separate
+full-frame samples, pattern and seeded noise, complete normal encode/decode
+under that trial grant with declared131072-byte I/O and65536-byte control
+allowance, verified identities and exact restoration. Their largest process
+peaks are35811328 encode and20246528 decode bytes (TVG-1491). This supports
+the trial's bounded admission but is not a claim about all corpus members or
+a process-RSS cap. The grant provides room for the separately queried public
+adapter/handle/control charges; verify the actual additive query in API tests.
+
+Resource query reports raw/token/serialized/finder/table/private-payload and
+private-serialized buffers, owned and owner bytes, nested working allowance,
+metadata floor and declared external charges. Query output commits only on
+success. Failed create yields a null handle except overlapping config/handle
+storage, which must remain untouched. Validate ABI fields, flags, checked
+arithmetic, quotas and aliases before unsafe access or known-invalid allocation;
+construction failures release every partial allocation. Lower table/decision
+limits may admit creation and reject a later frame according to actual usage.
+
+Direction remains immutable. Process may not allocate; input/output spans
+exceeding declared capacities reject before consuming or producing bytes.
+Sticky errors/EOS, neutral Flush, unsupported ResetBlock and frame-private
+validation/draining remain unchanged. API/CLI implementation, all-member
+contextual comparisons and physical peaks, fuzz and exchange remain open.

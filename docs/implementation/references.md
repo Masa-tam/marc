@@ -11510,3 +11510,14 @@ construction failures, split determinism and independent raw parsing before
 public admission. Actual query/resource precursors precede any profile memory
 default. No external implementation, restricted source or imported suite is
 consulted.
+
+### IR-1313: one-MiB Huffman normal resource precursor
+
+Adapt the first-party64KiB streaming resource driver to the qualified internal
+one-MiB owners before public configuration defaults. Use distinct fresh
+encode/decode processes, bounded I/O buffers and normal builds without
+allocation-test overrides or sanitizer instrumentation. Check actual112-byte
+identity/settings and restored hashes in a separate orchestrator. Keep logical
+owner/control charges distinct from process high-water resident memory;
+measure full-frame pattern and seeded incompressible-looking input. No external
+implementation, restricted source or imported suite is consulted.
