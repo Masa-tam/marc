@@ -234,3 +234,17 @@ comparison guards and separate caller charges. One warmup/three timed samples
 exclude I/O/comparison, while physical peaks use separate normal streaming
 processes. Normal2/2 and independent artifact audit pass. The full twelve-file
 corpus is verified but all-member measurements, fuzz and exchange remain open.
+
+### Complete corpus and ordinary peak checkpoint
+
+TVG-1507 and [BM-0252](../benchmarks.md) qualify all twelve actual same-window
+public comparisons. Native/contextual totals64250911/64254572 bytes meet the
+stated size target on every member, reducing the total by3,661 bytes or
+0.00569765%. Encode median sums improve29.1233%, while decode median sums
+increase23.5946%; physical peaks are higher on all twelve members in both
+directions. Retain both explicit profiles and these measured costs alongside
+the small size benefit. All120 serial commands and all retained observations
+pass independent artifact audit with unchanged sources/binaries. Logical
+admission remains separate from ordinary physical peaks. Coverage-guided fuzz,
+schema81 exchange and the final four-MiB audit remain required for local
+completion; hosted/final-family external validation remains separate.

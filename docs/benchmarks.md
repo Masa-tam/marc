@@ -11636,3 +11636,81 @@ claimed here.
 Those later one-MiB local gates subsequently close at IX-0098; these measurement
 values remain unchanged. The larger-window family and hosted/external gates
 remain incomplete.
+
+### BM-0252: four-MiB position-distance Blocked Huffman complete paired comparison
+
+All12 verified Silesia members use actual public four-MiB profiles. Native
+identity is dictionary2/10, context1/30, entropy2/5; contextual identity is
+2/4,1/3,2/2. Both configure4194304-byte window/reset frames, maximum match258
+and fixed-five encoder eligibility. Native wire minimum is3; contextual wire
+minimum is5. Check every header and parameter set, CLI/body equality and exact
+restoration against source hashes. Measurements cover complete production
+paths, including native five-prefix and contextual exact hash-chain dictionary
+search; timing differences combine dictionary, event, entropy and ownership
+work. Dynamic Range compression comparison is not an adoption condition.
+
+Use normal optimized drivers with one warmup and three timed samples per
+member/profile/direction. Report medians of allocation/create/process/destroy,
+excluding file I/O and output comparison. Physical peaks use48 separate fresh
+normal streaming processes with65536-byte input/output buffers and65536
+retained control bytes, including runtime and driver. Timing comparison vectors
+are separately charged and absent from peak processes. Native logical owner/
+call/control admission and contextual caller-workspace queries retain their
+different documented scopes; physical peaks remain separate from either query.
+All120 commands run serially, with saved start/end intervals, return codes and
+outputs. No heavy auxiliary work runs during these measurement intervals.
+P/C denotes position/contextual.
+
+| Member | Raw bytes | Position bytes | Contextual bytes |
+| --- | ---: | ---: | ---: |
+| dickens | 10,192,446 | 3,367,286 | 3,367,378 |
+| mozilla | 51,220,480 | 19,445,250 | 19,446,099 |
+| mr | 9,970,564 | 3,414,477 | 3,414,674 |
+| nci | 33,553,445 | 2,511,135 | 2,511,265 |
+| ooffice | 6,152,192 | 3,077,581 | 3,077,712 |
+| osdb | 10,085,684 | 3,396,057 | 3,396,245 |
+| reymont | 6,627,202 | 1,635,984 | 1,636,116 |
+| samba | 21,606,400 | 5,036,475 | 5,036,747 |
+| sao | 7,251,944 | 5,581,103 | 5,581,491 |
+| webster | 41,458,703 | 10,617,629 | 10,617,853 |
+| xml | 5,345,280 | 558,673 | 558,741 |
+| x-ray | 8,474,240 | 5,609,261 | 5,610,251 |
+| **Total** | **211,938,580** | **64,250,911** | **64,254,572** |
+
+| Member | Encode seconds P/C | Decode seconds P/C | Encode peak bytes P/C | Decode peak bytes P/C |
+| --- | ---: | ---: | ---: | ---: |
+| dickens | 4.723416/5.095187 | 0.413411/0.221752 | 115,474,432/80,400,384 | 61,472,768/61,394,944 |
+| mozilla | 18.264418/31.859235 | 1.605095/1.667849 | 122,351,616/82,624,512 | 63,750,144/63,660,032 |
+| mr | 8.270112/20.689936 | 0.391007/0.251152 | 115,863,552/80,474,112 | 61,603,840/61,448,192 |
+| nci | 10.280388/18.489775 | 0.294025/0.171173 | 112,459,776/79,368,192 | 60,469,248/60,379,136 |
+| ooffice | 1.427905/0.966072 | 0.276749/0.275682 | 117,940,224/81,195,008 | 62,312,448/62,181,376 |
+| osdb | 2.154605/1.128968 | 0.307334/0.294076 | 115,662,848/80,424,960 | 61,546,496/61,423,616 |
+| reymont | 5.745783/6.943811 | 0.200795/0.107540 | 114,401,280/79,994,880 | 61,108,224/61,001,728 |
+| samba | 5.383388/6.061742 | 0.472332/0.393569 | 117,137,408/80,891,904 | 62,046,208/61,927,424 |
+| sao | 2.589706/1.325900 | 0.400884/0.480276 | 121,065,472/82,243,584 | 63,320,064/63,201,280 |
+| webster | 22.644628/24.681016 | 1.252616/0.706304 | 114,610,176/80,089,088 | 61,206,528/61,104,128 |
+| xml | 0.559123/0.590321 | 0.066826/0.043508 | 112,537,600/79,388,672 | 60,502,016/60,350,464 |
+| x-ray | 2.072828/0.847861 | 0.573109/0.447358 | 119,754,752/81,780,736 | 62,894,080/62,836,736 |
+
+Total size improves by3,661 bytes,0.00569765%, and all twelve members are
+strictly smaller. This meets the stated same-window target on this corpus,
+with a very small margin. Retain both explicit profiles and the per-material
+results; these observations do not establish universal dominance.
+
+Sum of member median times is encode84.116301/118.679824 seconds and decode
+6.254181/5.060239 seconds. Position encode is faster on eight members and
+aggregate encode time is29.1233% lower. Position decode is faster on two
+members; aggregate decode time is23.5946% higher. Maximum process peaks are
+encode122,351,616/82,624,512 bytes and decode63,750,144/63,660,032 bytes.
+Position peaks are higher on all twelve members in both directions. The
+measured size and encode-time benefits therefore coexist with decode-time and
+memory costs. Keep the320MiB native logical default from DD-1615: observed
+physical peaks do not replace its checked worst-case admission requirements.
+
+Independent audit rechecks all12 manifest sizes/MD5/SHA256, actual identities,
+CLI/archive/restoration hashes, all timing/resource outputs and aggregate
+calculations. It verifies120 serial command intervals, normal optimized build
+flags, measurement source and executable/library hashes. This closes the
+four-MiB corpus/speed/public-peak measurement gate. Coverage-guided fuzz,
+schema81 exchange and final four-MiB audit remain open; hosted CI and final
+95-archive external qualification are separate later gates.

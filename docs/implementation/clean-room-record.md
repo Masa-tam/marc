@@ -42311,3 +42311,17 @@ source/binary binding independently; normal2/2 passes. The twelve supplied
 corpus files pass their manifest. Consult no external implementation, restricted
 source or imported suite. All-member measurement results, coverage fuzz and
 exchange remain open; existing runtime artifacts remain unchanged.
+
+### CR-1882: 2026-10-17 —complete four-MiB normal Huffman measurements
+
+Author/reviewer: Codex. Follow IR-1328 with the qualified first-party drivers
+and independently verified supplied corpus. TVG-1507 audits all12 actual
+profiles/headers, archive and CLI byte hashes, exact restoration,120 serial
+command intervals, normal build configuration, saved timing/peak observations
+and aggregate calculations. BM-0252 records every member, total and measured
+tradeoff. Native meets the same-window size target by a very small margin;
+encode gains coexist with slower aggregate decode and higher physical peaks.
+Retain both selectors, logical scope distinctions and all evidence. Consult
+no external implementation, restricted source or imported suite. Existing
+formats/runtime artifacts remain unchanged. Coverage fuzz, schema81 exchange
+and final four-MiB audit remain unqualified.

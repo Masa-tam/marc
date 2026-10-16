@@ -11665,3 +11665,13 @@ from comparison/I/O, and normal process peaks from logical resource queries.
 Check boundary outputs against CLI bytes and refuse incorrect comparison
 buffers or existing destinations. Record command intervals for later serial
 all-member measurements. Consult no external implementation or imported suite.
+
+### IR-1328: complete four-MiB paired Huffman measurement audit
+
+Run the qualified first-party paired normal drivers on every supplied Silesia
+member. Independently recheck actual public identities/configurations, corpus
+hashes, CLI bodies, restoration, sample medians, fresh-process peaks, scope
+charges, serial command intervals and measurement source/binary binding.
+Record every member and total, target outcome and measured speed/memory
+tradeoffs without attributing complete-path differences solely to entropy.
+Consult no external implementation, restricted source or imported suite.

@@ -24694,3 +24694,26 @@ failure guards pass independent artifact audit. Normal2/2 passes in6.11 seconds.
 All12 supplied Silesia files pass the existing manifest checks, totaling
 211938580 bytes. All-member sizes, timings and peaks remain unmeasured at this
 checkpoint; coverage fuzz and exchange also remain open.
+
+### TVG-1507: complete four-MiB contextual Huffman comparison and normal peaks
+
+Run all12 verified Silesia members,211938580 raw bytes, through native
+2/10+1/30+2/5 and contextual2/4+1/3+2/2. Verify4194304-byte frame/window,
+wire minima3/5, maximum258, fixed-five encoding, actual entropy parameters,
+CLI-generated archive identity and exact source restoration. All120 serial
+commands finish successfully. Each member/profile/direction has one warmup
+and three timing samples;48 separate normal processes measure physical peaks.
+No heavy auxiliary task overlaps the measurement campaign.
+
+Independent audit validates all retained bodies, manifest sizes/MD5/SHA256,
+restored hashes, source/executable/library binding, normal build flags,
+command intervals, raw observations and aggregate calculations. BM-0252
+records all member sizes, times and peaks. Native/contextual totals are
+64250911/64254572 bytes,3,661 bytes or0.00569765% smaller, with every member
+strictly smaller. The stated corpus size target is met. Encode median sums
+are84.1163005/118.679824 seconds,29.1233% lower; decode sums are
+6.2541806/5.0602389 seconds,23.5946% higher. Native is faster on eight encode
+and two decode members. Physical peaks are higher on every member in both
+directions. Preserve both profiles and record the tradeoffs, keeping logical
+admission separate from physical usage. Coverage fuzz, schema81 exchange and
+the final four-MiB audit remain open.
