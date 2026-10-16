@@ -42244,3 +42244,16 @@ Normal4/4, both14-unit direct ASan/UBSan closures and independent artifact
 audit pass without diagnostics. No external implementation, restricted source
 or imported suite was consulted. Owning/public admission and later performance,
 fuzz/exchange gates remain open; the fixed runtime is unchanged.
+
+### CR-1877: 2026-10-17 —four-MiB native owned raw transforms
+
+Author/reviewer: Codex. Follow IR-1323 using first-party owned controller and
+four-MiB five-prefix finder interfaces. TVG-1502 independently checks499 raw
+inputs, generated entropy payloads, normal/instrumented byte identity, exact
+logical admission, all allocation failures and allocation-free process calls.
+Failed-frame quarantine, every small split, termination, aliases and full-frame
+partition boundaries pass. Normal3/3 and a direct17-unit ASan/UBSan closure
+pass independent artifact audit. Consult no external implementation, restricted
+source or imported suite. Preserve existing profiles and artifacts. Logical
+resource queries do not establish physical peaks or a public memory default;
+public integration, full comparison, fuzz and exchange remain unqualified.

@@ -24540,3 +24540,32 @@ compiles13 production units plus its test with ASan/UBSan; both unit suites
 and all71 differential cases pass with empty diagnostic streams. Independent
 audit checks all source/binary hashes and production frame pairs. Owning/public
 resources/API/CLI, ordinary corpus/peaks, coverage fuzz and exchange remain open.
+
+### TVG-1502: four-MiB native owned transforms and logical resource admission
+
+Use an independently written longest/nearest fixed-five raw parser and the
+DD-1614 mathematical oracle. Check499 fixtures: all256 one-byte values,
+binary strings through length6, short-match eligibility, repeated patterns,
+100 seeded inputs and four near/full4194304-byte raw cases. Independently
+decode every production payload and compare all normal/instrumented archive
+bytes. Full-frame-minus-one, exact-frame and frame-plus-one process tests
+exercise final partitioning with exact calculated grants. Vary small input
+splits and byte output, neutral Flush, EndInput and repeated termination.
+
+Count all eight encoder/five decoder allocation sites, inject a failure at
+each site, and require complete rollback. Exact/one-short logical admission
+preserves failed query destinations and refuses before allocation. Intercept
+allocations during every process call and require none. Check late second-frame
+failure and every small-stream truncation, aliases, unsupported reset, early
+known-size finish, trailing bytes and empty streams. Failed frames never drain.
+
+Derive payload capacity as ceil(135*frame_size/8), serialized capacity as that
+value plus64+2561, and charge actual token/finder/table/private buffers, owner
+controls and fixed work. Expose the separate shared metadata floor. Full-frame
+queries in the qualified layout report318445741 encode and125647022 decode
+logical bytes; these are neither physical peaks nor selected public defaults.
+Normal3/3 passes, followed by a direct16-production-unit plus test ASan/UBSan
+closure. All499 instrumented fixtures pass without findings; independent audit
+checks hashes, queries, fixture contents and byte identity. Public resource
+defaults/API/CLI, normal corpus and peak measurements, fuzz and exchange remain
+open. The fixed runtime is unchanged.

@@ -11612,3 +11612,14 @@ fully validated frames. Retain prior good frames, ordinary failure invariants,
 chunk/progress/terminal contracts and checked workspace accounting. Construct
 frames independently and test both maximum bounds and late failures. Consult
 no external implementation, restricted source or imported suite.
+
+### IR-1323: four-MiB native Huffman owned transforms and resource queries
+
+Adapt the first-party one-MiB owned transforms to DD-1614 using the existing
+four-MiB five-prefix finder, fixed-five match eligibility and longest/nearest
+selection. Derive serialized capacity from the proved nine-decisions-per-raw-
+byte bound and fifteen-bit codes. Charge actual raw/token/finder/table/payload/
+private serialized buffers, owner controls, fixed work and metadata admission
+floor. Test preallocation admission, allocation rollback, allocation-free
+processing, independent raw parsing, chunk determinism and failed-frame
+quarantine. Consult no external implementation or imported suite.

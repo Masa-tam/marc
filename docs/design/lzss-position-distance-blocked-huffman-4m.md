@@ -154,3 +154,17 @@ reserved52/53 regressions, exact quotas, every small split and failed-second-
 descriptor publication guards pass. Normal4/4 and two14-unit direct ASan/UBSan
 closures pass independent artifact audit. Owners, public resource defaults/API/
 CLI, all-member comparisons/peaks, coverage-guided fuzz and exchange remain open.
+
+### Owned transform and logical query checkpoint
+
+TVG-1502 qualifies owned raw encoding/decoding with the existing four-MiB
+five-prefix finder and fixed-five eligibility. Checked capacities use the
+nine-decisions-per-raw-byte bound rather than the smaller one-MiB bound.
+Allocation rollback, process calls without allocation, exact/one-short admission,
+full-frame partitions, chunk determinism and failed-frame quarantine pass.
+All499 independent raw fixtures pass normal and direct ASan/UBSan execution;
+generated archives and resource queries agree under independent artifact audit.
+Normal3/3 passes. These are internal logical-resource checks only. Public
+defaults require ordinary full-frame precursor measurements; public API/CLI,
+all-member contextual comparisons and peaks, fuzz and schema81 exchange remain
+open. No fixed runtime executable is updated at this checkpoint.
