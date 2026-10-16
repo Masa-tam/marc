@@ -41766,3 +41766,25 @@ reported CI/external revision from subsequent local-only commits. Production
 codec sources remain unchanged from that revision; the public header changes
 only its corrected identity comment. No new external validation or exhaustive
 fuzz coverage is inferred, and no external implementation was consulted.
+
+### CR-1844: 2026-10-17 — Final seven-window tANS external confirmation
+
+Author/reviewer: Codex. Task: record the maintainer's successful hosted CI and
+four 88-archive external verification reports for
+08866458379dca2dfd3ac8e41074a477897c9914. Local HEAD, tracked remote main
+and the directly queried remote main matched that exact revision before
+this documentation-only recording change. IX-0096 identifies the four routes
+and distinguishes user-reported execution from independently inspected local
+evidence. The family status now closes the previously pending CI/external
+gate while retaining its compression misses and measurement limitations.
+No external implementation was consulted; no production source, format,
+resource limit or generated artifact was modified. This receipt-only commit
+does not claim a fresh CI or external run of its own.
+
+The closing local audit rechecks retained source/archive/decoded hashes and
+lengths for schemas 1 through 78 (3,886 archive pairs), both retained local
+88-archive consumer routes, and all 125 prelaunch-negative receipts with zero
+codec launches and zero published files. Current 88 bodies and baseline 81
+bodies pass the preservation audit; fixed Release and backup hashes remain
+unchanged. These are inspections of retained artifacts and receipts, not
+claims of newly rerun codec campaigns. The full documentation check passes.

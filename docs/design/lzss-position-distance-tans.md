@@ -229,3 +229,21 @@ public-header change corrects the documented 64 MiB context variant to its
 already emitted value. CI and external four-route evidence remain tied to
 `28c980a8507aac9ef75b2b5e07c545f01ec91e7b`; the subsequent local commits
 require their own post-push CI confirmation. No push was performed here.
+
+### Final completion confirmation — 2026-10-17
+
+IX-0096 records the maintainer's successful push, hosted CI and all four
+88-archive external routes at
+`08866458379dca2dfd3ac8e41074a477897c9914`. That revision includes the
+completed resumed local qualification above. Its identity was checked against
+the local and remote main tips before this documentation-only receipt edit.
+The final CI/external dependency is satisfied, completing the seven-window
+position-distance tANS task with its documented measurement scopes and
+compression misses. Retained local evidence, externally reported evidence
+and this subsequent receipt-only commit remain explicitly distinguished.
+
+Completion does not change the formats, the 64 KiB per-member misses, the
+mixed encode-speed results or the higher large-window resident memory.
+The existing 81 archive bodies and seven appended entries remain intact;
+no implementation, default limit or generated artifact is changed by this
+completion record.

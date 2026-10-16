@@ -2210,3 +2210,31 @@ remain unchanged. The fixed Release executable and its pre-update backup
 retain the previously recorded hashes. This verifies local artifact
 preservation; it supplies no new hosted CI or external-route evidence for
 the subsequent test, benchmark and documentation commits.
+
+## IX-0096: final position-distance tANS CI and external-route closure
+
+On 2026-10-17 the maintainer reports push, successful hosted CI and four
+successful 88-archive verifications for the same revision:
+`08866458379dca2dfd3ac8e41074a477897c9914`.
+
+| Producer bundle | Consumer | Verified archives |
+| --- | --- | ---: |
+| windows-msvc-x64 | Ubuntu | 88 |
+| ubuntu-ninja-x64 | Ubuntu | 88 |
+| ubuntu-26.04-ninja-x64 | Ubuntu | 88 |
+| ubuntu-26.04-ninja-x64 | Windows | 88 |
+
+Consumer roles follow the maintainer's previously confirmed four-route
+procedure. The repeated Ubuntu producer label covers self-consumption and
+consumption on Windows. Before this receipt-only edit, local HEAD, the
+tracked remote branch and the directly queried remote main all matched the
+reported revision. Evidence for hosted CI and these external executions is
+the maintainer's report and four pasted console results; independent
+inspection of hosted jobs or external binaries is not claimed.
+
+This closes the final CI and external-route gates after the resumed corpus,
+memory, sanitizer and audit work. The retained local artifact and historical
+compatibility evidence remains separate from this external report. Earlier
+pending statements describe their respective milestones and are superseded
+by this receipt and the final family status. The following documentation-only
+recording commit does not imply another CI or external execution.
