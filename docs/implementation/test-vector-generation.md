@@ -24051,3 +24051,25 @@ pair is retained before replacement, and the updated fixed runtime still
 restores/re-encodes all88 schema78 archive bodies byte-identically. This
 checkpoint does not qualify randomized fuzzing, corpus comparisons or the
 new exchange entry.
+
+### TVG-1481:64KiB Huffman fuzz seeds and measured pilots
+
+Five bounded libFuzzer targets cover descriptor canonicalization, scalar
+payload/bit reading, typed tokens, supplied-scratch split streams and the
+public owning lifecycle. Seeds retain140 positive and57 negative independent
+wires for both descriptor and payload targets, plus generated raw/token/stream
+patterns:420 original files in total. Manifest paths are portable and every
+original seed is hashed. Scalar successful decode must re-encode its actual
+decisions exactly; ordinary failed-symbol destinations and guards remain
+unchanged. Token comparisons check private and ordinary paths; stream/public
+comparisons check chunk invariance, guards, terminal behavior and publication.
+The zero-bit payload mutation path explicitly avoids an empty-span modulo.
+
+The actual compile commands and objects prove632 production static-library
+units and all five entry points have fuzzer coverage plus ASan/UBSan flags.
+Each target completes300 pilot units with seed1611, without sanitizer or
+invariant finding. Original seeds, executable/source hashes, pilot corpora
+and logs are retained. Measured pilot times and instrumented RSS select
+serial scheduling and guarded10000-unit follow-ups. The follow-ups remain
+unfinished at this milestone. These instrumented RSS figures are not normal
+codec peaks, and pilots alone do not complete the full fuzz/corpus/exchange gate.

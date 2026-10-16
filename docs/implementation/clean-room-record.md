@@ -41936,3 +41936,15 @@ with matching encoded bodies. Earlier runtime artifacts are saved; all88
 retained archives still decode/re-encode identically. No external/restricted
 source was consulted. Fuzz, corpus/peak comparisons and new exchange admission
 remain unfinished; no later window is qualified by this milestone.
+
+### CR-1854: 2026-10-17 —64KiB Huffman bounded fuzz pilots
+
+Author/reviewer: Codex. Added five first-party coverage-guided targets under
+IR-1303's retained contracts and TVG-1481's independent seeds/invariants.
+Supplied codebooks, private token scratch, split streams and public lifetime
+are exercised with explicit bounds. All632 production units and five entries
+are directly instrumented by the configured Clang/libFuzzer/ASan/UBSan build;
+actual commands and object freshness are audited. Every300-unit pilot passes.
+No external or restricted implementation was consulted. Original/failed
+infrastructure artifacts are retained. The10000-unit follow-ups are pending,
+as are normal corpus/peak measurements, comparison and new exchange admission.

@@ -11400,3 +11400,15 @@ remain behind the core quarantine gate and whole-file publication requires
 successful EOS, sink close and rename. Independent supplied Huffman models
 exercise decoder-visible short matches; a separately validated first frame
 precedes the directed failing second frame. No external source was consulted.
+
+### IR-1303:64KiB Huffman coverage-guided decoder invariants
+
+Adapt repository-owned tANS descriptor, payload, token, stream and public
+lifecycle fuzz contracts to the independently specified Huffman representation.
+Use only the already frozen140 positive/57 negative wire vectors and generated
+first-party literal/match patterns as seeds. Payload success must re-encode
+the decoded decisions byte-identically; private-token/ordinary paths and whole/
+split streams must agree while preserving guards and failed destinations.
+Zero-bit payloads require explicit empty-span handling. Compiler runtime and
+coverage tools supply instrumentation, not codec implementation structure.
+No external or restricted implementation or test suite was consulted.

@@ -1993,3 +1993,26 @@ pilots already exceeded that cap. Their measured instrumented peaks remain
 distinct from normal BM-0248 peaks, API queries and memory grants. This is
 directed maximum-frame sanitizer evidence, not randomized full-window fuzzing
 or an exhaustive malformed-stream proof.
+
+## FZ-0097:64KiB position-distance Blocked Huffman pilots
+
+Five first-party targets cover descriptor, payload/bit reading, typed tokens,
+split streams and public owning lifecycle. All632 production static-library
+units and five entries have audited coverage/ASan/UBSan compilation and actual
+object files. The original420 seeds include the retained140 positive/57
+negative independent wires for descriptor and payload plus generated patterns.
+Original seed hashes, fresh working corpora, executable/source hashes, logs
+and receipts are preserved.
+
+Each target completes300 units with seed1611. Maximum inputs are2519 bytes
+for descriptor,65536 for payload (at most8192 decisions),4096 for token/stream
+and128 raw bytes for public round trips. Public frames remain32..64 bytes;
+directed full-window sanitizer tests are separate evidence. No sanitizer or
+invariant finding occurs. Pilot elapsed times are0.972/0.972/5.229/7.885/13.449
+seconds and instrumented peaks39/92/147/173/127MiB in that target order.
+
+Follow-ups use the same binaries and original seeds, one target at a time.
+Per-target RSS guards derive from measured peaks plus quarantine/headroom;
+unit/process watchdogs derive from pilot observations. The10000-unit campaigns
+are not yet complete. These pilots and instrumented RSS do not establish
+normal codec peaks, corpus performance or the final fuzz qualification gate.
