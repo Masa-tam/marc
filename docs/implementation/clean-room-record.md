@@ -41976,3 +41976,16 @@ complete historical conversion and decode/re-encode qualification, including
 the added explicit schema76 call. An artifact audit rechecks all historical
 and four local-route bodies and restorations. The next six windows and final
 hosted/external gates remain open.
+
+### CR-1857: 2026-10-17 —one-MiB Huffman representation and finite oracle
+
+Author/reviewer: Codex. Following completed64KiB local qualification, specialize
+IR-1306's first-party context grammar and pooled canonical equations as
+DD-1612. Document every header/descriptor field, checked30T/8R bounds,
+2547-byte descriptor ceiling, private-frame gate and separate future memory
+measurement requirement before production implementation. TVG-1484 freezes
+256 positive and66 negative expectations, hand-checked short payloads and
+full initial-A envelope, and preserves140/57 older frozen expectations.
+No external implementation, restricted source or imported suite was consulted.
+This is mathematical format/oracle qualification only; no production
+one-MiB codec, API, CLI, performance or exchange completion is claimed.

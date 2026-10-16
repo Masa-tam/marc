@@ -9279,3 +9279,14 @@ Only the64KiB representation and independent vectors are admitted at this
 stage. Public APIs, CLI, runtime validation, measurements and exchange remain
 unfinished. The actual retained exchange baseline is88 archives/schema78;
 the seven planned additions will produce95 archives/schema85.
+
+### DD-1612: native one-MiB position-distance Blocked Huffman
+
+The [one-MiB representation](design/lzss-position-distance-blocked-huffman-1m.md)
+fixes tuple2/9+1/29+2/4, window1048576,52 contexts, alphabet extent4614,
+seven mask bytes and descriptor31..2547 bytes. It retains the family's pooled
+and optional override canonical Huffman rules, forward LSB-first payload,
+112-byte stream and64-byte reset-frame envelope with no coder state words.
+The linked design specifies every offset, zero field, exact count/history
+validation and checked full-frame bounds. This additive format definition
+does not expose a public codec or modify an earlier stream representation.

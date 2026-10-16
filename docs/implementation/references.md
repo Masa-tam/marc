@@ -11434,3 +11434,15 @@ the complete112-byte native header before any codec launch. Compare the old
 88 entry objects, their property order, input and every archive byte against
 the retained baseline. Extend the existing launch-guard mutation procedure
 to schema79; no external implementation or imported test suite is used.
+
+### IR-1306: one-MiB position-distance Huffman mathematical specialization
+
+Use DD-1610's independently specified canonical Huffman representation and
+DD-1573's first-party dictionary grammar/context partition for the one-MiB
+window. Retain only canonical-code assignment, code-length record equations
+and balanced hand-supplied codebooks from the64KiB Python mathematical oracle;
+derive the new descriptor, token requests and envelope independently of
+production C++. No ANS state, normalization or payload is reused. The new
+oracle calls no production codec. Exact counts, residual mask padding and
+checked frame ceilings are derived from the new52-context partition. No
+external implementation, restricted source or imported test suite is used.

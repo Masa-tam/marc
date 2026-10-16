@@ -24110,3 +24110,25 @@ entry's values and property order, input descriptor and all89 existing files
 appended bundle back to schema78 and through the existing historical chain;
 schema76 now also has an explicit decode/re-encode verification call. Later
 windows and hosted/external validation remain separate gates.
+
+### TVG-1484: one-MiB pooled Huffman frozen mathematical vectors
+
+DD-1612's independent oracle freezes256 valid and66 invalid expectations.
+Valid cases cover18 isolated distance boundaries through1048576, seven
+lengths per boundary, literal history, every context's upper symbol, all
+maximal dense models, complete15-bit codes and64 seeded request streams.
+Hand-check uniform bits05, A/B payload02, the initial-A35-byte zero-payload
+descriptor and211-byte complete stream. The maximal dense descriptor is2547.
+Enumerate all256 match lengths and21 distance classes to check30T/8R bounds.
+Isolated match vectors do not claim valid reset-frame history.
+
+Invalid cases include every initial-A descriptor truncation, metadata and
+singleton errors, each of four unused context-mask bits, sparse order/length
+errors, both odd alphabet padding cases, invalid/noncanonical/oversubscribed
+tables and strict padding/terminal/model-usage errors. The mathematical helper
+reuses only first-party canonical and record equations; it calls no production
+codec or allocator. With the64KiB parameters, it also reproduces all140
+existing frozen positives and rejects all57 frozen negatives. The original
+64KiB generator and frozen bytes remain untouched. Production validators,
+failure/differential tests, public connection, measurements/fuzz and exchange
+are still pending for the one-MiB profile.

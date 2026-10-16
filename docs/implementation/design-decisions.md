@@ -34912,3 +34912,14 @@ Factory refusals precede allocations where sizes/limits are already known.
 Direction remains immutable, process never allocates, Flush is neutral,
 ResetBlock is unsupported and failed frames never publish. See the
 [family design](../design/lzss-position-distance-blocked-huffman.md).
+
+### DD-1612: one-MiB position-distance Blocked Huffman representation
+
+Specialize the first-party pooled Huffman format to52 contexts, extent4614,
+seven override-mask bytes and tuple2/9+1/29+2/4. The exact
+[one-MiB design](../design/lzss-position-distance-blocked-huffman-1m.md)
+defines all bytes, model rules, history distinction and checked bounds before
+implementation. Maximum descriptor is2547 bytes, full-frame decisions8388608,
+payload15728640 and serialized frame15731251. These are mathematical format
+limits, not measured memory grants. Earlier formats remain unchanged; public
+factory/CLI, benchmarks, fuzz and exchange are subsequent gates.

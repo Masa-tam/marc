@@ -10093,6 +10093,10 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
         COMMAND ${Python3_EXECUTABLE} -B -X utf8
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_blocked_huffman_64k_vectors.py)
     set_tests_properties(marc_position_blocked_huffman_64k_vectors PROPERTIES TIMEOUT 30)
+    add_test(NAME marc_position_blocked_huffman_1m_vectors
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_blocked_huffman_1m_vectors.py)
+    set_tests_properties(marc_position_blocked_huffman_1m_vectors PROPERTIES TIMEOUT 30)
     add_executable(marc_position_blocked_huffman_64k_core_tests
         tests/position_blocked_huffman_64k_core_tests.cpp)
     target_compile_features(marc_position_blocked_huffman_64k_core_tests PRIVATE cxx_std_20)
