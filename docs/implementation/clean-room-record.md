@@ -41860,3 +41860,18 @@ remains the reference, and no existing format bytes or public profiles change.
 Normal core/differential tests and directed ASan/UBSan pass. No external or
 restricted source was consulted. Token/frame quarantine, public API/CLI,
 randomized fuzzing, comparative measurements and exchange are still pending.
+
+### CR-1849: 2026-10-17 —64KiB position Huffman private tokens
+
+Author/reviewer: Codex. Added model planning, forward private encoding and
+single-pass entropy decoding into private typed-token scratch. IR-1298
+identifies only first-party contract references; TVG-1476 documents independent
+supplied-model and production-wire validation. No native structs are
+serialized. Every reconstructed token passes bounded history/length checks
+before assignment; ordinary outputs commit only after all fallible work.
+Full-frame literals and overlap matches, late failures, bounds and alias
+checks pass normally and under directed ASan/UBSan on nine production units.
+Existing formats, executable and exchange artifacts remain unchanged. No
+external or restricted implementation was consulted. Raw-frame quarantine,
+public transforms/API/CLI, fuzz, comparative measurements and exchange are
+unfinished; no public profile completion or physical peak is claimed.

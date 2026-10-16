@@ -23906,3 +23906,32 @@ and differential tests pass; the expanded suite also passes directed
 ASan/UBSan with all five reachable production translation units instrumented.
 This evidence does not qualify token history, frame publication, a partial-
 buffer public transform, randomized fuzzing or physical peak memory.
+
+### TVG-1476: private64KiB Huffman token reconstruction
+
+The independent DD-1610 oracle generates48 valid token wires using supplied
+pooled, context-override and complete dense codebooks. Cases include empty
+isolated token input, full literal alphabet, short-length escape and long
+length boundaries, distance classes through65533 with valid preceding
+history, and24 seeded mixed literal/match sequences. The C++token decoder
+must restore every token and preserve unused tails. For each valid case,
+the C++planner/encoder also emits a wire that the independent Python model
+parser and bit reader decode into every expected token-derived decision.
+These are directed/seeded differential cases, not a fuzz campaign.
+
+Five grammar-valid negative wires exercise first-token matches, distance65536
+without history, a late reference before available history, and short/long
+declared raw lengths. Ordinary token destinations remain unchanged, including
+when private scratch contains an accepted prefix. Unit tests additionally
+check every descriptor/payload truncation, altered counts, output-total
+overflow, nonzero padding, a declared trailing entropy bit after all tokens
+are reconstructed, short scratch/tables/destinations and overlapping regions.
+History validation precedes scratch assignment. Full65536-byte literal and
+overlapping-match token frames restore. Exact/one-short aggregate planning,
+encoding and decoding workspace charges are checked; failed ordinary
+descriptor/payload outputs remain unchanged. Repeat encoding is deterministic.
+The unit and53-case differential suites pass normally and with all nine
+reachable production translation units instrumented by ASan/UBSan. Source
+and executable hashes and empty diagnostics are retained and audited.
+Raw-frame publication, public chunked APIs, CLI, randomized fuzzing, corpus
+comparisons, physical peaks and exchange qualification remain separate gates.

@@ -11344,3 +11344,15 @@ and overlap helpers. Keep the separate preflight/two-pass ordinary encoder
 as a reference; compare both against TVG-1472's frozen independent wires.
 The writer retains the model and counters rather than the decision sequence.
 No external implementation, restricted source or imported test suite was used.
+
+### IR-1298:64KiB position Huffman typed-token integration
+
+Use DD-1610's token decisions and the repository-owned short-length escape,
+typed-token history validator and first-party tANS token integration as
+contract references. The Huffman encoder counts and emits forward without
+materializing the decision sequence; it does not use ANS reversal or states.
+Decode directly into private tokens, validating each history reference before
+assignment and checking exact raw length, decisions, bits and model usage
+before any ordinary token copy. TVG-1476 derives supplied-model token wires
+and validates production-selected wires with the independent Python oracle.
+No external implementation, restricted source or imported test suite was used.

@@ -231,5 +231,27 @@ bits and model usage validate. TVG-1475 covers sticky failures, overlap and
 capacity checks, guards, repeat finish and maximum zero-bit decisions without
 an event array. Its workspace charge sums full provided regions plus the
 same16384-byte temporary allowance as the scalar core; this is not a physical
-peak or a public memory grant. Typed tokens/frames, public streaming API/CLI,
-randomized fuzzing, measurements and exchange remain unfinished.
+peak or a public memory grant.
+
+### 64KiB private typed-token milestone
+
+The token planner and encoder now visit the validated token sequence in
+forward order, reusing the bounded model builder and private writer without
+retaining a decision array. Ordinary descriptor/payload spans are written
+only after the entire private encoding and descriptor serialization succeed.
+The decoder reconstructs tokens once into private scratch, checking history
+and declared raw bounds before each assignment. The ordinary wrapper copies
+only after exact raw/decision counts and entropy finish have succeeded.
+An error may leave an accepted private prefix, which is never a publication
+count. These finite token helpers do not yet expose a raw frame or a public
+partial-buffer transform. Empty isolated token input does not permit empty
+wire frames.
+
+Workspace admission includes the full capacity of every provided span and
+the bounded simultaneous model/table temporaries, with separate planning,
+encoding and decoding allowances. Exact/one-short quotas are tested and do
+not represent measured physical peaks or public profile grants. TVG-1476
+records48 independent valid wires, independent validation of all48 production
+wires, five history/length failures, full-frame literal/overlap restoration
+and directed sanitizer qualification. Raw-frame quarantine, public streaming
+API/CLI, randomized fuzzing, measurements and exchange remain unfinished.
