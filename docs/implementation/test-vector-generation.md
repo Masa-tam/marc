@@ -24334,3 +24334,27 @@ Preserve the fixed runtime before DLL update; the updated library with the
 existing CLI restores/re-encodes all retained88 and current89 archives exactly.
 CLI one-MiB connection, all-member comparisons/physical peaks, coverage-guided
 fuzz and schema80 exchange remain separate gates.
+
+### TVG-1493: one-MiB pooled Huffman CLI and fixed-runtime qualification
+
+Connect only the exact `lzss-position-distance-blocked-huffman-1m` selector
+to the one-MiB public factory. Qualify a separate static candidate before
+updating the fixed executable. Seven raw sizes0,1,256,1048575,1048576,1048577
+and2097169 round-trip with identical repeated encodings and independently
+specified stream headers. The211-byte short stream rejects every truncation.
+Check malformed metadata/model/padding, oversized declarations, wrong profiles
+and near-name refusals. Independently supplied length3/4/258 streams restore
+exact expected raw bytes.
+
+A valid first frame is checked separately; a second frame failing after its
+private literal token must leave the whole-file target absent. Strict trailing
+bytes also refuse, while existing output and temporary files retain their
+sentinel contents. The candidate and updated fixed executable produce exactly
+the same seven archive bodies and independent-grammar results. Both restore
+and re-encode all89 retained exchange archives unchanged. The prior executable,
+library and related artifacts are preserved before fixed-path replacement.
+Fixed one-MiB and64KiB CLI plus documentation checks pass; the one-MiB test
+takes15.57 seconds in the recorded run under its180-second suite watchdog.
+This is CLI qualification, not a throughput or corpus/peak comparison.
+All-member measurements, coverage-guided fuzz and schema80/90-archive exchange
+qualification remain open.

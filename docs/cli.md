@@ -1000,3 +1000,23 @@ Deterministic boundary round trips, exact headers, truncation, invalid tables/
 metadata, wrong selectors, padding and valid-first/failed-second frame cases
 are checked. Corpus comparisons, speed/peak measurements, randomized fuzzing
 and exchange qualification remain separate gates.
+
+### One-MiB position-distance Blocked Huffman
+
+The exact selector `lzss-position-distance-blocked-huffman-1m` selects native
+dictionary2/9, context1/29 and entropy2/4 with1048576-byte window/reset frames.
+Fixed-five longest/nearest encoding and3..258 decoder grammar use the public
+one-MiB C factory. The distance-less spelling and upper-case1M suffix are not
+aliases. The64KiB native selector and all earlier codecs retain their formats.
+
+The logical grant is96MiB with65536-byte input/output arrays and65536 declared
+control-retention bytes; it is not an RSS cap. Resource admission precedes
+transform input. Raw data is released only after complete private frame
+validation, and the ordinary file is renamed only after exact EOS, strict
+trailing checks and successful sink close. Existing output and temporary
+files remain unchanged on refusal; only a run's own newly created temporary
+is removed on failure. Boundary round trips, exact identity, independent
+length3/4/258 wires, all short-stream cuts, bad tables/metadata/padding,
+foreign profiles and valid-first/failed-second whole-file refusal are checked.
+All-member contextual comparisons, speed/physical peaks, coverage-guided fuzz
+and schema80 exchange remain separate gates.

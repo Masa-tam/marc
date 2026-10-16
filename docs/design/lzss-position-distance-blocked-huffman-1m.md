@@ -235,3 +235,14 @@ current archive bodies with the existing CLI. Actual public queries with
 29893386 decode, distinct from the normal precursor's physical peaks. CLI
 connection, all12 contextual comparisons/public physical peaks, fuzz and
 schema80 exchange remain open; the one-MiB profile is not yet complete.
+
+### CLI qualification checkpoint
+
+TVG-1493 connects the exact one-MiB selector to the public C factory with
+65536-byte I/O and65536 declared retained control bytes under96MiB logical
+admission. Candidate and fixed-runtime outputs agree over all seven boundary
+sizes and independent grammar. Whole-file failure/truncation/foreign-input
+tests preserve targets, and all89 preceding archives remain byte-identical.
+Previous runtime artifacts are retained before replacement. All12 contextual
+comparisons, encode/decode timing and normal public peaks, coverage-guided
+fuzz, and schema80/90-archive self/cross/history qualification remain open.

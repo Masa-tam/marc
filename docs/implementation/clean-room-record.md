@@ -42104,3 +42104,17 @@ retained88 and current89 archives still restore and re-encode identically.
 The previous header is unchanged outside the additive block. No external
 implementation, restricted source or imported suite was consulted. Public API
 qualification is separate from pending CLI, corpus/peaks, fuzz and exchange.
+
+### CR-1866: 2026-10-17 —one-MiB pooled Huffman CLI connection
+
+Author/reviewer: Codex. Apply IR-1315's first-party bounded CLI adapter and
+existing temporary/rename controller through the qualified one-MiB C factory.
+Retain exact selector matching and every prior codec. TVG-1493 qualifies seven
+boundary round trips,211 cuts, independent short grammar, malformed/foreign
+inputs and whole-file failure preservation. Verify candidate output before
+fixed-runtime replacement and preserve the previous executable/library
+artifacts; fixed and candidate archive bodies agree and both retain all89
+existing exchange bodies. Relevant fixed CLI/documentation checks and retained
+artifact audit pass. No external implementation, restricted source or imported
+suite was consulted. Corpus comparisons/public peaks, coverage-guided fuzz
+and schema80 exchange remain separate gates; no hosted/external result is claimed.

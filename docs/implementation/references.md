@@ -11531,3 +11531,13 @@ factory failures and private-frame behavior through generic C process calls.
 Use the independently qualified499 raw fixtures and a directly instrumented
 implementation closure. Consult no external implementation, restricted source
 or imported test suite.
+
+### IR-1315: one-MiB pooled Huffman CLI connection
+
+Adapt the first-party64KiB native CLI adapter to the qualified one-MiB C
+factory with bounded65536-byte I/O and declared control retention. Select only
+the exact public codec name, retaining every previous selector. Reuse the
+existing temporary/rename file controller and test whole-file publication,
+malformed identities, independent grammar and known frame boundaries before
+updating the fixed runtime. Consult no external implementation, restricted
+source or imported suite.
