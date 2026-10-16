@@ -24073,3 +24073,24 @@ and logs are retained. Measured pilot times and instrumented RSS select
 serial scheduling and guarded10000-unit follow-ups. The follow-ups remain
 unfinished at this milestone. These instrumented RSS figures are not normal
 codec peaks, and pilots alone do not complete the full fuzz/corpus/exchange gate.
+
+### TVG-1482: completed Huffman fuzz lane and paired measurement validation
+
+FZ-0097's five coverage-guided targets each complete10000 units with unchanged
+verified binaries, compiled-source/header and original-seed hashes. All50000
+units pass without sanitizer/invariant finding or saved failure artifact.
+The632 production units and five entries remain fully instrumented. Small
+input/frame limits and the separate directed full-window evidence remain
+explicit; no randomized maximum-frame or exhaustive malformed-input claim is made.
+
+Normal timing/resource drivers are qualified on0/1/65535/65536/65537 raw bytes
+for both profiles and directions. Their encoded bodies match the public CLI,
+actual IDs/window/frame are checked, every restored file matches, and wrong
+comparison data or an existing target rejects. Timers exclude I/O/comparison
+and collect one warmup plus three samples; peaks use separate normal streaming
+processes. Caller comparison-vector retention is separately charged by the
+native timing path. Logical query scopes and physical peaks remain distinct.
+The complete12-member corpus passes manifest size/MD5 checks, actual identity,
+CLI-body equality and SHA-256 restoration checks. Source/executable/library
+hashes and totals are audited. BM-0250 records every size, median and peak,
+including four per-member size misses and their response.

@@ -41948,3 +41948,16 @@ actual commands and object freshness are audited. Every300-unit pilot passes.
 No external or restricted implementation was consulted. Original/failed
 infrastructure artifacts are retained. The10000-unit follow-ups are pending,
 as are normal corpus/peak measurements, comparison and new exchange admission.
+
+### CR-1855: 2026-10-17 —64KiB Huffman fuzz completion and paired measurements
+
+Author/reviewer: Codex. Completed the five bounded10000-unit campaigns and
+added IR-1304's first-party normal measurement paths. TVG-1482/FZ-0097 bind
+the50000 fuzz units to actual632-unit production instrumentation, binaries,
+source and original seeds. No sanitizer/invariant finding occurs. Paired
+normal drivers verify actual identities, equal65536 window/frame, public CLI
+body agreement and restoration before reporting results. All12 manifest
+members pass; BM-0250 records per-member/totals, timing scope, separate physical
+peaks, four size misses and retained-selector policy. No external/restricted
+implementation was consulted, and corpus bytes were not used as algorithm
+references. Exchange admission/final64KiB audit and later windows remain open.

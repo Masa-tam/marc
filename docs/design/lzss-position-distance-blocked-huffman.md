@@ -342,3 +342,14 @@ short grammar, all small-stream truncations and a valid first frame followed
 by a private-token terminal mismatch in the second frame. The file target
 remains absent even if the lower transform accepted the first frame. This
 checkpoint does not complete fuzz, corpus/peak or exchange qualification.
+
+### 64KiB fuzz and complete corpus measurement checkpoint
+
+FZ-0097 completes the five bounded10000-unit coverage-guided campaigns with
+audited production instrumentation and no sanitizer/invariant finding.
+BM-0250 records all12 same-window contextual comparisons, actual identities,
+restoration, normal timing and separate physical peaks. The aggregate size
+target is met; four per-member misses and slower/higher-memory cases remain
+visible, with both selectors retained. This checkpoint leaves exchange
+extension, historical-schema/self/cross compatibility and the final64KiB
+audit open. Later windows remain reservations until those gates pass.

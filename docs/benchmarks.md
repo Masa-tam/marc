@@ -11482,3 +11482,73 @@ Sum of member medians is encode 171.450167/219.936406 seconds and decode
 bytes, both on mozilla. Position decode is faster on every member; encode is
 faster on six, and position memory is higher on every member. These are
 corpus-specific observations, not universal performance guarantees.
+
+### BM-0250:64KiB position-distance Blocked Huffman complete paired comparison
+
+All12 verified Silesia members are compared through the public factories.
+Native tuple is dictionary2/8, context1/28, entropy2/3; contextual tuple is
+2/2,1/1,2/2. Both use actual65536-byte windows and frames, maximum match258
+and fixed-five encoder eligibility; native decoder wire minimum is3 while
+the contextual wire minimum is5. Every emitted header/parameter set is checked,
+each resource-driver archive matches its CLI counterpart, and both restore
+the original SHA-256. These are measured same-window comparisons, not a
+Dynamic Range size adoption condition.
+
+Sizes include complete headers, descriptors and payloads. Timing is a normal
+build with one warmup and three samples per member/profile/direction; values
+below are medians of allocation/create/process/destroy time excluding file I/O
+and output comparison. Physical peaks are separate fresh normal streaming
+processes including runtime/driver, with65536-byte calls. They are neither API
+queries/grants nor sanitizer RSS. Timing and peak drivers retain distinct
+query scopes; whole-file comparison vectors are not part of the peak driver.
+P/C denotes position/contextual.
+
+| Member | Raw bytes | Position bytes | Contextual bytes |
+| --- | ---: | ---: | ---: |
+| dickens | 10,192,446 | 4,163,400 | 4,163,266 |
+| mozilla | 51,220,480 | 21,081,808 | 21,474,136 |
+| mr | 9,970,564 | 3,762,812 | 3,764,750 |
+| nci | 33,553,445 | 3,581,749 | 3,580,540 |
+| ooffice | 6,152,192 | 3,481,398 | 3,483,926 |
+| osdb | 10,085,684 | 4,411,518 | 4,412,335 |
+| reymont | 6,627,202 | 2,055,459 | 2,055,913 |
+| samba | 21,606,400 | 6,022,949 | 6,033,368 |
+| sao | 7,251,944 | 6,030,211 | 6,128,512 |
+| webster | 41,458,703 | 13,161,553 | 13,159,310 |
+| xml | 5,345,280 | 780,366 | 780,136 |
+| x-ray | 8,474,240 | 6,653,996 | 6,704,767 |
+| **Total** | **211,938,580** | **75,187,219** | **75,740,959** |
+
+| Member | Encode seconds P/C | Decode seconds P/C | Encode peak bytes P/C | Decode peak bytes P/C |
+| --- | ---: | ---: | ---: | ---: |
+| dickens | 0.632205/0.485498 | 0.462352/0.412301 | 7,110,656/7,245,824 | 6,414,336/6,336,512 |
+| mozilla | 3.700329/4.522225 | 1.622714/2.206031 | 7,405,568/7,319,552 | 6,500,352/6,406,144 |
+| mr | 0.688791/0.786552 | 0.367013/0.388254 | 7,131,136/7,241,728 | 6,422,528/6,336,512 |
+| nci | 0.870680/0.999435 | 0.391802/0.345914 | 7,053,312/7,213,056 | 6,389,760/6,303,744 |
+| ooffice | 0.453249/0.451558 | 0.271219/0.377482 | 7,176,192/7,319,552 | 6,422,528/6,410,240 |
+| osdb | 0.549033/0.562445 | 0.341689/0.436835 | 7,114,752/7,241,728 | 6,418,432/6,320,128 |
+| reymont | 0.396476/0.314292 | 0.225814/0.185999 | 7,176,192/7,319,552 | 6,434,816/6,410,240 |
+| samba | 0.876402/0.916708 | 0.512808/0.570893 | 7,413,760/7,315,456 | 6,512,640/6,397,952 |
+| sao | 0.623807/0.633588 | 0.399873/0.586369 | 7,196,672/7,319,552 | 6,447,104/6,406,144 |
+| webster | 2.058144/1.794153 | 1.431893/1.335285 | 7,098,368/7,229,440 | 6,414,336/6,332,416 |
+| xml | 0.147599/0.142453 | 0.079813/0.074376 | 7,094,272/7,233,536 | 6,397,952/6,328,320 |
+| x-ray | 0.591502/0.634771 | 0.478412/0.717368 | 7,192,576/7,315,456 | 6,443,008/6,410,240 |
+
+Aggregate size improves by553,740 bytes,0.7311%. Eight members are smaller.
+The target is missed on dickens(+134), nci(+1,209), webster(+2,243) and
+xml(+230). Response: retain both explicit selectors and these material-specific
+results; the contextual selector remains available on those inputs. No silent
+fallback or format change is introduced. This measurement does not isolate
+the cause of the small misses, so none is assigned; a further encoder-policy
+change would require its own reference/byte-identity qualification.
+
+Sum of member median times is encode11.588216/12.243678 seconds and decode
+6.585403/7.637107 seconds. Position is faster on seven members in each
+direction; aggregate time is5.3535% lower for encode and13.7710% lower for
+decode. Maximum process peaks are encode7,413,760/7,319,552 bytes and decode
+6,512,640/6,410,240 bytes. Position encode peaks are lower on ten members,
+while decode peaks are higher on all twelve. Compression/speed benefits thus
+coexist with per-material misses and memory costs. These observations are
+corpus-specific and do not promise universal dominance. Source/binary/library
+hashes, raw samples, archives and restoration receipts are retained. Exchange
+and the final64KiB audit remain separate gates.

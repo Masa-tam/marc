@@ -9446,6 +9446,27 @@ if(MARC_BUILD_BENCHMARKS)
     endif()
 endif()
 
+if(MARC_BUILD_BENCHMARKS)
+    foreach(kind IN ITEMS benchmark public_resources)
+        add_executable(marc_position_blocked_huffman_64k_${kind}
+            benchmarks/position_blocked_huffman_64k_${kind}.cpp)
+        target_compile_features(marc_position_blocked_huffman_64k_${kind} PRIVATE cxx_std_20)
+        target_link_libraries(marc_position_blocked_huffman_64k_${kind} PRIVATE marc::static)
+    endforeach()
+    if(WIN32)
+        target_link_libraries(marc_position_blocked_huffman_64k_public_resources PRIVATE psapi)
+    endif()
+    if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_blocked_huffman_64k_public_measurements
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_blocked_huffman_64k_public_measurements.py
+                $<TARGET_FILE:marc_position_blocked_huffman_64k_benchmark>
+                $<TARGET_FILE:marc_position_blocked_huffman_64k_public_resources>
+                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-64k-measurements)
+        set_tests_properties(marc_position_blocked_huffman_64k_public_measurements PROPERTIES TIMEOUT 120)
+    endif()
+endif()
+
 if(MARC_BUILD_FUZZERS)
     foreach(entry IN ITEMS
         position_blocked_huffman_64k_descriptor

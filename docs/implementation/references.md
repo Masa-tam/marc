@@ -11412,3 +11412,15 @@ split streams must agree while preserving guards and failed destinations.
 Zero-bit payloads require explicit empty-span handling. Compiler runtime and
 coverage tools supply instrumentation, not codec implementation structure.
 No external or restricted implementation or test suite was consulted.
+
+### IR-1304:64KiB Huffman paired normal measurement paths
+
+Reuse repository-owned public tANS timing and isolated process-resource driver
+contracts, selecting the native and contextual Blocked Huffman factories.
+Explicitly apply the existing contextual64KiB profile and verify emitted
+tuple2/2+1/1+2/2, window/frame65536 and restored bytes against native
+2/8+1/28+2/3. Source data are the retained Silesia manifest members, used only
+as arbitrary compression input rather than implementation references. Time
+allocation/create/process/destroy separately from file I/O and comparison;
+measure physical peak in separate normal streaming processes. No external
+implementation, restricted source or imported test suite was consulted.

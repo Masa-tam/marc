@@ -1994,7 +1994,7 @@ distinct from normal BM-0248 peaks, API queries and memory grants. This is
 directed maximum-frame sanitizer evidence, not randomized full-window fuzzing
 or an exhaustive malformed-stream proof.
 
-## FZ-0097:64KiB position-distance Blocked Huffman pilots
+## FZ-0097:64KiB position-distance Blocked Huffman campaigns
 
 Five first-party targets cover descriptor, payload/bit reading, typed tokens,
 split streams and public owning lifecycle. All632 production static-library
@@ -2013,6 +2013,17 @@ seconds and instrumented peaks39/92/147/173/127MiB in that target order.
 
 Follow-ups use the same binaries and original seeds, one target at a time.
 Per-target RSS guards derive from measured peaks plus quarantine/headroom;
-unit/process watchdogs derive from pilot observations. The10000-unit campaigns
-are not yet complete. These pilots and instrumented RSS do not establish
-normal codec peaks, corpus performance or the final fuzz qualification gate.
+unit/process watchdogs derive from pilot observations. The pilot results alone
+do not establish normal codec peaks or corpus performance.
+
+All five subsequent campaigns complete10000 units each,50000 total, using
+the same verified binaries and seed1611. Measured-guard selection retains
+quarantine/headroom and single-target scheduling; limits are384/512/576/640/
+512MiB in target order, with ten-second unit guards and pilot-derived process
+watchdogs. Elapsed times are4.680/6.187/31.884/86.541/186.189 seconds, with
+instrumented peaks48/295/346/347/350MiB. Every campaign reports exact completion,
+with no sanitizer/invariant finding or saved crash/hang/leak/oom artifact.
+Compiled source/header, executable and original seed hashes are rechecked.
+This completes the bounded small-input coverage-guided lane; directed maximum-
+frame cases remain complementary. Normal corpus/peak measurements and exchange
+remain separate gates.
