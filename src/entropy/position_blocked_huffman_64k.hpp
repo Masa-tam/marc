@@ -52,6 +52,20 @@ enum class PositionBlockedHuffmanError : std::uint8_t {
 [[nodiscard]] PositionBlockedHuffmanError parse_position_blocked_huffman_64k_descriptor(
     std::span<const std::byte>,std::uint32_t decisions,std::uint32_t payload,
     const core::DecoderLimits&,PositionBlockedHuffman64kDescriptor&) noexcept;
+class PositionBlockedHuffman64kModelBuilder {
+public:
+    // 7*65536 is the format-derived maximum decisions per reset frame.
+    explicit PositionBlockedHuffman64kModelBuilder(std::uint32_t maximum_decisions=458752) noexcept;
+    [[nodiscard]] PositionBlockedHuffmanError add(int context,std::uint32_t symbol) noexcept;
+    // Repeated finish is deterministic. This accumulator is not a stream
+    // transform: additional add calls remain permitted after a successful plan.
+    [[nodiscard]] PositionBlockedHuffmanError finish(const core::DecoderLimits&,
+        PositionBlockedHuffman64kDescriptor&) const noexcept;
+private:
+    std::array<HuffmanFrequencies,53> counts_{};
+    std::uint32_t decisions_{},uniform_bits_{},maximum_decisions_{};
+    PositionBlockedHuffmanError error_{};
+};
 // Tables are private scratch; discarded on any failure. Payload commits only
 // after a complete sizing/usage pass, and its unproduced tail is untouched.
 [[nodiscard]] PositionBlockedHuffmanError encode_position_blocked_huffman_64k(

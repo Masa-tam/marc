@@ -23863,3 +23863,24 @@ Oversized declared counts reject before allocation. Two registered C++ core
 and differential tests pass; the full four-test set including vectors and
 documentation also passes. This is supplied-model scalar evidence; planner,
 token/frame, partial-buffer transform, fuzz and public ABI gates remain open.
+
+### TVG-1474: bounded Huffman planner and directed sanitizer qualification
+
+Counts5/2/1 for symbols A/B/C must yield lengths1/2/2 and the hand-packed
+eleven-bit payload a006. Sixteen repeated context symbols save exactly the
+sixteen-bit singleton override cost and retain the pool; seventeen select
+the override. Uniform-only decisions101 yield05 without active models.
+All256 equal-frequency literals have length8. A17-symbol skewed frequency
+sequence exercises length limiting at15 and restores every symbol. A field
+whose observed contexts all override remains valid with its pooled model
+declared but unused for lookup. The maximum458752 zero-bit decisions plan
+successfully; one more rejects and preserves the prior ordinary result.
+Exact/one-short planning budgets, sticky invalid-symbol/count errors and
+repeatable finish snapshots are checked separately.
+
+The directed unit and140 positive/57 negative differential cases pass with
+ASan/UBSan on all five reachable production translation units. Retained source
+and executable hashes match, all diagnostic streams are empty, and ordinary
+payload/descriptor invariants still hold. This is directed sanitizer evidence,
+not a randomized fuzz campaign, public streaming qualification or measured
+resident-memory result. Generated artifacts from the earlier build are retained.

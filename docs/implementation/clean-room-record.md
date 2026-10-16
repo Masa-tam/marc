@@ -41830,3 +41830,20 @@ the additional long-code/alias boundary checks, core/differential pass2/2 in
 public factory/CLI, sanitizer campaign, corpus comparison or new exchange
 entry yet. Existing formats, generated artifacts and the fixed Release
 executable are preserved. No push is performed.
+
+### CR-1847: 2026-10-17 —64KiB bounded Huffman model planning
+
+Author/reviewer: Codex. Added the already specified bounded incremental
+frequency builder and strict pooled/override model selection without changing
+DD-1610's representation. IR-1296 and TVG-1474 record first-party reuse and
+independent hand checks for weighted lengths/payloads and exact cost ties.
+The normal core/differential tests pass, including skewed15-bit lengths,
+unused pooled lookup with observed overrides, uniform-only data and the full
+zero-bit decision bound. Planning commits ordinary results only on success;
+workspace quotas are explicit and are not public grants or physical peaks.
+All five reachable production units also pass directed ASan/UBSan unit and
+197-case differential qualification; source/binary hashes and empty diagnostic
+streams are audited. Earlier validation artifacts remain preserved. No
+randomized fuzz, private-frame, streaming, ABI/CLI, comparison or exchange
+completion is claimed. No external implementation or restricted source was
+consulted, and no push was performed.

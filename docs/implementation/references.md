@@ -11323,3 +11323,14 @@ quarantine remains a caller obligation for the next stage. Differential
 fixtures come from TVG-1472's independently written Python oracle, not the
 production implementation. No external source, restricted implementation or
 imported test suite was consulted.
+
+### IR-1296:64KiB Huffman frequency and override planner
+
+Use DD-1610's previously specified raw bounded frequency counts, repository-
+owned length-limited canonical primitive and exact serialized-record cost.
+Keep the supplied-codebook scalar codec as a separate reference. Hand checks
+for weighted three-symbol codes, a binary override tie and the first strict
+saving are independent of the production planner. Directed sanitizer builds
+compile the new descriptor/scalar source and all three reachable primitive
+source files with ASan/UBSan; no uninstrumented codec library is substituted.
+No external source, restricted implementation or imported test suite was used.

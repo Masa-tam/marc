@@ -156,6 +156,89 @@ void units() {
         std::as_writable_bytes(std::span(&d,1)),written)==Error::overlapping_buffers && d==old_descriptor && written==777,"encoder source/output overlap");
     Descriptor oversized{};oversized.decision_count=UINT32_MAX;oversized.payload_size=UINT32_MAX;oversized.final_valid_bits=8;
     extent=777;check(validate_position_blocked_huffman_64k_descriptor(oversized,{},extent)==Error::limit_exceeded && extent==777,"large counts rejected before allocation");
+    auto planner=std::make_unique<PositionBlockedHuffman64kModelBuilder>();
+    Descriptor plan{},again{};
+    check(planner->finish({},plan)==Error::none && plan.decision_count==0 && plan.field_mask==0 && plan.payload_size==0,"empty planner");
+    for (int i=0;i<5;++i) check(planner->add(3,65)==Error::none,"weighted A");
+    for (int i=0;i<2;++i) check(planner->add(3,66)==Error::none,"weighted B");
+    check(planner->add(3,67)==Error::none && planner->finish({},plan)==Error::none,"weighted plan");
+    check(plan.models[1].lengths[65]==1 && plan.models[1].lengths[66]==2 && plan.models[1].lengths[67]==2
+        && plan.override_mask==0 && plan.field_mask==2 && plan.payload_size==2 && plan.final_valid_bits==3,"hand weighted code lengths");
+    const std::array<PositionBlockedHuffmanDecision,8> weighted{{{3,65},{3,65},{3,65},{3,65},{3,65},{3,66},{3,66},{3,67}}};
+    std::array<std::byte,2> weighted_bytes{};written=777;
+    check(encode_position_blocked_huffman_64k(plan,weighted,{},*encode_tables,weighted_bytes,written)==Error::none
+        && weighted_bytes[0]==std::byte{0xa0} && weighted_bytes[1]==std::byte{6},"hand weighted a006 payload");
+    check(planner->finish({},again)==Error::none && plan==again,"repeat planner finish determinism");
+    limits={};limits.max_block_size=8;
+    limits.max_internal_buffered_bytes=sizeof(*planner)+2*sizeof(Descriptor)+131072+2518;
+    check(planner->finish(limits,again)==Error::none && plan==again,"exact planner budget");
+    const auto saved_plan=again;--limits.max_internal_buffered_bytes;
+    check(planner->finish(limits,again)==Error::limit_exceeded && again==saved_plan,"one short planner retains destination");
+    for (unsigned count : {16u,17u}) {
+        auto threshold=std::make_unique<PositionBlockedHuffman64kModelBuilder>();
+        std::vector<PositionBlockedHuffmanDecision> requests;
+        for (unsigned i=0;i<count;++i) { check(threshold->add(0,0)==Error::none,"threshold zero");requests.push_back({0,0}); }
+        check(threshold->add(1,1)==Error::none,"threshold one");requests.push_back({1,1});
+        check(threshold->finish({},plan)==Error::none,"threshold finish");
+        check(plan.override_mask==(count==17 ? 1 : 0),"strict override bit cost tie");
+        std::vector<std::byte> encoded(plan.payload_size);written=777;
+        check(encode_position_blocked_huffman_64k(plan,requests,{},*encode_tables,encoded,written)==Error::none,"threshold encode");
+        check(count==17 ? encoded.size()==1 && encoded[0]==std::byte{1}
+            : encoded.size()==3 && encoded[0]==std::byte{0} && encoded[1]==std::byte{0} && encoded[2]==std::byte{1},"threshold hand payload");
+    }
+    auto bounded=std::make_unique<PositionBlockedHuffman64kModelBuilder>(1);
+    check(bounded->add(-1,1)==Error::none && bounded->add(-1,0)==Error::limit_exceeded,"planner decision admission");
+    again=saved_plan;check(bounded->finish({},again)==Error::limit_exceeded && again==saved_plan,"planner sticky limit retains output");
+    auto invalid=std::make_unique<PositionBlockedHuffman64kModelBuilder>();
+    check(invalid->add(3,256)==Error::invalid_symbol && invalid->add(3,65)==Error::invalid_symbol,"planner sticky invalid symbol");
+    check(invalid->finish({},again)==Error::invalid_symbol && again==saved_plan,"invalid planner retains output");
+    auto dense=std::make_unique<PositionBlockedHuffman64kModelBuilder>();
+    std::vector<PositionBlockedHuffmanDecision> byte_requests;
+    for (unsigned i=0;i<256;++i) { check(dense->add(3,i)==Error::none,"dense planner add");byte_requests.push_back({3,i}); }
+    check(dense->finish({},plan)==Error::none && plan.override_mask==0
+        && std::all_of(plan.models[1].lengths.begin(),plan.models[1].lengths.end(),[](auto n){return n==8;}),"equal-weight dense eight-bit lengths");
+    std::vector<std::byte> encoded(plan.payload_size);written=777;
+    check(encode_position_blocked_huffman_64k(plan,byte_requests,{},*encode_tables,encoded,written)==Error::none,"dense planned encode");
+    check(decoder.begin(plan,encoded,{},*decode_tables)==Error::none,"dense planned decode begin");
+    for (unsigned i=0;i<256;++i) check(decoder.read(3,value)==Error::none && value==i,"dense planned byte");
+    check(decoder.finish()==Error::none,"dense planned finish");
+    auto skew=std::make_unique<PositionBlockedHuffman64kModelBuilder>();
+    std::vector<PositionBlockedHuffmanDecision> skew_requests;
+    unsigned first=1,second=1;
+    for (unsigned s=0;s<17;++s) {
+        const auto count=s<2 ? 1u : first+second;
+        if (s>=2) { first=second;second=count; }
+        for (unsigned i=0;i<count;++i) { check(skew->add(3,s)==Error::none,"skew count");skew_requests.push_back({3,s}); }
+    }
+    check(skew->finish({},plan)==Error::none && *std::max_element(plan.models[1].lengths.begin(),plan.models[1].lengths.end())==15
+        && validate_code_lengths(plan.models[1].lengths)==HuffmanTableError::none,"length-limited skew planner");
+    encoded.assign(plan.payload_size,std::byte{0});written=777;
+    check(encode_position_blocked_huffman_64k(plan,skew_requests,{},*encode_tables,encoded,written)==Error::none,"skew planned encode");
+    check(decoder.begin(plan,encoded,{},*decode_tables)==Error::none,"skew planned decoder");
+    for (const auto request:skew_requests) check(decoder.read(3,value)==Error::none && value==request.symbol,"skew planned symbol");
+    check(decoder.finish()==Error::none,"skew planned finish");
+    auto all_overrides=std::make_unique<PositionBlockedHuffman64kModelBuilder>();
+    std::vector<PositionBlockedHuffmanDecision> only_overrides;
+    for (int context : {0,1}) for (unsigned i=0;i<40;++i) {
+        check(all_overrides->add(context,static_cast<unsigned>(context))==Error::none,"all overrides add");
+        only_overrides.push_back({context,static_cast<unsigned>(context)});
+    }
+    check(all_overrides->finish({},plan)==Error::none && plan.field_mask==1 && plan.override_mask==3 && plan.payload_size==0,"active field with no pooled lookup");
+    written=777;check(encode_position_blocked_huffman_64k(plan,only_overrides,{},*encode_tables,{},written)==Error::none && written==0,"all overrides zero-bit encode");
+    check(decoder.begin(plan,{}, {},*decode_tables)==Error::none,"all overrides decoder");
+    for (const auto request:only_overrides) check(decoder.read(request.context,value)==Error::none && value==request.symbol,"all overrides symbol");
+    check(decoder.finish()==Error::none,"observed field succeeds without pooled lookup");
+    auto uniform=std::make_unique<PositionBlockedHuffman64kModelBuilder>();
+    for (unsigned bit : {1u,0u,1u}) check(uniform->add(-1,bit)==Error::none,"uniform planner add");
+    check(uniform->finish({},plan)==Error::none && plan.field_mask==0 && plan.override_mask==0 && plan.payload_size==1 && plan.final_valid_bits==3,"uniform-only planned metadata");
+    const std::array<PositionBlockedHuffmanDecision,3> raw_bits{{{-1,1},{-1,0},{-1,1}}};
+    std::array<std::byte,1> uniform_output{};written=777;
+    check(encode_position_blocked_huffman_64k(plan,raw_bits,{},*encode_tables,uniform_output,written)==Error::none && uniform_output[0]==std::byte{5},"uniform-only hand payload");
+    auto maximum=std::make_unique<PositionBlockedHuffman64kModelBuilder>();
+    for (std::size_t i=0;i<458752;++i) check(maximum->add(0,0)==Error::none,"maximum bounded zero-bit decisions");
+    check(maximum->finish({},plan)==Error::none && plan.decision_count==458752 && plan.payload_size==0,"maximum zero-bit plan");
+    const auto maximum_plan=plan;
+    check(maximum->add(0,0)==Error::limit_exceeded && maximum->finish({},plan)==Error::limit_exceeded && plan==maximum_plan,"one excess decision retained maximum plan");
     std::cout<<"bounded descriptor/scalar invariants checked\n";
 }
 }

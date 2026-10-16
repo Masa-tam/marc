@@ -201,3 +201,28 @@ ordinary-destination tests. Frequency counting, pooled/override planning,
 typed-token/frame integration, public API/CLI, streaming chunking, fuzzing,
 measurements and exchange are still unfinished. No failed-frame publication
 or complete codec claim is inferred solely from these scalar tests.
+
+### 64KiB bounded frequency/planning milestone
+
+An incremental encoder-side model builder now counts at most458752 decisions
+(the7*65536 format bound), checks context/symbol validity before counting,
+and builds the specified length-limited pooled and context candidates. It
+does not retain the event sequence. Strict bit-cost comparison includes the
+exact override record extent; an equal-cost candidate retains its pool.
+Planning results commit only on success; counting failures are sticky.
+Repeated finish is deterministic, and a successful planning snapshot does not
+end the accumulator. Its explicit workspace charge covers the accumulator,
+candidate/result descriptors and a131072-byte bounded package-construction
+temporary allowance plus2518-byte format scratch. This is not a public grant,
+measured native stack size or process peak.
+
+TVG-1474 records hand-weighted and cost-boundary examples, complete equal-
+frequency tables, a skewed distribution reaching the15-bit limit, a field
+whose requests all use overrides, uniform-only payload and maximum zero-bit
+decision admission. The directed unit and197 frozen differential cases also
+pass ASan/UBSan with every reachable production translation unit instrumented;
+this is not randomized fuzz coverage. Next integration must keep generated
+events bounded without unnecessarily materializing a full decision array;
+the supplied-model two-pass scalar codec remains the clear reference.
+Private forward writer, typed tokens/frames, public streaming API/CLI,
+randomized fuzzing, measurements and exchange remain unfinished.
