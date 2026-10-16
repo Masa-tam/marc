@@ -34936,3 +34936,14 @@ Refuse before allocation when admission is known to fail, preserve failed
 query destinations and retain the existing overlap, direction, no-allocation
 process and private-frame publication contracts. Physical process peaks are
 reported separately from logical admission. Implementation/tests remain open.
+
+### DD-1614: four-MiB pooled Huffman exact specialization
+
+The [four-MiB design](../design/lzss-position-distance-blocked-huffman-4m.md)
+fixes tuple2/10+1/30+2/5,4194304-byte window,54 contexts and59 codebooks.
+Its descriptor extent is31..2561, with two unused final mask bits. Derive
+2T<=D<=min(32T,9R) from the complete short-length grammar; do not reuse the
+one-MiB per-token8R proof. The full-frame payload/frame ceilings are70778880/
+70781505 bytes. Retain private-frame/ordinary-output guarantees and qualify
+independent vectors before production parsing. API defaults await actual
+resource queries and normal measurements; no public admission is implied.

@@ -42190,3 +42190,15 @@ gates pass; preserve prior runtime/build/bundle evidence. No external
 implementation, restricted source or imported suite was consulted. This
 completes the one-MiB local profile, while five larger windows, final95 audit,
 user push, hosted CI and external four-route confirmation remain open.
+
+### CR-1873: 2026-10-17 —four-MiB pooled Huffman format and vectors
+
+Author/reviewer: Codex. Apply IR-1319/DD-1614 using only first-party family
+equations, the existing four-MiB token grammar and mathematical test helpers.
+TVG-1498 freezes300 positive/64 negative vectors, checked bounds and hand
+payloads while reproducing all396/123 earlier positive/negative expectations.
+Windows4/4 vector/documentation tests and a separate mathematical run pass.
+No external implementation, restricted source or imported suite was consulted.
+The new selector remains a format reservation, not public admission; production
+decoders/encoders, resource defaults, API/CLI, measurements/fuzz and exchange
+remain future gates. No runtime artifact is replaced at this checkpoint.

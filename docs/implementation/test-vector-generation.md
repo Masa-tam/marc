@@ -24431,3 +24431,23 @@ and decoded/re-encoded output, every prefix receipt and125 admission cases,
 normal product-object/build flags, unchanged fixed runtime, corpus comparison
 and50000-unit fuzz evidence. All one-MiB local gates pass; final family95,
 hosted CI and external four-route qualification remain separate future gates.
+
+### TVG-1498: four-MiB pooled Huffman independent format vectors
+
+DD-1614's mathematical oracle freezes300 positive and64 negative cases without
+calling production codecs. Cover24 distance boundaries through4194304, seven
+lengths per boundary, all54 upper context symbols, maximal2561-byte dense
+description, complete15-bit codes and64 seeded cases. Exhaust the256 wire
+lengths and23 distance classes to verify32T/9R per-token bounds and the full
+37748736/70778880/70781505 decision/payload/frame ceilings. Keep the isolated
+grammar endpoint distinct from actual history admission.
+
+Hand checks retain uniform payload05, A/B payload02 and a zero-bit singleton A
+with35 descriptor bytes and211 stream bytes, using explicit little-endian
+context54/extent4636 metadata. Reject malformed/cut descriptors, noncanonical
+tables, unused high mask bits6/7, odd dense padding and payload/finish errors.
+Reproduce all396 positive and123 negative earlier64KiB/1MiB frozen cases and
+both empty headers unchanged. Windows vectors/documentation4/4 and a separate
+Python environment pass. This is independent format qualification; production
+parsing/encoding, failure guarantees, resources, public admission, measurements,
+fuzz and exchange remain open.

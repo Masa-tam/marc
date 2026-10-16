@@ -9291,3 +9291,14 @@ The linked design specifies every offset, zero field, exact count/history
 validation and checked full-frame bounds. This additive variant leaves every
 earlier stream representation unchanged. Its public factory/CLI and completed
 local qualification are recorded at [IX-0098](interoperability.md).
+
+### DD-1614: native four-MiB position-distance Blocked Huffman
+
+The [four-MiB representation](design/lzss-position-distance-blocked-huffman-4m.md)
+fixes tuple2/10+1/30+2/5, window4194304,54 contexts, alphabet extent4636,
+seven mask bytes and descriptor31..2561 bytes. It retains forward pooled/
+optional-override canonical Huffman payload,112-byte stream and64-byte reset
+frame envelopes with no coder state. The linked design fixes every offset,
+zero field and count/history rule, including 2T<=D<=min(32T,9R) and checked
+full-frame payload/frame ceilings70778880/70781505. This format checkpoint
+does not add public API/CLI or modify an earlier representation.

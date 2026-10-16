@@ -11572,3 +11572,12 @@ codec or publishing decoded output. Independently mutate every header byte,
 manifest ordering/identity/hash/size and schema admission. Qualify retained
 prefixes, historical schemas and local self/cross execution through unchanged
 public CLI paths. Consult no external implementation or imported suite.
+
+### IR-1319: four-MiB pooled Huffman format and independent vectors
+
+Specialize the first-party DD-1609/DD-1612 pooled Huffman equations and the
+existing four-MiB short-length-escape token grammar. Independently derive
+context alphabets, descriptor/decision/payload bounds and exact envelopes.
+Extend the mathematical oracle with four-MiB parameters without production
+codec calls, and reproduce both earlier frozen vector sets unchanged. Consult
+no external implementation, restricted source or imported suite.
