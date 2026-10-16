@@ -11488,3 +11488,13 @@ ordinary tokens. Use the independent mathematical token-event oracle for
 supplied and production-selected wires, with actual bounded history before
 long-distance matches. No external implementation, restricted source or
 imported test suite is consulted.
+
+### IR-1311: one-MiB Huffman native frame quarantine and stream decoding
+
+Specialize the first-party64KiB frame validator/controller to DD-1612's exact
+tuple and checked one-MiB bounds. Reuse the bounded typed reconstructor after
+single-pass token/history validation, retaining success-only raw publication.
+Admit complete descriptors before collecting payload and enter draining only
+after complete frame validation. Compare independently constructed frames and
+raw reconstruction, plus production frames through the mathematical oracle.
+Consult no external implementation, restricted source or imported test suite.

@@ -42047,3 +42047,18 @@ qualification passes without a finding. Original64KiB checks remain green.
 No external implementation, restricted source or imported suite was consulted.
 Raw-frame quarantine, owned/public connection, physical measurements,
 coverage-guided fuzz and exchange are still subsequent gates.
+
+### CR-1862: 2026-10-17 —one-MiB native frame quarantine and stream decoding
+
+Author/reviewer: Codex. Apply IR-1311's first-party envelope, preflight and
+quarantine controller to tuple2/9+1/29+2/4,31..2547-byte descriptors and30T/8R
+bounds. Parse descriptors before collecting payload; decode private tokens,
+validate history, reconstruct private raw, then permit publication. TVG-1489
+checks57 supplied streams/frames, seven prepublication refusals,56 independently
+checked production frames, full-window hand descriptor/raw restoration and
+multi-frame split/error semantics. Correct an inherited65537U rejection
+expectation to1048577U; the earlier failed test artifacts remain retained.
+All subsequent directed and finite checks pass, including direct full-closure
+ASan/UBSan execution for frame and stream binaries. No external implementation,
+restricted source or imported suite was consulted. Owned raw encoding,
+public connection, corpus/peaks/fuzz and exchange remain separate future gates.

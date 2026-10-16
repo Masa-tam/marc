@@ -24222,3 +24222,32 @@ All reached implementation units, including typed-token and serialized-LZSS
 parameter validators, also pass direct ASan/UBSan units and finite replay.
 Raw-frame reconstruction/quarantine and subsequent public, performance/fuzz
 and exchange qualification remain open.
+
+### TVG-1489: one-MiB native frames, raw quarantine and stream decoder
+
+Construct57 independent streams/frames and seven invalid frames from the
+separate token/event oracle. Independently reconstruct expected raw bytes;
+both ordinary and private frame paths restore exactly. Check56 emitted
+production frames for envelope/counts, canonical descriptors and independently
+decoded decisions. Feed all supplied cases through split-input stream decoding
+as well: failed frames publish no raw bytes. Descriptor/payload truncation,
+unknown identity, reserved bytes, sequence/partition errors, invalid history,
+short buffers, aliasing and exact/one-short aggregate quotas are directed tests.
+
+Small multi-frame streams exercise every input split, byte output, zero output,
+Flush, explicit EndInput, sticky EOS/error, strict trailing bytes and reset
+history. Valid frame0 remains visible when frame1 fails; failed frame0 publishes
+nothing. A malformed descriptor with a nonempty payload is rejected with that
+payload byte still unconsumed and its private storage slot untouched. A full
+1048576-literal frame has2097152 decisions, a hand-checked35-byte descriptor,
+zero payload and99-byte frame; raw and streaming restoration produce exactly
+one MiB with guarded tails under explicit decision admission.
+
+The frame-size upper rejection test uses1048577, not the preceding64KiB
+boundary65537, which is valid here. Format limits are isolated from resource
+precedence by an explicit decision limit; short267-byte quota samples use a
+267-byte frame/block configuration. Direct ASan/UBSan builds instrument all
+reached frame/token/reconstruction/entropy/limit units for both test binaries;
+units and finite replay pass. These are internal-frame/controller gates;
+owned raw encoding, public APIs/CLI, physical measurements/fuzz and exchange
+remain unfinished for this profile.

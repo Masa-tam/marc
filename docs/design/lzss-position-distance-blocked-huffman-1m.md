@@ -159,3 +159,15 @@ cases, exact/one-short grants, guards and direct ASan/UBSan replay pass.
 This layer never publishes a raw frame; raw reconstruction and private-frame
 quarantine, owned/public integration, measurements/fuzz and exchange still
 need their own qualification.
+
+### Native-frame quarantine and stream-decoder checkpoint
+
+TVG-1489 qualifies the exact envelope and descriptor-prefix admission, private
+token/raw reconstruction and success-only publication. Independent57 supplied
+streams/frames restore expected bytes; seven invalid frames publish nothing;
+56 production frames pass independent wire checks. Full-window literal/raw
+and streamed reconstruction, partition/reset history and split-buffer terminal
+semantics pass. Invalid descriptors reject before the following payload byte
+is consumed or stored. Direct full-closure ASan/UBSan checks pass as well.
+Owned raw encoding and public profile admission, resource defaults, corpus/
+peak measurements, coverage-guided fuzz and exchange remain open.
