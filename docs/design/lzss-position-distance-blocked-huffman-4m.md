@@ -273,3 +273,13 @@ binary/original-seed hash equality, and no sanitizer, invariant, crash, hang,
 leak, OOM or saved failure artifact. The four-MiB schema81 exchange and final
 four-MiB audit remain open; existing formats and generated artifacts remain
 unchanged.
+
+### Exchange schema-81 checkpoint
+
+The new Windows exchange bundle has schema81 and91 archives. Its first90
+archive entries and bytes match the schema80 bundle byte-for-byte; the appended
+entry is `lzss-position-distance-blocked-huffman-4m` with the DD-1614 header
+identity. Direct verification, prefix preservation,125 schema81 negative cases,
+and compatibility conversion through schemas1..81 pass locally. WSL and
+cross-route execution plus the final four-MiB audit remain open; no hosted or
+external result is claimed.

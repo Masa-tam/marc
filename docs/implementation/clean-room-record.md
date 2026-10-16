@@ -42352,3 +42352,13 @@ Coverage limits are recorded as harness guards and are not presented as normal
 RSS or logical resource limits. No external implementation, restricted source
 or imported suite was consulted. Schema81 exchange and the final four-MiB audit
 remain unfinished; existing formats and generated artifacts are preserved.
+
+### CR-1885: 2026-10-17 — four-MiB schema-81 exchange extension
+
+Author/reviewer: Codex. The first-party producer/verifier was extended with
+the independently defined DD-1614 four-MiB header and schema81 profile. A fresh
+Windows bundle contains91 archives; the prior90 entries and input are preserved
+byte-for-byte, and the new entry is verified directly. The negative suite
+rejects125 cases before codec launch, and historical compatibility conversion
+passes schemas1 through81. No external implementation or restricted suite was
+consulted. WSL/cross-route execution and the final four-MiB audit remain open.

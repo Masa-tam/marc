@@ -19,8 +19,10 @@ $escapedMarker = $launchMarker.Replace("'", "''")
     [System.Text.UTF8Encoding]::new($false))
 $baselineJson = Get-Content -LiteralPath (Join-Path $source 'manifest.json') -Raw
 $baseline = $baselineJson | ConvertFrom-Json
-if ($baseline.schema_version -ne 80 -or @($baseline.archives).Count -ne 90) {
-    throw 'Negative tests require a complete schema-80 source bundle'
+$expectedSchema = [int]$baseline.schema_version
+$expectedCount = if ($expectedSchema -eq 81) { 91 } elseif ($expectedSchema -eq 80) { 90 } else { 0 }
+if ($expectedCount -eq 0 -or @($baseline.archives).Count -ne $expectedCount) {
+    throw 'Negative tests require a complete schema-80 or schema-81 source bundle'
 }
 $cases = @('old-name', 'downgrade', 'codec-set', 'missing', 'duplicate', 'order', 'archive-hash',
     'archive-size', 'input-hash', 'identity-dictionary', 'identity-context', 'identity-context-count', 'header-truncated')
@@ -28,7 +30,7 @@ foreach ($offset in 0..111) { $cases += "identity-byte-$offset" }
 $receipts = @()
 $bundle = Join-Path $root 'working-bundle'
 Copy-Item -LiteralPath $source -Destination $bundle -Recurse
-$last = 89
+$last = $expectedCount - 1
 $lastFile = [string]$baseline.archives[$last].file
 $originalLast = [System.IO.File]::ReadAllBytes((Join-Path $source $lastFile))
 foreach ($case in $cases) {
@@ -41,9 +43,9 @@ foreach ($case in $cases) {
     $expected = ''
     switch ($case) {
         'old-name' { $manifest.archives[$last].codec = 'lzss-position-blocked-huffman-1m'; $expected = 'Unknown or duplicate codec*' }
-        'downgrade' { $manifest.schema_version = 79; $manifest.codec_set = 'marc-cli-v79'; $expected = 'Interoperability manifest must contain exactly 89 archives' }
+        'downgrade' { $manifest.schema_version = $expectedSchema - 1; $manifest.codec_set = "marc-cli-v$($expectedSchema - 1)"; $expected = "Interoperability manifest must contain exactly $($expectedCount - 1) archives" }
         'codec-set' { $manifest.codec_set = 'marc-cli-v75'; $expected = 'Unsupported interoperability codec set*' }
-        'missing' { $manifest.archives = @($manifest.archives[0..88]); $expected = 'Interoperability manifest must contain exactly 90 archives' }
+        'missing' { $manifest.archives = @($manifest.archives[0..($last - 1)]); $expected = "Interoperability manifest must contain exactly $expectedCount archives" }
         'duplicate' { $manifest.archives[$last] = $manifest.archives[88]; $expected = 'Unknown or duplicate codec*' }
         'order' { $tail = $manifest.archives[$last]; $manifest.archives[$last] = $manifest.archives[88]; $manifest.archives[88] = $tail; $expected = 'Codec is out of schema order*' }
         'archive-hash' { $manifest.archives[$last].sha256 = '0' * 64; $expected = 'Archive size or SHA-256 does not match*' }
@@ -60,8 +62,13 @@ foreach ($case in $cases) {
             [System.IO.File]::WriteAllBytes($archive, $bytes)
             $manifest.archives[$last].bytes = $bytes.Length
             $manifest.archives[$last].sha256 = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
-            $expected = if ($case -eq 'header-truncated') { '1 MiB position Blocked Huffman archive header is truncated' }
+            $expected = if ($case -eq 'header-truncated') {
+                if ($expectedSchema -eq 81) { '4 MiB position Blocked Huffman archive header is truncated' }
+                else { '1 MiB position Blocked Huffman archive header is truncated' }
+            } else {
+                if ($expectedSchema -eq 81) { '4 MiB position Blocked Huffman archive does not carry exact identity*' }
                 else { '1 MiB position Blocked Huffman archive does not carry exact identity*' }
+            }
         }
     }
     [System.IO.File]::WriteAllText($path, ($manifest | ConvertTo-Json -Depth 5), [System.Text.UTF8Encoding]::new($false))

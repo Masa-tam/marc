@@ -11696,3 +11696,12 @@ Retain the exact campaign receipts and independent auditor. Treat coverage
 campaign RSS and watchdog limits as harness guards only; they do not replace
 normal peak measurements or public resource admission. Consult no external
 implementation, restricted source or imported suite.
+
+### IR-1331: four-MiB schema-81 exchange extension
+
+Extend the existing exchange producer and verifier by one ordered native
+four-MiB Blocked Huffman entry. Preserve the schema80 prefix and body bytes,
+reject malformed schema81 input before codec launch, and exercise historical
+schema conversion. Keep local WSL/cross-route execution and final audit as
+separate gates. Consult no external implementation, restricted source or
+imported suite.

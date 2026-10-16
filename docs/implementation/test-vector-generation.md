@@ -24750,3 +24750,13 @@ instrumented peaks51,342,344,346 and353MiB. The independent full auditor passed
 absence of sanitizer/invariant or saved failure artifacts. This is a bounded
 coverage result, separate from ordinary peaks and logical admission. Schema81
 exchange and the final four-MiB audit remain pending.
+
+### TVG-1510: four-MiB schema-81 exchange extension
+
+Generate a fresh schema81 bundle from the verified static Windows candidate,
+preserving the prior90 entries and appending exactly one four-MiB Blocked
+Huffman archive. Direct verification reports91 archives. Prefix preservation
+checks codec order, manifest values and every prior body/input byte. The
+schema81 negative suite rejects125 malformed manifests/headers before codec
+launch, and compatibility conversion verifies schemas1 through81. WSL and
+cross-route execution and the final profile audit remain pending.

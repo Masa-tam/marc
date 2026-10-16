@@ -91,6 +91,7 @@ $schema76 = Join-Path $root 'schema76'
 $schema77 = Join-Path $root 'schema77'
 $schema78 = Join-Path $root 'schema78'
 $schema79 = Join-Path $root 'schema79'
+$schema81 = Join-Path $root 'schema81'
 $schema80 = Join-Path $root 'schema80'
 $schema60 = Join-Path $root 'schema60'
 $schema60Reordered = Join-Path $root 'schema60-reordered'
@@ -269,14 +270,22 @@ try {
     $null = New-Item -ItemType Directory -Path $root
     & (Join-Path $PSScriptRoot 'create_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -OutputDirectory $schema80 `
+        -OutputDirectory $schema81 `
         -Platform 'local-schema-test' `
         -Compiler 'local-schema-test' `
         -SourceRevision ('0' * 40)
+    $latest81 = Get-Content -LiteralPath (Join-Path $schema81 'manifest.json') -Raw | ConvertFrom-Json
+    if ($latest81.schema_version -ne 81 -or $latest81.codec_set -ne 'marc-cli-v81' -or
+            @($latest81.archives).Count -ne 91 -or $latest81.archives[90].codec -ne 'lzss-position-distance-blocked-huffman-4m') {
+        throw 'Schema 81 must append exactly one 4 MiB position-distance Blocked Huffman archive'
+    }
+    & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') -MarcCli $resolvedCli -BundleDirectory $schema81 -OutputDirectory (Join-Path $root 'verified81')
+    & (Join-Path $PSScriptRoot 'interoperability_schema80_negatives.ps1') -MarcCli $resolvedCli -BundleDirectory $schema81 -EvidenceDirectory (Join-Path $root 'schema81-negatives')
+    Convert-Bundle $schema81 $schema80 80 'marc-cli-v80' (@($latest81.archives[0..89] | ForEach-Object { $_.codec }))
     $latest80 = Get-Content -LiteralPath (Join-Path $schema80 'manifest.json') -Raw | ConvertFrom-Json
     if ($latest80.schema_version -ne 80 -or $latest80.codec_set -ne 'marc-cli-v80' -or
             @($latest80.archives).Count -ne 90 -or $latest80.archives[89].codec -ne 'lzss-position-distance-blocked-huffman-1m') {
-        throw 'Schema 80 must append exactly one 1 MiB position-distance Blocked Huffman archive'
+        throw 'Schema 80 conversion must retain the 1 MiB position-distance Blocked Huffman archive'
     }
     & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') -MarcCli $resolvedCli -BundleDirectory $schema80 -OutputDirectory (Join-Path $root 'verified80')
     & (Join-Path $PSScriptRoot 'interoperability_schema80_negatives.ps1') -MarcCli $resolvedCli -BundleDirectory $schema80 -EvidenceDirectory (Join-Path $root 'schema80-negatives')
@@ -962,7 +971,7 @@ try {
         -BundleDirectory $schema1 `
         -OutputDirectory (Join-Path $root 'verified1')
 
-    Write-Host 'Verified interoperability schemas 1 through 80'
+    Write-Host 'Verified interoperability schemas 1 through 81'
 } finally {
     if ([string]::IsNullOrEmpty($EvidenceDirectory) -and (Test-Path -LiteralPath $root)) {
         $resolvedRoot = [System.IO.Path]::GetFullPath($root)
