@@ -118,3 +118,18 @@ instrumented ASan/UBSan translation units pass independent artifact audit.
 No fuzz execution was performed. Token/history, frame quarantine, public
 API/CLI, resource defaults, measurements and exchange remain open.
 
+### Private-token and history qualification
+
+TVG-1515 qualifies single-pass private token scratch and success-only ordinary
+copy after exact entropy/count/history validation. Every reference is checked
+before scratch assignment. All70 independent valid wires and7 invalid
+history/length cases pass; independently decoded production wires and normal/
+instrumented bytes agree. Tests include distance8388605, full-frame literal
+and overlap token sequences, exact/one-short grants, aliases, cuts and late
+terminal rejection. Normal5/5 and ten directly instrumented ASan/UBSan units
+pass independent artifact audit. Full-literal decode admission is205832806
+logical bytes; overlap admission is8388608 because the shared block/grant
+floor dominates. These are finite test charges, not public defaults or RSS.
+No fuzz execution is performed. Raw reconstruction, failed-frame publication,
+stream owners, public API/CLI, normal measurements and exchange remain open.
+

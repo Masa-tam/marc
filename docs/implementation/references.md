@@ -11729,3 +11729,13 @@ success-only ordinary outputs. Strengthen independent vectors with actual
 negative wires, upper contexts and hand fifteen-bit codes before differential
 execution. Preserve every previous profile. No external implementation or
 restricted suite is consulted; no fuzz campaign is run during this goal.
+
+### IR-1335: eight-MiB Huffman typed-token and private-history boundary
+
+Adapt the first-party four-MiB token adapter to the existing eight-MiB
+short-length-escape grammar and DD-1616 entropy core. Validate complete
+references before writing private tokens and copy ordinary output only after
+exact entropy/raw/history completion. Derive test storage from supplied spans,
+qualify maximum valid history, late invalid references and full-frame literal/
+overlap cases with directed and independent differential tests. Use no external
+implementation or restricted suite. Fuzz execution remains omitted by request.

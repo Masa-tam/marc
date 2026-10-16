@@ -24805,3 +24805,21 @@ ASan/UBSan translation units and the independent source/binary/fixture audit
 pass with no diagnostics. The fixed Release executable/library remain intact.
 No fuzz execution is performed. Token/history and raw-frame publication are
 separate pending qualifications, as are API/CLI, measurements and exchange.
+
+### TVG-1515: eight-MiB private tokens and history validation
+
+Qualify70 independent valid token wires and7 malformed history/length cases,
+including exact private-prefix counts and no assignment of a failed token.
+Every ordinary destination and input remains unchanged on failure. Independently
+decode all production-selected descriptors/payloads and require normal/direct
+ASan/UBSan byte equality. Directed cases cover every descriptor/payload cut,
+aliases, short tables/tokens/outputs, exact/one-short budgets, committed-size
+overflow, malformed token fields, trailing entropy bits, empty input, maximum
+valid reset-frame distance8388605 and full8388608-byte literal/overlap sequences.
+The full-literal logical decode charge is205832806; the overlap case charges
+1120038 bytes with the shared8388608 block/grant admission floor. These test
+charges select no public default and establish no physical peak. Normal5/5
+passes in22.01 seconds; ten direct instrumented units and independent audit
+pass without diagnostics. Fuzz is omitted by user request. Frame-level raw
+reconstruction/publication, owners and the later public/measurement/exchange
+qualifications remain pending.

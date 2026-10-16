@@ -42404,3 +42404,15 @@ variants, vectors and generated artifacts. No external implementation,
 restricted source or imported suite was consulted. No fuzz is run during
 this goal; remaining token/history/frame/public and measurement/exchange
 gates are recorded separately rather than claimed complete.
+
+### CR-1890: 2026-10-17 — eight-MiB Huffman private token boundary
+
+Author/reviewer: Codex. Follow IR-1335 by specializing the first-party token
+adapter to the established eight-MiB short-length grammar. Retain single-pass
+private decoding, whole-reference validation before assignment and ordinary
+copy only after complete success. TVG-1515 establishes70 independent wire
+matches,7 negative history/length rejections, exact private prefixes, finite
+full-frame cases, normal/instrumented equality and ten-unit sanitizer coverage.
+Audit every fixture and source/binary hash; preserve fixed runtime artifacts.
+No external implementation or restricted suite was consulted and no fuzz was
+executed. Raw-frame quarantine and subsequent qualifications remain open.
