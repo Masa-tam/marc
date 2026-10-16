@@ -42031,3 +42031,19 @@ ASan/UBSan replay pass with no finding. No external implementation, restricted
 source or imported test suite was consulted. This does not yet integrate
 dictionary history, private-frame quarantine, owned/public transforms,
 measurements, coverage-guided fuzzing or exchange.
+
+### CR-1861: 2026-10-17 —one-MiB pooled Huffman token/history adapter
+
+Author/reviewer: Codex. Apply IR-1310's first-party token adapter with the
+one-MiB dictionary variant and30T/8R bounds. Preserve single-pass private
+scratch decoding, validate history before token assignment and commit ordinary
+tokens only after complete finish. TVG-1488 checks57 independent valid and
+seven invalid wires, independently restores57 production-selected wires,
+full-window token cases and late failure retention. Correct the short-sample
+quota test's block admission and include the serialized-LZSS parameter
+validator in the direct instrumented link; both initially failed attempts
+remain retained evidence. Subsequent normal and full-closure ASan/UBSan
+qualification passes without a finding. Original64KiB checks remain green.
+No external implementation, restricted source or imported suite was consulted.
+Raw-frame quarantine, owned/public connection, physical measurements,
+coverage-guided fuzz and exchange are still subsequent gates.

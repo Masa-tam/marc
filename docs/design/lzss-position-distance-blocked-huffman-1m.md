@@ -146,3 +146,16 @@ boundary/alias/budget cases and direct ASan/UBSan replay pass. This writer
 must still be enclosed by token/history validation and private raw-frame
 quarantine before any public output. Owned/public connection, physical peaks,
 corpus/fuzz and exchange remain unqualified for this one-MiB profile.
+
+### Single-pass token/history checkpoint
+
+TVG-1488 qualifies planning, forward private writing and single-pass token
+scratch decoding under the one-MiB typed dictionary grammar. Each reference
+and raw extent is validated before that token is stored. The ordinary wrapper
+copies only after exact counts and entropy finish. Independent57 valid and
+seven invalid wires include full-boundary late history refusal; production
+wires independently restore all decisions. Full-window literal/overlap token
+cases, exact/one-short grants, guards and direct ASan/UBSan replay pass.
+This layer never publishes a raw frame; raw reconstruction and private-frame
+quarantine, owned/public integration, measurements/fuzz and exchange still
+need their own qualification.

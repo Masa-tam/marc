@@ -24196,3 +24196,29 @@ All core/differential checks pass in normal builds and with the entire reached
 implementation directly instrumented by ASan/UBSan. Original64KiB checks
 remain green. Token/history reconstruction, private-frame publication gates,
 public connection, performance/fuzz and exchange remain subsequent work.
+
+### TVG-1488: one-MiB pooled Huffman token/history integration
+
+Replay57 independently supplied typed-token wires and seven invalid histories
+or raw extents. The valid set includes17 distance boundaries with genuine
+preceding token history through1048573, length3/4/258 grammar, literal history,
+empty isolated tokens and seeded streams. Independently decode all57
+production-selected descriptors/payloads back to every expected decision.
+The grammar endpoint1048576 and a late class20 reference are negative history
+cases, not purported valid one-MiB frames. A full-boundary late bad reference
+retains the exact private prefix, leaves the rejected token slot untouched,
+and publishes no ordinary tokens.
+
+Unit checks include all descriptor/payload cuts, late entropy/raw mismatch,
+committed-size overflow, short tables/scratch/output, field errors and buffer
+aliases. Exact/one-short aggregate quotas use a267-byte block admission for
+the267-byte sample; a block limit larger than the entire buffer grant is an
+invalid limits configuration and must not be confused with an exact quota.
+Full1048576-byte literal and overlapping-match token cases use an explicit
+8388608-decision admission and restore all tokens. Decode is single-pass into
+private scratch, with typed reference/extent validation before each assignment;
+the ordinary wrapper commits only after exact raw/decision/entropy finish.
+All reached implementation units, including typed-token and serialized-LZSS
+parameter validators, also pass direct ASan/UBSan units and finite replay.
+Raw-frame reconstruction/quarantine and subsequent public, performance/fuzz
+and exchange qualification remain open.

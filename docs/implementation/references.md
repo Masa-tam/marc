@@ -11476,3 +11476,15 @@ Use no materialized decision array in the writer, and retain ordinary finish
 counts on refusal. Compare supplied independent codebooks and newly planned
 payloads against the reference encoder and independent mathematical decoder.
 No external implementation, restricted source or imported suite is consulted.
+
+### IR-1310: one-MiB Huffman typed-token and history boundary
+
+Specialize the first-party64KiB pooled Huffman token adapter to DD-1612's
+one-MiB dictionary variant,30T/8R counts and52-context scalar core. Preserve
+the bounded short-length escape grammar and typed-token validation. Decode
+once into private token scratch, validate each reference/extent before storing
+that token, then check exact entropy finish and raw counts before committing
+ordinary tokens. Use the independent mathematical token-event oracle for
+supplied and production-selected wires, with actual bounded history before
+long-distance matches. No external implementation, restricted source or
+imported test suite is consulted.
