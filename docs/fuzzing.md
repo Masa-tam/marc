@@ -2059,3 +2059,15 @@ at a time. Pilot-derived RSS guards including quarantine/headroom are384/576/
 pilot durations. Full campaigns and their final artifact audit remain pending
 at this checkpoint. Normal paired corpus/physical-peak results are recorded
 separately at BM-0251; schema80 exchange and final profile audit remain open.
+
+All five subsequent campaigns now complete10000 units each,50000 total,
+using the same verified binaries and seed1612. In the target order above,
+elapsed times are3.025/4.127/25.067/83.779/207.312 seconds, with instrumented
+peaks49/331/346/348/353MiB, within the pilot-derived guards. Every campaign
+reports exact completion without sanitizer/invariant findings or saved crash,
+hang, leak or OOM artifacts. Independent final audit rechecks source/header,
+executable and670 original seed hashes, actual compilation records, raw logs
+and the measured guard calculations. This closes the bounded small-input
+coverage-guided gate, complementing the directed full-frame sanitizer tests.
+Normal corpus/physical peaks, schema80 exchange and the final profile audit
+remain separately recorded gates.

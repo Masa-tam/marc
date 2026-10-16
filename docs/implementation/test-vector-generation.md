@@ -24402,3 +24402,11 @@ Independent audit finds no sanitizer/invariant or saved failure artifact. Pilot
 time and instrumented RSS inform separate serial10000-unit campaign guards;
 those full campaigns remain pending here. Directed full-frame sanitizer tests
 and BM-0251's ordinary physical peak measurements remain distinct evidence.
+
+The subsequent five10000-unit campaigns also complete,50000 total. Final
+independent audit checks both phases, unchanged sources/binaries/original
+seeds, compilation records, exact unit counts, raw logs and pilot-derived
+RSS/time guards. No sanitizer/invariant or saved failure artifact is found.
+FZ-0098 records all campaign times and instrumented peaks. This completes the
+bounded coverage-guided lane, with directed maximum-frame tests retained;
+exchange and the final profile audit remain incomplete.

@@ -277,3 +277,13 @@ hashes and no sanitizer/invariant or saved failure artifact. Measured pilot
 RSS/time determine serial full-campaign guards; they do not replace normal
 physical peaks. Full10000-unit campaigns per entry, their final artifact audit,
 schema80 exchange and final profile audit remain open at this checkpoint.
+
+### Completed coverage-guided checkpoint
+
+TVG-1496/FZ-0098's five follow-up campaigns each finish10000 units,50000 total,
+within measured guards. Final independent audit passes actual instrumented
+compilation, source/binary/seed binding, unit counts, raw logs and guard
+calculations, without sanitizer/invariant or saved failure artifacts. Directed
+maximum-frame sanitizer evidence remains complementary. All-member ordinary
+measurements and bounded fuzz qualification are now complete; schema80 exchange
+and the final one-MiB audit remain open.

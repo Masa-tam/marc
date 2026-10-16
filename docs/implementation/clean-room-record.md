@@ -42154,3 +42154,15 @@ preserve logs and working corpora. No external implementation, restricted
 source or imported suite was consulted. Use measured pilots for serial full
 campaign limits; those campaigns and final audit remain pending. Exchange and
 the complete profile remain subsequent gates.
+
+### CR-1870: 2026-10-17 —one-MiB native Huffman full fuzz qualification
+
+Author/reviewer: Codex. Complete IR-1317/TVG-1496/FZ-0098's serial campaigns
+with the verified pilot binaries and immutable original seeds,10000 units per
+target and50000 total. Independently recheck source/header, binary and seed
+hashes, actual instrumented compilation, raw logs and pilot-derived guard
+calculations. All campaigns finish without sanitizer/invariant or saved
+failure artifacts. No external implementation, restricted source or imported
+suite was consulted. This closes the bounded coverage-guided gate alongside
+the retained full-frame sanitizer cases; schema80 exchange and the complete
+profile audit remain subsequent gates.
