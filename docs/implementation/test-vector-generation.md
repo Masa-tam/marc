@@ -24028,3 +24028,26 @@ reachable production translation units instrumented, including the selected
 factory and generic C process/destroy boundary. Source, executable and fixture
 hashes match; diagnostics are empty. No uninstrumented codec archive is linked.
 This directed evidence is not randomized fuzzing or CLI/corpus qualification.
+
+### TVG-1480:64KiB Huffman CLI selector and file quarantine
+
+Seven directed sizes0/1/256/65535/65536/65537/131089 encode deterministically,
+carry the exact independent112-byte header and restore byte-identically.
+All210 truncations of the one-byte stream reject without a destination or
+new temporary file. Fixed metadata/reserved fields, oversized raw/payload/
+descriptor declarations, unknown model mode, strict trailing input, wrong
+profile and near-miss selectors reject. Independent pooled Huffman wires
+exercise length3/4/258 overlap matches and nonzero padding rejection.
+
+The late-frame case uses explicit one-byte frame partitioning. Its isolated
+first frame is independently decoded successfully, before a second frame
+whose decision declaration fails after its private literal is reconstructed.
+The complete CLI run publishes no file. Existing destination and temporary
+contents are retained. Inventory checks list the exact selector once while
+preserving earlier profile checks. A separate static candidate passes the
+initial selector suite; the fixed-path shared CLI passes the expanded suite.
+Both generate the same seven encoded bodies. The previous executable/library
+pair is retained before replacement, and the updated fixed runtime still
+restores/re-encodes all88 schema78 archive bodies byte-identically. This
+checkpoint does not qualify randomized fuzzing, corpus comparisons or the
+new exchange entry.

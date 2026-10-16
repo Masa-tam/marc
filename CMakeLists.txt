@@ -10146,4 +10146,14 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_64k_api_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-64k-public-raw --public)
     set_tests_properties(marc_position_blocked_huffman_64k_public_raw_differential PROPERTIES TIMEOUT 120)
+    add_executable(marc_position_blocked_huffman_64k_cli_candidate tools/marc_cli.cpp)
+    target_compile_features(marc_position_blocked_huffman_64k_cli_candidate PRIVATE cxx_std_20)
+    target_link_libraries(marc_position_blocked_huffman_64k_cli_candidate PRIVATE marc::static)
+    if(TARGET marc_cli)
+        add_test(NAME marc_cli_position_blocked_huffman_64k
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_blocked_huffman_64k.py
+                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-blocked-huffman-64k)
+        set_tests_properties(marc_cli_position_blocked_huffman_64k PROPERTIES TIMEOUT 120)
+    endif()
 endif()

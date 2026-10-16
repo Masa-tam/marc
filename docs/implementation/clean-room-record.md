@@ -41921,3 +41921,18 @@ all88 retained schema78 archives restore/re-encode byte-identically after the
 shared-library addition. No external/restricted implementation was consulted.
 CLI, randomized fuzzing, corpus comparisons, final peaks and new bundle entry
 remain unfinished; later windows remain reservations.
+
+### CR-1853: 2026-10-17 —64KiB Huffman CLI publication
+
+Author/reviewer: Codex. Connected the exact reserved selector through the
+qualified C factory and first-party bounded file driver. IR-1302 identifies
+the repository-owned references; TVG-1480 records independent headers/short
+matches, deterministic reset boundaries, malformed input and atomic file
+publication. A directed second-frame terminal mismatch follows a separately
+validated first frame, proving whole-file failure does not publish a partial
+destination. Existing selectors, destinations and temporary files retain
+their contracts. The static candidate and fixed-path shared runtime pass,
+with matching encoded bodies. Earlier runtime artifacts are saved; all88
+retained archives still decode/re-encode identically. No external/restricted
+source was consulted. Fuzz, corpus/peak comparisons and new exchange admission
+remain unfinished; no later window is qualified by this milestone.

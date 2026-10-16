@@ -11389,3 +11389,14 @@ requirements before choosing an initial8MiB grant. Keep admission and normal
 process peak distinct. Preserve earlier layouts/selectors and use exact-size
 struct/ABI checks. Independently supplied frames and the separate greedy raw
 parser remain the wire oracle. No external or restricted source was consulted.
+
+### IR-1302:64KiB Huffman CLI file publication
+
+Apply the reserved exact selector to the already qualified C API. Reuse only
+the repository-owned position tANS file driver and generic temporary-file
+commit contract. Preserve every earlier selector and reject near-miss names.
+The driver admits declared I/O/control storage before processing; raw frames
+remain behind the core quarantine gate and whole-file publication requires
+successful EOS, sink close and rename. Independent supplied Huffman models
+exercise decoder-visible short matches; a separately validated first frame
+precedes the directed failing second frame. No external source was consulted.

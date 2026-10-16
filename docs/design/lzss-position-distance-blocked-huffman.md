@@ -329,3 +329,16 @@ capacities reject before consuming or producing bytes. Guarded one-byte and
 zero-output calls retain the core status contract; failed frames never drain.
 Public C static/shared checks and independent raw-wire checks qualify this
 API stage separately from CLI, fuzz, corpus measurements and exchange.
+
+### 64KiB CLI connection
+
+The exact selector connects to the same public factory through bounded65536-
+byte I/O arrays and a declared65536-byte retained control charge. It inherits
+the8MiB logical grant and private frame validation gate. The ordinary file is
+published only after transform EOS, strict input completion, sink close and
+successful temporary-file rename. A pre-existing destination or temporary is
+not overwritten. TVG-1480 records deterministic reset boundaries, independent
+short grammar, all small-stream truncations and a valid first frame followed
+by a private-token terminal mismatch in the second frame. The file target
+remains absent even if the lower transform accepted the first frame. This
+checkpoint does not complete fuzz, corpus/peak or exchange qualification.

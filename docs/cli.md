@@ -979,3 +979,24 @@ deterministic small-frame round trips, header identity, wrong-profile and
 truncation rejection, and destination preservation. Full-frame measurements,
 coverage-guided fuzzing, contextual comparison, and exchange qualification
 remain separate gates.
+
+### Sixty-four-KiB position-distance Blocked Huffman
+
+The exact selector `lzss-position-distance-blocked-huffman` identifies native
+dictionary2/8, context1/28 and entropy2/3 with65536-byte window/reset frames.
+The encoder uses fixed-five longest/nearest matching; the decoder accepts the
+specified3..258 wire match lengths. The distance-less name and a64k suffix
+are not aliases. Existing byte-stream and contextual Blocked Huffman selectors
+retain their representations and are not auto-detected by this decoder.
+
+The CLI uses the native C factory with8MiB logical aggregate admission,
+65536-byte input/output calls and65536 declared retained control bytes.
+Resource query and construction occur before transform consumption. The grant
+is not an RSS or physical peak limit. Failed frames never drain. Whole-file
+output is renamed only after successful decoding, exact EOS, sink close and
+strict trailing checks. Existing output and temporary files are preserved on
+refusal; a failed run removes only its own newly created temporary file.
+Deterministic boundary round trips, exact headers, truncation, invalid tables/
+metadata, wrong selectors, padding and valid-first/failed-second frame cases
+are checked. Corpus comparisons, speed/peak measurements, randomized fuzzing
+and exchange qualification remain separate gates.

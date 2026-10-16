@@ -12,6 +12,11 @@ if(NOT usage_result EQUAL 2)
 endif()
 
 set(usage_text "${usage_stdout}${usage_stderr}")
+string(REGEX MATCHALL "lzss-position-distance-blocked-huffman," position_huffman_matches "${usage_text}")
+list(LENGTH position_huffman_matches position_huffman_count)
+if(NOT position_huffman_count EQUAL 1)
+    message(FATAL_ERROR "CLI usage must list64KiB position-distance Blocked Huffman exactly once")
+endif()
 string(REGEX MATCHALL "lzss-contextual-tans-1m" selected_matches
     "${usage_text}")
 list(LENGTH selected_matches selected_count)
