@@ -66,6 +66,8 @@ set(MARC_SOURCES
     src/entropy/position_blocked_huffman_64k_format.cpp
     src/entropy/position_blocked_huffman_64k.cpp
     src/context/lzss_position_blocked_huffman_64k_tokens.cpp
+    src/frame/lzss_position_blocked_huffman_64k_format.cpp
+    src/frame/lzss_position_blocked_huffman_64k_frame.cpp
     src/frame/lzss_position_distance_8m_c_factory.cpp
     src/frame/lzss_position_distance_8m_decoder_c_factory.cpp
     src/frame/lzss_position_distance_8m_stream_decoder.cpp
@@ -10088,4 +10090,17 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_64k_token_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-64k-token-differential)
     set_tests_properties(marc_position_blocked_huffman_64k_token_differential PROPERTIES TIMEOUT 120)
+    add_executable(marc_position_blocked_huffman_64k_frame_tests
+        tests/position_blocked_huffman_64k_frame_tests.cpp)
+    target_compile_features(marc_position_blocked_huffman_64k_frame_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_blocked_huffman_64k_frame_tests PRIVATE src)
+    target_link_libraries(marc_position_blocked_huffman_64k_frame_tests PRIVATE marc::static)
+    add_test(NAME marc_position_blocked_huffman_64k_frames COMMAND marc_position_blocked_huffman_64k_frame_tests)
+    set_tests_properties(marc_position_blocked_huffman_64k_frames PROPERTIES TIMEOUT 30)
+    add_test(NAME marc_position_blocked_huffman_64k_frame_differential
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_blocked_huffman_64k_frame_differential.py
+            $<TARGET_FILE:marc_position_blocked_huffman_64k_frame_tests>
+            ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-64k-frame-differential)
+    set_tests_properties(marc_position_blocked_huffman_64k_frame_differential PROPERTIES TIMEOUT 120)
 endif()

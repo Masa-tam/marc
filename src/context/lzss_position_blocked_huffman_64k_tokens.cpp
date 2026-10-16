@@ -17,9 +17,9 @@ constexpr LzssParameters parameters{65536,3,258,0};
 constexpr auto variant=LzssTypedTokenVariant::field_context_64k_short_length_escape;
 // Conservative simultaneous workspace bounds, not physical process peaks or
 // public profile grants. All caller-provided span capacity is charged below.
-constexpr std::size_t plan_workspace=sizeof(PositionBlockedHuffman64kModelBuilder)+2*sizeof(Descriptor)+131072+2518;
-constexpr std::size_t encode_workspace=plan_workspace+sizeof(Descriptor)+sizeof(PositionBlockedHuffman64kPrivateWriter)+2*2518;
-constexpr std::size_t decode_workspace=2*sizeof(Descriptor)+sizeof(PositionBlockedHuffman64kDecoder)+16384+2518;
+constexpr auto plan_workspace=position_blocked_huffman_64k_plan_workspace;
+constexpr auto encode_workspace=position_blocked_huffman_64k_encode_workspace;
+constexpr auto decode_workspace=position_blocked_huffman_64k_decode_workspace;
 struct Region { const void* data{};std::size_t size{}; };
 template<class T> bool region(std::span<T> span,Region& out,Result& r) noexcept {
     out.data=span.data();

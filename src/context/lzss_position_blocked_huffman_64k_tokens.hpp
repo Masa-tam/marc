@@ -4,6 +4,15 @@
 #include "entropy/position_blocked_huffman_64k.hpp"
 
 namespace marc::context::internal {
+// Conservative simultaneous workspace charges; caller spans/control objects
+// are additional. These are neither measured process peaks nor public grants.
+inline constexpr std::size_t position_blocked_huffman_64k_plan_workspace=
+    sizeof(entropy::internal::PositionBlockedHuffman64kModelBuilder)+2*sizeof(entropy::internal::PositionBlockedHuffman64kDescriptor)+131072+2518;
+inline constexpr std::size_t position_blocked_huffman_64k_encode_workspace=
+    position_blocked_huffman_64k_plan_workspace+sizeof(entropy::internal::PositionBlockedHuffman64kDescriptor)
+    +sizeof(entropy::internal::PositionBlockedHuffman64kPrivateWriter)+2*2518;
+inline constexpr std::size_t position_blocked_huffman_64k_decode_workspace=
+    2*sizeof(entropy::internal::PositionBlockedHuffman64kDescriptor)+sizeof(entropy::internal::PositionBlockedHuffman64kDecoder)+16384+2518;
 struct PositionBlockedHuffman64kTokenContext {
     std::uint32_t token_count{},raw_size{},decision_count{};
     std::uint64_t output_already_committed{};

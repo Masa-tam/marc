@@ -40,31 +40,36 @@ def cases():
     yield 'late-too-long',[(0,65,0,0),(1,0,1,258)],260,1,2
 
 
-exe=Path(sys.argv[1]).resolve()
-root=Path(sys.argv[2]);root.mkdir(parents=True,exist_ok=True)
-run=Path(tempfile.mkdtemp(prefix='run-',dir=root))
-valid=negative=0
-for i,(label,tokens,raw,mode,prefix) in enumerate(cases()):
-    requests=oracle.token_events(tokens)
-    # Alternating pooled/override codebooks and full-alphabet dense codebooks
-    # exercise legal descriptions independently of the production planner.
-    v=oracle.vector(label,requests,dense=bool(i%3==2),override=bool(i%2))
-    desc=bytes.fromhex(v['descriptor']);payload=bytes.fromhex(v['payload'])
-    path=run/f'{i:03}.bin'
-    path.write_bytes(struct.pack('<7I',len(desc),len(payload),len(tokens),raw,len(requests),mode,prefix)
-                     +desc+payload+b''.join(struct.pack('<4I',*t) for t in tokens))
-    result=subprocess.run([str(exe),str(path)],capture_output=True,timeout=15)
-    (run/f'{i:03}.stdout').write_bytes(result.stdout);(run/f'{i:03}.stderr').write_bytes(result.stderr)
-    assert result.returncode==0,(label,result.returncode,result.stdout,result.stderr)
-    if mode:
-        negative+=1
-    else:
-        # Decode production-selected models/payloads with the independent bit
-        # reader and require every token-derived decision and exact finish.
-        planned_desc=Path(str(path)+'.descriptor').read_bytes()
-        planned_payload=Path(str(path)+'.payload').read_bytes()
-        assert oracle.decode(planned_desc,planned_payload,requests)==[s for _,s in requests],label
-        valid+=1
-(run/'receipt.json').write_text(json.dumps({'passed':True,'valid':valid,'negative':negative,
-    'production_wires_independently_decoded':valid},indent=2)+'\n')
-print(f'Decoded {valid} independent token wires and independently checked production wires; rejected {negative} invalid history/length cases')
+def main():
+    exe=Path(sys.argv[1]).resolve()
+    root=Path(sys.argv[2]);root.mkdir(parents=True,exist_ok=True)
+    run=Path(tempfile.mkdtemp(prefix='run-',dir=root))
+    valid=negative=0
+    for i,(label,tokens,raw,mode,prefix) in enumerate(cases()):
+        requests=oracle.token_events(tokens)
+        # Alternating pooled/override codebooks and full-alphabet dense codebooks
+        # exercise legal descriptions independently of the production planner.
+        v=oracle.vector(label,requests,dense=bool(i%3==2),override=bool(i%2))
+        desc=bytes.fromhex(v['descriptor']);payload=bytes.fromhex(v['payload'])
+        path=run/f'{i:03}.bin'
+        path.write_bytes(struct.pack('<7I',len(desc),len(payload),len(tokens),raw,len(requests),mode,prefix)
+                         +desc+payload+b''.join(struct.pack('<4I',*t) for t in tokens))
+        result=subprocess.run([str(exe),str(path)],capture_output=True,timeout=15)
+        (run/f'{i:03}.stdout').write_bytes(result.stdout);(run/f'{i:03}.stderr').write_bytes(result.stderr)
+        assert result.returncode==0,(label,result.returncode,result.stdout,result.stderr)
+        if mode:
+            negative+=1
+        else:
+            # Decode production-selected models/payloads with the independent bit
+            # reader and require every token-derived decision and exact finish.
+            planned_desc=Path(str(path)+'.descriptor').read_bytes()
+            planned_payload=Path(str(path)+'.payload').read_bytes()
+            assert oracle.decode(planned_desc,planned_payload,requests)==[s for _,s in requests],label
+            valid+=1
+    (run/'receipt.json').write_text(json.dumps({'passed':True,'valid':valid,'negative':negative,
+        'production_wires_independently_decoded':valid},indent=2)+'\n')
+    print(f'Decoded {valid} independent token wires and independently checked production wires; rejected {negative} invalid history/length cases')
+
+
+if __name__=='__main__':
+    main()

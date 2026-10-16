@@ -11356,3 +11356,15 @@ assignment and checking exact raw length, decisions, bits and model usage
 before any ordinary token copy. TVG-1476 derives supplied-model token wires
 and validates production-selected wires with the independent Python oracle.
 No external implementation, restricted source or imported test suite was used.
+
+### IR-1299: native64KiB Huffman frame preflight and private restoration
+
+Implement DD-1610's exact stream/frame envelope with first-party tANS envelope
+and frame-controller contracts as references. Adapt admission to the specified
+Huffman identities,15-bit code cap,2518-byte descriptor bound and absence of
+ANS state words. Reuse the repository-owned private token decoder and typed
+overlap reconstructor. Validate the complete descriptor before payload work;
+publish ordinary raw only after entropy finish, history and reconstruction.
+TVG-1477 constructs frames independently from supplied models and restores raw
+bytes with a separately written overlap loop. No external implementation,
+restricted source or imported test suite was consulted.

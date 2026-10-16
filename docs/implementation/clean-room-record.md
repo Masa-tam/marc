@@ -41875,3 +41875,18 @@ Existing formats, executable and exchange artifacts remain unchanged. No
 external or restricted implementation was consulted. Raw-frame quarantine,
 public transforms/API/CLI, fuzz, comparative measurements and exchange are
 unfinished; no public profile completion or physical peak is claimed.
+
+### CR-1850: 2026-10-17 — native64KiB Huffman private raw frames
+
+Author/reviewer: Codex. Added exact stream/frame validation, serialization,
+descriptor-first prefix preflight and private raw restoration under DD-1610.
+IR-1299 records the first-party envelope, token and reconstruction references;
+TVG-1477 records independent wire/overlap checks. Unknown tuples, reserved
+fields, contradictory counts and allocation extents reject before payload
+decoding. No native structures are serialized. Ordinary parsed/serialized/raw
+destinations commit only on success, and prior frames survive a later reset-
+history failure. Separate conservative workspace charges include full provided
+regions; measured peaks and public grants remain unqualified. Directed
+ASan/UBSan covers all12 reachable production units and53 frame fixtures.
+No external or restricted source was consulted. Public streaming/API/CLI,
+raw match selection, fuzz, comparative measurements and exchange remain open.

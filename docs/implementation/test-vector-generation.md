@@ -23935,3 +23935,28 @@ reachable production translation units instrumented by ASan/UBSan. Source
 and executable hashes and empty diagnostics are retained and audited.
 Raw-frame publication, public chunked APIs, CLI, randomized fuzzing, corpus
 comparisons, physical peaks and exchange qualification remain separate gates.
+
+### TVG-1477: native64KiB Huffman envelope and private raw frames
+
+The independent Python oracle wraps48 valid token cases as exact MARC/MRF2
+wires, including one empty header-only stream. A separate byte-overlap loop
+produces expected raw output. C++stream serialization must match the112-byte
+independent header, every valid raw frame restores exactly, and all47
+production frame re-encodings are parsed and checked decision by decision
+by the independent model parser/bit reader. Five structurally valid frames
+with invalid history or declared raw length reject with zero committed sizes
+and no ordinary raw output changes.
+
+Directed units check every stream/frame truncation, each fixed stream-header
+byte and each frame-header byte, stream frame-size endpoints, the Huffman
+length limit, prefix-only descriptor admission, output/control aliases and
+short raw buffers. A trailing-bit failure after every private token has been
+decoded leaves raw unpublished. Exact/one-short aggregate frame encoding and
+decoding quotas retain ordinary outputs on failure. Three frames partition
+an original size into4/4/1 bytes with zero-based sequences. A subsequent
+grammar-valid reference cannot use an earlier frame's dictionary history;
+its failure preserves the prior committed frame and the untouched tail.
+These units and the53-case independent frame differential suite pass with
+all12 reachable production translation units instrumented by ASan/UBSan.
+This is directed sanitizer qualification, not randomized fuzzing, a public
+partial-buffer transform qualification or a physical-memory measurement.

@@ -255,3 +255,25 @@ records48 independent valid wires, independent validation of all48 production
 wires, five history/length failures, full-frame literal/overlap restoration
 and directed sanitizer qualification. Raw-frame quarantine, public streaming
 API/CLI, randomized fuzzing, measurements and exchange remain unfinished.
+
+### 64KiB native envelope and private raw-frame milestone
+
+Native stream/frame validators, explicit serializers and prefix/full extent
+preflight now exist. Prefix admission validates the complete descriptor before
+payload buffering; it does not claim entropy termination or history validity.
+Huffman payloads may be empty when modeled decisions consume zero bits, and
+do not have ANS state words. Full finite frame decode reconstructs tokens
+once into private scratch, completes entropy/history checks, then reconstructs
+private raw using the bounded typed reconstructor. Ordinary raw copies only
+after every step succeeds. The scratch entry remains private even on success
+until its future stream controller explicitly permits draining.
+
+Frame requirements report the minimum private decoder footprint: exact input
+extent, token storage, raw storage,53 decode-table slots and bounded nested
+token/frame work. Caller destinations and controls are additional; actual
+frame calls charge their complete provided regions. These logical admission
+figures are not physical peaks or public grants. TVG-1477 records independent
+raw restoration, descriptor-first parsing, transactional failures, exact
+resource boundaries, final partial frames and reset history isolation. Raw
+match selection, public chunked streaming/API/CLI, randomized fuzzing, corpus
+measurements and exchange remain unfinished.
