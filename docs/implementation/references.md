@@ -11719,3 +11719,13 @@ Define DD-1616 from the established family grammar and qualify it with the
 first-party parameterized Huffman oracle. Freeze independent positive and
 negative wires before production implementation. Consult no external
 implementation, restricted source or imported suite.
+
+### IR-1334: eight-MiB native Huffman entropy core
+
+Adapt the independently authored four-MiB descriptor, scalar/reference coder,
+pooled/override planner and private writer to DD-1616. Use60 codebooks and
+the55-context partition, complete canonical tables, checked limits and
+success-only ordinary outputs. Strengthen independent vectors with actual
+negative wires, upper contexts and hand fifteen-bit codes before differential
+execution. Preserve every previous profile. No external implementation or
+restricted suite is consulted; no fuzz campaign is run during this goal.

@@ -104,3 +104,17 @@ code. The strengthened frozen set contains252 positives and62 actual negative
 descriptor/payload cases. Its default check compares against the frozen JSON;
 it no longer overwrites expected values during ordinary test execution.
 
+### Bounded entropy-core qualification
+
+TVG-1514 qualifies the descriptor validator/parser, scalar reference coder,
+deterministic pooled/override planner and private incremental writer. All252
+independent wires match and all62 malformed cases are rejected. All252
+production plans are decoded independently and normal/instrumented bytes
+agree. Exact/one-short budgets, aliases, late errors, strict model usage,
+zero-bit singleton completion, highest context54 and class23, padding and
+sticky lifecycle guards pass. The finite75,497,472-decision zero-bit block
+passes without allocating a maximum payload. Normal8/8 and six directly
+instrumented ASan/UBSan translation units pass independent artifact audit.
+No fuzz execution was performed. Token/history, frame quarantine, public
+API/CLI, resource defaults, measurements and exchange remain open.
+

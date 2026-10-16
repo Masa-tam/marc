@@ -42390,3 +42390,17 @@ positive wires, append56 directed cases and freeze62 actual negative wires.
 TVG-1513 records the preceding coverage limitations explicitly. Use only the
 first-party mathematical oracle and existing format definitions; no external
 or restricted implementation was consulted. No fuzz execution is performed.
+
+### CR-1889: 2026-10-17 — eight-MiB native Huffman entropy core
+
+Author/reviewer: Codex. Follow IR-1334 using first-party four-MiB descriptor,
+scalar, package planner and private-writer code with DD-1616's55 contexts,
+60 codebooks,2563-byte descriptor and checked decision bounds. TVG-1514
+establishes252 independent byte matches,62 negative rejections and normal/
+ASan/UBSan equality. Directed guards cover failure retention, exact quotas,
+aliases, upper contexts, strict terminal use and a finite maximum zero-bit
+block. Audit the source/binary/fixture binding; preserve previous production
+variants, vectors and generated artifacts. No external implementation,
+restricted source or imported suite was consulted. No fuzz is run during
+this goal; remaining token/history/frame/public and measurement/exchange
+gates are recorded separately rather than claimed complete.

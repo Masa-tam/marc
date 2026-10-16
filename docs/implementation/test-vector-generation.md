@@ -24788,3 +24788,20 @@ terminal bit checks. The former44 labels did not provide replayable production
 negative fixtures, and earlier coverage prose overstated individual upper
 context and hand-code checks. Default test execution now verifies frozen
 expectations rather than rewriting them. The252/62 finite set passes.
+
+### TVG-1514: eight-MiB bounded Huffman entropy core
+
+Replay252 independent positive wires and62 malformed descriptor/payload
+fixtures through the production validator/scalar coder. Verify exact canonical
+descriptor and payload bytes, decode every generated production plan with the
+independent oracle, and compare all252 normal/instrumented plan bodies.
+Directed tests retain ordinary descriptors, byte counts and output sentinels
+on parser, sizing, budget, alias and late-symbol failures; private writers
+retain guards and success-only finish counts. Verify strict model use,
+fifteen-bit fallback, highest context54/class23 and forbidden bit7, exact and
+one-short workspace, sticky failures, deterministic planning and75,497,472
+finite zero-bit decisions. Normal8/8 passes in52.35 seconds; six direct
+ASan/UBSan translation units and the independent source/binary/fixture audit
+pass with no diagnostics. The fixed Release executable/library remain intact.
+No fuzz execution is performed. Token/history and raw-frame publication are
+separate pending qualifications, as are API/CLI, measurements and exchange.
