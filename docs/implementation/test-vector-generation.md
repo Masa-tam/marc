@@ -24507,3 +24507,36 @@ units pass full-frame units and all71 fixtures, with empty diagnostic streams.
 Independent audit rechecks source/binary hashes, exact quotas, all wire pairs
 and normal/instrumented bytes. Raw reconstruction/frame quarantine, owners,
 public admission and remaining measurement/fuzz/exchange gates stay open.
+
+### TVG-1501: four-MiB native frame and stream quarantine
+
+Construct64 valid streams/frames and7 invalid-history/length frames from the
+independent token/event oracle. Restore raw bytes, replay input13/output31
+chunks, and independently decode all63 nonempty production frames. Normal
+and instrumented frame bytes agree. Ordinary raw/serialized destinations and
+unused tails remain unchanged on failure, and committed counts remain zero.
+
+Validate entire112-byte stream identities, fixed fields/reserved bytes,
+sequence/partition/reset rules and checked frame requirements. Fixed-field
+mutation probes reset their sentinels independently. A migration error in the
+new parser's reserved range was caught and corrected to52..63; explicit
+52/53 regressions preserve this range independently of the context count54.
+Check maximum37748736 decisions,70778880 payload bytes and70781505 serialized
+bytes without allocating that payload, plus excessive/configured-one-short
+declarations. Full4194304-byte literal frames use a hand35-byte zero-payload
+description with8388608 decisions and restore guarded raw output. Their test
+configuration explicitly uses frame-sized expansion slack; generic smaller
+slack correctly refuses that case. Earlier failed evidence remains retained.
+
+All small-stream input splits, byte output, zero-output backpressure, neutral
+Flush, explicit EndInput, unsupported reset, aliases, sticky terminals and
+truncations pass. Prior good frames remain available while a failed frame
+never drains. A complete bad second descriptor with a declared payload rejects
+before that payload byte is consumed/stored or failed raw bytes are published.
+Exact/one-short aggregate quotas preserve outputs.
+
+Normal4/4 passes in9.17 seconds. Each of the two directly instrumented entries
+compiles13 production units plus its test with ASan/UBSan; both unit suites
+and all71 differential cases pass with empty diagnostic streams. Independent
+audit checks all source/binary hashes and production frame pairs. Owning/public
+resources/API/CLI, ordinary corpus/peaks, coverage fuzz and exchange remain open.

@@ -142,3 +142,15 @@ and independent artifact audit pass. These are logical scope checks, not
 normal process peaks or public defaults. Raw reconstruction/frame quarantine,
 streaming/owners, public API/CLI, all-member measurements, fuzz and exchange
 remain unqualified.
+
+### Frame and stream quarantine checkpoint
+
+TVG-1501 qualifies exact envelopes, checked prefix/full-frame admission,
+success-only ordinary output and private raw draining after complete token,
+history and reconstruction validation. All64 independent streams/frames and7
+negative cases pass;63 generated frames are independently decoded and normal/
+instrumented bytes agree. Maximum metadata and full-frame zero-payload cases,
+reserved52/53 regressions, exact quotas, every small split and failed-second-
+descriptor publication guards pass. Normal4/4 and two14-unit direct ASan/UBSan
+closures pass independent artifact audit. Owners, public resource defaults/API/
+CLI, all-member comparisons/peaks, coverage-guided fuzz and exchange remain open.

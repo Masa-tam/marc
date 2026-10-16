@@ -11602,3 +11602,13 @@ exact entropy/token/raw completion before copying any ordinary output. Derive
 workspace charges from actual types and supplied span capacities; independently
 construct valid far-history and malformed late-reference wires. Consult no
 external implementation, restricted source or imported suite.
+
+### IR-1322: four-MiB native Huffman frame and stream quarantine
+
+Specialize the first-party one-MiB envelope validator, frame controller and
+stream decoder to DD-1614. Admit complete descriptors before collecting payload,
+decode tokens and reconstruct raw data only in private storage, and drain only
+fully validated frames. Retain prior good frames, ordinary failure invariants,
+chunk/progress/terminal contracts and checked workspace accounting. Construct
+frames independently and test both maximum bounds and late failures. Consult
+no external implementation, restricted source or imported suite.

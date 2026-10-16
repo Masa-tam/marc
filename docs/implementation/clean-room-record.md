@@ -42230,3 +42230,17 @@ diagnostic streams, retaining earlier test/tool evidence. No external
 implementation, restricted source or imported suite was consulted. Frame/raw
 publication, owning/public resources and later qualification remain open;
 the fixed runtime is unchanged.
+
+### CR-1876: 2026-10-17 —four-MiB frame and stream quarantine
+
+Author/reviewer: Codex. Follow IR-1322 using first-party envelope/controller
+structures and private token/reconstruction paths. TVG-1501 qualifies raw
+failure quarantine, descriptor-before-payload admission, all split/terminal
+contracts, upper metadata bounds and64 valid/7 malformed frames. The new
+parser's reserved-offset migration defect was caught by independent field
+probes, corrected and given explicit52/53 regressions. Test slack/endpoint
+settings are specialized to the four-MiB format; earlier evidence remains.
+Normal4/4, both14-unit direct ASan/UBSan closures and independent artifact
+audit pass without diagnostics. No external implementation, restricted source
+or imported suite was consulted. Owning/public admission and later performance,
+fuzz/exchange gates remain open; the fixed runtime is unchanged.
