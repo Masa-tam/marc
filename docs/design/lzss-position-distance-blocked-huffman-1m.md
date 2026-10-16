@@ -246,3 +246,13 @@ tests preserve targets, and all89 preceding archives remain byte-identical.
 Previous runtime artifacts are retained before replacement. All12 contextual
 comparisons, encode/decode timing and normal public peaks, coverage-guided
 fuzz, and schema80/90-archive self/cross/history qualification remain open.
+
+### Paired measurement infrastructure checkpoint
+
+TVG-1494 qualifies normal public timing/resource drivers against both exact
+CLI selectors, including five boundary sizes and publication failures. The
+contextual one-MiB public profile sets both window and frame to1048576 and
+emits dictionary2/3, context1/2, entropy2/2; native emits2/9,1/29,2/4. Both
+encoders use minimum match5, while their wire minima remain5 and3 respectively.
+Corpus results, normal directional peaks and the full receipt audit remain
+pending at this checkpoint. Fuzz and schema80 exchange are subsequent gates.

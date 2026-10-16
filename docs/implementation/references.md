@@ -11541,3 +11541,13 @@ existing temporary/rename file controller and test whole-file publication,
 malformed identities, independent grammar and known frame boundaries before
 updating the fixed runtime. Consult no external implementation, restricted
 source or imported suite.
+
+### IR-1316: one-MiB pooled Huffman paired public measurements
+
+Adapt the first-party64KiB public timing and streaming resource drivers to
+the qualified one-MiB native C factory and the existing contextual Blocked
+Huffman one-MiB public profile. Check actual stream identities, window/frame
+settings, CLI byte identity and restoration before accepting measurements.
+Use one warmup and three timing samples, excluding file I/O and comparison,
+and fresh normal processes for directional physical peaks. Consult no external
+implementation, restricted source or imported test suite.

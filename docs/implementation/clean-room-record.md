@@ -42118,3 +42118,14 @@ existing exchange bodies. Relevant fixed CLI/documentation checks and retained
 artifact audit pass. No external implementation, restricted source or imported
 suite was consulted. Corpus comparisons/public peaks, coverage-guided fuzz
 and schema80 exchange remain separate gates; no hosted/external result is claimed.
+
+### CR-1867: 2026-10-17 —one-MiB paired public measurement infrastructure
+
+Author/reviewer: Codex. Apply IR-1316 using first-party64KiB measurement drivers
+and the existing one-MiB contextual public profile. TVG-1494 qualifies actual
+headers, public CLI byte identity, restoration, directional timing/resource
+paths, comparison failures and target preservation at five boundary sizes.
+The ordinary optimized build and documentation checks pass. No external
+implementation, restricted source or imported suite was consulted. Full12-member
+comparison/audit, coverage-guided fuzz and schema80 exchange remain pending;
+this checkpoint does not claim complete one-MiB qualification or hosted results.

@@ -24358,3 +24358,17 @@ takes15.57 seconds in the recorded run under its180-second suite watchdog.
 This is CLI qualification, not a throughput or corpus/peak comparison.
 All-member measurements, coverage-guided fuzz and schema80/90-archive exchange
 qualification remain open.
+
+### TVG-1494: one-MiB paired public measurement-path qualification
+
+Qualify native and contextual public timing/resource paths at lengths0,1,
+1048575,1048576 and1048577. Check both emitted identities against their
+specified dictionary/context/entropy variants and actual one-MiB windows and
+frames. Resource-driver archives must equal public CLI output, and decoded
+bytes must equal the original. Each direction uses one warmup and three
+positive timing samples; native query charges reconcile the separately
+retained comparison vectors. Wrong expected output must fail, existing
+targets remain unchanged, and a late malformed entropy frame must not publish
+a whole-file target. All five boundary cases pass for both profiles and both
+directions. Full-corpus measurements and their independent receipt audit are
+separate, still pending at this checkpoint; fuzz and exchange also remain open.
