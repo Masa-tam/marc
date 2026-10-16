@@ -2115,3 +2115,23 @@ full audit verified all648 production objects, source/binary/original-seed
 hashes and no sanitizer, invariant or saved failure artifacts. Campaign RSS
 and watchdog values remain harness guards, separate from normal peaks and
 logical admission. Schema81 exchange and the final four-MiB audit remain open.
+
+### Execution exclusion during native Blocked Huffman qualification
+
+The maintainer requests no further fuzz execution until the current seven-
+window native Blocked Huffman goal is finished. Retain completed historical
+campaigns, seeds, binaries and findings; do not rerun them or count omitted
+campaigns as passed. Directed finite correctness, malformed-input and
+differential tests remain separate from fuzz campaigns.
+
+CI explicitly configures `MARC_BUILD_FUZZERS=OFF` and excludes test names
+matching `[Ff][Uu][Zz][Zz]` from every CTest execution, including installed
+consumers. The same exclusion applies to local broad CTest qualification.
+Retain all registered tests and source code. A show-only inventory at this
+checkpoint contains4476 tests, of which201 are excluded and4275 retained;
+no retained command names a fuzz entry or fuzz test filter. This inventory
+check executes no tests and is not a hosted CI result. Counts may grow as
+the remaining windows are added. Record later selected/excluded counts when
+qualifying the final tree. Explicitly review and remove the temporary CI
+execution exclusion after the maintainer's stated goal boundary; it must not
+be silently treated as completed fuzz coverage.
