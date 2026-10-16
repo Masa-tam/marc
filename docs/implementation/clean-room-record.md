@@ -42453,3 +42453,16 @@ charges. DD-1617's planned640MiB default derives from these qualified queries
 and precursors; actual public wrapper charges and construction remain open.
 No external implementation or restricted suite was consulted and no fuzz
 was executed. All-corpus paired measurements and exchange remain unfinished.
+
+### CR-1894: 2026-10-17 — eight-MiB native Huffman C boundary
+
+Author/reviewer: Codex. Follow IR-1339 using only the first-party C-boundary
+and qualified eight-MiB owners. Preserve prior header declarations, actual
+resource scopes, generic process/destroy behavior and fixed-runtime backups.
+TVG-1519 establishes both default constructions, exact public charges,499
+independent raw/wire matches, allocation rollback and ordinary failed-frame
+quarantine. Normal9/9 and19 direct ASan/UBSan units pass artifact audit; prior
+88/91 bodies restore and re-encode exactly through the retained CLI/new library.
+No external or restricted implementation was consulted, no fuzz was executed,
+and no push or external validation is claimed. CLI and later profile gates
+remain open.

@@ -1704,7 +1704,7 @@ foreach(stale_position_distance_contract IN ITEMS
         message(FATAL_ERROR "Stale position-distance status: ${stale_position_distance_contract}")
     endif()
 endforeach()
-math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 3 + 2 + 2 + 2 + 2 + 7 + 7 + 3")
+math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 3 + 2 + 2 + 2 + 2 + 7 + 7 + 4")
 foreach(one_mib_contract IN ITEMS
         "marc_lzss_position_distance_dynamic_range_1m_config_init()"
         "marc_lzss_position_distance_dynamic_range_1m_workspace_requirements()"
@@ -1837,10 +1837,10 @@ foreach(tans_window IN ITEMS 16m 32m 64m)
 endforeach()
 set(c_api_position_huffman_initializers ${c_api_config_initializers})
 list(FILTER c_api_position_huffman_initializers INCLUDE REGEX
-    "marc_lzss_position_distance_blocked_huffman(_1m|_4m)?_config_init")
+    "marc_lzss_position_distance_blocked_huffman(_1m|_4m|_8m)?_config_init")
 list(LENGTH c_api_position_huffman_initializers c_api_position_huffman_count)
-if(NOT c_api_position_huffman_count EQUAL 3)
-    message(FATAL_ERROR "Missing additive64KiB/one-MiB/four-MiB position-distance Blocked Huffman initializers")
+if(NOT c_api_position_huffman_count EQUAL 4)
+    message(FATAL_ERROR "Missing additive64KiB/one-MiB/four-MiB/eight-MiB position-distance Blocked Huffman initializers")
 endif()
 foreach(position_huffman_contract IN ITEMS
         "marc_lzss_position_distance_blocked_huffman_config_init()"
@@ -1874,12 +1874,23 @@ foreach(four_mib_huffman_contract IN ITEMS
         message(FATAL_ERROR "Missing four-MiB position Huffman API contract: ${four_mib_huffman_contract}")
     endif()
 endforeach()
+foreach(eight_mib_huffman_contract IN ITEMS
+        "marc_lzss_position_distance_blocked_huffman_8m_config_init()"
+        "marc_lzss_position_distance_blocked_huffman_8m_resource_requirements()"
+        "marc_lzss_position_distance_blocked_huffman_8m_create()"
+        "2/11+1/31+2/6" "75497472" "141557760" "30660" "640MiB"
+        "failed frames" "declared I/O")
+    string(FIND "${c_api_content}" "${eight_mib_huffman_contract}" eight_mib_huffman_offset)
+    if(eight_mib_huffman_offset EQUAL -1)
+        message(FATAL_ERROR "Missing eight-MiB position Huffman API contract: ${eight_mib_huffman_contract}")
+    endif()
+endforeach()
 if(NOT c_api_profile_count EQUAL expected_c_api_profile_count)
     message(FATAL_ERROR
         "C API initializer count ${c_api_profile_count} must contain the "
         "${cli_profile_count} CLI profiles plus five experimental profiles "
         "and three existing public position-distance families plus "
-        "two separate eight-MiB, two separate sixteen-MiB and two separate thirty-two-MiB and two separate sixty-four-MiB direction initializers plus seven owning position rANS initializers, seven owning position tANS initializers and three owning position Blocked Huffman initializers")
+        "two separate eight-MiB, two separate sixteen-MiB and two separate thirty-two-MiB and two separate sixty-four-MiB direction initializers plus seven owning position rANS initializers, seven owning position tANS initializers and four owning position Blocked Huffman initializers")
 endif()
 list(FILTER c_api_config_initializers INCLUDE REGEX
     "marc_lzss_contextual_(dynamic_range|rans|tans|adaptive_huffman|blocked_huffman)_config_init")

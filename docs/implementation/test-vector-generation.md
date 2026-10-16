@@ -24887,3 +24887,26 @@ and actual API admission. These finite precursors are separate from all-corpus
 measurements and are not a physical-memory ceiling. Fuzz is omitted by request.
 Public API/CLI, all-member comparisons/peaks, exchange and final audit remain
 pending.
+
+### TVG-1519: eight-MiB native Huffman public C qualification
+
+Add separate C configuration/resources/factory functions without changing any
+prior declaration. Confirm qualified config/resource layouts136/120 bytes;
+query actual public scopes, construct both complete defaults under640MiB and
+exercise C static/shared one-byte round trips. With65536 retention and two
+65536 call buffers the public queries are635845671 encode and251157534 decode
+bytes, including200816 external bytes. Default retention0 queries subtract
+65536; private costs remain independently exposed. A256MiB grant refuses full
+encode and admits decode, including8388608 bytes of extra retention.
+
+Verify success-only query outputs, invalid ABI/flags/limits before allocation,
+all10/7 allocation failures with rollback, exact/one-short limits, pointer
+aliases, declared call capacities, decision floors, allocation-free process,
+sticky lifecycle, full F-1/F/F+1 partitioning, truncation and failed-frame
+quarantine. All499 independent raw fixtures match owned/public-normal/public-
+instrumented bytes and are independently decoded. Normal9/9 passes in93.79
+seconds, including preceding shared factories and four-MiB CLI regression;
+19 directly instrumented units and independent audit pass without diagnostics.
+The fixed existing CLI/new library restore and re-encode all prior88 and91
+archive bodies exactly. Fuzz is omitted by request. Eight-MiB CLI, all-member
+comparison/ordinary peaks, exchange and final audit remain open.

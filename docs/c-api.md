@@ -1383,3 +1383,44 @@ capacities and retains sticky error/EOS. Flush is neutral; ResetBlock is
 unsupported. Only completely validated raw frames enter the public draining
 state. CLI, complete contextual comparisons/physical peaks, coverage fuzz and
 exchange remain separately qualified gates.
+
+## Native eight-MiB position-distance Blocked Huffman
+
+`marc_lzss_position_distance_blocked_huffman_8m_config_init()`,
+`marc_lzss_position_distance_blocked_huffman_8m_resource_requirements()` and
+`marc_lzss_position_distance_blocked_huffman_8m_create()` select the additive
+tuple `2/11+1/31+2/6`. `_8m_config` and `_8m_resources` retain the established
+native field layouts. Decoder grammar is3..258; encoding uses fixed-five
+longest/nearest matches. All unspecified or foreign identities are refused.
+
+Defaults are8388608-byte frame/window,75497472 decisions,141557760 payload
+bytes,30660 codebook entries, distance8388608 and match length258. Expansion
+ratio1024 has8388608 slack bytes. Declared I/O capacities are65536 each;
+retained caller storage defaults0. DD-1617's640MiB logical default derives
+from owner queries and normal resource precursors. It includes actual public
+controls and declared I/O/retention charges; it is not a physical RSS cap.
+Use the resource query for the actual ABI/layout and configured caller scope.
+
+Queries expose owned buffers, owner controls, nested working storage, metadata
+floor and external charges separately. `max_block_size` is a decision ceiling
+and grant floor, not another buffer. Refused queries preserve their destination.
+Create checks invalid configurations before allocation, clears failed handles
+except config/handle overlap, and rolls back partial allocations. A reduced
+model quota may admit construction and refuse a later descriptor by actual use.
+
+Direction is immutable. Process allocates nothing, enforces declared capacity,
+keeps sticky error/EOS, accepts neutral Flush and refuses ResetBlock. Only fully
+validated frames drain; failed frames never publish a raw prefix. Public C
+qualification, CLI, all-member comparisons/ordinary peaks and exchange are
+tracked independently. Fuzz is omitted during this goal by user request.
+
+TVG-1519 qualifies the public boundary, including both complete default
+constructions. Actual resource queries with65536 caller-retention bytes and
+two65536 call buffers report635845671 encode and251157534 decode bytes;
+external charges are200816 bytes on the qualified layouts. The unmodified
+default retention0 queries are635780135/251091998 bytes. Query each configured
+scope rather than treating these values as ABI-independent constants or RSS.
+Normal/static/shared tests,499 independent raw fixtures and direct ASan/UBSan
+checks retain failure/publication guarantees. Prior declarations and88/91
+archive bodies remain unchanged; CLI and later gates remain independently
+qualified.

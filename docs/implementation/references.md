@@ -11770,3 +11770,14 @@ grant, reporting caller I/O/control charges separately from process peaks.
 Validate actual headers and restoration, normal build flags and source/binary
 binding before proposing a public default. Use first-party measurement methods
 only; no external implementation or fuzz execution is involved.
+
+### IR-1339: eight-MiB native Huffman public C boundary
+
+Add separate eight-MiB configuration/resources/factory declarations and the
+qualified owning transforms behind the established C handle. Preserve prior
+declarations and generic process/destroy behavior. Apply DD-1617's measured
+640MiB logical default, qualify actual public controls and caller charges,
+fault rollback, aliases, process capacities and failed-frame quarantine.
+Replay independent raw fixtures through ordinary and directly instrumented
+public paths and retain previous runtime artifacts. Consult no external or
+restricted implementation; execute no fuzz tests.

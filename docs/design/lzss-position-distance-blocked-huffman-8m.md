@@ -191,3 +191,18 @@ ResetBlock is unsupported. Public API/CLI, actual ABI/default qualification,
 all-member same-window contextual comparisons and ordinary peaks, schema82
 exchange and final local audit remain open. Fuzz is omitted by user request.
 
+### Public C API qualification
+
+TVG-1519 qualifies the additive configuration/resources/factory boundary,
+prior declaration preservation and actual layouts. Both complete default
+configurations construct under640MiB. Actual public queries with65536 caller
+retention bytes and two65536 call buffers report635845671 encode and251157534
+decode bytes, with200816 external bytes; private owner costs remain separate.
+Exact/one-short limits, all10/7 constructor faults, aliases, decision floors,
+declared capacities, allocation-free processing and failed-frame quarantine
+pass. All499 independent raw fixtures agree across owned/public-normal/public-
+instrumented paths. Normal9/9,19 direct ASan/UBSan units, prior88/91 runtime
+restoration/re-encoding and independent artifact audit pass. CLI, all-member
+comparisons/ordinary peaks, schema82 exchange and final audit remain open.
+Fuzz is omitted by request.
+
