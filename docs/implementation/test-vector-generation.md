@@ -24717,3 +24717,24 @@ and two decode members. Physical peaks are higher on every member in both
 directions. Preserve both profiles and record the tradeoffs, keeping logical
 admission separate from physical usage. Coverage fuzz, schema81 exchange and
 the final four-MiB audit remain open.
+
+### TVG-1508: four-MiB Huffman coverage-guided foundation and pilots
+
+FZ-0099 qualifies five first-party entries against754 immutable independent
+seeds:364 descriptor,364 payload,8 token,10 stream and8 public cases. Verify
+300 positive/64 negative source vectors and every original seed hash. Bounded
+mutations check descriptor failure retention, scalar re-encoding, ordinary/
+private token agreement and guards, split-stream/error-position equivalence,
+sticky lifecycle, public determinism/roundtrip and failed-frame quarantine.
+Use the four-MiB descriptor ceiling2561,59 codebooks,9R decision bound and
+11265-byte bounded stream scratch; fixed stream offsets stay unchanged.
+
+Compile all648 actual production units plus five entries with coverage,
+ASan and UBSan. Independently audit653 compile records/object freshness,
+source/header and executable hashes. Run600 units per entry with seed1614,
+strictly beyond the largest364-file initial corpus; all3000 units finish
+without findings or saved failure artifacts. Pilot durations/instrumented RSS
+and calculated main guards are recorded at FZ-0099, separately from ordinary
+BM-0252 peaks. Verify all raw logs and unchanged754 original seeds after the
+pilots. The10000-unit-per-entry campaigns, final fuzz artifact audit, schema81
+exchange and final four-MiB audit remain open.

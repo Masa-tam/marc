@@ -9545,6 +9545,11 @@ if(MARC_BUILD_FUZZERS)
         lzss_position_blocked_huffman_1m_tokens
         lzss_position_blocked_huffman_1m_stream
         lzss_position_blocked_huffman_1m_public
+        position_blocked_huffman_4m_descriptor
+        position_blocked_huffman_4m_payload
+        lzss_position_blocked_huffman_4m_tokens
+        lzss_position_blocked_huffman_4m_stream
+        lzss_position_blocked_huffman_4m_public
         position_tans_64k_descriptor
         position_tans_64k_payload
         lzss_position_tans_64k_tokens

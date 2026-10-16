@@ -248,3 +248,14 @@ pass independent artifact audit with unchanged sources/binaries. Logical
 admission remains separate from ordinary physical peaks. Coverage-guided fuzz,
 schema81 exchange and the final four-MiB audit remain required for local
 completion; hosted/final-family external validation remains separate.
+
+### Bounded coverage-guided pilot checkpoint
+
+TVG-1508 and [FZ-0099](../fuzzing.md) qualify five instrumented entries with
+754 immutable independent seeds and all648 actual production units. All3000
+serial pilot units pass source/object/binary/seed and raw-log audit without
+findings. Harness input/frame/output caps remain explicit; directed full-frame
+sanitizer tests complement these bounded lanes. Measured pilot RSS/time selects
+serial main guards, distinct from normal process peaks and logical codec
+admission. The full campaigns, final fuzz audit, schema81 exchange and final
+four-MiB audit remain required for local completion.

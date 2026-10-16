@@ -11675,3 +11675,15 @@ charges, serial command intervals and measurement source/binary binding.
 Record every member and total, target outcome and measured speed/memory
 tradeoffs without attributing complete-path differences solely to entropy.
 Consult no external implementation, restricted source or imported suite.
+
+### IR-1329: four-MiB Huffman bounded coverage-guided qualification
+
+Specialize five first-party one-MiB fuzz entries to the qualified four-MiB
+descriptor, payload/bit-reader, private/ordinary token, split-stream and public
+API paths. Preserve failure/publication assertions and use bounded harness
+buffers. Derive stream scratch from ceil(135R/8)+64+2561 and public decision
+limits from9R. Seed from independent frozen positive/negative wires and small
+grammar cases. Compile every actual production object with coverage/ASan/UBSan,
+verify object freshness and source/header/binary/seed hashes, then run serial
+pilots before choosing measured main-campaign guards. Consult no external
+implementation, restricted source or imported suite.

@@ -2073,3 +2073,39 @@ Normal corpus/physical peaks, schema80 exchange and the final profile audit
 remain separately recorded gates.
 Their completed one-MiB local status is recorded at IX-0098; the final95
 family and hosted/external gates remain open.
+
+## FZ-0099: four-MiB position-distance Blocked Huffman qualification
+
+Five first-party entries cover descriptor validation, payload/bit reading,
+guarded ordinary/private token decoding, split-stream publication and public
+owning lifecycle. All648 actual production translation units and five entries
+have verified coverage/ASan/UBSan compile commands and fresh object files;
+normal codec archives are excluded from these targets. Source/header, binary
+and original seed hashes are checked before and after execution. The754
+original seeds include300 positive and64 negative independent wires in each
+descriptor/payload lane, plus8 token,10 stream and8 public seeds.
+
+Maximum inputs are2562 descriptor bytes,65536 payload-harness bytes with at
+most8192 decisions,4096 token/stream bytes and128 public raw bytes. Stream
+frames are at most512 bytes and public frames32..64 bytes. The stream scratch
+capacity is11265 bytes, derived as ceil(135*512/8)+64+2561; its decision cap
+is4608. Small private stream/token harnesses admit4MiB logical storage, and
+the public harness retains the320MiB logical public grant with9R decisions.
+These limits bound the harness lanes; directed full-four-MiB sanitizer tests
+remain complementary. Instrumented RSS is distinct from normal physical peaks
+at BM-0252 and from logical codec admission.
+
+Each serial pilot completes600 units with seed1614, leaving mutation room
+beyond the364-file descriptor/payload initialization sets. All3000 units
+finish without sanitizer/invariant findings or saved crash/hang/leak/OOM
+artifacts. In descriptor/payload/token/stream/public order, elapsed times are
+1.422/2.678/11.341/13.697/25.970 seconds and instrumented peak RSS observations
+are43/158/173/240/235MiB. Independent source/object/binary/original-seed and
+raw-log audit passes. These are pilot observations, not normal codec peaks.
+
+The subsequent10000-unit campaigns use the same verified binaries, one target
+at a time. RSS guards derived from pilot observations plus quarantine/headroom
+are448/576/640/704/704MiB, with ten-second unit guards and process watchdogs
+180/239/817/974/1792 seconds. Full campaigns and their final artifact audit
+remain pending at this checkpoint. Schema81 exchange and final four-MiB audit
+also remain open; no hosted/external result is claimed.

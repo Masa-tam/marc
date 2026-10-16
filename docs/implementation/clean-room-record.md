@@ -42325,3 +42325,17 @@ Retain both selectors, logical scope distinctions and all evidence. Consult
 no external implementation, restricted source or imported suite. Existing
 formats/runtime artifacts remain unchanged. Coverage fuzz, schema81 exchange
 and final four-MiB audit remain unqualified.
+
+### CR-1883: 2026-10-17 —four-MiB bounded fuzz foundation and pilots
+
+Author/reviewer: Codex. Follow IR-1329 using first-party fuzz entries and frozen
+independent vectors. TVG-1508 verifies754 immutable seeds,648 instrumented
+production objects plus five entries, actual bounded harness charges and
+source/header/binary/original-seed binding. All3000 serial pilot units finish
+without sanitizer/invariant findings or saved crash/hang/leak/OOM artifacts.
+Independently audit compile flags, object freshness and raw logs. Derive main
+RSS/time guards from measured pilots, keeping instrumented usage separate from
+normal physical peaks and public logical admission. Consult no external
+implementation, restricted source or imported suite. Full campaigns, final
+fuzz audit, schema81 exchange and final profile audit remain open; production
+formats and the validated runtime are unchanged.
