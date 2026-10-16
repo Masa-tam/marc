@@ -21,10 +21,9 @@ SHA-256, and the size and SHA-256 of every input and archive file.
 
 The latest maintainer-confirmed hosted CI and external four-route result is
 schema78 with88 archives (IX-0096). Schema79 adds the first Blocked Huffman
-profile locally (IX-0097). Schema80 appends the one-MiB profile, with Windows
-self/history/admission qualification complete and the remaining local routes
-still pending at IX-0098's initial checkpoint. No hosted CI or external90-archive
-result is claimed.
+profile locally (IX-0097). Schema80 appends the one-MiB profile, qualified in
+all four local routes and historical/admission tests at IX-0098. No hosted CI
+or external90-archive result is claimed.
 
 Download and extract a bundle from a successful GitHub Actions run. Build marc
 at the same commit on the platform being tested, then use an output directory
@@ -2287,3 +2286,22 @@ pending. BM-0251 records all12 paired comparisons and normal directional peaks;
 FZ-0098 records the completed50000-unit coverage-guided campaigns. The profile
 is not yet locally complete at this checkpoint, and no hosted/external result
 is supplied by these local tests.
+
+The completed checkpoint now verifies all90 archives in four local paths:
+Windows self, Ubuntu self, Windows producer to Ubuntu consumer, and Ubuntu
+producer to Windows consumer. Both producer bundles preserve the retained
+89-entry and starting88-entry prefixes, including all entry values/property
+order and input/archive bytes. The new normal shared-library producer is
+independently built; its actual product objects and normal Release flags are
+audited alongside the fixed Windows runtime, whose validated bytes remain
+unchanged. Prior runtime/build/bundle artifacts remain retained.
+
+The complete17-test one-MiB qualification passes in152.41 seconds, covering
+independent vectors, differential paths, private-frame failure contracts,
+public APIs, CLI and measurement paths. Independent final audit reads every
+body and restoration in all80 historical schemas and all four local routes,
+checks all four prefix receipts,125 admission negatives, source/runtime
+binding, complete corpus comparison and50000-unit fuzz qualification. This
+closes the one-MiB local profile. Five larger windows and the final95-archive
+local audit remain open, followed by user push, hosted CI and external four
+routes. These local results do not supply those later confirmations.

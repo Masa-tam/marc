@@ -42177,3 +42177,16 @@ all prior bundles and new historical evidence. No external implementation,
 restricted source or imported suite was consulted. Separate-producer self,
 both cross routes and final complete profile audit remain pending; this local
 checkpoint does not claim hosted CI or external verification.
+
+### CR-1872: 2026-10-17 —one-MiB complete local qualification
+
+Author/reviewer: Codex. Complete IR-1318/TVG-1497/IX-0098 with two independently
+built producers and all four90-archive local self/cross paths, preserving both
+retained89-entry and original88-entry prefixes. Audit actual product objects,
+ordinary build flags, fixed runtime identity, every historical schema1..80
+body/restoration/re-encoding,125 admission cases and the17-test one-MiB suite.
+Reconcile the complete corpus/resource and50000-unit fuzz evidence. All local
+gates pass; preserve prior runtime/build/bundle evidence. No external
+implementation, restricted source or imported suite was consulted. This
+completes the one-MiB local profile, while five larger windows, final95 audit,
+user push, hosted CI and external four-route confirmation remain open.

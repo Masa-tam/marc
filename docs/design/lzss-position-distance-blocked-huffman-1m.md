@@ -1,5 +1,9 @@
 # One-MiB position-distance Blocked Huffman
 
+Local qualification is complete. The historical checkpoints below retain
+their original scope; the final closure records the complete profile evidence.
+The larger-window family and final hosted/external gates remain incomplete.
+
 ## DD-1612: exact one-MiB specialization
 
 Specialize the [family representation](lzss-position-distance-blocked-huffman.md)
@@ -7,9 +11,9 @@ without changing an earlier format. The exact tuple is dictionary2/9,
 context1/29, entropy2/4; the selector is
 `lzss-position-distance-blocked-huffman-1m`. Window is1048576 bytes, frame
 size is1..1048576 uncompressed bytes, wire lengths are3..258 and flags zero.
-Public encoding will retain fixed-five eligibility, longest match and nearest
-distance on equal length. This format milestone admits no production factory,
-CLI selector or exchange entry.
+Public encoding retains fixed-five eligibility, longest match and nearest
+distance on equal length. The initial format milestone preceded the production
+factory, CLI and exchange entry; their qualification is recorded below.
 
 ### Events, codebooks and descriptor
 
@@ -296,3 +300,16 @@ pre-launch/output admission refusals and historical execution of schemas1..80.
 The separate producer's self execution, both local cross routes and final
 one-MiB audit remain pending. This checkpoint is not complete local or hosted
 qualification; preceding ordinary corpus/resource and fuzz gates are complete.
+
+### One-MiB local qualification closure
+
+TVG-1497/IX-0098 now complete all90-archive local self/cross paths and schemas
+1..80, preserving both producers' original88/current89 prefixes. Admission
+negatives125 and the full17-test qualification pass. Independent final audit
+checks actual product objects/normal build flags, all route/historical bodies
+and restorations, fixed runtime identity and the earlier corpus/fuzz evidence.
+BM-0251 meets the contextual-size target on all12 members by a small margin,
+with measured encode benefits and decode/memory costs; retain both selectors.
+Together with FZ-0098 and the retained full-frame sanitizer cases, this closes
+the one-MiB local profile and permits four-MiB format work. Five larger windows,
+final95 local audit, user push and hosted/external confirmation remain open.

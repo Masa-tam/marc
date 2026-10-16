@@ -9288,5 +9288,6 @@ seven mask bytes and descriptor31..2547 bytes. It retains the family's pooled
 and optional override canonical Huffman rules, forward LSB-first payload,
 112-byte stream and64-byte reset-frame envelope with no coder state words.
 The linked design specifies every offset, zero field, exact count/history
-validation and checked full-frame bounds. This additive format definition
-does not expose a public codec or modify an earlier stream representation.
+validation and checked full-frame bounds. This additive variant leaves every
+earlier stream representation unchanged. Its public factory/CLI and completed
+local qualification are recorded at [IX-0098](interoperability.md).

@@ -367,3 +367,16 @@ FZ-0097, this completes the64KiB local profile and permits1MiB format work.
 The four member-specific size misses and mixed speed/memory results remain
 documented; local completion does not imply universal compression benefit.
 The remaining six profiles and final95 local/hosted/external gates stay open.
+
+### One-MiB local qualification closure
+
+The [one-MiB specialization](lzss-position-distance-blocked-huffman-1m.md)
+completes its local gates at IX-0098: exact format/vectors, ordinary/private
+decoders, failure quarantine, public API/CLI, all12 paired comparisons and
+normal peaks, bounded instrumented fuzz,90-archive exchange and historical
+schemas1..80. The final17-test suite and retained-artifact audit pass. Both
+producers preserve the starting88 and preceding89 archive entries and bytes.
+The size target is met on all12 materials with a small aggregate gain, while
+decode time and memory costs remain explicit. Two of seven local profiles are
+complete; four-MiB work may proceed. Five larger windows and the final95 local,
+hosted CI and external four-route gates remain open.

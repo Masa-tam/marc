@@ -24422,3 +24422,12 @@ all112 header bytes, refuse before a guarded codec can launch or output files
 can appear. Convert and execute every historical schema1..80 with retained
 evidence. These Windows tests pass; separate-producer self/cross execution and
 the final complete one-MiB audit remain pending at this checkpoint.
+
+Subsequent qualification completes all90-archive local self/cross paths using
+both independently built producers. Both preserve the original88 and retained
+89 entry/property/body prefixes. The complete17-test one-MiB suite passes in
+152.41 seconds. Independent final audit reopens all route/historical bodies
+and decoded/re-encoded output, every prefix receipt and125 admission cases,
+normal product-object/build flags, unchanged fixed runtime, corpus comparison
+and50000-unit fuzz evidence. All one-MiB local gates pass; final family95,
+hosted CI and external four-route qualification remain separate future gates.

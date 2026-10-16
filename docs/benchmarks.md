@@ -11633,3 +11633,6 @@ and normal optimized build configuration. This closes the one-MiB corpus/
 speed/public-peak measurement gate. Coverage-guided fuzz, schema80 exchange
 and the final one-MiB audit remain open; no hosted CI or external result is
 claimed here.
+Those later one-MiB local gates subsequently close at IX-0098; these measurement
+values remain unchanged. The larger-window family and hosted/external gates
+remain incomplete.

@@ -1349,3 +1349,6 @@ capacities refuse before consumption/publication. Flush is neutral, ResetBlock
 is unsupported, errors/EOS remain sticky and failed frames never drain. API
 qualification, CLI connection, all-member contextual comparisons/physical
 peaks, coverage-guided fuzz and exchange have separate completion records.
+The complete one-MiB local qualification is recorded at
+[IX-0098](interoperability.md); final family and hosted/external gates remain
+separate from that local result.

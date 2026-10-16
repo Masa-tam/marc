@@ -2071,3 +2071,5 @@ and the measured guard calculations. This closes the bounded small-input
 coverage-guided gate, complementing the directed full-frame sanitizer tests.
 Normal corpus/physical peaks, schema80 exchange and the final profile audit
 remain separately recorded gates.
+Their completed one-MiB local status is recorded at IX-0098; the final95
+family and hosted/external gates remain open.

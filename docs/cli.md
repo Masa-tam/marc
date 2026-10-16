@@ -1020,3 +1020,6 @@ length3/4/258 wires, all short-stream cuts, bad tables/metadata/padding,
 foreign profiles and valid-first/failed-second whole-file refusal are checked.
 All-member contextual comparisons, speed/physical peaks, coverage-guided fuzz
 and schema80 exchange remain separate gates.
+Those one-MiB local gates are complete at [IX-0098](interoperability.md),
+including all four local exchange paths. Hosted/external qualification of the
+final95-archive family remains separate.
