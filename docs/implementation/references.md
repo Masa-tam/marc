@@ -11521,3 +11521,13 @@ identity/settings and restored hashes in a separate orchestrator. Keep logical
 owner/control charges distinct from process high-water resident memory;
 measure full-frame pattern and seeded incompressible-looking input. No external
 implementation, restricted source or imported suite is consulted.
+
+### IR-1314: one-MiB pooled Huffman public C boundary
+
+Apply DD-1613 to the first-party64KiB native Huffman public factory/config
+and resource query. Add separate one-MiB types and symbols without changing
+existing layouts. Qualify exact declared IO/retention/control charges, aliases,
+factory failures and private-frame behavior through generic C process calls.
+Use the independently qualified499 raw fixtures and a directly instrumented
+implementation closure. Consult no external implementation, restricted source
+or imported test suite.

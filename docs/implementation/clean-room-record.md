@@ -42089,3 +42089,18 @@ query/normal precursor evidence, keeping actual adapter admission/tests open.
 No external implementation, restricted source or imported suite was consulted.
 This precursor neither substitutes for all12 same-window contextual comparisons
 nor closes API/CLI, final corpus/peaks, fuzz or exchange qualification.
+
+### CR-1865: 2026-10-17 —one-MiB pooled Huffman public C connection
+
+Author/reviewer: Codex. Apply IR-1314/DD-1613's additive types, three functions,
+96MiB logical default and separately charged boundary/call/retention storage.
+TVG-1492 checks actual layouts/defaults, alias/refusal/quotas, ten/seven
+allocation rollback sites, no process allocation, terminal/private-frame
+contracts and C static/shared operation. All499 independent public wires match
+normal, fully instrumented and internal-owner results. Instrument all19
+reached units including the generic C bridge and factory; no ASan/UBSan
+finding occurs. Preserve prior runtime artifacts before updating the library;
+retained88 and current89 archives still restore and re-encode identically.
+The previous header is unchanged outside the additive block. No external
+implementation, restricted source or imported suite was consulted. Public API
+qualification is separate from pending CLI, corpus/peaks, fuzz and exchange.

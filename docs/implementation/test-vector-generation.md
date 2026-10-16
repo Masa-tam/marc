@@ -24304,3 +24304,33 @@ bytes and identities are retained for audit. No all-member comparison,
 universal peak bound, throughput conclusion or public implementation completion
 is inferred. DD-1613 selects a96MiB logical default after this precursor;
 actual public-query, allocation/alias and process tests are subsequent gates.
+
+### TVG-1492: one-MiB pooled Huffman public C API
+
+Qualify the additive config/resource/factory through generic C process and
+destroy. Config/resources are136/120 bytes in the qualified layout and retain
+the64KiB field sizes. Audit the saved header after removing only the new
+declaration block: every previous declaration is unchanged. Check defaults,
+bad ABI/reserved/limits fields, checked external-charge overflow, pointer
+aliases, exact/one-short minimum grants and zero allocations on known refusal.
+Inject all ten encoder and seven decoder construction allocation failures;
+partial ownership is released. A32MiB configured grant admits the measured
+decoder requirement and refuses the encoder, including declared retention.
+
+Guarded one-byte/zero-output and varied chunk calls allocate nothing; verify
+immutable direction, sticky EOS/error, unsupported ResetBlock, every small
+stream truncation, byte-span caps and failed-second-frame withholding. Full
+window minus/equal/plus-one sizes pass. Active-codebook limits reject at the
+descriptor prefix before payload/publication. C static/shared smoke passes.
+All499 independent raw fixtures match mathematical parsing/decoding, and
+public normal, instrumented and internal-owner encoded bytes are identical.
+
+With65536 declared retained bytes and65536-byte I/O capacities each, actual
+public minimum queries are74842839 encode and29893386 decode bytes, including
+200816 external/control bytes. These are logical scopes, not process peaks.
+Direct ASan/UBSan builds include all19 reached units, the factory and generic
+C process/destroy, without a normal codec archive. Units and499 fixtures pass.
+Preserve the fixed runtime before DLL update; the updated library with the
+existing CLI restores/re-encodes all retained88 and current89 archives exactly.
+CLI one-MiB connection, all-member comparisons/physical peaks, coverage-guided
+fuzz and schema80 exchange remain separate gates.

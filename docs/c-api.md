@@ -1318,3 +1318,34 @@ remain sticky, and raw bytes drain only after the complete private frame has
 validated; a failed frame never drains. The local API tests cover small-frame
 round trips and withholding a failed second frame. CLI, contextual comparison,
 benchmark, fuzzing, and exchange-bundle qualification remain separate gates.
+
+## Native one-MiB position-distance Blocked Huffman
+
+`marc_lzss_position_distance_blocked_huffman_1m_config_init()`,
+`marc_lzss_position_distance_blocked_huffman_1m_resource_requirements()` and
+`marc_lzss_position_distance_blocked_huffman_1m_create()` select the additive
+tuple `2/9+1/29+2/4`. The wire grammar permits lengths3..258, and the encoder
+uses fixed-five longest/nearest selection. Existing types and variants retain
+their layouts and meanings.
+
+Defaults are frame/window1048576, decision ceiling8388608, payload15728640,
+codebook entries29127, maximum distance1048576 and match length258. Expansion
+ratio is1024 with1048576 slack bytes. Input/output capacities default65536
+each and external retention0. The96MiB logical default follows DD-1613's
+full-frame query and normal resource precursor. It includes declared calls,
+retained caller storage and bounded public controls; it is not a process RSS
+limit. Use the resource query for the actual ABI/layout and configured scope.
+
+The query separates owned storage, nested working allowance, metadata floor,
+external charges and minimum aggregate admission. Ordinary query output is
+unchanged on failure. Create refuses before known-invalid allocation and sets
+the destination handle null on refusal, except overlapping config/handle
+storage remains untouched. Partial construction releases every allocation.
+Reduced active-codebook limits are checked at descriptor admission; constructor
+success does not guarantee admission of all possible future descriptors.
+
+Direction is immutable. Process allocates nothing; spans beyond declared
+capacities refuse before consumption/publication. Flush is neutral, ResetBlock
+is unsupported, errors/EOS remain sticky and failed frames never drain. API
+qualification, CLI connection, all-member contextual comparisons/physical
+peaks, coverage-guided fuzz and exchange have separate completion records.

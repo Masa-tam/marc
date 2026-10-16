@@ -221,3 +221,17 @@ exceeding declared capacities reject before consuming or producing bytes.
 Sticky errors/EOS, neutral Flush, unsupported ResetBlock and frame-private
 validation/draining remain unchanged. API/CLI implementation, all-member
 contextual comparisons and physical peaks, fuzz and exchange remain open.
+
+### Public C API qualification checkpoint
+
+TVG-1492 qualifies the additive config/query/factory, observed136/120-byte
+layouts,96MiB default, exact declared charges, aliases/refusals and all
+construction allocation failures. Process remains allocation free, and the
+private-frame/terminal/capacity contracts pass guarded chunk/byte/zero calls.
+C static/shared and499 independent raw fixtures pass; normal/instrumented/
+owner bytes agree. The updated library also preserves all88 baseline and89
+current archive bodies with the existing CLI. Actual public queries with
+65536 retained bytes and two65536-byte I/O capacities are74842839 encode and
+29893386 decode, distinct from the normal precursor's physical peaks. CLI
+connection, all12 contextual comparisons/public physical peaks, fuzz and
+schema80 exchange remain open; the one-MiB profile is not yet complete.
