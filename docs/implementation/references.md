@@ -11368,3 +11368,14 @@ publish ordinary raw only after entropy finish, history and reconstruction.
 TVG-1477 constructs frames independently from supplied models and restores raw
 bytes with a separately written overlap loop. No external implementation,
 restricted source or imported test suite was consulted.
+
+### IR-1300: bounded64KiB Huffman raw and streaming integration
+
+Reuse the repository-owned short-length escape exhaustive and indexed match
+parsers with minimum eligible match length5, longest match and nearest-distance
+tie break. Use first-party tANS stream-controller and allocation-ownership
+contracts as references, adapting storage and nested workspace admission to
+Huffman tables and the105-bits-per-raw-byte payload bound. Each frame enters
+draining only after private entropy/history/raw validation succeeds. TVG-1478
+uses a separately written greedy parser to verify the production event sequence
+and code stream, without importing an external implementation or test suite.

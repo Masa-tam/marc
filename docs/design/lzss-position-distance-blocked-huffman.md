@@ -277,3 +277,25 @@ raw restoration, descriptor-first parsing, transactional failures, exact
 resource boundaries, final partial frames and reset history isolation. Raw
 match selection, public chunked streaming/API/CLI, randomized fuzzing, corpus
 measurements and exchange remain unfinished.
+
+### 64KiB raw and bounded streaming milestone
+
+The internal owned encoder now uses the existing exact indexed short-prefix
+match finder with minimum eligible length5 and retains a bounded raw frame,
+tokens, finder, canonical tables, private payload, private serialization and
+pending finalized frame. The supplied-scratch decoder buffers the header,
+validates the complete descriptor, collects the bounded payload, and validates
+private tokens/raw before entering draining. No process call allocates.
+Flush does not alter the specified frame partition; ResetBlock is unsupported.
+Known output length alone does not imply EOS: explicit EndInput is required.
+Errors are sticky; repeated EOS remains EOS. Failed frames never drain, while
+prior validated frames remain available.
+
+Owned requirements admit all buffers/object storage and bounded nested work
+before allocation. The payload capacity is ceil(105*frame_size/8), and pending
+frame capacity adds64+2518 bytes. Encoding separately retains a private copy.
+Minimum header admission also checks a full decode-table bank; this nonallocated
+floor is distinguished from encoder-owned buffers. TVG-1478 records split,
+allocation-failure, exact-budget and495 independent raw-wire checks. Public
+factories/CLI, randomized fuzzing, physical peaks, corpus comparisons and
+exchange qualification remain unfinished.

@@ -41890,3 +41890,18 @@ regions; measured peaks and public grants remain unqualified. Directed
 ASan/UBSan covers all12 reachable production units and53 frame fixtures.
 No external or restricted source was consulted. Public streaming/API/CLI,
 raw match selection, fuzz, comparative measurements and exchange remain open.
+
+### CR-1851: 2026-10-17 —64KiB Huffman raw and streaming ownership
+
+Author/reviewer: Codex. Added bounded scratch streaming decode and owned raw
+encoder/decoder transforms using IR-1300's first-party match-selection and
+controller references. Each finalized frame is private until its validation
+gate permits draining; prior valid frames survive later failures. Admission
+uses Huffman-specific tables/payloads and distinguishes owned buffers, fixed
+work and a nonallocated header-admission floor. No public grant or physical
+peak is inferred. TVG-1478 records split/terminal/failure checks, every owned
+allocation failure, no process allocation and495 independent raw fixtures.
+The owned units/raw fixtures also pass direct ASan/UBSan on19 production
+translation units, with retained and audited source/executable hashes. No
+external or restricted implementation was consulted. Public factory/CLI,
+randomized fuzzing, comparative corpus measurements and exchange remain open.

@@ -23960,3 +23960,38 @@ These units and the53-case independent frame differential suite pass with
 all12 reachable production translation units instrumented by ASan/UBSan.
 This is directed sanitizer qualification, not randomized fuzzing, a public
 partial-buffer transform qualification or a physical-memory measurement.
+
+### TVG-1478: bounded64KiB Huffman raw and partial-buffer streams
+
+The supplied-scratch decoder is driven across every byte split of two reset
+frames and a mixed literal/overlap frame, with output capacity1 and larger
+capacities. Tests cover one-byte source/sink, zero output, explicit empty
+EndInput, flush neutrality, unsupported reset, source/output overlap,
+every stream truncation, strict trailing input and sticky terminal results.
+Only previously validated frames may appear before a later frame failure.
+Exact/one-short constructor workspace charges reject before consumption.
+
+Owned encoder/decoder creation admits all object/buffer storage before any
+allocation. Each of eight encoder and five decoder allocation sites is
+individually failed and checked for complete rollback. Allocation is forbidden
+inside every driven process call. All small input splits and a chunk matrix
+preserve the encoded stream;65535/65536/65537-byte inputs exercise exact
+requirements, reset boundaries and a final short frame. Empty streams and
+known-size early-EndInput errors are checked separately. Logical owned bytes,
+fixed working charge and the nonallocated decoder-admission floor are reported
+separately; they are not measured physical peaks.
+
+A separately written exhaustive greedy parser chooses the longest match with
+nearest-distance tie break and minimum eligible length5. The495 raw fixtures
+include all256 one-byte values, all binary strings through length6, hand match
+boundaries, full-frame patterns and100 seeded inputs. Independently supplied
+Huffman frames decode through one-byte owning calls. Production raw encoding
+also runs with one-byte buffers, after which the independent oracle verifies
+the stream/header, token-derived decisions, models, exact payload and finish.
+This is directed/exhaustive/seeded differential evidence, not randomized fuzzing.
+
+The owned unit and495-fixture raw suites also pass with all19 reachable
+production translation units directly instrumented by ASan/UBSan. Audited
+source/executable hashes match and diagnostic streams are empty. The
+allocation-site/rollback and process-allocation assertions remain enabled.
+This does not qualify public factory/CLI boundaries or a fuzz campaign.
