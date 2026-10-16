@@ -42370,7 +42370,15 @@ four schema81 local routes over91 archives. The private audit confirms exact
 archive and restored-input hashes, the prior90 prefix, schemas1 through81
 compatibility and125 malformed cases rejected before codec launch. No fuzz
 execution was added after the completed campaign. Hosted CI, external routes
-and the remaining five windows remain separate gates.
+and the remaining four windows remain separate gates.
+
+Retrospective review by Codex strengthens this checkpoint by reading actual
+decoded/re-encoded bodies in all81 historical schemas, all four91-archive
+routes, both90/88 ordered prefixes and250 schema80/81 pre-launch refusal
+receipts. All match. The earlier private auditor checked final-schema
+presence without reading all historical outputs; this additional audit removes
+that evidentiary gap. No codec or fuzz execution and no external source
+consultation is involved.
 
 ### CR-1887: 2026-10-17 — eight-MiB Blocked Huffman format vectors
 

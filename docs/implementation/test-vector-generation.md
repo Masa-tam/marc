@@ -24766,8 +24766,17 @@ cross-route execution and the final profile audit remain pending.
 Fresh normal WSL and Windows candidates completed all four local self/cross
 routes for schema81. The final private audit binds the91 archive bodies and
 restored input, prior90 prefix, schema1..81 compatibility evidence and125
-negative cases. Hosted CI, external validation and the five larger windows
+negative cases. Hosted CI, external validation and the four larger windows
 remain uncompleted.
+
+A subsequent retained-artifact audit explicitly checks the source/archive/
+decoded/re-encoded bodies for every schema1..81 and all four91-archive routes.
+Both producers preserve the90-entry and starting88-entry ordered prefixes,
+including entry property order and exact input/archive bytes. All250 retained
+schema80/81 refusal receipts report zero codec launches and output files;
+launch markers are absent. This closes the previous audit's indirect reliance
+on final-schema presence. It neither reruns codecs/fuzz nor supplies new CI
+or external-route evidence.
 
 ### TVG-1512: eight-MiB Blocked Huffman format vectors
 

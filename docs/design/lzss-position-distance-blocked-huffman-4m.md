@@ -291,4 +291,12 @@ schema81 bundle in self and cross directions: Windows self, WSL self, Windows
 to WSL and WSL to Windows. The independent receipt confirms91 archives,
 byte-for-byte preservation of the prior90 entries, schemas1..81 compatibility,
 and125 pre-launch negative cases. Hosted CI, external routes and the remaining
-five blocked-Huffman windows are separate unfinished gates.
+four blocked-Huffman windows are separate unfinished gates.
+
+A retrospective artifact audit additionally reads every retained decoded and
+re-encoded body in all81 historical schemas, rather than inferring coverage
+from the final schema's existence. It rechecks all four91-archive routes,
+both producers' exact90-entry and starting88-entry prefixes, and all250
+pre-launch refusal receipts for schemas80/81. All match. This strengthens the
+exchange evidence without a new codec or fuzz execution; later hosted/external
+and family completion gates remain open.

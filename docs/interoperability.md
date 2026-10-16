@@ -2305,3 +2305,22 @@ binding, complete corpus comparison and50000-unit fuzz qualification. This
 closes the one-MiB local profile. Five larger windows and the final95-archive
 local audit remain open, followed by user push, hosted CI and external four
 routes. These local results do not supply those later confirmations.
+
+## IX-0099: four-MiB native Huffman exchange evidence audit
+
+Schema81/`marc-cli-v81` appends
+`lzss-position-distance-blocked-huffman-4m` at index90. All91 archives match
+their manifest bodies and restore/re-encode identically in four retained local
+self/cross paths. Both producers retain the exact90-entry preceding prefix
+and the starting88-entry prefix, including entry property order and all input/
+archive bytes. The earlier local qualification remains a local result.
+
+A retrospective audit reads every actual restored and re-encoded file for
+schemas1 through81; all match their respective retained source/archive files.
+It also checks all250 schema80/81 directed refusal receipts and absence of
+codec-launch markers. This strengthens the earlier private audit, whose
+historical check only inspected the final schema's existence. No new codec
+or fuzz campaign is executed for this review. BM-0252 records the complete
+paired measurements; the prior bounded campaign remains historical evidence.
+Four larger windows, final95 local audit, user push, hosted CI and external
+four-route95 qualification remain unfinished.
