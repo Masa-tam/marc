@@ -135,3 +135,14 @@ direct ASan/UBSan replay. This is a finite model-planning stage; incremental
 private writing, token/history/frame quarantine, owned/public connection,
 normal resource/corpus measurements, coverage-guided fuzz and exchange remain
 future gates. No memory default is inferred from these format/counter tests.
+
+### Incremental private-writer checkpoint
+
+TVG-1487 qualifies incremental forward coding into private payload scratch
+without a materialized decision array. Ordinary byte counts commit only on
+successful exact finish, while scratch prefixes may be discarded on refusal.
+All256 supplied models and256 generated plans match the reference encoder;
+boundary/alias/budget cases and direct ASan/UBSan replay pass. This writer
+must still be enclosed by token/history validation and private raw-frame
+quarantine before any public output. Owned/public connection, physical peaks,
+corpus/fuzz and exchange remain unqualified for this one-MiB profile.

@@ -170,6 +170,66 @@ PositionBlockedHuffmanError encode_position_blocked_huffman_1m(
     }
     written=d.payload_size;return Error::none;
 }
+PositionBlockedHuffmanError PositionBlockedHuffman1mPrivateWriter::begin(
+    const Descriptor& d,const core::DecoderLimits& limits,
+    std::span<CanonicalHuffmanTable> tables,std::span<std::byte> payload) noexcept {
+    std::array<Region,5> regions{{{this,sizeof(*this)},{&d,sizeof(d)},{&limits,sizeof(limits)},{},{}}};
+    if (!region(payload,regions[3]) || !region(tables,regions[4])) return Error::arithmetic_overflow;
+    if (const auto e=separate(regions);e!=Error::none) return e;
+    begun_=false;finished_=false;error_=Error::none;
+    if (const auto e=budget(regions,limits);e!=Error::none) return error_=e;
+    std::size_t extent{};
+    if (const auto e=validate_position_blocked_huffman_1m_descriptor(d,limits,extent);e!=Error::none) return error_=e;
+    if (tables.size()<57) return error_=Error::scratch_too_small;
+    if (payload.size()<d.payload_size) return error_=Error::output_too_small;
+    for (std::size_t i=0;i<57;++i) if (active(d,i) && d.models[i].single_symbol==position_blocked_huffman_no_single)
+        if (build_canonical_table(d.models[i].lengths,tables[i])!=HuffmanTableError::none) return error_=Error::invalid_model;
+    descriptor_=d;payload_=payload;tables_=tables;valid_bits_=valid_bits(d);
+    cursor_=0;decisions_=0;used_fields_=0;used_overrides_=0;
+    std::fill_n(payload.begin(),d.payload_size,std::byte{0});
+    begun_=true;return Error::none;
+}
+PositionBlockedHuffmanError PositionBlockedHuffman1mPrivateWriter::add(int context,std::uint32_t symbol) noexcept {
+    if (error_!=Error::none) return error_;
+    if (!begun_) return Error::not_started;
+    if (finished_) return Error::already_finished;
+    if (decisions_>=descriptor_.decision_count) return error_=Error::count_mismatch;
+    std::uint32_t code=symbol;std::uint8_t width=1;
+    if (context==-1) {
+        if (symbol>1) return error_=Error::invalid_symbol;
+    } else {
+        std::size_t slot{};
+        if (const auto e=select(descriptor_,context,slot,used_fields_,used_overrides_);e!=Error::none) return error_=e;
+        const auto& model=descriptor_.models[slot];
+        if (model.single_symbol!=position_blocked_huffman_no_single) {
+            if (symbol!=model.single_symbol) return error_=Error::invalid_symbol;
+            code=0;width=0;
+        } else {
+            if (symbol>=256 || !model.lengths[symbol]) return error_=Error::invalid_symbol;
+            code=tables_[slot][symbol].lsb_first;width=tables_[slot][symbol].length;
+        }
+    }
+    if (width>valid_bits_-cursor_) return error_=Error::count_mismatch;
+    for (unsigned bit=0;bit<width;++bit,++cursor_)
+        payload_[static_cast<std::size_t>(cursor_/8)]|=static_cast<std::byte>(((code>>bit)&1U)<<(cursor_%8));
+    ++decisions_;return Error::none;
+}
+PositionBlockedHuffmanError PositionBlockedHuffman1mPrivateWriter::finish(std::size_t& written) noexcept {
+    for (const auto r : {Region{this,sizeof(*this)},Region{payload_.data(),payload_.size()},Region{tables_.data(),tables_.size_bytes()}}) {
+        const auto e=core::check_buffer_overlap(r.data,r.size,&written,sizeof(written));
+        if (e!=core::BufferOverlap::disjoint)
+            return e==core::BufferOverlap::arithmetic_overflow ? Error::arithmetic_overflow : Error::overlapping_buffers;
+    }
+    if (error_!=Error::none) return error_;
+    if (!begun_) return Error::not_started;
+    if (!finished_) {
+        if (decisions_!=descriptor_.decision_count) return error_=Error::count_mismatch;
+        if (cursor_!=valid_bits_) return error_=Error::trailing_bits;
+        if (used_fields_!=descriptor_.field_mask || used_overrides_!=descriptor_.override_mask) return error_=Error::unused_model;
+        finished_=true;
+    }
+    written=descriptor_.payload_size;return Error::none;
+}
 PositionBlockedHuffmanError PositionBlockedHuffman1mDecoder::begin(
     const Descriptor& d,std::span<const std::byte> payload,const core::DecoderLimits& limits,
     std::span<HuffmanDecodeTable> tables) noexcept {

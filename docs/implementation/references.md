@@ -11466,3 +11466,13 @@ override-cost comparison. Specialize to52 contexts/57 codebooks with8388608
 maximum decisions. Check planning independently from dictionary history and
 frame publication. Reuse existing canonical primitives and mathematical wire
 oracle; consult no external implementation or restricted source.
+
+### IR-1309: one-MiB incremental private Huffman writing
+
+Specialize the first-party64KiB private writer to DD-1612's57 codebooks and
+the independently qualified one-MiB plan/descriptor. Keep payload storage
+private until exact count, bit consumption and model usage finish succeeds.
+Use no materialized decision array in the writer, and retain ordinary finish
+counts on refusal. Compare supplied independent codebooks and newly planned
+payloads against the reference encoder and independent mathematical decoder.
+No external implementation, restricted source or imported suite is consulted.

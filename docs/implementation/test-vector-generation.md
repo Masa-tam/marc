@@ -24175,3 +24175,24 @@ units and the same fixture/plan replay; retained artifact audit independently
 rechecks all256 plans. Existing64KiB qualification checks remain green.
 These entropy-only tests supply no dictionary-history, private-frame, public
 API/CLI, physical-peak, coverage-guided fuzz or exchange completion claim.
+
+### TVG-1487: one-MiB incremental private-payload writing
+
+For every256 independent supplied codebooks, the private writer matches the
+reference payload exactly, with guards and unused tails intact. The256 newly
+planned payloads also match the reference and restore through the independent
+mathematical decoder. Failed begin, late invalid symbol/context, early finish,
+too few/many declared bits, unused override, excess zero-bit decision and
+invalid uniform bit retain ordinary finish counts. Scratch contents may be
+discarded after failure; no ordinary-output rollback is claimed for private
+storage. Repeated successful finish is deterministic and subsequent add
+refuses; failures are sticky until a fresh valid begin.
+
+Check exact/one-short workspace, table/payload shortage, source/self/table
+overlap and finish-count aliasing. Alias preflight retains a valid writer
+state for a subsequent disjoint finish. An8388608-decision zero-bit block
+finishes without a materialized decision array under explicit admission.
+All core/differential checks pass in normal builds and with the entire reached
+implementation directly instrumented by ASan/UBSan. Original64KiB checks
+remain green. Token/history reconstruction, private-frame publication gates,
+public connection, performance/fuzz and exchange remain subsequent work.

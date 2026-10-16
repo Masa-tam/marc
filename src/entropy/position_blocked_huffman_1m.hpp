@@ -53,6 +53,24 @@ private:
     const PositionBlockedHuffman1mDescriptor&,std::span<const PositionBlockedHuffmanDecision>,
     const core::DecoderLimits&,std::span<CanonicalHuffmanTable> private_tables,
     std::span<std::byte> output,std::size_t& written) noexcept;
+// All payload storage is private scratch; begin/add may change it before a
+// later failure. The ordinary byte count commits only on successful finish.
+class PositionBlockedHuffman1mPrivateWriter {
+public:
+    [[nodiscard]] PositionBlockedHuffmanError begin(const PositionBlockedHuffman1mDescriptor&,
+        const core::DecoderLimits&,std::span<CanonicalHuffmanTable>,std::span<std::byte>) noexcept;
+    [[nodiscard]] PositionBlockedHuffmanError add(int context,std::uint32_t symbol) noexcept;
+    [[nodiscard]] PositionBlockedHuffmanError finish(std::size_t& written) noexcept;
+private:
+    PositionBlockedHuffman1mDescriptor descriptor_{};
+    std::span<std::byte> payload_{};
+    std::span<CanonicalHuffmanTable> tables_{};
+    std::uint64_t cursor_{},valid_bits_{},used_overrides_{};
+    std::uint32_t decisions_{};
+    std::uint8_t used_fields_{};
+    PositionBlockedHuffmanError error_{};
+    bool begun_{},finished_{};
+};
 class PositionBlockedHuffman1mDecoder {
 public:
     // Finite payload supplied at begin. Failed begin/read is sticky-invalid;

@@ -42018,3 +42018,16 @@ of the entire reached implementation reports no ASan/UBSan finding. No
 external source, restricted implementation or imported suite was consulted.
 Incremental private writing and the subsequent token/frame/public/performance/
 fuzz/exchange gates remain open.
+
+### CR-1860: 2026-10-17 —one-MiB incremental private Huffman writer
+
+Author/reviewer: Codex. Specialize IR-1309's first-party private payload writer
+to57 codebooks, borrowing bounded caller scratch and publishing only the
+ordinary count at exact successful finish. TVG-1487 checks256 supplied and
+256 planned payloads against the reference encoder and independent decoder,
+finite maximum decisions without a decision array, guards, alias/budget
+preflight and sticky failures. Normal checks and direct full-closure
+ASan/UBSan replay pass with no finding. No external implementation, restricted
+source or imported test suite was consulted. This does not yet integrate
+dictionary history, private-frame quarantine, owned/public transforms,
+measurements, coverage-guided fuzzing or exchange.
