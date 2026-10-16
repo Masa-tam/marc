@@ -10053,3 +10053,10 @@ if(MARC_BUILD_TESTS)
         endif()
     endforeach()
 endif()
+
+if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
+    add_test(NAME marc_position_blocked_huffman_64k_vectors
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_blocked_huffman_64k_vectors.py)
+    set_tests_properties(marc_position_blocked_huffman_64k_vectors PROPERTIES TIMEOUT 30)
+endif()

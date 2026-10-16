@@ -2134,13 +2134,15 @@ foreach(document IN LISTS documentation_files)
         "\\[!\\[([^]]*)\\]\\(([^)]+)\\)\\]\\(([^)]+)\\)"
         "[\\1 image](\\2)[\\1 target](\\3)"
         link_scan_content "${content}")
-    string(REGEX MATCHALL "!?\\[[^]]*\\]\\([^)]+\\)" links
+    # A label cannot contain another opening '['. Otherwise an earlier code
+    # interval such as [begin,end) can swallow a later valid Markdown link.
+    string(REGEX MATCHALL "!?\\[[^][]*\\]\\([^)]+\\)" links
         "${link_scan_content}")
     get_filename_component(document_directory "${document}" DIRECTORY)
 
     foreach(link IN LISTS links)
         string(REGEX REPLACE
-            "^!?\\[[^]]*\\]\\(([^)]+)\\)$" "\\1" target "${link}")
+            "^!?\\[[^][]*\\]\\(([^)]+)\\)$" "\\1" target "${link}")
         string(STRIP "${target}" target)
         if(target MATCHES "^(https?:|mailto:|#)")
             continue()

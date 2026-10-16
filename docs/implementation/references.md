@@ -11299,3 +11299,15 @@ explicit little-endian stream/frame headers from the documented field layout,
 without production calls. TVG-1471 describes token recipes, scalar crosschecks
 and late semantic failures. No external implementation, restricted source or
 imported test suite was consulted.
+
+### IR-1294: native position-distance Blocked Huffman design and oracle
+
+Use the repository-owned DD-1556 full previous-literal/position-distance
+partition, short-length escape grammar, canonical Huffman primitives and
+contextual Blocked Huffman pooled/override cost method. Define new exact
+identities, five pooled fields and bounded per-context optional models without
+altering old streams. The Python wire oracle uses directly supplied complete
+codebooks, integer Kraft validation and independently written canonical bit
+packing/parsing. It does not call production code or claim to reproduce the
+encoder planner. No external implementation, restricted source, imported
+code/table/test suite or third-party optimization structure was consulted.

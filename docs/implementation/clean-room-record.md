@@ -41788,3 +41788,28 @@ codec launches and zero published files. Current 88 bodies and baseline 81
 bodies pass the preservation audit; fixed Release and backup hashes remain
 unchanged. These are inspections of retained artifacts and receipts, not
 claims of newly rerun codec campaigns. The full documentation check passes.
+
+### CR-1845: 2026-10-17 — Position-distance Blocked Huffman format milestone
+
+Author/reviewer: Codex. Task: begin the seven-window Blocked Huffman goal
+with independent64KiB wire definitions and finite vectors. Initial manifest
+and actual file counts confirm88 archives/schema78, preserving the older81
+plus seven tANS entries; the maintainer confirmed the corrected baseline.
+All88 bodies and retained prefix pass the existing preservation auditor.
+DD-1609/1610 define the additive tuples, pooled/override Huffman representation,
+strict bounds and failure/publication contract before any encoder change.
+IR-1294 and TVG-1472 describe the first-party references and independent
+supplied-codebook oracle. No external compression implementation, restricted
+source, copied test suite or external structure was consulted. Existing
+runtime, fixed Release and generated artifacts are unchanged. Format/vector
+qualification is distinct from the unfinished internal/public implementation,
+comparisons, measured limits, fuzzing and final95-archive exchange gates.
+
+The frozen oracle and registered documentation/vector CTests pass2/2 in
+2.75 seconds; vector time is1.63 seconds, with a30-second bounded test
+watchdog. Adding a valid design link exposed the documentation scanner's
+earlier unmatched code-interval bracket capturing a later Markdown label.
+The scanner now excludes nested opening brackets inside a label. Four
+extracted actual-scanner fixtures pass for a preceding interval, wrapped
+label, linked image and visible missing target; the full link audit passes.
+This narrow verifier correction changes neither codec behavior nor format.

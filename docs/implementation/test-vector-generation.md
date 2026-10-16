@@ -23822,3 +23822,22 @@ publication counts, terminal categories and error positions agree across
 ordinary and instrumented builds, including every public encoder boundary.
 This complements bounded randomized campaigns without claiming randomized
 maximum-frame coverage.
+
+### TVG-1472: independent64KiB position-distance Blocked Huffman wires
+
+The DD-1610 Python oracle freezes140 finite supplied-codebook vectors and
+57 descriptor/payload/usage rejections without calling production code.
+Cases cover pooled and overridden contexts, sparse/dense/single records,
+length3/4 escapes, isolated distances through65536, all48 active dense
+contexts at the2518-byte descriptor ceiling and deterministic finite inputs.
+Canonical bits are independently written and parsed with complete integer
+Kraft checks. Hand checks fix three uniform bits to05, A/B codes to02,
+a zero-bit singleton descriptor and a210-byte complete initial-A stream.
+The empty complete stream is112 bytes. Codebooks are intentionally supplied
+decoder-visible representations, not claims that the future planner chooses
+them. Invalid cases include every singleton-descriptor truncation, metadata,
+mode/canonical choice, sparse ordering, odd nibble padding, incomplete and
+oversubscribed tables, unused models and payload padding/bits. Isolated
+distance grammar cases do not establish valid reset-frame history.
+Production validators, differential runtime, public interfaces and fuzzing
+remain unimplemented for this milestone.

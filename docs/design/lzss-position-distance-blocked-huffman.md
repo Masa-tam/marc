@@ -1,0 +1,176 @@
+# Native position-distance Blocked Huffman
+
+## DD-1609: additive family and retained exchange baseline
+
+The confirmed starting bundle is schema78 with **88 archives**, not81.
+It contains the preserved81-entry older prefix plus the seven completed
+position-distance tANS profiles. Keep all88 entries, order, sizes and bodies;
+append the following seven selectors, in order, to reach95 archives. Planned
+schemas are79 through85. No existing format or public selector changes.
+
+| Window bytes | CLI suffix | Dictionary | Context | Entropy | Contexts | Alphabet extent | Descriptor ceiling bytes |
+| ---: | --- | --- | --- | --- | ---: | ---: | ---: |
+| 65536 | none | 2/8 | 1/28 | 2/3 | 48 | 4570 | 2518 |
+| 1048576 | 1m | 2/9 | 1/29 | 2/4 | 52 | 4614 | 2547 |
+| 4194304 | 4m | 2/10 | 1/30 | 2/5 | 54 | 4636 | 2561 |
+| 8388608 | 8m | 2/11 | 1/31 | 2/6 | 55 | 4647 | 2563 |
+| 16777216 | 16m | 2/12 | 1/32 | 2/7 | 56 | 4658 | 2575 |
+| 33554432 | 32m | 2/13 | 1/33 | 2/8 | 57 | 4669 | 2578 |
+| 67108864 | 64m | 2/14 | 1/34 | 2/9 | 58 | 4680 | 2590 |
+
+These are format reservations, not public admission or completion claims.
+Implement and qualify64KiB first, then1/4/8/16/32/64MiB. The selector family
+is `lzss-position-distance-blocked-huffman` with the listed suffixes.
+Dictionary grammar and fixed-five public encoder eligibility follow the
+qualified position-distance family; new context and entropy variants identify
+the distinct pooled Huffman representation. Earlier byte-stream and
+contextual Blocked Huffman variants retain their exact representations.
+
+## DD-1610: exact64KiB representation
+
+One bounded raw frame is one independently reset typed-event Huffman block.
+This extension's block accounting unit is binary decisions, not the baseline
+byte-stream Blocked Huffman symbol count. Frame size is configurable1..65536
+raw bytes; dictionary window is65536, wire match lengths3..258 and flags zero.
+Known original size is mandatory. Empty input contains only the stream header.
+No terminal flush or implicit additional frame is introduced.
+
+### Events and context partition
+
+Use48 contexts with alphabets `[2]*3+[256]*17+[9]*3+[17]*9+[2]*16`, extent4570.
+Preceding token kind starts0, becomes1 after a literal and2 after a match.
+Emit literal/match kind0/1 through context equal to that preceding kind.
+Initial literal uses context3; later literals use `4+(previous_literal>>4)`.
+Matches preserve previous-literal history. Length class uses context
+`20+preceding_kind`: lengths3/4 use class8 and one uniform bit `length-3`;
+otherwise set `y=length-4`, class=floor(log2(y)), then class uniform bits of
+`y-2^class`, low bit first. Distance class=floor(log2(distance)) uses
+context `23+length_class`. Distance extra bit p uses context `32+p`, low bit
+first. Distance65536 is an isolated grammar endpoint unreachable inside a
+nonempty reset frame of at most65536 bytes. Do not infer history validity
+from an isolated entropy vector.
+
+Uniform length bits are literal payload bits with context request -1.
+Each counts as one decision. Every modeled symbol also counts as one
+decision. Event and decision counts are equal in this extension.
+
+### Pooled and optional context models
+
+Five pooled fields have alphabets `[2,256,9,17,2]`: kind, literal, length
+class, distance class and position-distance bit. Contexts0..2/3..19/20..22/
+23..31/32..47 map respectively to those fields. Each active context may
+override its pooled field with a separate codebook. Pool existence records
+an observed field even when every request uses an override. The decoder
+must observe every declared field and every declared override by completion;
+unused symbols within a valid codebook are permitted. Uniform bits do not
+activate a field. Identical pooled/override codebooks are legal input;
+the encoder's strict cost rule will not select a redundant override.
+
+Models are either a sole symbol using zero payload bits, or a complete
+canonical prefix code with lengths1..15. Reject oversubscribed, incomplete,
+zero-symbol or one-nonzero-length multi-symbol tables. Assign conventional
+canonical numeric codes in increasing length then symbol order. Reverse
+each assigned code within its length before LSB-first writing. Singleton
+models consume a decision but no bits; declared counts bound all loops.
+
+### Descriptor and model records
+
+Prefix24 bytes: decision_count u32 at0, payload_size u32 at4, final_valid_bits
+u8 at8, max_code_length u8=15 at9, field_count u8=5 at10, field_active_mask
+u8 at11, context_count u16=48 at12, reserved u16=0 at14, alphabet_extent
+u32=4570 at16 and flags u32=0 at20. Integers are little endian. The six-byte
+override mask follows at24. Reject mask bits beyond the48 contexts and
+field-mask bits beyond4. Records follow for active pooled fields in field
+order, then declared overrides in context order. An override requires its
+field to be declared active.
+
+Each record starts with one mode byte:
+
+- Mode0: one u8 sole symbol, less than the selected alphabet. No lengths.
+- Mode1: ceil(alphabet/2) bytes of lengths, even symbol in the low nibble,
+  odd symbol in the high nibble. Unused final high nibble must be zero.
+- Mode2: present_count u16, then ascending u8 symbol/u8 positive-length
+  pairs. Count is2..alphabet; no duplicate or out-of-range symbol is valid.
+
+Mode0 is mandatory for one present symbol. For multiple symbols use dense
+mode1 when `1+ceil(alphabet/2) <= 3+2*present_count`; otherwise use mode2.
+Reject noncanonical mode choice, invalid lengths, tables, unused mask bits,
+truncated records and trailing descriptor bytes. Descriptor extent is30..2518
+bytes. The ceiling is `24+6+sum(1+ceil(A/2))` over the five field alphabets
+and all48 context alphabets; it is an admission bound, not a claim that a
+particular frame uses every possible model. Zero decisions require no active
+fields/overrides, zero payload and zero final-valid bits. An isolated stream
+of uniform bits is valid without any model.
+
+### Payload, determinism and planning
+
+Payload concatenates modeled codes and uniform length bits in forward event
+order. It has no coder state prefix or trailer. Zero payload requires
+final_valid_bits0; otherwise the field is1..8. All unused high bits are zero.
+Require exactly the declared decisions, exact consumed valid bits, all field
+and override usage, successful token/history validation and exact raw extent.
+Reject nonzero padding, trailing bits/bytes and premature input termination.
+
+The encoder counts bounded frame symbols in pooled and per-context models,
+and uses the repository's independently implemented length-limited canonical
+Huffman primitive at maximum15. Its deterministic package ordering is weight,
+minimum contained symbol, leaf before package, then creation order; leaves
+are introduced by ascending symbol, packages by level then adjacent-pair
+order. One present symbol chooses the zero-bit representation. Build all
+pooled models; choose an observed context override only when its exact
+payload-bit saving is **strictly greater** than eight times its serialized
+record bytes. A tie retains the pool. Uniform bits are excluded from these
+models. Canonical record selection remains the rule above. Optimization
+policy is encoder-visible; the decoder admits all structurally valid models.
+
+### Stream and frame envelope
+
+Use the position-distance family's explicitly serialized112-byte MARC2.0
+stream and64-byte MRF2 frame envelope. Stream magic is MARC; u16 offsets
+4/6/8/10 are2/0/64/1; offsets12/14/16/18 are2/8/2/3. Frame_size u32 is at20;
+u32 offsets28/32/48 are16; original_size u64 is at40. Dictionary parameters
+at64/68/72/76 are65536/3/258/0. Entropy bytes80/81 are15/5, u16 at82 is48,
+u32 at84 is4570. Context u16 offsets96/98 are1/28. Every other field is zero.
+
+Frame magic is MRF2, u16 header extent64 at4, flags0 at6, sequence u64 at8.
+Raw/token/event/decision counts are u32 at16/20/24/28; payload/descriptor/
+side-data/trailer bytes are u32 at32/36/40/44. Side data, trailer and48..63
+are zero. Descriptor then payload follow. Frame raw extents exactly partition
+the known original size, in zero-based sequence order. Every frame resets
+dictionary, literal history, pooled models and overrides. No empty frame,
+unknown size, auto-detection or new integrity trailer is introduced.
+
+For tokensT and raw bytesR, require `1<=T<=R<=frame_size<=65536`,
+`2T<=D<=min(26T,7R)`, event_count=D and payload_bytes<=ceil(15D/8).
+The full-frame payload ceiling is860160 bytes and frame ceiling862742 bytes.
+Check all arithmetic, limits, serialized extents and complete codebooks before
+allocation or decoding. Reject unknown tuples and contradictory counts.
+Ordinary descriptor/token/raw destinations commit only on success; private
+scratch may contain a discarded prefix. A frame starts draining only after
+entropy, history and reconstruction all succeed. Failed frames never publish;
+prior valid frames remain available. CLI keeps its existing temporary-file
+commit contract. Steady-state no-progress and terminal-status rules remain
+those of the core API.
+
+No default memory grant, physical peak, watchdog or heavy-test parallelism is
+inferred from tANS/rANS. Measure first. Use the existing bounded canonical
+primitives; do not add standalone Static Huffman as a public codec.
+
+## Completion gates
+
+At this milestone only the64KiB format and independent finite vectors are
+being qualified; no new production factory, CLI, benchmark result, sanitizer
+receipt or bundle entry is admitted. Later windows remain reservations.
+Require internal validators/reference codec, differential and failure tests,
+split/guarded public API and CLI, full-window cases, instrumented decoder
+fuzz, actual same-window contextual comparison, encode/decode timing and
+measured peak memory before each window's completion. Try existing contextual
+APIs with matching window/frame for8/32MiB and verify actual identities and
+restoration; source plausibility is insufficient.
+
+Record every member and total, misses and response, and speed/memory tradeoffs.
+Dynamic Range size is not an adoption condition. Keep independent local
+commits for passing milestones and explicitly unfinished gates. Final95 needs
+unchanged88-entry prefix, historical-schema compatibility, prelaunch negative
+admission and local self/cross execution. Only after all local gates does the
+maintainer push once and provide CI and95-archive external four-route results.

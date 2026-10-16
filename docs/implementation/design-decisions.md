@@ -34875,3 +34875,25 @@ serializer, parser, fixed header test and retained schema78 archive; CR-1824
 records that correction without changing wire bytes. The later resumed
 mozilla/webster measurements and twelve-member total are recorded in the
 64 MiB design rather than inferred from this earlier ten-member milestone.
+
+### DD-1609: native position-distance Blocked Huffman family baseline
+
+The retained exchange baseline is schema78/88 archives, not the goal's
+initial81-entry wording. Preserve the entire88-entry prefix, including all
+seven tANS archives, and append seven Blocked Huffman profiles to reach95.
+The [family design](../design/lzss-position-distance-blocked-huffman.md)
+reserves distinct context28..34 and entropy2/3..2/9 tuples for the existing
+dictionary grammar windows. Implement64KiB then1/4/8/16/32/64MiB, with the
+same failure/publication guarantees and independent local milestones.
+
+### DD-1610: exact64KiB position-distance Blocked Huffman format
+
+The family design defines48 contexts, five pooled fields and optional context
+overrides, complete canonical lengths up to15, sole-symbol zero-bit records,
+strict Single/dense/sparse selection, forward LSB-first payload and a
+30..2518-byte descriptor. Its exact tuple is2/8+1/28+2/3. One bounded raw
+frame resets dictionary and Huffman models; known-size112-byte MARC2.0 and
+64-byte MRF2 envelopes retain the established quarantine contract. Descriptor
+and payload accounting, fixed-five public encoder policy and every reserved
+field are defined before implementation. This milestone admits no public
+factory, CLI or exchange entry; measurements and later windows remain open.

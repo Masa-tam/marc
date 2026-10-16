@@ -9261,3 +9261,21 @@ fixes dictionary2/9/context1/22/entropy5/4, window1048576,52 contexts,
 states checked decision/payload/frame bounds and independently frozen finite
 expectations before implementation. All earlier formats remain unchanged;
 this milestone exposes no factory, CLI selector or exchange archive.
+
+### DD-1610: native64KiB position-distance Blocked Huffman
+
+The [native Blocked Huffman family](design/lzss-position-distance-blocked-huffman.md)
+defines the exact64KiB tuple dictionary2/8, context1/28 and entropy2/3. It
+uses a112-byte known-size MARC2.0 header,64-byte MRF2 frame header and a
+24-byte descriptor prefix plus six-byte context override mask. Five pooled
+fields and optional context codebooks use canonical sole-symbol/dense/sparse
+records. Maximum code length is15, bits are LSB-first and unused high bits
+are zero. The descriptor ceiling is2518 bytes and payload ceiling860160
+bytes per65536-byte frame. Failed frames stay private until complete entropy,
+history and raw-size validation succeeds. The linked design specifies every
+field, model record, planning tie and count bound. This is a new typed-event
+format; it changes no byte-stream or contextual Blocked Huffman variant.
+Only the64KiB representation and independent vectors are admitted at this
+stage. Public APIs, CLI, runtime validation, measurements and exchange remain
+unfinished. The actual retained exchange baseline is88 archives/schema78;
+the seven planned additions will produce95 archives/schema85.
