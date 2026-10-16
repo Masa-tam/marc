@@ -1837,10 +1837,10 @@ foreach(tans_window IN ITEMS 16m 32m 64m)
 endforeach()
 set(c_api_position_huffman_initializers ${c_api_config_initializers})
 list(FILTER c_api_position_huffman_initializers INCLUDE REGEX
-    "marc_lzss_position_distance_blocked_huffman(_1m)?_config_init")
+    "marc_lzss_position_distance_blocked_huffman(_1m|_4m)?_config_init")
 list(LENGTH c_api_position_huffman_initializers c_api_position_huffman_count)
-if(NOT c_api_position_huffman_count EQUAL 2)
-    message(FATAL_ERROR "Missing additive64KiB/one-MiB position-distance Blocked Huffman initializers")
+if(NOT c_api_position_huffman_count EQUAL 3)
+    message(FATAL_ERROR "Missing additive64KiB/one-MiB/four-MiB position-distance Blocked Huffman initializers")
 endif()
 foreach(position_huffman_contract IN ITEMS
         "marc_lzss_position_distance_blocked_huffman_config_init()"
@@ -1851,6 +1851,16 @@ foreach(position_huffman_contract IN ITEMS
     string(FIND "${c_api_content}" "${position_huffman_contract}" position_huffman_contract_offset)
     if(position_huffman_contract_offset EQUAL -1)
         message(FATAL_ERROR "Missing64KiB position Huffman API contract: ${position_huffman_contract}")
+    endif()
+endforeach()
+foreach(four_mib_position_huffman_cli_contract IN ITEMS
+        "### Four-MiB position-distance Blocked Huffman"
+        "lzss-position-distance-blocked-huffman-4m"
+        "dictionary2/10, context1/30 and entropy2/5" "320MiB"
+        "first/failed second frame")
+    string(FIND "${cli_content}" "${four_mib_position_huffman_cli_contract}" four_mib_position_huffman_cli_offset)
+    if(four_mib_position_huffman_cli_offset EQUAL -1)
+        message(FATAL_ERROR "Missing four-MiB native Huffman CLI contract: ${four_mib_position_huffman_cli_contract}")
     endif()
 endforeach()
 foreach(four_mib_huffman_contract IN ITEMS

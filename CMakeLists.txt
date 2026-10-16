@@ -10387,6 +10387,23 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_1m_api_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-1m-public-raw --public)
     set_tests_properties(marc_position_blocked_huffman_1m_public_raw_differential PROPERTIES TIMEOUT 180)
+    add_executable(marc_position_blocked_huffman_4m_cli_candidate tools/marc_cli.cpp)
+    target_compile_features(marc_position_blocked_huffman_4m_cli_candidate PRIVATE cxx_std_20)
+    target_link_libraries(marc_position_blocked_huffman_4m_cli_candidate PRIVATE marc::static)
+    add_test(NAME marc_cli_position_blocked_huffman_4m_static
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_blocked_huffman_4m.py
+            $<TARGET_FILE:marc_position_blocked_huffman_4m_cli_candidate>
+            ${CMAKE_CURRENT_BINARY_DIR}/cli-position-blocked-huffman-4m-static)
+    set_tests_properties(marc_cli_position_blocked_huffman_4m_static PROPERTIES TIMEOUT 180)
+    if(TARGET marc_cli)
+        add_test(NAME marc_cli_position_blocked_huffman_4m
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_blocked_huffman_4m.py
+                $<TARGET_FILE:marc_cli>
+                ${CMAKE_CURRENT_BINARY_DIR}/cli-position-blocked-huffman-4m)
+        set_tests_properties(marc_cli_position_blocked_huffman_4m PROPERTIES TIMEOUT 180)
+    endif()
     add_executable(marc_position_blocked_huffman_1m_cli_candidate tools/marc_cli.cpp)
     target_compile_features(marc_position_blocked_huffman_1m_cli_candidate PRIVATE cxx_std_20)
     target_link_libraries(marc_position_blocked_huffman_1m_cli_candidate PRIVATE marc::static)

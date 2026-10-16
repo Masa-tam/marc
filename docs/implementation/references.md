@@ -11643,3 +11643,14 @@ exact/one-short admission, aliases, allocation rollback and allocation-free
 processing. Exercise independent raw fixtures through the public boundary and
 compile the full direct implementation closure with sanitizers. Consult no
 external implementation, restricted source or imported suite.
+
+### IR-1326: four-MiB native Huffman command-line boundary
+
+Specialize the first-party one-MiB CLI adapter and independent black-box tests
+to DD-1614/DD-1615. Dispatch the exact four-MiB selector through its public C
+factory, preserve explicit logical resource accounting and whole-file
+transactional publication. Check boundary streams, independent length3/4/258
+wires, malformed metadata/models/padding, foreign selectors and late failures
+through shared and static executables. Preserve previous generated archives
+and verify their restoration/re-encoding. Consult no external implementation,
+restricted source or imported suite.

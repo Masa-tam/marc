@@ -1023,3 +1023,23 @@ and schema80 exchange remain separate gates.
 Those one-MiB local gates are complete at [IX-0098](interoperability.md),
 including all four local exchange paths. Hosted/external qualification of the
 final95-archive family remains separate.
+
+### Four-MiB position-distance Blocked Huffman
+
+The exact selector `lzss-position-distance-blocked-huffman-4m` selects native
+dictionary2/10, context1/30 and entropy2/5 with4194304-byte window/reset frames.
+It uses the four-MiB public C factory, fixed-five longest/nearest encoding and
+length3..258 decoder grammar. Distance-less spellings, upper-case4M and an
+extra64k suffix are not aliases. Earlier profiles retain their identities.
+
+The logical grant is320MiB, with65536-byte input/output arrays and65536
+declared control-retention bytes. Admission precedes transform consumption;
+the grant is not a process RSS cap. Complete private frame validation precedes
+raw draining, and whole-file rename follows exact EOS, strict trailing checks
+and successful sink close. Existing output/temporary files stay unchanged on
+refusal; only the current run's newly created temporary file is removed.
+Shared/static command paths exercise boundaries through two full frames plus
+a short tail, exact identity, independent short/max-length references, every
+small-stream cut, malformed fields/tables/padding, foreign profiles and a valid
+first/failed second frame. Full contextual comparisons/physical peaks, fuzz and
+schema81 exchange remain separate qualification gates.
