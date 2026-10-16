@@ -11712,3 +11712,10 @@ Audit the schema81 Windows and WSL bundles in both self and cross directions,
 then bind archive/body/input hashes, prefix preservation, historical schema
 compatibility and pre-launch negative rejection in one private receipt.
 Consult no external implementation, restricted source or imported suite.
+
+### IR-1333: eight-MiB Blocked Huffman format and vectors
+
+Define DD-1616 from the established family grammar and qualify it with the
+first-party parameterized Huffman oracle. Freeze independent positive and
+negative wires before production implementation. Consult no external
+implementation, restricted source or imported suite.

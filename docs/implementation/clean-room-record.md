@@ -42371,3 +42371,12 @@ archive and restored-input hashes, the prior90 prefix, schemas1 through81
 compatibility and125 malformed cases rejected before codec launch. No fuzz
 execution was added after the completed campaign. Hosted CI, external routes
 and the remaining five windows remain separate gates.
+
+### CR-1887: 2026-10-17 — eight-MiB Blocked Huffman format vectors
+
+Author/reviewer: Codex. DD-1616 is defined from the repository family grammar
+with dictionary2/11, context1/31, entropy2/6,55 contexts and extent4647. The
+first-party parameterized oracle generated and decoded196 positive cases and
+rejected44 negative cases, including all distance classes and descriptor
+limits. No production implementation or external/restricted source was used;
+all later gates remain open.

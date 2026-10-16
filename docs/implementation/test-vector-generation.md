@@ -24768,3 +24768,12 @@ routes for schema81. The final private audit binds the91 archive bodies and
 restored input, prior90 prefix, schema1..81 compatibility evidence and125
 negative cases. Hosted CI, external validation and the five larger windows
 remain uncompleted.
+
+### TVG-1512: eight-MiB Blocked Huffman format vectors
+
+The independent oracle generated196 positive and44 negative cases for DD-1616.
+Coverage includes empty/uniform/literal streams, every55 context, full dense
+models, all distance classes through8,388,608, complete fifteen-bit codes,
+descriptor truncation/metadata rejection and the full-frame checked bounds.
+The vector script passes without production codec calls; implementation and
+later qualification gates remain open.
