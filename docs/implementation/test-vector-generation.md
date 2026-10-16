@@ -24569,3 +24569,35 @@ closure. All499 instrumented fixtures pass without findings; independent audit
 checks hashes, queries, fixture contents and byte identity. Public resource
 defaults/API/CLI, normal corpus and peak measurements, fuzz and exchange remain
 open. The fixed runtime is unchanged.
+
+### TVG-1503: four-MiB normal resource precursor and public-boundary design
+
+Run seven fresh normal Release processes serially: encode/decode for full-frame
+pattern, seeded noise and overlapping-reference inputs, then decode an
+independently assembled full literal4194304-byte zero-payload frame. Each
+process streams through two65536-byte I/O buffers. Query before allocation,
+then construct with exactly the reported owner grant; separately charge
+131072 I/O and65536 declared control bytes. Full owner grants are318445741
+encode and125647022 decode, giving total trial charges318642349/125843630.
+An initial512MiB query ceiling permits the query only and is not an allocation
+grant, measured peak or public default.
+
+Verify tuple2/10+1/30+2/5, frame/window4194304, grammar3/258,54 contexts,
+extent4636, exact original size, restored bytes and SHA256. The hand literal
+frame has4194304 tokens,8388608 decisions,35 descriptor bytes and zero payload;
+the complete archive is211 bytes. All restoration checks pass.
+
+| Input | Encode peak bytes | Decode peak bytes |
+|---|---:|---:|
+| Pattern |111325184|60051456|
+| Seeded noise |125571072|64753664|
+| Overlapping references |111321088|60047360|
+| Full literal zero-payload |not applicable|60022784|
+
+Peaks include runtime, streaming I/O and codec lifetime in an ordinary process;
+they do not establish a physical memory cap or all-corpus performance. An
+independent audit checks normal Release/no-sanitizer build flags, exact queries,
+all seven outputs, identities, hashes and restoration. DD-1615 selects a320MiB
+logical public default with room for additive public controls; API integration
+must verify its actual resource query. Full corpus comparisons, ordinary public
+peaks, fuzz and exchange remain separate gates.

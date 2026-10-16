@@ -34947,3 +34947,17 @@ one-MiB per-token8R proof. The full-frame payload/frame ceilings are70778880/
 70781505 bytes. Retain private-frame/ordinary-output guarantees and qualify
 independent vectors before production parsing. API defaults await actual
 resource queries and normal measurements; no public admission is implied.
+
+### DD-1615: four-MiB Huffman public resource and process boundary
+
+The [four-MiB public boundary](../design/lzss-position-distance-blocked-huffman-4m.md)
+will add the native configuration, resource query and factory with additive
+types preserving established ABI field layouts. Select320MiB logical default
+after full-frame owner queries and seven normal resource precursor processes
+(TVG-1503), separately charging caller retention, declared I/O, public adapter
+and handle controls. This is not a physical RSS cap or an inherited ANS claim.
+Keep immutable direction, checked preallocation refusal, success-only query
+output, constructor rollback, allocation-free process calls, declared capacity
+checks, neutral Flush, unsupported ResetBlock and private-frame quarantine.
+The actual public query and all declared defaults require API tests; public
+implementation/CLI, full corpus comparisons, fuzz and exchange remain open.

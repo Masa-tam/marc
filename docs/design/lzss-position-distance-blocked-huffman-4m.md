@@ -168,3 +168,33 @@ Normal3/3 passes. These are internal logical-resource checks only. Public
 defaults require ordinary full-frame precursor measurements; public API/CLI,
 all-member contextual comparisons and peaks, fuzz and schema81 exchange remain
 open. No fixed runtime executable is updated at this checkpoint.
+
+## DD-1615: planned public resource and process boundary
+
+Add `marc_lzss_position_distance_blocked_huffman_4m_config_init`,
+`marc_lzss_position_distance_blocked_huffman_4m_resource_requirements` and
+`marc_lzss_position_distance_blocked_huffman_4m_create`, with additive
+`_4m_config`/`_4m_resources` types preserving earlier native field layouts.
+Default frame/window is4194304, grammar3/258 and encoder eligibility5.
+Decision ceiling is37748736, payload70778880, table entries30149 (59*511),
+distance4194304, total output2^40, expansion ratio1024 and slack4194304.
+Input/output capacities are65536 each; caller retention defaults0.
+
+Select320MiB as the logical default. Qualified full-frame owner queries report
+318445741 encode and125647022 decode bytes. Seven serial normal processes
+(TVG-1503) complete under exact owner grants plus separately charged131072 I/O
+and65536 control bytes. Largest observed ordinary peaks are125571072 encode
+and64753664 decode bytes. The default leaves room above the318642349-byte
+encoder trial total for additive public controls, which API queries/tests must
+verify. Physical peaks are distinct from logical admission; these finite
+precursors establish neither an RSS cap nor all-corpus completion.
+
+Expose owned buffers/owner/nested work/metadata floor and all external charges
+separately. Ordinary query results commit on success only. Validate ABI fields,
+flags, arithmetic, quotas and aliases before unsafe access or known-invalid
+allocation; release all partial allocations on construction failure. Lower
+table/decision limits may admit construction and reject a later frame according
+to actual use. Direction is immutable, process allocates nothing, declared I/O
+capacities are enforced, Flush is neutral and ResetBlock unsupported. Sticky
+error/EOS and failed-frame quarantine remain unchanged. Public API/CLI, full
+same-window contextual comparisons and peaks, fuzz and exchange remain open.

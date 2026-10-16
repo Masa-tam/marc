@@ -11623,3 +11623,13 @@ private serialized buffers, owner controls, fixed work and metadata admission
 floor. Test preallocation admission, allocation rollback, allocation-free
 processing, independent raw parsing, chunk determinism and failed-frame
 quarantine. Consult no external implementation or imported suite.
+
+### IR-1324: four-MiB normal Huffman resource precursor
+
+Adapt the first-party one-MiB fresh-process streaming resource probe. Derive
+each trial grant from the qualified four-MiB owner query plus declared I/O
+and control charges rather than inheriting an ANS or one-MiB default. Check
+pattern, seeded noise, overlapping references and an independently assembled
+full literal zero-payload frame. Record actual identities, restoration and
+normal physical high-water marks separately from logical admission. Consult
+no external implementation, restricted source or imported suite.

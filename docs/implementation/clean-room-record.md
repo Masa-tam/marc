@@ -42257,3 +42257,16 @@ pass independent artifact audit. Consult no external implementation, restricted
 source or imported suite. Preserve existing profiles and artifacts. Logical
 resource queries do not establish physical peaks or a public memory default;
 public integration, full comparison, fuzz and exchange remain unqualified.
+
+### CR-1878: 2026-10-17 —four-MiB normal resource precursor
+
+Author/reviewer: Codex. Follow IR-1324 with the first-party streaming resource
+probe and normal Release build. TVG-1503 qualifies seven serial fresh-process
+measurements with exact query-derived grants and separately declared I/O/control
+charges, independently assembled full literal input, actual identity checks
+and exact restoration. Audit build flags, sources/binaries and saved outputs;
+report physical high-water marks separately from logical admission. DD-1615
+records the resulting public-boundary design, whose actual API admission still
+requires implementation/tests. No external implementation, restricted source or
+imported suite was consulted. Existing formats/artifacts and the fixed runtime
+remain unchanged; full corpus, fuzz and exchange qualification remain open.
