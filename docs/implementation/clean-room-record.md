@@ -42062,3 +42062,18 @@ All subsequent directed and finite checks pass, including direct full-closure
 ASan/UBSan execution for frame and stream binaries. No external implementation,
 restricted source or imported suite was consulted. Owned raw encoding,
 public connection, corpus/peaks/fuzz and exchange remain separate future gates.
+
+### CR-1863: 2026-10-17 —one-MiB owned raw Huffman transforms
+
+Author/reviewer: Codex. Apply IR-1312's first-party bounded owning state machine
+and the existing one-MiB five-prefix candidate. Query all bounded allocations
+before creation, roll back every injected allocation failure, and perform
+no allocations in process. TVG-1490 qualifies499 independently parsed raw
+fixtures with identical normal/instrumented streams, full-window boundaries,
+split/terminal/publication invariants and exact/one-short logical grants.
+Direct full-closure ASan/UBSan execution includes all17 reached units and
+reports no finding. Source, generated fixture and executable hashes are
+retained with the resource query arithmetic audit. No external implementation,
+restricted source or imported suite was consulted. Logical requirements are
+recorded separately from pending physical peaks and public-default selection;
+API/CLI, corpus/fuzz and exchange remain unfinished.

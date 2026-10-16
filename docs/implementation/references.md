@@ -11498,3 +11498,15 @@ Admit complete descriptors before collecting payload and enter draining only
 after complete frame validation. Compare independently constructed frames and
 raw reconstruction, plus production frames through the mathematical oracle.
 Consult no external implementation, restricted source or imported test suite.
+
+### IR-1312: one-MiB owned pooled Huffman raw transforms
+
+Use the first-party64KiB owned state machine and the existing one-MiB tANS
+owner's qualified five-prefix dictionary candidate/workspace query. Retain
+fixed-five eligibility, longest match and nearest distance on equal length.
+Specialize Huffman serialized/payload bounds to DD-1612, admitting all owned
+buffers before allocation and retaining no process-time allocation. Validate
+construction failures, split determinism and independent raw parsing before
+public admission. Actual query/resource precursors precede any profile memory
+default. No external implementation, restricted source or imported suite is
+consulted.

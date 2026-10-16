@@ -171,3 +171,16 @@ semantics pass. Invalid descriptors reject before the following payload byte
 is consumed or stored. Direct full-closure ASan/UBSan checks pass as well.
 Owned raw encoding and public profile admission, resource defaults, corpus/
 peak measurements, coverage-guided fuzz and exchange remain open.
+
+### Owned raw-transform checkpoint
+
+TVG-1490 qualifies the bounded raw encoder/decoder owners using the existing
+one-MiB five-prefix finder, fixed-five eligibility and deterministic longest/
+nearest selection. All allocation refusals roll back, process is allocation
+free,499 independent raw fixtures agree across normal/sanitized builds, and
+full-window partition/failure gates pass. Resource queries separate all owned
+and control/workspace costs: the qualified full-frame logical aggregates are
+74642023 encode and29692570 decode bytes. These are not physical peaks or
+public default grants. Actual physical precursors before public admission,
+API/CLI, all-member corpus/peak measurements, coverage-guided fuzz and schema80
+exchange qualification remain subsequent gates.

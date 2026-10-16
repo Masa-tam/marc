@@ -24251,3 +24251,33 @@ reached frame/token/reconstruction/entropy/limit units for both test binaries;
 units and finite replay pass. These are internal-frame/controller gates;
 owned raw encoding, public APIs/CLI, physical measurements/fuzz and exchange
 remain unfinished for this profile.
+
+### TVG-1490: one-MiB owned raw transforms and logical resource queries
+
+The owning encoder selects the already qualified one-MiB five-prefix finder
+with fixed-five longest/nearest parsing. Independently parse499 raw inputs:
+every one-byte value, all binary strings through length6,100 seeded inputs,
+short match/tie patterns, preceding64KiB boundaries and four full/near-one-MiB
+patterns. Supply independently coded streams to the owned decoder; independently
+decode the owned encoder's selected wire. Normal and fully instrumented
+executions produce identical bytes for all499 fixtures.
+
+Inject every allocation failure: eight encoder and five decoder sites release
+all partial ownership. Rejected below-grant creation allocates nothing and
+failed resource queries retain output. Process calls are guarded against all
+allocation attempts. Vary input/output chunks, every small input split,
+byte drains, full-window minus/equal/plus-one sizes and final partial frames;
+check sticky terminal states, invalid EndInput/flags/aliases, every small
+stream cut and valid-first/failed-second publication behavior.
+
+Resource queries separate owned buffers, owner, working allowance and metadata
+floor. For the qualified layout at frame1048576, encode owned bytes74279526
+and aggregate74642023; decode owned29595983 and aggregate29692570. Query
+arithmetic and exact/one-short grants are checked; these figures are logical
+admission, not physical process peaks or a new public memory default. The
+499-case normal replay takes48.75 seconds in the recorded run; its180-second
+suite watchdog retains margin and is not a codec-throughput measurement.
+Direct ASan/UBSan compilation covers all17 reached implementation/test units,
+including the actual five-prefix finder; units and499-case replay pass.
+Public admission, normal physical precursors/corpus measurements, fuzz and
+exchange remain open.
