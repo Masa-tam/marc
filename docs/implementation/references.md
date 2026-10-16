@@ -11334,3 +11334,13 @@ saving are independent of the production planner. Directed sanitizer builds
 compile the new descriptor/scalar source and all three reachable primitive
 source files with ASan/UBSan; no uninstrumented codec library is substituted.
 No external source, restricted implementation or imported test suite was used.
+
+### IR-1297: incremental private Huffman payload writer
+
+Apply DD-1610's forward canonical-code and uniform-bit rules incrementally
+to a caller-owned private payload and canonical-table span. Reuse only the
+repository's bounded model validator, canonical tables, checked arithmetic
+and overlap helpers. Keep the separate preflight/two-pass ordinary encoder
+as a reference; compare both against TVG-1472's frozen independent wires.
+The writer retains the model and counters rather than the decision sequence.
+No external implementation, restricted source or imported test suite was used.

@@ -23884,3 +23884,25 @@ and executable hashes match, all diagnostic streams are empty, and ordinary
 payload/descriptor invariants still hold. This is directed sanitizer evidence,
 not a randomized fuzz campaign, public streaming qualification or measured
 resident-memory result. Generated artifacts from the earlier build are retained.
+
+### TVG-1475: incremental private Huffman writer qualification
+
+The same 140 positive independent descriptor/payload wires now pass through
+the incremental writer as well as the ordinary two-pass encoder and scalar
+decoder. All 57 negative cases remain rejected by the relevant parser or
+decoder; a corrupt padding byte is a decode-only mutation and does not make
+the corresponding logical encoder requests invalid. When the writer fails,
+its ordinary size destination remains unchanged and errors are sticky.
+Both writer guards and the full unproduced private tail remain untouched.
+
+Directed tests check exact/one-short workspace budgets, short table/payload
+spans, invalid late symbols/contexts, early finish, extra/missing payload bits,
+unused overrides, excess zero-bit decisions and invalid uniform bits. Begin
+rejects descriptor/self/table overlap before writing; finish rejects a size
+destination overlapping private payload without changing the valid writer
+state. Repeat finish succeeds and add after finish rejects. All 458752
+zero-bit decisions encode without allocating a decision array. Normal core
+and differential tests pass; the expanded suite also passes directed
+ASan/UBSan with all five reachable production translation units instrumented.
+This evidence does not qualify token history, frame publication, a partial-
+buffer public transform, randomized fuzzing or physical peak memory.

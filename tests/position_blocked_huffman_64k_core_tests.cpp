@@ -73,6 +73,27 @@ int fixture(const char* path) {
         check(written==777 && std::all_of(output.begin(),output.end(),[](auto v){return v==std::byte{0xa5};}),"failed encode retained ordinary destinations");
     }
     check(output.front()==std::byte{0xa5} && output.back()==std::byte{0xa5},"output guards");
+    // Independently generated codebooks/payloads also exercise the incremental
+    // writer. Its private destination may change on failure; only finish's
+    // ordinary count and the surrounding guards must remain transactional.
+    PositionBlockedHuffman64kPrivateWriter writer;
+    std::vector<std::byte> private_output(ps+3,std::byte{0xa5});written=777;
+    auto incremental=writer.begin(d,{},*encode_tables,std::span(private_output).subspan(1,ps+1));
+    for (const auto request:decisions) {
+        if (incremental!=Error::none) break;
+        incremental=writer.add(request.context,request.symbol);
+    }
+    if (incremental==Error::none) incremental=writer.finish(written);
+    if (mode==0) {
+        check(incremental==Error::none && written==ps,"oracle incremental finish");
+        check(std::equal(payload.begin(),payload.end(),private_output.begin()+1),"oracle incremental payload");
+        written=888;check(writer.finish(written)==Error::none && written==ps,"incremental repeated finish");
+        check(writer.add(0,0)==Error::already_finished,"incremental add after finish");
+    } else if (incremental!=Error::none) {
+        check(written==777 && writer.finish(written)==incremental && written==777,"incremental failure retained count");
+    }
+    check(private_output.front()==std::byte{0xa5} && private_output[ps+1]==std::byte{0xa5}
+        && private_output.back()==std::byte{0xa5},"incremental guards and unproduced tail");
     return failures ? 1 : 0;
 }
 void units() {
@@ -239,7 +260,61 @@ void units() {
     check(maximum->finish({},plan)==Error::none && plan.decision_count==458752 && plan.payload_size==0,"maximum zero-bit plan");
     const auto maximum_plan=plan;
     check(maximum->add(0,0)==Error::limit_exceeded && maximum->finish({},plan)==Error::limit_exceeded && plan==maximum_plan,"one excess decision retained maximum plan");
-    std::cout<<"bounded descriptor/scalar invariants checked\n";
+    auto writer=std::make_unique<PositionBlockedHuffman64kPrivateWriter>();
+    written=777;
+    check(writer->add(0,0)==Error::not_started && writer->finish(written)==Error::not_started && written==777,"writer before begin");
+    output=unchanged;limits={};limits.max_block_size=4;
+    limits.max_internal_buffered_bytes=16384+sizeof(*writer)+sizeof(d)+sizeof(limits)+sizeof(*encode_tables)+target.size()-1;
+    check(writer->begin(d,limits,*encode_tables,target)==Error::limit_exceeded && output==unchanged,"one short writer budget");
+    ++limits.max_internal_buffered_bytes;
+    check(writer->begin(d,limits,*encode_tables,target)==Error::none,"exact writer budget");
+    for (const auto request:decisions) check(writer->add(request.context,request.symbol)==Error::none,"writer unit decision");
+    check(writer->finish(written)==Error::none && written==1 && output[1]==std::byte{2}
+        && output.front()==std::byte{0xa5} && output.back()==std::byte{0xa5},"writer hand AB and guards");
+    output=unchanged;written=777;
+    check(writer->begin(d,{},std::span(*encode_tables).first(52),target)==Error::scratch_too_small && output==unchanged,"writer short tables");
+    check(writer->begin(d,{},*encode_tables,{})==Error::output_too_small && output==unchanged,"writer short private payload");
+    check(writer->begin(d,{},*encode_tables,target)==Error::none && writer->add(0,0)==Error::none
+        && writer->add(3,65)==Error::none && writer->add(1,0)==Error::none,"writer valid private prefix");
+    check(writer->add(8,67)==Error::invalid_symbol && writer->finish(written)==Error::invalid_symbol && written==777
+        && writer->add(8,66)==Error::invalid_symbol,"writer late invalid symbol sticky failure");
+    check(writer->begin(d,{},*encode_tables,target)==Error::none && writer->add(48,0)==Error::invalid_context
+        && writer->finish(written)==Error::invalid_context && written==777,"writer invalid context");
+    check(writer->begin(d,{},*encode_tables,target)==Error::none && writer->finish(written)==Error::count_mismatch
+        && written==777 && writer->add(0,0)==Error::count_mismatch,"writer early finish sticky");
+    Descriptor too_few_bits=d;too_few_bits.final_valid_bits=1;
+    check(writer->begin(too_few_bits,{},*encode_tables,target)==Error::none,"writer short bit declaration begin");
+    check(writer->add(0,0)==Error::none && writer->add(3,65)==Error::none && writer->add(1,0)==Error::none
+        && writer->add(8,66)==Error::count_mismatch && writer->finish(written)==Error::count_mismatch && written==777,"writer prevents bit overrun");
+    Descriptor extra_bits=d;extra_bits.final_valid_bits=3;
+    check(writer->begin(extra_bits,{},*encode_tables,target)==Error::none,"writer extra bit declaration begin");
+    for (const auto request:decisions) check(writer->add(request.context,request.symbol)==Error::none,"writer extra bit decision");
+    check(writer->finish(written)==Error::trailing_bits && written==777,"writer rejects unconsumed bits");
+    Descriptor unused=d;unused.override_mask=1;unused.models[5].single_symbol=0;
+    check(writer->begin(unused,{},*encode_tables,target)==Error::none,"writer unused override begin");
+    for (const auto request : std::array<PositionBlockedHuffmanDecision,4>{{{1,0},{3,65},{1,0},{8,66}}})
+        check(writer->add(request.context,request.symbol)==Error::none,"writer unused override decision");
+    check(writer->finish(written)==Error::unused_model && written==777,"writer unused override retained count");
+    const auto saved_d=d;
+    check(writer->begin(d,{},*encode_tables,std::as_writable_bytes(std::span(&d,1)))==Error::overlapping_buffers && d==saved_d,"writer descriptor overlap");
+    check(writer->begin(d,{},*encode_tables,std::as_writable_bytes(std::span(writer.get(),1)))==Error::overlapping_buffers,"writer self overlap");
+    check(writer->begin(d,{},*encode_tables,std::as_writable_bytes(std::span(*encode_tables)))==Error::overlapping_buffers,"writer table overlap");
+    std::size_t aliased_count=777;
+    auto aliased_storage=std::as_writable_bytes(std::span(&aliased_count,1));
+    check(writer->begin(d,{},*encode_tables,aliased_storage)==Error::none,"writer finish alias begin");
+    for (const auto request:decisions) check(writer->add(request.context,request.symbol)==Error::none,"writer alias decisions");
+    const auto retained_alias=aliased_count;
+    check(writer->finish(aliased_count)==Error::overlapping_buffers && aliased_count==retained_alias,"writer finish rejects payload overlap");
+    check(writer->finish(written)==Error::none && written==1,"writer alias preflight retained valid state");
+    written=777;
+    check(writer->begin(maximum_plan,{},*encode_tables,{})==Error::none,"writer maximum zero-bit begin");
+    for (std::size_t i=0;i<458752;++i) check(writer->add(0,0)==Error::none,"writer bounded zero-bit decision");
+    check(writer->finish(written)==Error::none && written==0,"writer maximum without decision array");
+    check(writer->begin(single,{},*encode_tables,{})==Error::none && writer->add(0,0)==Error::none
+        && writer->add(3,65)==Error::none && writer->add(3,65)==Error::count_mismatch,"writer excess zero-bit decision");
+    written=777;check(writer->finish(written)==Error::count_mismatch && written==777,"writer excess count retained");
+    check(writer->begin(plan,{},*encode_tables,uniform_output)==Error::none && writer->add(-1,2)==Error::invalid_symbol,"writer invalid uniform bit");
+    std::cout<<"bounded descriptor/scalar/planner/private-writer invariants checked\n";
 }
 }
 int main(int argc,char** argv) {

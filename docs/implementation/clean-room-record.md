@@ -41847,3 +41847,16 @@ streams are audited. Earlier validation artifacts remain preserved. No
 randomized fuzz, private-frame, streaming, ABI/CLI, comparison or exchange
 completion is claimed. No external implementation or restricted source was
 consulted, and no push was performed.
+
+### CR-1848: 2026-10-17 — incremental private Huffman writer
+
+Author/reviewer: Codex. Implemented a second pass that consumes generated
+decisions incrementally using the already specified DD-1610 representation.
+IR-1297 and TVG-1475 describe first-party references and independent wire
+checks. Private payload/table scratch may be changed before a later failure;
+ordinary size commits only after exact decision, bit and model-use checks.
+No decision sequence is retained. The existing ordinary two-pass encoder
+remains the reference, and no existing format bytes or public profiles change.
+Normal core/differential tests and directed ASan/UBSan pass. No external or
+restricted source was consulted. Token/frame quarantine, public API/CLI,
+randomized fuzzing, comparative measurements and exchange are still pending.

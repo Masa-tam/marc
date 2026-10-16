@@ -72,6 +72,26 @@ private:
     const PositionBlockedHuffman64kDescriptor&,std::span<const PositionBlockedHuffmanDecision>,
     const core::DecoderLimits&,std::span<CanonicalHuffmanTable> private_tables,
     std::span<std::byte> output,std::size_t& written) noexcept;
+// Incremental second pass over an already planned model. All payload storage
+// is private scratch: begin/add may change it even when a later call fails.
+// The ordinary byte count commits only after successful finish. Callers must
+// not publish the private prefix before finish and token/history validation.
+class PositionBlockedHuffman64kPrivateWriter {
+public:
+    [[nodiscard]] PositionBlockedHuffmanError begin(const PositionBlockedHuffman64kDescriptor&,
+        const core::DecoderLimits&,std::span<CanonicalHuffmanTable>,std::span<std::byte>) noexcept;
+    [[nodiscard]] PositionBlockedHuffmanError add(int context,std::uint32_t symbol) noexcept;
+    [[nodiscard]] PositionBlockedHuffmanError finish(std::size_t& written) noexcept;
+private:
+    PositionBlockedHuffman64kDescriptor descriptor_{};
+    std::span<std::byte> payload_{};
+    std::span<CanonicalHuffmanTable> tables_{};
+    std::uint64_t cursor_{},valid_bits_{},used_overrides_{};
+    std::uint32_t decisions_{};
+    std::uint8_t used_fields_{};
+    PositionBlockedHuffmanError error_{};
+    bool begun_{},finished_{};
+};
 class PositionBlockedHuffman64kDecoder {
 public:
     // A finite block is supplied completely at begin. Failed begin/read makes

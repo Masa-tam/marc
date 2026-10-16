@@ -224,5 +224,12 @@ pass ASan/UBSan with every reachable production translation unit instrumented;
 this is not randomized fuzz coverage. Next integration must keep generated
 events bounded without unnecessarily materializing a full decision array;
 the supplied-model two-pass scalar codec remains the clear reference.
-Private forward writer, typed tokens/frames, public streaming API/CLI,
+The private forward writer is now implemented and checked against the same
+140 independent wires. It accepts decisions incrementally into private
+payload/table scratch and commits the ordinary size only after exact counts,
+bits and model usage validate. TVG-1475 covers sticky failures, overlap and
+capacity checks, guards, repeat finish and maximum zero-bit decisions without
+an event array. Its workspace charge sums full provided regions plus the
+same16384-byte temporary allowance as the scalar core; this is not a physical
+peak or a public memory grant. Typed tokens/frames, public streaming API/CLI,
 randomized fuzzing, measurements and exchange remain unfinished.
