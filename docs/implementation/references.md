@@ -11311,3 +11311,15 @@ codebooks, integer Kraft validation and independently written canonical bit
 packing/parsing. It does not call production code or claim to reproduce the
 encoder planner. No external implementation, restricted source, imported
 code/table/test suite or third-party optimization structure was consulted.
+
+### IR-1295: bounded64KiB position-distance Huffman descriptor and scalar core
+
+Implement DD-1610 from the independently frozen descriptor/payload wires.
+Reuse only repository-owned canonical-code validation/construction and bounded
+Huffman decode tables, explicit endian helpers, checked arithmetic and overlap
+checks. The new forward scalar codec separates complete preflight from ordinary
+payload writes; decoder symbol results commit individually and frame-level
+quarantine remains a caller obligation for the next stage. Differential
+fixtures come from TVG-1472's independently written Python oracle, not the
+production implementation. No external source, restricted implementation or
+imported test suite was consulted.

@@ -23841,3 +23841,25 @@ oversubscribed tables, unused models and payload padding/bits. Isolated
 distance grammar cases do not establish valid reset-frame history.
 Production validators, differential runtime, public interfaces and fuzzing
 remain unimplemented for this milestone.
+
+### TVG-1473:64KiB position-distance Huffman core differential and invariants
+
+The C++ core replays all140 independently frozen descriptor/payload fixtures,
+reconstructs canonical descriptor bytes, reads expected symbols and writes
+identical payload bytes with untouched guards. It rejects all57 malformed
+descriptor/payload cases, retains failed parser destinations and failed symbol
+results, and checks sticky decoder errors. Ordinary encoded output and result
+size remain unchanged when encode preflight fails. Payload padding corruption
+is a decoder failure; it is not incorrectly treated as an encoder failure
+when the encoder is given a valid codebook and symbols.
+
+Additional directed checks cover every cut of a small descriptor, short
+ordinary output/scratch, exact and one-short descriptor/encoder/decoder
+budgets, Huffman/node limits, unknown contexts, early finish, zero-bit
+singleton models and a hand-derived15-bit all-one code ending ff7f. Parse,
+serialize and encode alias probes reject before modifying source/destinations;
+read-output overlap with retained payload leaves the read state unchanged.
+Oversized declared counts reject before allocation. Two registered C++ core
+and differential tests pass; the full four-test set including vectors and
+documentation also passes. This is supplied-model scalar evidence; planner,
+token/frame, partial-buffer transform, fuzz and public ABI gates remain open.

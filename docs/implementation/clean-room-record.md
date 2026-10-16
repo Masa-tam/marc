@@ -41813,3 +41813,20 @@ The scanner now excludes nested opening brackets inside a label. Four
 extracted actual-scanner fixtures pass for a preceding interval, wrapped
 label, linked image and visible missing target; the full link audit passes.
 This narrow verifier correction changes neither codec behavior nor format.
+
+### CR-1846: 2026-10-17 — Bounded64KiB Huffman descriptor and scalar codec
+
+Author/reviewer: Codex. Implemented the already specified DD-1610 descriptor
+validator/parser/serializer and supplied-codebook scalar encoder/decoder using
+the repository-owned canonical Huffman primitives. IR-1295 identifies the
+first-party components; no external implementation or restricted source was
+consulted. TVG-1473 records byte-for-byte agreement with140 independent wires,
+57 negative rejections, ordinary-destination guards, sticky errors, overlap
+rejection,15-bit fallback and exact/one-short limits. Descriptor and scalar
+buffer accounting is explicit and bounded; it is not a measured process peak
+or a chosen public memory grant. Four related tests pass16.15 seconds; after
+the additional long-code/alias boundary checks, core/differential pass2/2 in
+14.83 seconds. There is no frequency planner, typed-token/frame connection,
+public factory/CLI, sanitizer campaign, corpus comparison or new exchange
+entry yet. Existing formats, generated artifacts and the fixed Release
+executable are preserved. No push is performed.

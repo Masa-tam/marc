@@ -174,3 +174,30 @@ commits for passing milestones and explicitly unfinished gates. Final95 needs
 unchanged88-entry prefix, historical-schema compatibility, prelaunch negative
 admission and local self/cross execution. Only after all local gates does the
 maintainer push once and provide CI and95-archive external four-route results.
+
+### 64KiB bounded entropy-core milestone
+
+The internal descriptor validator/parser/serializer and supplied-codebook
+scalar writer/reader now exist. The frozen140 positive vectors agree byte for
+byte with this independent C++ path, and all57 malformed vectors reject.
+Ordinary descriptors, serialized outputs and result sizes commit only on
+success. Scalar encoding completes a full sizing/symbol/usage preflight before
+writing ordinary payload bytes. Decode tables are private scratch; each symbol
+destination commits only on successful read, while token/raw storage must
+still remain private until entropy finish and later history validation.
+
+The reader begins with one complete finite payload, not a public partial-buffer
+transform. Coding/validation errors are sticky; overlapping regions reject
+before state/scratch writes. Successful finish is idempotent and later reads
+reject. Scalar tables reserve53 slots, with active-model entry admission at
+511 nodes per declared model. All supplied regions are charged plus a16384-byte
+bounded canonical/decode-construction temporary allowance. Descriptor work
+charges its object,2518-byte scratch, exact wire and declared payload sizes.
+These are conservative internal accounting policies, not native-stack/RSS
+measurements or public default grants. Exact and one-short budgets are tested.
+
+TVG-1473 records scalar differential, limits, alias, fifteen-bit fallback and
+ordinary-destination tests. Frequency counting, pooled/override planning,
+typed-token/frame integration, public API/CLI, streaming chunking, fuzzing,
+measurements and exchange are still unfinished. No failed-frame publication
+or complete codec claim is inferred solely from these scalar tests.
