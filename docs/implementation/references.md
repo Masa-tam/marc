@@ -11705,3 +11705,10 @@ reject malformed schema81 input before codec launch, and exercise historical
 schema conversion. Keep local WSL/cross-route execution and final audit as
 separate gates. Consult no external implementation, restricted source or
 imported suite.
+
+### IR-1332: four-MiB local exchange audit
+
+Audit the schema81 Windows and WSL bundles in both self and cross directions,
+then bind archive/body/input hashes, prefix preservation, historical schema
+compatibility and pre-launch negative rejection in one private receipt.
+Consult no external implementation, restricted source or imported suite.

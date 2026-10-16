@@ -24760,3 +24760,11 @@ checks codec order, manifest values and every prior body/input byte. The
 schema81 negative suite rejects125 malformed manifests/headers before codec
 launch, and compatibility conversion verifies schemas1 through81. WSL and
 cross-route execution and the final profile audit remain pending.
+
+### TVG-1511: four-MiB local exchange audit
+
+Fresh normal WSL and Windows candidates completed all four local self/cross
+routes for schema81. The final private audit binds the91 archive bodies and
+restored input, prior90 prefix, schema1..81 compatibility evidence and125
+negative cases. Hosted CI, external validation and the five larger windows
+remain uncompleted.

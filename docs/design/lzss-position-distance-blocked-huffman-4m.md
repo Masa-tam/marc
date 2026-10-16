@@ -283,3 +283,12 @@ identity. Direct verification, prefix preservation,125 schema81 negative cases,
 and compatibility conversion through schemas1..81 pass locally. WSL and
 cross-route execution plus the final four-MiB audit remain open; no hosted or
 external result is claimed.
+
+### Final four-MiB local exchange audit checkpoint
+
+The WSL Release build and the Windows candidate each verify the complete
+schema81 bundle in self and cross directions: Windows self, WSL self, Windows
+to WSL and WSL to Windows. The independent receipt confirms91 archives,
+byte-for-byte preservation of the prior90 entries, schemas1..81 compatibility,
+and125 pre-launch negative cases. Hosted CI, external routes and the remaining
+five blocked-Huffman windows are separate unfinished gates.

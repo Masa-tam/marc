@@ -42362,3 +42362,12 @@ byte-for-byte, and the new entry is verified directly. The negative suite
 rejects125 cases before codec launch, and historical compatibility conversion
 passes schemas1 through81. No external implementation or restricted suite was
 consulted. WSL/cross-route execution and the final four-MiB audit remain open.
+
+### CR-1886: 2026-10-17 — four-MiB local exchange audit
+
+Author/reviewer: Codex. Fresh normal WSL and Windows candidates complete the
+four schema81 local routes over91 archives. The private audit confirms exact
+archive and restored-input hashes, the prior90 prefix, schemas1 through81
+compatibility and125 malformed cases rejected before codec launch. No fuzz
+execution was added after the completed campaign. Hosted CI, external routes
+and the remaining five windows remain separate gates.
