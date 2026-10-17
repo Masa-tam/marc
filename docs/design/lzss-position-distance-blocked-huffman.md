@@ -401,3 +401,17 @@ this goal. Unmeasured results are not passes or claims that the contextual
 comparison target was met. User batch push, hosted CI and external four-route
 confirmation of95 archives remain open; local qualification does not supply
 those results.
+
+### Final seven-window completion
+
+[IX-0104](../interoperability.md) records successful maintainer-reported hosted
+CI and four external95-archive routes at
+`50143425b443be095603c5e9a6689fca8292492f`. TVG-1550 rechecks the retained local
+closure, current source bindings, archive bodies and later fuzz/measurement
+receipts. BM-0250..0254 cover all seven windows' corpus size, encode/decode
+speed and resident peaks; TVG-1548 closes the later-requested large-profile
+bounded fuzz campaigns. The earlier temporary omissions and pending remote
+gates are superseded. All seven requested profiles are complete with their
+documented tradeoffs. The64KiB size misses on dickens, nci, webster and xml
+remain explicit; retain both selectors, without silent fallback or a claim
+that every input improves. No codec representation or default changes here.

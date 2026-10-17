@@ -11980,3 +11980,10 @@ Position encode is faster on3/12 members and has a higher observed resident peak
 Decode sum of member median seconds P/C: 7.838169600/5.612487100.
 Position decode is faster on1/12 members and has a higher observed resident peak on12/12.
 This meets the same-window contextual size target on all twelve corpus members. Retain explicit choices because speed and resident-memory costs remain separate tradeoffs.
+
+Final completion update: IX-0104 records maintainer-reported successful hosted
+CI and four external95-archive routes for
+`50143425b443be095603c5e9a6689fca8292492f`, superseding the pending hosted/external
+status above. BM-0250..0254 supply the full seven-window measurement record;
+the64KiB per-material size misses and all speed/memory tradeoffs remain intact.
+No benchmark values are changed or inferred from the external console reports.

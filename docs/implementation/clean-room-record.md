@@ -42897,3 +42897,17 @@ windows, with very small aggregate gains and explicit speed/memory tradeoffs.
 No codec, public configuration default or wire representation changed. Local
 checks pass; user push, hosted CI and external four-route95 remain separate,
 unconfirmed steps. No restricted implementation was consulted in this review.
+
+### CR-1925: 2026-10-17 — native Huffman final completion recording
+
+Author/reviewer: Codex. Record the maintainer's successful hosted CI and four
+external95-archive results at `50143425b443be095603c5e9a6689fca8292492f` under
+IX-0104. TVG-1550 rechecks retained local bodies, source and milestone bindings,
+later comparison/fuzz receipts and the fixed executable identity. All seven
+windows now have implementation, failure/resource/API/CLI, corpus speed/size/
+peak, bounded fuzz and exchange evidence. The documented64KiB per-material
+size misses remain accepted tradeoffs with explicit selection. Earlier pending
+statements describe historical milestones; the requested goal is complete.
+This edit only records evidence and status, without new implementation,
+external references, codec/wire changes or a release/legal guarantee. Hosted
+jobs and external binaries were not independently inspected by this audit.

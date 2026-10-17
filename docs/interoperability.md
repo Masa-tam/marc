@@ -2472,3 +2472,45 @@ are neither passes nor measured compression/performance targets. The next
 steps are the user's batch push, successful hosted CI and external four-route
 verification of95 archives, followed by recording those results. No hosted
 CI or external95 result is implied by local qualification.
+
+## IX-0104: final native Huffman CI and external four-route closure
+
+On 2026-10-17 the maintainer reports push, successful hosted CI and four
+successful 95-archive verifications at the same revision:
+`50143425b443be095603c5e9a6689fca8292492f`.
+
+| Producer bundle | Consumer | Verified archives |
+| --- | --- | ---: |
+| windows-msvc-x64 | Ubuntu | 95 |
+| ubuntu-ninja-x64 | Ubuntu | 95 |
+| ubuntu-26.04-ninja-x64 | Ubuntu | 95 |
+| ubuntu-26.04-ninja-x64 | Windows | 95 |
+
+Consumer roles follow the maintainer's previously confirmed four-route
+procedure. The repeated Ubuntu producer label covers self-consumption and
+consumption on Windows. Before this receipt-only edit, local HEAD and the
+tracked remote branch both match the reported revision. Hosted CI and external
+execution evidence is the maintainer's report and four pasted console results;
+independent inspection of those hosted jobs or external binaries is not claimed.
+
+The final retained-artifact check rehashes all 190 bodies in both local
+95-archive bundles, confirms schema85 and the seven-selector append order,
+and rechecks all 206 qualified source bindings and 50 milestone-receipt hashes.
+The 56 production units remain unchanged. IX-0103 supplies the starting88
+preservation, four local routes, schemas1..85 and 875 pre-launch refusal audit;
+these correctness results remain separate from the external console reports.
+
+The later-requested bounded large-profile sanitizer campaigns are qualified by
+TVG-1548. BM-0250..0254 now cover all seven windows' complete corpus sizes,
+same-window controls, encode/decode speeds and resident peaks. The configured
+eight- and thirty-two-MiB controls retain their existing contextual format
+identities. Four64KiB member-specific size misses and their explicit-selector
+response remain recorded; completion does not assert universal size, speed or
+memory dominance. Temporary fuzz/benchmark omissions are superseded by these
+later qualifications and restored CI settings.
+
+This closes the seven-profile implementation, local validation, measurement,
+exchange, hosted-CI and external four-route95 goal. Earlier pending statements
+describe their milestone state and are superseded by this final receipt. The
+following documentation-only recording commit is not itself another CI or
+external execution, and does not change codecs, defaults, schema or artifacts.

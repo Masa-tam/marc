@@ -4205,3 +4205,19 @@ and consumer roles distinguish the repeated Ubuntu Clang labels. The public
 profile remains outside the unchanged 42-profile baseline; format, workspace,
 failure/publication guarantees and release state are unchanged. TVG-1226 supplies
 local regression evidence; the external reports were not independently rerun.
+
+## 2026-10-17: seven-window position-distance Blocked Huffman goal complete
+
+IX-0104 records maintainer-reported successful hosted CI and four95-archive
+external routes at `50143425b443be095603c5e9a6689fca8292492f`. Local schema85
+qualification preserves the starting88 archives and appends the seven native
+Huffman profiles in the requested order, retaining historical compatibility
+and failure/publication guarantees. TVG-1550 rechecks the completion evidence.
+BM-0250..0254 cover all seven windows' actual same-window corpus comparisons,
+encode/decode speeds and resident peaks; bounded fuzz evidence includes the
+later-requested large-profile campaigns. Temporary omissions and pending
+remote gates are superseded. The64KiB member-specific size misses and measured
+speed/memory costs remain explicit, without claiming universal dominance.
+The requested extension goal is complete; baseline membership, release state
+and codec representations are unchanged. This recording commit does not
+claim another hosted or external execution.

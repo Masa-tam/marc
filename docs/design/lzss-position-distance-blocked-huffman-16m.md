@@ -156,3 +156,12 @@ Per-member speed and encode/decode resident peaks remain explicit in BM-0254.
 Both actual window and frame are sixteen MiB. TVG-1548 separately records the
 subsequently requested bounded sanitizer fuzz qualification. These local results
 do not confirm a hosted CI run or the external four-route95 exchange.
+
+## Final family completion
+
+[IX-0104](../interoperability.md) closes the maintainer-reported hosted CI and
+external four-route95 gates at revision
+`50143425b443be095603c5e9a6689fca8292492f`. TVG-1550 rechecks retained local
+evidence; BM-0250..0254 and TVG-1548 supersede the temporary measurement/fuzz
+omissions. The seven-window goal is complete with documented size and
+speed/memory tradeoffs. Earlier pending statements are milestone history.

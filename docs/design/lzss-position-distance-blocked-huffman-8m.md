@@ -271,3 +271,12 @@ four-route95 confirmation remain separate unfinished gates.
 schema85/95 exchange gates, superseding the earlier remaining-local-work
 checkpoint above. Earlier measurements and explicit omissions remain intact.
 User batch push, hosted CI and external four-route95 confirmation remain open.
+
+## Final family completion
+
+[IX-0104](../interoperability.md) closes the maintainer-reported hosted CI and
+external four-route95 gates at revision
+`50143425b443be095603c5e9a6689fca8292492f`. TVG-1550 rechecks retained local
+evidence; BM-0250..0254 and TVG-1548 supersede the temporary measurement/fuzz
+omissions. The seven-window goal is complete with documented size and
+speed/memory tradeoffs. Earlier pending statements are milestone history.
