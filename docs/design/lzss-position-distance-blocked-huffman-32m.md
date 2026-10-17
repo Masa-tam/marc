@@ -87,8 +87,9 @@ and TVG-1535 qualifies frame quarantine and caller-scratch streaming decoding.
 TVG-1536 qualifies owning transforms and checked logical resource queries.
 TVG-1537 qualifies the additive C API, its3072MiB logical default and actual
 static/shared construction, including preservation of earlier archives.
-CLI, schema84/94
-exchange and final local audit remain pending.
+TVG-1538 qualifies exact-name CLI routing, static/shared byte identity and
+transactional file publication while retaining all93 preceding archive bodies.
+Schema84/94 exchange and final local audit remain pending.
 
 Ratio/speed/physical-peak benchmarks and fuzz execution are omitted through
 this goal by explicit user request. Same-window contextual compression and

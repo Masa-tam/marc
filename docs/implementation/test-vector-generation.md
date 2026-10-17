@@ -25258,3 +25258,20 @@ actual resource-query results. Logical grants are not physical peaks. Keep
 the measured-duration-based serial600-second differential ceiling. CLI,
 schema84/94 exchange and later/final gates remain pending. No fuzz or further
 ratio/speed/physical-peak benchmark is executed.
+
+### TVG-1538: thirty-two-MiB native Huffman CLI and file transaction
+
+Qualify the static candidate before updating the fixed runtime, preserving
+previous products. Four normal checks then cover documentation, static/shared
+thirty-two-MiB selectors and preceding sixteen-MiB regression. Seven boundaries
+include empty/single/all-byte inputs, frame size minus/equal/plus one and two
+full frames plus17 bytes. Match deterministic bytes, exact native identity and
+all generated static/shared archives. Check all212 cuts of the small stream,
+malformed fields/models/padding, three near-name refusals, ten real foreign
+profiles and independent length3/4/258 references. Independently restore the
+valid first frame before a late second-frame refusal; publish no target after
+failure. Existing target and temporary contents stay unchanged. Both products
+restore and reproduce every preceding93 archive body. Bind source/product
+hashes and preserved pre-update runtime artifacts. No fuzz or additional
+ratio/speed/physical-peak benchmark is executed. Schema84/94 exchange, final
+local audit and larger/final hosted/external gates remain unfinished.

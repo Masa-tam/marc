@@ -1089,3 +1089,30 @@ separate gates. Ratio/speed/physical-peak benchmarks and fuzz are omitted by
 user request through this goal; no unmeasured compression target is claimed.
 Those sixteen-MiB local gates are closed at [IX-0101](interoperability.md).
 Final95-family hosted/external qualification remains separate.
+
+### Thirty-two-MiB position-distance Blocked Huffman
+
+The exact selector `lzss-position-distance-blocked-huffman-32m` selects native
+dictionary2/13, context1/33 and entropy2/8 with33554432-byte window/reset frames.
+It uses the thirty-two-MiB public C factory, fixed-five longest/nearest encoding
+and length3..258 decoder grammar. Distance-less spellings, upper-case32M and
+an extra64k suffix are not aliases. Earlier identities remain unchanged.
+
+The3072MiB logical grant includes65536-byte input/output arrays and65536
+declared control-retention bytes. Checked public admission is2727764634 encoder
+and1065910860 decoder bytes on the qualified layouts; these are not process
+peaks. Admission precedes transform consumption. Completely validated private
+frames drain before whole-file rename, which follows exact EOS, strict trailing
+checks and successful sink close. Existing output and temporary files remain
+unchanged on refusal; only a newly created temporary file from this run is
+removed after failure. A valid first/failed second frame must never publish a
+partial target file. CLI qualification and schema84/94 exchange are separate
+gates. Ratio/speed/physical-peak benchmarks and fuzz are omitted by user request;
+no unmeasured same-window compression or performance target is claimed.
+
+TVG-1538 qualifies static/shared byte identity at seven boundaries through two
+full frames plus a tail, all212 small-stream cuts, independent length3/4/258
+references, malformed metadata/models/padding, ten existing foreign profiles
+and a valid first/failed second frame. Both paths restore and reproduce all93
+preceding archives. Existing target/temporary files and pre-update runtime
+artifacts are preserved. Schema84/94 exchange and final audit remain pending.

@@ -42712,3 +42712,15 @@ starting88/preceding93 archive body after the shared-library update. Retain
 pre-update artifacts and source/binary bindings. No external/restricted code
 was consulted; no fuzz or additional benchmark was executed. CLI, exchange,
 larger-profile and final hosted/external gates remain unfinished.
+
+### CR-1913: 2026-10-17 — thirty-two-MiB native Huffman CLI
+
+Author/reviewer: Codex. Follow IR-1357 using the first-party CLI helper and
+qualified C boundary. Add only the exact thirty-two-MiB selector and retain
+earlier routing/representations. TVG-1538 qualifies the candidate before runtime
+update, static/shared deterministic boundaries, independent grammar references,
+complete small truncations, foreign refusal and whole-file failure protection.
+Preserve pre-update artifacts and all93 prior archive bodies through both
+products; bind current sources and binaries. No external/restricted source was
+consulted; no fuzz or additional benchmark was executed. Schema84/94 exchange,
+final local audit and later/final qualification remain unfinished.

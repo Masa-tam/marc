@@ -11966,3 +11966,14 @@ allocations and failed-frame quarantine. Bind499 independent public/owning
 wires and all starting88/preceding93 archive bodies after rebuilding the shared
 library. Consult no external/restricted source; execute no fuzz or additional
 ratio/speed/physical-peak benchmark. CLI and exchange remain separate gates.
+
+### IR-1357: thirty-two-MiB native Huffman CLI routing and file publication
+
+Extend the first-party native helper and exact-name CLI routing through the
+qualified public factory. Charge both call arrays and retained controls under
+the3072MiB logical grant. Preserve strict identity and whole-file transactional
+publication. Verify static/shared deterministic boundaries, every small cut,
+independent length3/4/258 references, foreign-profile refusal and first/failed
+second-frame behavior. Preserve existing target/temporary files and all93
+preceding archive bodies. Consult no external/restricted implementation and
+execute no fuzz or additional ratio/speed/physical-peak benchmark.
