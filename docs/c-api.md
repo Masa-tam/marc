@@ -1576,3 +1576,8 @@ TVG-1561 also qualifies the4MiB candidate's static/shared public paths under
 DD-1625. Its query includes the corresponding descriptor-plus4096 private
 encoder charge. Decoder requirements, ABI and defaults remain unchanged;
 matched corpus measurements and final family/runtime qualification are separate.
+
+TVG-1564 additionally qualifies the8MiB candidate's static/shared public paths.
+Its resource query propagates the same profile-descriptor-plus4096 encoder
+charge, with unchanged decoder accounting, ABI and defaults. Corpus measurements
+and final common-runtime qualification remain separate gates.

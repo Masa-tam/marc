@@ -1176,3 +1176,9 @@ TVG-1561 additionally qualifies the existing
 `lzss-position-distance-blocked-huffman-4m` selector with the same candidate
 policy and unchanged decoder grammar. Determinism and transactional failure
 publication pass; corpus and final family/runtime gates remain separate.
+
+TVG-1564 qualifies the existing
+`lzss-position-distance-blocked-huffman-8m` selector with DD-1625's revised
+candidate producer. Decoder grammar, selector and stream identities are unchanged;
+deterministic output and transactional failure publication pass. Corpus and final
+common-runtime qualification remain separate gates.

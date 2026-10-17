@@ -43057,3 +43057,11 @@ destination-retaining quota checks and ten passing registrations. Preserve the
 qualified1MiB/4MiB products and build8MiB candidates separately. No external
 implementation is consulted. Public, corpus and final common-runtime gates
 remain pending.
+
+### CR-1939: 2026-10-18 — eight-MiB revised-producer public qualification
+
+Author/reviewer: Codex. TVG-1564 adds six passing independent-wire/public/C/CLI
+registrations. Retain frozen oracles, existing test limits and failure/publication
+contracts. Public API/CLI notes distinguish the revised candidate from remaining
+corpus and common-runtime gates. Only first-party references and retained
+products are used. No external implementation is consulted.
