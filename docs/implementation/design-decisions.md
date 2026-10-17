@@ -34998,3 +34998,15 @@ wire bounds and independent vectors before production implementation. Later
 logical defaults require checked resource queries and construction tests;
 further physical-peak/speed/ratio benchmarks and fuzz execution are omitted
 under the maintainer's explicit goal policy.
+
+### DD-1619: thirty-two-MiB native Huffman exact format
+
+The [thirty-two-MiB definition](../design/lzss-position-distance-blocked-huffman-32m.md)
+uses dictionary2/13, context1/33, entropy2/8 with57 contexts and62 codebooks.
+Use eight mask bytes and reject unused bits57..63; alphabet26 has no unused
+dense nibble. Define descriptor32..2578 and a conservative min(35T,10R)
+decision envelope. A reachable class24/length3 token takes28 decisions and
+breaks the prior per-token9R argument; no tighter whole-frame bound is claimed.
+Define exact wire and independent vectors before production. Logical defaults
+require checked resource queries and actual construction. Further benchmarks
+and fuzz execution remain omitted under the explicit goal policy.

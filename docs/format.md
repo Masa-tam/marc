@@ -9324,5 +9324,18 @@ usable; alphabet25 dense padding remains zero. Valid reset frames require
 2T<=D<=min(34T,9R), with checked payload/frame ceilings283115520/283118159.
 The linked specification distinguishes isolated endpoint token bounds from
 valid history, fixes every envelope offset and retains strict model usage
-and failed-frame quarantine. This additive definition changes no prior bytes;
-implementation, public admission/API/CLI and schema83 exchange remain open.
+and failed-frame quarantine. This additive definition changes no prior bytes.
+Sixteen-MiB local implementation, API/CLI and schema83 qualification are
+recorded at [IX-0101](interoperability.md); final95 hosted/external gates remain open.
+
+### DD-1619: native thirty-two-MiB position-distance Blocked Huffman
+
+The [thirty-two-MiB representation](design/lzss-position-distance-blocked-huffman-32m.md)
+defines tuple2/13+1/33+2/8,33554432-byte window,57 contexts,4669 alphabet
+extent,62 codebooks and descriptor32..2578 bytes. Eight mask bytes have
+unused bits57..63; alphabet26's final dense high nibble is used. Require
+2T<=D<=min(35T,10R), with payload/frame ceilings629145600/629148242.
+The linked definition proves a conservative bound without transplanting the
+sixteen-MiB per-token9R argument and fixes all stream/frame/model offsets.
+Earlier bytes remain unchanged. Production code, public resource defaults,
+API/CLI and schema84 exchange require later qualification.

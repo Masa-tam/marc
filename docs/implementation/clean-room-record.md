@@ -42631,3 +42631,16 @@ Keep all historical cases and derive the serial timeout from the retained
 full run. No external/restricted implementation was consulted; no fuzz or
 benchmark was executed. Performance targets remain unmeasured by request.
 The two larger profiles, final95 audit and hosted/external gates remain open.
+
+### CR-1907: 2026-10-17 — thirty-two-MiB native Huffman format
+
+Author/reviewer: Codex. Follow IR-1351 using first-party mathematical format
+rules and canonical-code oracles. DD-1619 defines the log25 identity, mask,
+alphabet and envelope before production. A compact reachable class24 short
+match invalidates reuse of the per-token9R argument, without claiming to
+refute a tighter whole-frame bound. Prove a conservative10R envelope instead.
+TVG-1532 freezes283 positive/69 negative wires and independently verifies
+manual headers, used/unused mask bits, even nibbles, wide bounds and exclusive
+artifact preservation. No external/restricted implementation was consulted;
+no production decoder, fuzz or benchmark was executed. Implementation,
+resource admission, public API/CLI and exchange remain unfinished.

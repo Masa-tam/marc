@@ -1886,6 +1886,18 @@ foreach(sixteen_mib_position_huffman_term IN ITEMS
         message(FATAL_ERROR "Missing sixteen-MiB native Huffman format contract: ${sixteen_mib_position_huffman_term}")
     endif()
 endforeach()
+file(READ "${source_dir}/docs/design/lzss-position-distance-blocked-huffman-32m.md" thirty_two_mib_position_huffman_format)
+foreach(thirty_two_mib_position_huffman_term IN ITEMS
+        "DD-1619" "dictionary2/13, context1/33, entropy2/8"
+        "33554432" "Contexts0..56" "extent4669" "32..2578"
+        "reject bits57..63" "min(35T,10R)"
+        "335544320" "629145600" "629148242"
+        "Class24" "fuzz execution")
+    string(FIND "${thirty_two_mib_position_huffman_format}" "${thirty_two_mib_position_huffman_term}" thirty_two_mib_position_huffman_offset)
+    if(thirty_two_mib_position_huffman_offset EQUAL -1)
+        message(FATAL_ERROR "Missing thirty-two-MiB native Huffman format contract: ${thirty_two_mib_position_huffman_term}")
+    endif()
+endforeach()
 foreach(eight_mib_position_huffman_cli_contract IN ITEMS
         "### Eight-MiB position-distance Blocked Huffman"
         "lzss-position-distance-blocked-huffman-8m"

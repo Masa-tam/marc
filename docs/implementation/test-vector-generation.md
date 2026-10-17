@@ -25141,3 +25141,19 @@ audit pass. Keep the complete historical suite and use its retained duration
 to select a1800-second serial budget. No fuzz or further benchmark is run;
 do not treat those explicit omissions as passes. Larger profiles, final95
 local audit and hosted/external confirmation remain unfinished.
+
+### TVG-1532: thirty-two-MiB independent Huffman format vectors
+
+Freeze283 positive and69 actual negative mathematical vectors at log25,
+tuple2/13+1/33+2/8. Check57 contexts, extent4669, eight mask bytes, usable bit56
+and refusal of bits57..63, descriptor32..2578, full-alphabet distance26 dense
+nibbles, odd length-alphabet padding and complete fifteen-bit codes. Hand
+check both112-byte stream headers, the64-byte frame header and36-byte single-A
+descriptor. The compact valid-history witness reaches16777216 raw bytes and
+appends a class24/length3 match needing28 decisions; distinguish it from the
+unreachable isolated class25 endpoint. Verify35T/10R and full maxima335544320/
+629145600/629148242, with a wide intermediate for15D. Preserve frozen output
+exclusively and compare exact regeneration, earlier sixteen-MiB artifacts and
+the validated runtime. Three normal checks and independent artifact audit pass.
+No production encoder/decoder, fuzz or benchmark is invoked. Production and
+public/resource/exchange qualification remain pending.

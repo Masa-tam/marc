@@ -11897,3 +11897,13 @@ all historical schema conversions with retained decoded/re-encoded bodies,
 directed malformed metadata/header rejection and all four local self/cross
 execution paths. Bind normal build sources, objects, flags and products to
 the qualified profile. No external/restricted source, fuzz or benchmark is used.
+
+### IR-1351: thirty-two-MiB native Huffman independent format
+
+Extend the first-party specification and mathematical oracle at log25,
+retaining earlier identities and artifacts. Define all fields and bounds
+before production code. Distinguish a reachable class24 short match from
+the isolated class25 endpoint; use a proved conservative10R envelope rather
+than silently reusing the sixteen-MiB per-token9R proof. Freeze independent
+mask/nibble/descriptor/header vectors and finite negatives. Consult no
+external/restricted implementation and execute no fuzz or benchmark.
