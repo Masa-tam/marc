@@ -12035,3 +12035,70 @@ for this experiment. Existing CLI, admission defaults, production byte streams
 and95-archive bundle remain unchanged. Integration requires a deliberate
 encoder-policy/baseline decision and correctness/resource/performance validation;
 decoder compatibility alone does not establish adoption readiness.
+
+### BM-0256: integrated64KiB residual-pool policy, matched saved/revised/contextual cohort
+
+DD-1624 is the explicitly revised64KiB reference encoder policy. All twelve
+Silesia members total211,938,580 raw bytes. O/N/C below means saved original
+native encoder, revised native encoder and same-window contextual Huffman.
+Use unchanged driver sources/configuration with ordinary optimized products.
+Run serially in O/N/C order per member, with no concurrent build or test.
+Timing includes allocation/create/process/destroy and excludes file I/O and
+outside comparisons: one warm-up plus three observations, report median.
+Resident peaks are separately measured with streaming drivers in three
+fresh processes per member/direction and reported as their maximum. They
+include runtime, driver and two64KiB I/O arrays, not whole-corpus comparison
+vectors or sanitizer RSS. This is one cohort, without a confidence interval.
+
+All N streams match retained DD-1623 experimental bytes exactly. Every
+archive restores, and both old/new decoder cross-routes pass for all twelve.
+The decoder implementation is unchanged; decode timing differences can
+reflect the changed codebooks/encoded input and measurement variation.
+Logical resource queries and resident peaks are distinct; defaults are
+unchanged. The additional conservative encoder workspace is explicit in
+DD-1624; no physical peak is used to lower an admission bound.
+
+|Member|O bytes|N bytes|C bytes|
+|---|---:|---:|---:|
+|dickens|4,163,400|4,157,139|4,163,266|
+|mozilla|21,081,808|20,999,921|21,474,136|
+|mr|3,762,812|3,710,099|3,764,750|
+|nci|3,581,749|3,579,635|3,580,540|
+|ooffice|3,481,398|3,467,782|3,483,926|
+|osdb|4,411,518|4,405,006|4,412,335|
+|reymont|2,055,459|2,052,869|2,055,913|
+|samba|6,022,949|6,016,802|6,033,368|
+|sao|6,030,211|5,999,459|6,128,512|
+|webster|13,161,553|13,144,054|13,159,310|
+|xml|780,366|780,021|780,136|
+|x-ray|6,653,996|6,631,403|6,704,767|
+|Total|75,187,219|74,944,190|75,740,959|
+
+|Member|Encode O/N/C MiB/s|Decode O/N/C MiB/s|Encode peak O/N/C bytes|Decode peak O/N/C bytes|
+|---|---:|---:|---:|---:|
+|dickens|15.619934/15.405856/20.676023|21.154498/21.156483/23.527922|7,110,656/7,127,040/7,245,824|6,418,432/6,414,336/6,332,416|
+|mozilla|13.407886/12.898667/11.032956|30.664379/30.267116/22.617103|7,430,144/7,434,240/7,335,936|6,504,448/6,516,736/6,414,336|
+|mr|13.896139/13.394771/12.221259|26.035567/25.525955/24.782105|7,143,424/7,155,712/7,254,016|6,426,624/6,426,624/6,356,992|
+|nci|37.397334/35.657492/32.162098|82.276564/81.082408/92.113178|7,069,696/7,081,984/7,229,440|6,402,048/6,402,048/6,316,032|
+|ooffice|12.852873/12.658316/12.931726|21.716040/21.574635/15.716385|7,184,384/7,196,672/7,327,744|6,430,720/6,438,912/6,410,240|
+|osdb|17.685865/16.880416/17.688936|28.587905/28.288475/22.520668|7,131,136/7,143,424/7,245,824|6,422,528/6,418,432/6,340,608|
+|reymont|16.309648/15.772733/20.360611|28.214401/27.672031/33.782175|7,188,480/7,204,864/7,331,840|6,443,008/6,451,200/6,426,624|
+|samba|23.383337/22.496782/22.573046|39.919888/39.927732/36.357149|7,417,856/7,442,432/7,327,744|6,512,640/6,516,736/6,406,144|
+|sao|11.136258/10.849818/11.031571|17.602716/17.584067/11.762296|7,213,056/7,221,248/7,327,744|6,447,104/6,447,104/6,418,432|
+|webster|19.839991/19.232825/23.288020|29.255461/29.283182/29.874403|7,110,656/7,139,328/7,245,824|6,414,336/6,414,336/6,340,608|
+|xml|34.512929/33.906841/35.248821|63.973398/63.698011/67.693373|7,094,272/7,118,848/7,241,728|6,410,240/6,410,240/6,324,224|
+|x-ray|13.834140/13.795315/12.868152|17.361846/17.167754/11.386967|7,204,864/7,213,056/7,335,936|6,455,296/6,447,104/6,414,336|
+|Aggregate / maximum|17.698431/17.122234/16.859372|31.370775/31.137592/26.754169|7,430,144/7,442,432/7,335,936|6,512,640/6,516,736/6,426,624|
+
+Encode sum of member median seconds O/N/C: 11.420242700/11.804556300/11.988606600.
+N versus O encode time change: +3.365196%.
+Decode sum of member median seconds O/N/C: 6.442951400/6.491201400/7.554724800.
+N versus O decode time change: +0.748880%.
+Encode streaming queried bytes O/N/C: 4,593,182/4,610,982/2,378,305. O/N includes owner/calls/controls; C counts caller workspaces.
+Decode streaming queried bytes O/N/C: 2,225,864/2,225,864/1,735,093. O/N includes owner/calls/controls; C counts caller workspaces.
+
+All twelve N streams are smaller than both O and C, including the four
+prior material-specific misses. These observations do not promise universal
+size, speed or memory dominance. Original binaries, archives and receipts
+are retained; previous BM-0250/BM-0255 results are not overwritten. Hosted
+CI and external routes for this policy are not established by local tests.

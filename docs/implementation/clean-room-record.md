@@ -42947,3 +42947,16 @@ archives and exact reproduction of the other94. Stage all new products away
 from the validated fixed runtime; retain the previous release products. No
 external/restricted implementation reference was used. Corpus cross-policy
 decoder and performance evidence remains separate from this public milestone.
+
+### CR-1929: 2026-10-17 — integrated residual-pool measured qualification
+
+Author/reviewer: Codex. Use only repository-authored drivers, retained old
+products, public APIs and the verified corpus manifest. TVG-1554 independently
+checks matched old/revised/contextual streams, observations and old/new decoder
+cross-routes. All revised bytes equal the first-party DD-1623 experimental
+reference. BM-0256 records complete corpus sizes, encode/decode timings and
+physical peaks, including the measured encode-time increase and small resident
+differences. Resource defaults are unchanged; explicit additional encoder
+admission is not conflated with RSS. All former generated bodies/products stay
+retained. No external/restricted implementation was consulted, and no claim
+about hosted/external validation of this revision is made from local evidence.

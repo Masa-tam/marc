@@ -25581,3 +25581,18 @@ reproduces every re-encoded body except the explicitly changed64KiB native
 profile. All original hashes remain intact. IX-0105 records this policy boundary.
 Old/new corpus decoder cross-routes, size identity to the retained experiment,
 and speed/physical-peak measurements remain to be recorded after completion.
+
+### TVG-1554: integrated residual-pool corpus and compatibility audit
+
+Measure all twelve manifest-verified members serially with saved old native,
+revised native and unchanged same-window contextual driver paths. Separate
+one-warmup/three-sample lifecycle timings from three fresh streaming-process
+resident peaks per direction. Require exact old/contextual wire hashes and
+exact revised equality to the already independently qualified experiment.
+Both old/new CLI decoder cross-routes restore every source hash. A retained-file
+audit rehashes108 archive/restoration pairs and24 cross-route restorations,
+checks216 raw peak receipts and72 timing receipts, actual identities/extents,
+the corpus manifest, rounding and aggregate calculations. All checks pass;
+BM-0256 records all per-member values and the measured encode-time cost.
+Tool hashes remain unchanged throughout the serial campaign. No hosted or
+external run, new random fuzz coverage or worst-case RSS ceiling is inferred.
