@@ -11804,3 +11804,15 @@ all twelve corpus members, repeated output and restored bytes, creation/process/
 destruction timing and separate fresh-process physical peaks. Record actual
 configuration, source/binary bindings, per-member sizes and aggregate tradeoffs.
 Consult no external or restricted implementation and execute no fuzz tests.
+
+### IR-1342: eight-MiB native Huffman ordered exchange extension
+
+Extend the first-party producer/verifier from schema81/91 archives to
+schema82/92 by appending the exact eight-MiB native profile. Retain all prior
+entry names, order, property representation and archive bytes. Independently
+check its112-byte identity before any codec launch; preserve historical
+schema paths and qualify directed malformed manifest/header cases before
+output publication. Retain actual decode/re-encode evidence for each historical
+schema and local self/cross route, audit it independently, and distinguish
+these local results from later hosted CI and external qualification. Consult
+no external implementation or restricted suite and execute no fuzz tests.

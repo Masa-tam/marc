@@ -20,9 +20,9 @@ $escapedMarker = $launchMarker.Replace("'", "''")
 $baselineJson = Get-Content -LiteralPath (Join-Path $source 'manifest.json') -Raw
 $baseline = $baselineJson | ConvertFrom-Json
 $expectedSchema = [int]$baseline.schema_version
-$expectedCount = if ($expectedSchema -eq 81) { 91 } elseif ($expectedSchema -eq 80) { 90 } else { 0 }
+$expectedCount = if ($expectedSchema -eq 82) { 92 } elseif ($expectedSchema -eq 81) { 91 } elseif ($expectedSchema -eq 80) { 90 } else { 0 }
 if ($expectedCount -eq 0 -or @($baseline.archives).Count -ne $expectedCount) {
-    throw 'Negative tests require a complete schema-80 or schema-81 source bundle'
+    throw 'Negative tests require a complete schema-80, schema-81 or schema-82 source bundle'
 }
 $cases = @('old-name', 'downgrade', 'codec-set', 'missing', 'duplicate', 'order', 'archive-hash',
     'archive-size', 'input-hash', 'identity-dictionary', 'identity-context', 'identity-context-count', 'header-truncated')
@@ -63,10 +63,12 @@ foreach ($case in $cases) {
             $manifest.archives[$last].bytes = $bytes.Length
             $manifest.archives[$last].sha256 = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
             $expected = if ($case -eq 'header-truncated') {
-                if ($expectedSchema -eq 81) { '4 MiB position Blocked Huffman archive header is truncated' }
+                if ($expectedSchema -eq 82) { '8 MiB position Blocked Huffman archive header is truncated' }
+                elseif ($expectedSchema -eq 81) { '4 MiB position Blocked Huffman archive header is truncated' }
                 else { '1 MiB position Blocked Huffman archive header is truncated' }
             } else {
-                if ($expectedSchema -eq 81) { '4 MiB position Blocked Huffman archive does not carry exact identity*' }
+                if ($expectedSchema -eq 82) { '8 MiB position Blocked Huffman archive does not carry exact identity*' }
+                elseif ($expectedSchema -eq 81) { '4 MiB position Blocked Huffman archive does not carry exact identity*' }
                 else { '1 MiB position Blocked Huffman archive does not carry exact identity*' }
             }
         }
@@ -78,10 +80,10 @@ foreach ($case in $cases) {
     $rejected = $false
     try { & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') -MarcCli $launchGuard -BundleDirectory $bundle -OutputDirectory $output }
     catch { if ($_.Exception.Message -notlike $expected) { throw }; $rejected = $true }
-    if (-not $rejected) { throw "Verifier accepted schema-80 negative: $case" }
+    if (-not $rejected) { throw "Verifier accepted schema-$expectedSchema negative: $case" }
     if (Test-Path -LiteralPath $launchMarker) { throw "Codec launched before admission: $case" }
     if (@(Get-ChildItem -LiteralPath $output -File -Recurse).Count -ne 0) { throw "Verifier published output before complete manifest admission: $case" }
     $receipts += [ordered]@{ case = $case; rejected = $true; output_files = 0; codec_launches = 0; expected = $expected }
 }
 [System.IO.File]::WriteAllText((Join-Path $root 'qualification.json'), ([ordered]@{ passed = $true; cases = $receipts } | ConvertTo-Json -Depth 5), [System.Text.UTF8Encoding]::new($false))
-Write-Host "Rejected $($cases.Count) schema-80 negatives before codec launch"
+Write-Host "Rejected $($cases.Count) schema-$expectedSchema negatives before codec launch"

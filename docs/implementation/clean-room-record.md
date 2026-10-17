@@ -42513,3 +42513,16 @@ library bindings. Size is smaller on all12 members and3184 bytes in total;
 encode-time benefits coexist with slower aggregate decode and higher peaks.
 No external/restricted implementation was consulted and no fuzz executed.
 Exchange, final local audit and hosted/external gates remain unfinished.
+
+### CR-1898: 2026-10-17 — eight-MiB ordered exchange and local closure
+
+Author/reviewer: Codex. Follow IR-1342 with first-party producer, verifier and
+compatibility paths. TVG-1523 and IX-0100 qualify all four92-archive local
+routes, exact91/88 prefixes, every actual historical output through schema82,
+and375 directed pre-launch refusal cases. The local closure binds all earlier
+qualified milestones,119 current source/test files,657 normal source/object
+pairs, flags, products and preserved runtime artifacts. No external/restricted
+implementation was consulted; no fuzz or further benchmark was executed.
+Retain completed BM-0253 observations and record user-requested exclusions
+without reporting them as passes. Larger profiles and final95 local/hosted/
+external confirmation remain unfinished.

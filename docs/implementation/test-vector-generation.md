@@ -24977,3 +24977,23 @@ encode is faster on7 members, decode on1, and peaks are higher on all12 in
 both directions. Independent full artifact audit passes. The goal's fuzz
 execution exclusion remains in force; no fuzz is run or reported as passed.
 Schema82 exchange, final profile and larger-window/final95 gates remain open.
+
+### TVG-1523: eight-MiB ordered exchange and final local audit
+
+Append the exact eight-MiB selector to schema82/92 while retaining all91
+preceding and starting88 entry/property/input/archive bytes. All four local
+self/cross paths restore and re-encode all92 bodies identically. Execute the
+full schema1..82 conversion/compatibility chain with retained output evidence;
+independently inspect every historical decoded/re-encoded body. All375 directed
+schema80/81/82 negatives reject before any codec launch or output file, with
+empty retained output directories and absent launch markers.
+
+Bind qualified format/core/token/frame/owner/API/CLI receipts,119 current
+source/test hashes,657 normal source/object pairs and separate product hashes.
+Verify normal optimized flags without sanitizer instrumentation, exact runtime
+identity and preserved pre-update artifacts. All checks pass. Earlier staged
+differential, boundary, allocation, failure-immutability and private-frame
+guarantees remain independently evidenced; no redundant full-corpus rerun
+or fuzz execution is performed. BM-0253 observations remain retained, and
+future benchmarks are omitted by request. Three larger profiles and final95
+local/hosted/external gates remain unfinished.

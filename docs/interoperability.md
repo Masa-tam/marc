@@ -2324,3 +2324,37 @@ or fuzz campaign is executed for this review. BM-0252 records the complete
 paired measurements; the prior bounded campaign remains historical evidence.
 Four larger windows, final95 local audit, user push, hosted CI and external
 four-route95 qualification remain unfinished.
+
+## IX-0100: eight-MiB native Huffman local qualification
+
+Schema82/`marc-cli-v82` appends
+`lzss-position-distance-blocked-huffman-8m` at index91. Its112-byte header
+matches identity2/11+1/31+2/6, window/frame8388608,55 contexts and extent4647.
+Both independently built producer bundles preserve all91 preceding entries
+and the starting88-entry prefix, including property order, input descriptors,
+input bytes and archive bodies. All92 archives restore and reproduce exactly
+through four local self/cross routes: Windows self, Ubuntu self, Windows to
+Ubuntu and Ubuntu to Windows.
+
+Historical conversion and execution finish for every schema1..82. Independent
+audit reads every actual restored and re-encoded file. All375 schema80/81/82
+directed admission negatives reject before codec launch; retained output
+directories contain no files and launch markers are absent. Previous runtime,
+build, bundle and historical artifacts remain retained.
+
+The final local audit binds all qualified format/core/token/frame/owner/API/
+CLI milestones and119 current source/test files. It checks all657 ordinary
+source/object pairs from the separate build, normal optimization flags without
+sanitizer instrumentation, product hashes, fixed-runtime backups and the
+complete exchange evidence. Independent252 positive/62 negative entropy wires,
+token/history and failed-frame guarantees,499 raw fixtures, public admission/
+rollback and CLI whole-file publication were qualified in their respective
+milestones; this closure does not substitute a one-shot round trip for them.
+
+BM-0253 retains the completed twelve-member same-window size/speed/ordinary-
+peak results. Further benchmarks and fuzz execution are omitted by maintainer
+request through goal completion and are not counted as passed. This closes the
+eight-MiB local profile under those explicit exceptions. Three larger profiles,
+the final95 local audit, user push, hosted CI and external four-route95
+confirmation remain open. The four local routes do not supply those external
+results.

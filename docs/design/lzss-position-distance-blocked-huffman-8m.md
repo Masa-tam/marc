@@ -249,3 +249,19 @@ logical default; physical peaks do not redefine admission. Fuzz execution
 remains omitted by request. Schema82 exchange, final local profile audit and
 later family/hosted/external gates remain open.
 
+### Final local qualification
+
+TVG-1523 and [IX-0100](../interoperability.md) qualify schema82/92 in four
+local self/cross routes, exact91-entry and starting88-entry prefixes, every
+actual historical restored/re-encoded body through schema82 and375 directed
+pre-launch refusals. Independent closure binds all staged correctness and
+failure-contract evidence,119 unchanged qualified source/test files,657 normal
+source/object pairs, ordinary product/runtime hashes and preserved backups.
+
+The local profile is qualified with fuzz execution omitted by user request.
+Completed BM-0253 observations are retained; no future ratio/speed/physical-
+peak benchmark is required during this goal under the later maintainer
+instruction. Resource admission and failure correctness remain mandatory.
+Three larger profiles, final95 local audit, user push, hosted CI and external
+four-route95 confirmation remain separate unfinished gates.
+

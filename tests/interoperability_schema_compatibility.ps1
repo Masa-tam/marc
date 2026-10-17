@@ -92,6 +92,7 @@ $schema77 = Join-Path $root 'schema77'
 $schema78 = Join-Path $root 'schema78'
 $schema79 = Join-Path $root 'schema79'
 $schema81 = Join-Path $root 'schema81'
+$schema82 = Join-Path $root 'schema82'
 $schema80 = Join-Path $root 'schema80'
 $schema60 = Join-Path $root 'schema60'
 $schema60Reordered = Join-Path $root 'schema60-reordered'
@@ -270,10 +271,18 @@ try {
     $null = New-Item -ItemType Directory -Path $root
     & (Join-Path $PSScriptRoot 'create_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -OutputDirectory $schema81 `
+        -OutputDirectory $schema82 `
         -Platform 'local-schema-test' `
         -Compiler 'local-schema-test' `
         -SourceRevision ('0' * 40)
+    $latest82 = Get-Content -LiteralPath (Join-Path $schema82 'manifest.json') -Raw | ConvertFrom-Json
+    if ($latest82.schema_version -ne 82 -or $latest82.codec_set -ne 'marc-cli-v82' -or
+            @($latest82.archives).Count -ne 92 -or $latest82.archives[91].codec -ne 'lzss-position-distance-blocked-huffman-8m') {
+        throw 'Schema 82 must append exactly one 8 MiB position-distance Blocked Huffman archive'
+    }
+    & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') -MarcCli $resolvedCli -BundleDirectory $schema82 -OutputDirectory (Join-Path $root 'verified82')
+    & (Join-Path $PSScriptRoot 'interoperability_schema80_negatives.ps1') -MarcCli $resolvedCli -BundleDirectory $schema82 -EvidenceDirectory (Join-Path $root 'schema82-negatives')
+    Convert-Bundle $schema82 $schema81 81 'marc-cli-v81' (@($latest82.archives[0..90] | ForEach-Object { $_.codec }))
     $latest81 = Get-Content -LiteralPath (Join-Path $schema81 'manifest.json') -Raw | ConvertFrom-Json
     if ($latest81.schema_version -ne 81 -or $latest81.codec_set -ne 'marc-cli-v81' -or
             @($latest81.archives).Count -ne 91 -or $latest81.archives[90].codec -ne 'lzss-position-distance-blocked-huffman-4m') {
@@ -971,7 +980,7 @@ try {
         -BundleDirectory $schema1 `
         -OutputDirectory (Join-Path $root 'verified1')
 
-    Write-Host 'Verified interoperability schemas 1 through 81'
+    Write-Host 'Verified interoperability schemas 1 through 82'
 } finally {
     if ([string]::IsNullOrEmpty($EvidenceDirectory) -and (Test-Path -LiteralPath $root)) {
         $resolvedRoot = [System.IO.Path]::GetFullPath($root)
