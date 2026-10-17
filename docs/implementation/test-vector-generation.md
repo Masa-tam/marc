@@ -25312,3 +25312,21 @@ exact regeneration, retained preceding vectors and unchanged validated products.
 Three normal checks and independent artifact audit pass. No production coder,
 fuzz or benchmark is executed. Implementation, logical defaults, public API/CLI
 and schema85/95 exchange remain unfinished.
+
+### TVG-1541: sixty-four-MiB bounded Huffman entropy core
+
+Qualify descriptor admission, model planning, scalar reading and private
+payload writing against all298 frozen mathematical wires and69 actual refusals.
+Independently decode every production plan and match all298 plans byte-for-byte
+between normal and direct ASan/UBSan builds. Seven normal checks include the
+preceding profile and both frozen vector sets; all pass. Check the six unused
+mask bits, odd27-symbol distance padding, canonical tables, aliases, terminal
+model usage, sticky errors, exact/one-short grants and ordinary destination
+retention. Exercise671088640 zero-bit decisions without a decision array.
+Validate the1258291200-byte ceiling and reject ceiling+1 using wide15D
+metadata arithmetic without allocating that payload; this does not qualify a
+whole raw frame. Bind sources/binaries and preserve the validated runtime.
+Instrumented qualification uses a fixed runner snapshot; an earlier interrupted
+runner is retained and excluded from qualification. Token/history/frame
+integration, public resources/API/CLI and exchange remain pending. No fuzz or
+additional ratio/speed/physical-peak benchmark is executed.

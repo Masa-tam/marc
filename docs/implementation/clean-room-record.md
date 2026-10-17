@@ -42752,3 +42752,17 @@ zero-bit singleton wording to match its existing frozen vectors; no earlier
 bytes change. No external/restricted implementation was consulted; no production
 coder, fuzz or additional benchmark was executed. Implementation, resource
 admission, public API/CLI and exchange remain unfinished.
+
+### CR-1916: 2026-10-17 — sixty-four-MiB bounded Huffman entropy core
+
+Author/reviewer: Codex. Follow IR-1360 using qualified first-party bounded
+scalar, canonical-code and descriptor components. Specialize DD-1620's masks,
+alphabets, tables and checked wide bounds without changing earlier streams.
+TVG-1541 qualifies298 independent wires,69 actual refusals, matching normal
+and direct ASan/UBSan plans, bounded zero-bit maxima and failure invariants.
+Metadata-only maxima do not establish raw-frame correctness. Qualify the fixed
+instrumented runner snapshot and retain the interrupted initial runner's
+evidence separately. Source/binary bindings and runtime preservation pass.
+No external/restricted implementation was consulted; no fuzz or additional
+benchmark was executed. Token/history/frame integration, public resources,
+API/CLI and exchange remain unfinished.

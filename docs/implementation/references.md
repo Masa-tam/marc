@@ -12000,3 +12000,13 @@ the isolated endpoint. Freeze independent finite wires and actual refusal cases
 before production; manually check headers, masks, dense nibbles and wide bounds.
 Consult no external/restricted implementation and execute no fuzz or additional
 ratio/speed/physical-peak benchmark. Resource/API/CLI/exchange remain later gates.
+
+### IR-1360: sixty-four-MiB bounded Huffman entropy core
+
+Specialize the qualified first-party scalar core for DD-1620's58 contexts,
+63 codebooks, odd distance alphabet and six unused mask bits. Preserve
+commit-on-success ordinary destinations, alias preflight, bounded tables,
+exact/one-short admission, sticky errors and terminal model usage. Verify
+independent frozen wires and wide15D arithmetic without allocating the maximum
+payload. Use finite direct ASan/UBSan tests without a fuzz runtime. Consult no
+external/restricted implementation and execute no fuzz or additional benchmark.

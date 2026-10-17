@@ -90,8 +90,10 @@ all contexts, full descriptor extent and complete fifteen-bit codes. Distinguish
 the reachable class25 short-match witness from the isolated class26 endpoint.
 Preserve frozen output exclusively and verify exact regeneration. Public
 defaults require checked resource queries and actual construction tests.
-Production implementation, public API/CLI, schema85/95 exchange and final
-audit remain unfinished.
+TVG-1541 separately qualifies the bounded entropy core against independent
+wires, scalar failure invariants and wide metadata bounds. Token/history/frame
+integration, public resources/API/CLI, schema85/95 exchange and final audit
+remain unfinished.
 
 Fuzz and further ratio/speed/physical-peak benchmarks are omitted through this
 goal by explicit request. Same-window contextual compression and performance
