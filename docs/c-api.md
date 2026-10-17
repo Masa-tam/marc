@@ -1586,3 +1586,8 @@ TVG-1567 qualifies the16MiB candidate's static/shared public paths under DD-1625
 Query the current encoder requirements, including its additional private
 descriptor-plus4096 charge. Decoder accounting, ABI and defaults are unchanged;
 corpus and final common-runtime qualifications remain separate.
+
+TVG-1570 qualifies the 32MiB candidate's static/shared public paths under DD-1625.
+Resource queries include the profile-descriptor-plus4096 private encoder charge.
+Decoder accounting, ABI and defaults are unchanged. Full corpus measurements and
+final common-runtime qualification remain separate gates.

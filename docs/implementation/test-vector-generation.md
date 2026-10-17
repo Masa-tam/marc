@@ -25794,3 +25794,15 @@ and API registrations pass with documentation layout: ten registrations.
 Decoder grammar, decoder charges, defaults and frozen wire oracles are unchanged.
 Public raw/C/CLI qualification, full matched corpus measurements and final
 common-runtime/retained95-body qualification remain pending at this milestone.
+
+### TVG-1570: thirty-two-MiB revised-producer public qualification
+
+Independent entropy differential, owning raw differential, public raw
+differential, static-C, shared-C and CLI registrations pass: six additional
+registrations. Frozen oracles, test contents and time limits are unchanged.
+Owning/public raw differential take 138.36/143.11 seconds in this serial run,
+within the existing 600-second limits. Test wall time is not throughput.
+Failure invariance, allocation rollback, resource admission and failed-frame
+withholding pass. CLI identity, deterministic frames and transactional file
+publication pass. Matched corpus measurements, saved-decoder corpus routes and
+final common-runtime/retained95-body qualification remain pending here.

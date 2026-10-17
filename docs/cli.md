@@ -1188,3 +1188,9 @@ TVG-1567 qualifies the existing
 candidate producer policy. Determinism and transactional failure publication
 pass, with unchanged decoder grammar and identities. Corpus and final
 common-runtime qualifications remain separate gates.
+
+TVG-1570 qualifies the existing
+`lzss-position-distance-blocked-huffman-32m` selector with the same revised
+candidate producer policy. Determinism and transactional failure publication
+pass with unchanged decoder grammar and identities. Corpus measurements and
+final common-runtime qualification remain separate gates.
