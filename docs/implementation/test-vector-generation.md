@@ -24997,3 +24997,16 @@ guarantees remain independently evidenced; no redundant full-corpus rerun
 or fuzz execution is performed. BM-0253 observations remain retained, and
 future benchmarks are omitted by request. Three larger profiles and final95
 local/hosted/external gates remain unfinished.
+
+### TVG-1524: sixteen-MiB native Huffman independent format vectors
+
+Freeze267 positive and62 actual negative vectors from the first-party
+mathematical oracle at log24, tuple2/12+1/32+2/7. Verify56 contexts, extent4658,
+seven fully used mask bytes, descriptor31..2575, all upper symbols, classes
+through16777216, odd alphabet25 padding and hand fifteen-bit codes. Isolated
+events have maximum34 decisions per token; the endpoint/length3 example needs
+28 and cannot satisfy reset-frame history. Check9R only for reachable classes
+<=23, and full-frame maxima150994944/283115520/283118159. Create frozen output
+exclusively and compare exact contents on ordinary runs; preserve earlier
+eight-MiB files. No production decoder, fuzz or benchmark is invoked. Internal
+implementation, public boundary and exchange remain pending.

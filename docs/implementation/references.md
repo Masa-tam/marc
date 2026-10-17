@@ -11816,3 +11816,13 @@ output publication. Retain actual decode/re-encode evidence for each historical
 schema and local self/cross route, audit it independently, and distinguish
 these local results from later hosted CI and external qualification. Consult
 no external implementation or restricted suite and execute no fuzz tests.
+
+### IR-1343: sixteen-MiB native Huffman format and independent vectors
+
+Specialize the first-party family mathematics and independent oracle for
+window2^24, identity2/12+1/32+2/7. Derive context/pool alphabets, mask usage,
+descriptor ceiling and event/frame bounds independently; distinguish isolated
+endpoint tokens from valid reset-frame references. Freeze exact positive and
+negative wires, including every context, odd distance-alphabet padding and
+the complete fifteen-bit code. Preserve previous sources/vectors and consult
+no external/restricted implementation. Execute no fuzz or benchmark campaign.

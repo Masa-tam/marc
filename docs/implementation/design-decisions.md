@@ -34985,3 +34985,16 @@ and actual default construction remain to be verified by API tests. Preserve
 success-only outputs, rollback, immutable direction, allocation-free process,
 capacity checks, sticky terminal status and failed-frame quarantine. No fuzz
 is executed. All-member comparison/peaks and exchange remain separate gates.
+
+### DD-1618: sixteen-MiB native Huffman exact format
+
+The [sixteen-MiB definition](../design/lzss-position-distance-blocked-huffman-16m.md)
+uses dictionary2/12, context1/32, entropy2/7 with56 contexts and61 bounded
+codebooks. Its final mask byte has no unused bits. Keep isolated grammar
+endpoint evidence separate from reset-frame history: class24/length3 needs28
+decisions but cannot reference valid history inside the maximum reset frame.
+Valid classes<=23 prove9R; arbitrary isolated events retain34T. Define exact
+wire bounds and independent vectors before production implementation. Later
+logical defaults require checked resource queries and construction tests;
+further physical-peak/speed/ratio benchmarks and fuzz execution are omitted
+under the maintainer's explicit goal policy.

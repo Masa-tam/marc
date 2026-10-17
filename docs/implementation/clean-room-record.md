@@ -42526,3 +42526,14 @@ implementation was consulted; no fuzz or further benchmark was executed.
 Retain completed BM-0253 observations and record user-requested exclusions
 without reporting them as passes. Larger profiles and final95 local/hosted/
 external confirmation remain unfinished.
+
+### CR-1899: 2026-10-17 — sixteen-MiB native Huffman format
+
+Author/reviewer: Codex. Follow IR-1343 using first-party format mathematics and
+the independent canonical-code oracle. DD-1618 derives all context, mask,
+descriptor, envelope and decision bounds. Separate the isolated class24
+endpoint from valid history rather than carrying an invalid per-token9R
+assertion forward. TVG-1524 freezes267 positives/62 actual negatives and
+checks exact regeneration without calling production code. No external or
+restricted implementation was consulted; no fuzz or benchmark was executed.
+Production implementation, resource admission, API/CLI and exchange remain open.

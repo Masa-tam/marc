@@ -9314,3 +9314,15 @@ model record, count and terminal usage rule. Require2T<=D<=min(33T,9R),
 payload<=ceil(15D/8), and full-frame payload/frame ceilings141557760/141560387.
 This additive format leaves prior bytes unchanged. Public API/CLI, resource
 defaults and exchange require later qualification.
+
+### DD-1618: native sixteen-MiB position-distance Blocked Huffman
+
+The [sixteen-MiB representation](design/lzss-position-distance-blocked-huffman-16m.md)
+defines tuple2/12+1/32+2/7,16777216-byte window,56 contexts,4658 alphabet
+extent,61 codebooks and descriptor31..2575 bytes. All seven mask bytes are
+usable; alphabet25 dense padding remains zero. Valid reset frames require
+2T<=D<=min(34T,9R), with checked payload/frame ceilings283115520/283118159.
+The linked specification distinguishes isolated endpoint token bounds from
+valid history, fixes every envelope offset and retains strict model usage
+and failed-frame quarantine. This additive definition changes no prior bytes;
+implementation, public admission/API/CLI and schema83 exchange remain open.
