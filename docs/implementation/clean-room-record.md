@@ -42884,4 +42884,16 @@ implementation was consulted. Add a streaming measurement driver and serial
 artifact-auditing runner for16/32/64MiB. Qualify both grammars, actual header
 identities/extents, source restoration and CLI agreement where selectors exist
 under TVG-1549. Keep all products and prior results; no codec or wire change.
-The corpus run and aggregate conclusions remain pending until audited.
+The complete twelve-member, three-window campaign and independent retained-file
+audit pass: 216 selected archive/restoration pairs, 432 raw observations, actual
+header identities/extents/grammar and original sizes, manifest identity and
+repeat determinism. BM-0254 records every member and total, lifecycle speed and
+resident peaks. The isolated first-pair timing recheck retains the original
+bytes and all earlier observations. The measured helper source/binary binding
+is preserved; subsequent diagnostic and Linux epoch corrections pass synthetic
+qualification on both peak implementations without replacing measured corpus
+data. All twelve members are smaller than same-window contextual at all three
+windows, with very small aggregate gains and explicit speed/memory tradeoffs.
+No codec, public configuration default or wire representation changed. Local
+checks pass; user push, hosted CI and external four-route95 remain separate,
+unconfirmed steps. No restricted implementation was consulted in this review.

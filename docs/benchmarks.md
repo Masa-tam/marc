@@ -11836,4 +11836,147 @@ benchmark tools. Full corpus measurements use
 `marc_position_blocked_huffman_large_measure`; the default is three serial
 fresh-process repetitions per member, profile and direction. CI uses a small
 synthetic smoke and never downloads the external corpus. TVG-1549 records
-measurement-path qualification; all-member results follow after completion.
+measurement-path qualification; BM-0254 records the completed corpus audit.
+
+### BM-0254: sixteen through sixty-four-MiB native Huffman corpus comparison
+
+The resumed campaign uses all12 published Silesia members,211,938,580 raw
+bytes per window. Each member/profile/direction has three fresh-process
+observations in an ordinary optimized release build. Codec timing includes
+configuration/query, allocation, creation, process and destruction, excluding
+file I/O and outside-process comparisons. Report median seconds and raw
+MiB/s; aggregate throughput divides total raw bytes by the sum of member
+median times. Resident peaks are the maximum of three complete-process
+observations, including the streaming driver with two64KiB I/O arrays.
+These observed peaks do not replace checked worst-case resource admission.
+
+The measured helper source is retained at commit623768f1; raw receipts
+remain bound to the preserved measured binary. Its inactive contextual-only
+diagnostics were zero for native profiles; native construction used public
+initializer defaults. Actual stream identities and limits are separately
+checked rather than inferred from those inactive fields.
+
+The contextual driver allocates value-initialized aligned views and two
+raw byte workspaces; the native factory owns its working storage. These
+allocation and initialization costs are included in the observations.
+
+This is one build's serial, profile-ordered cohort, without a warm-up or a
+statistical confidence claim. Both profiles have the same window and frame;
+their existing grammar and ownership policies remain different. The largest
+member is 51,220,480 bytes, so the 64MiB window is not filled by this corpus.
+Small decode-peak differences must not be interpreted as a portable guarantee.
+Native logical budget defaults remain 1280/3072/6144MiB for 16/32/64MiB;
+neither those admissions nor process peaks are substituted for one another.
+The isolated first-pair recheck replaces possible initial smoke overlap in
+the derived timing/peak table, with identical wire sizes and hashes; original
+receipts remain preserved. Hosted CI execution is still pending user push.
+
+Native16/32/64MiB identities are dictionary2/12,2/13,2/14;
+entropy2/7,2/8,2/9; context1/32,1/33,1/34. Contextual16MiB uses
+dictionary2/5,entropy2/2,context1/4. Contextual32/64MiB use the existing
+64MiB representation, dictionary2/6,entropy2/2,context1/5. The32MiB
+control is configured through the existing API with both window and frame
+set to33,554,432 bytes; there is no32MiB contextual CLI selector. All
+actual headers and exact restorations are checked. Native wire minimum match
+length is3; contextual is5. Both encoders retain fixed-five match eligibility.
+Contextual ceilings are7F decisions and
+105F/8 payload bytes for16MiB,8F decisions and15F payload bytes for
+32/64MiB (F is frame bytes). Logical budget defaults are
+512MiB and4GiB respectively. No Dynamic Range size gate is used.
+
+Every size below includes the complete stream. P/C means position-distance
+versus same-window contextual Blocked Huffman.
+
+| Member | Raw bytes |16MiB P/C bytes|32MiB P/C bytes|64MiB P/C bytes|
+|---|---:|---:|---:|---:|
+|dickens|10,192,446|3,258,954/3,259,764|3,258,955/3,259,772|3,258,963/3,259,772|
+|mozilla|51,220,480|19,282,274/19,282,544|19,296,350/19,296,525|19,233,963/19,234,032|
+|mr|9,970,564|3,352,828/3,353,428|3,352,829/3,353,436|3,352,837/3,353,436|
+|nci|33,553,445|2,270,707/2,270,748|2,159,261/2,159,293|2,159,270/2,159,293|
+|ooffice|6,152,192|3,065,132/3,065,673|3,065,133/3,065,682|3,065,142/3,065,682|
+|osdb|10,085,684|3,306,754/3,307,105|3,306,755/3,307,112|3,306,762/3,307,112|
+|reymont|6,627,202|1,583,219/1,583,275|1,583,220/1,583,282|1,583,227/1,583,282|
+|samba|21,606,400|4,956,753/4,956,963|4,896,762/4,897,182|4,896,771/4,897,182|
+|sao|7,251,944|5,536,513/5,536,569|5,536,514/5,536,574|5,536,519/5,536,574|
+|webster|41,458,703|10,150,153/10,150,256|9,961,814/9,961,895|9,791,714/9,794,150|
+|xml|5,345,280|561,472/561,585|561,473/561,594|561,482/561,594|
+|x-ray|8,474,240|5,513,441/5,513,496|5,513,442/5,513,500|5,513,446/5,513,500|
+|Total|211,938,580|62,838,200/62,841,406|62,492,508/62,495,847|62,260,096/62,265,609|
+
+#### 16MiB speed and resident peaks
+
+|Member|Encode P/C MiB/s|Decode P/C MiB/s|Encode peak P/C bytes|Decode peak P/C bytes|
+|---|---:|---:|---:|---:|
+|dickens|0.826305/0.786429|22.637091/43.960205|350,220,288/184,225,792|220,454,912/220,323,840|
+|mozilla|0.571358/0.487435|28.593340/29.846998|449,417,216/300,703,744|231,542,784/231,399,424|
+|mr|0.432422/0.173535|22.243884/37.734812|347,602,944/180,547,584|220,299,264/220,205,056|
+|nci|0.757701/0.399480|106.741130/184.990144|429,400,064/294,039,552|224,862,208/224,768,000|
+|ooffice|2.142607/4.420906|19.026417/20.025788|297,140,224/115,404,800|216,199,168/216,092,672|
+|osdb|0.831634/3.543905|27.993102/31.635480|349,069,312/182,497,280|220,377,088/220,250,112|
+|reymont|0.609509/0.531252|28.674122/53.332661|298,881,024/121,991,168|215,228,416/215,040,000|
+|samba|1.447055/1.588090|41.945615/52.305074|438,460,416/297,086,976|227,872,768/227,770,368|
+|sao|0.865220/3.426759|16.435555/14.284133|318,836,736/136,552,448|219,729,920/219,664,384|
+|webster|0.317954/0.349465|31.198727/58.695258|438,304,768/297,000,960|227,848,192/227,713,024|
+|xml|6.708049/7.304462|54.470112/79.813749|279,195,648/99,176,448|212,869,120/212,766,720|
+|x-ray|1.377681/6.323906|12.858490/17.718462|334,733,312/157,319,168|220,995,584/220,880,896|
+|Aggregate / maximum|0.595588/0.513627|30.445203/39.866500|449,417,216/300,703,744|231,542,784/231,399,424|
+
+Position is strictly smaller on12/12 members. Total contextual minus position is3,206 bytes (0.00510173% of contextual).
+Complete-stream bytes divided by raw bytes P/C: 29.64925027%/29.65076297%.
+Encode sum of member median seconds P/C: 339.362746400/393.515631700.
+Position encode is faster on5/12 members and has a higher observed resident peak on12/12.
+Decode sum of member median seconds P/C: 6.638825200/5.069930400.
+Position decode is faster on1/12 members and has a higher observed resident peak on12/12.
+This meets the same-window contextual size target on all twelve corpus members. Retain explicit choices because speed and resident-memory costs remain separate tradeoffs.
+
+#### 32MiB speed and resident peaks
+
+|Member|Encode P/C MiB/s|Decode P/C MiB/s|Encode peak P/C bytes|Decode peak P/C bytes|
+|---|---:|---:|---:|---:|
+|dickens|0.592177/0.717874|20.485333/39.415299|551,649,280/184,274,944|421,806,080/421,670,912|
+|mozilla|0.273678/0.267161|26.966998/30.924398|885,383,168/591,380,480|455,155,712/454,983,680|
+|mr|0.450739/0.170866|20.180116/34.382604|549,023,744/180,535,296|421,642,240/421,523,456|
+|nci|0.232229/0.153003|95.767401/180.461831|851,927,040/580,218,880|444,022,784/443,883,520|
+|ooffice|2.328401/4.417170|17.080435/18.881133|498,556,928/115,396,608|417,542,144/417,423,360|
+|osdb|0.914973/3.729768|25.654632/30.293210|550,404,096/182,509,568|421,765,120/421,576,704|
+|reymont|0.472184/0.533368|24.242846/45.464202|500,244,480/121,982,976|416,567,296/416,411,648|
+|samba|0.927753/1.017103|40.279522/51.563082|704,991,232/379,949,056|434,864,128/434,728,960|
+|sao|0.916527/3.392086|15.101235/13.803338|520,220,672/136,540,160|421,105,664/421,003,264|
+|webster|0.110634/0.111697|31.197578/61.782993|869,412,864/586,166,272|449,810,432/449,671,168|
+|xml|6.376889/7.138642|40.142755/60.142878|480,542,720/99,155,968|414,285,824/414,109,696|
+|x-ray|1.205108/6.448524|11.976277/17.228606|536,076,288/157,298,688|422,330,368/422,158,336|
+|Aggregate / maximum|0.260854/0.236351|28.431566/39.309372|885,383,168/591,380,480|455,155,712/454,983,680|
+
+Position is strictly smaller on12/12 members. Total contextual minus position is3,339 bytes (0.00534276% of contextual).
+Complete-stream bytes divided by raw bytes P/C: 29.48614075%/29.48771621%.
+Encode sum of member median seconds P/C: 774.842365200/855.169088100.
+Position encode is faster on3/12 members and has a higher observed resident peak on12/12.
+Decode sum of member median seconds P/C: 7.109013300/5.141786000.
+Position decode is faster on1/12 members and has a higher observed resident peak on12/12.
+This meets the same-window contextual size target on all twelve corpus members. Retain explicit choices because speed and resident-memory costs remain separate tradeoffs.
+
+#### 64MiB speed and resident peaks
+
+|Member|Encode P/C MiB/s|Decode P/C MiB/s|Encode peak P/C bytes|Decode peak P/C bytes|
+|---|---:|---:|---:|---:|
+|dickens|0.538100/0.712604|17.798195/32.780003|954,277,888/184,266,752|824,487,936/824,311,808|
+|mozilla|0.129150/0.132477|26.006841/30.570767|1,535,639,552/897,806,336|881,446,912/881,291,264|
+|mr|0.420241/0.172407|17.564417/27.607281|951,701,504/180,510,720|824,320,000/824,176,640|
+|nci|0.190495/0.151171|81.223554/141.283121|1,254,645,760/580,259,840|846,680,064/846,565,376|
+|ooffice|1.607693/4.239795|13.819441/16.530376|901,214,208/115,404,800|820,240,384/820,072,448|
+|osdb|0.953819/3.695967|22.302388/27.238003|953,106,432/182,497,280|824,381,440/824,250,368|
+|reymont|0.619943/0.534560|19.595983/36.008347|902,983,680/121,982,976|819,240,960/819,044,352|
+|samba|0.939087/1.013531|35.798666/46.881360|1,107,611,648/379,965,440|837,517,312/837,337,088|
+|sao|0.936483/3.432509|13.478585/12.812279|922,968,064/136,548,352|823,738,368/823,635,968|
+|webster|0.059094/0.073050|30.245384/59.480101|1,380,392,960/722,362,368|862,257,152/862,097,408|
+|xml|5.915832/7.400763|27.299128/43.028000|883,208,192/99,147,776|816,869,376/816,783,360|
+|x-ray|1.362409/6.693170|11.265113/16.128267|938,696,704/157,261,824|825,012,224/824,848,384|
+|Aggregate / maximum|0.153586/0.164260|25.786681/36.012623|1,535,639,552/897,806,336|881,446,912/881,291,264|
+
+Position is strictly smaller on12/12 members. Total contextual minus position is5,513 bytes (0.00885400% of contextual).
+Complete-stream bytes divided by raw bytes P/C: 29.37648068%/29.37908190%.
+Encode sum of member median seconds P/C: 1316.009291800/1230.491798600.
+Position encode is faster on3/12 members and has a higher observed resident peak on12/12.
+Decode sum of member median seconds P/C: 7.838169600/5.612487100.
+Position decode is faster on1/12 members and has a higher observed resident peak on12/12.
+This meets the same-window contextual size target on all twelve corpus members. Retain explicit choices because speed and resident-memory costs remain separate tradeoffs.

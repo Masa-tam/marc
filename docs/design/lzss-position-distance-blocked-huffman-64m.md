@@ -132,3 +132,17 @@ push, hosted CI and external four-route95 confirmation remain unfinished.
 Fuzz and further ratio/speed/physical-peak benchmarks are omitted through this
 goal by explicit request. Same-window contextual compression and performance
 targets remain unmeasured and must not be reported as met.
+
+### Subsequent measured comparison
+
+The later benchmark request supersedes the preceding measurement omission.
+BM-0254 records all twelve Silesia members and three fresh-process repetitions
+per profile and direction. Sixty-four-MiB position-distance streams total
+62,260,096 bytes versus contextual 62,265,609 bytes, with every member smaller.
+The aggregate saving is only 5,513 bytes. Both encode and decode aggregate
+throughput regress; observed encode peaks increase. Per-member speed and both
+resident peaks remain explicit in BM-0254. Actual window and frame are both
+sixty-four MiB, but no individual corpus member fills the window, so these
+peaks are not worst-case resource admission evidence. TVG-1548 separately
+records the subsequently requested bounded sanitizer fuzz qualification.
+These local results do not confirm a hosted CI run or external four-route95.

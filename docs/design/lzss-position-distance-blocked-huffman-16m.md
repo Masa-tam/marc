@@ -143,3 +143,16 @@ are therefore unverified for this profile; do not report the target as met.
 schema85/95 exchange gates, superseding the earlier remaining-local-work
 checkpoint above. Earlier measurements and explicit omissions remain intact.
 User batch push, hosted CI and external four-route95 confirmation remain open.
+
+### Subsequent measured comparison
+
+The later benchmark request supersedes the preceding measurement omission.
+BM-0254 records all twelve Silesia members and three fresh-process repetitions
+per profile and direction. Sixteen-MiB position-distance streams total
+62,838,200 bytes versus contextual 62,841,406 bytes, with every member smaller.
+The aggregate saving is only 3,206 bytes. Encode aggregate throughput improves;
+decode aggregate throughput regresses and observed encode peaks increase.
+Per-member speed and encode/decode resident peaks remain explicit in BM-0254.
+Both actual window and frame are sixteen MiB. TVG-1548 separately records the
+subsequently requested bounded sanitizer fuzz qualification. These local results
+do not confirm a hosted CI run or the external four-route95 exchange.
