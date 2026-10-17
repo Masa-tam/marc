@@ -102,8 +102,26 @@ Qualified full-frame logical admission is1270038299 bytes for encoding and
 501571290 for decoding, with owned buffers1269662366/501471579. Keep these
 checked requirements separate from physical memory or a public default.
 
-Public API/CLI, public default admission/construction, schema83/93 exchange and final audit remain
-open. Further ratio/speed/physical-peak benchmarks and fuzz execution are
+The additive public config/resource/create family uses a1280MiB initial
+logical grant,65536-byte input/output capacities and zero retained caller
+storage by default. Other limits are full-frame150994944 decisions,
+283115520 payload bytes,31171 codebook nodes, match258, total output2^40,
+ratio1024 and slack16777216. The grant covers checked owning requirements,
+public controls and declared caller scope; it is not RSS. Resource queries
+must validate actual layout, coherent limits and exact/one-short creation.
+Keep failed query destinations unchanged, clear refused handles except on
+config/handle alias, allocate nothing in process and drain only valid frames.
+Actual public-default construction is a separate qualification gate.
+
+TVG-1529 qualifies actual public-default creation, static/shared C consumers,
+resource and caller-scope admission, failure rollback and499 independent raw
+wires across owning/public/normal/direct ASan paths. Public queries with
+65536 retained bytes and two65536 call buffers return1270239115/501772106
+bytes, including200816 external-charge bytes. Prior public declarations and
+all starting88/preceding92 archive bodies remain unchanged.
+
+CLI, schema83/93 exchange and final audit remain open. Further
+ratio/speed/physical-peak benchmarks and fuzz execution are
 omitted by user request through this goal; do not label them passed. Select
 future logical defaults from checked requirements and actual construction
 correctness evidence, explicitly without new process-peak measurements.

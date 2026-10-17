@@ -25085,3 +25085,24 @@ nonallocated metadata floor. Full-frame encoder/decoder admission is1270038299/
 or a public default. No fuzz, comparison, throughput or peak benchmark is run.
 Public API/CLI, actual public default construction, schema83/93 exchange and
 the final profile audit remain pending.
+
+### TVG-1529: sixteen-MiB native Huffman public C boundary
+
+Add the distinct config/resources/create family with unchanged prior public
+declarations. Validate136/120-byte layouts on the qualified builds, actual
+full default encoder/decoder construction in static/shared C consumers and
+exact/one-short grants. Check all ten encoder/seven decoder allocation
+failures, rollback, aliases, config refusals before allocation, declared call
+capacities, caller retention, active-model quotas and allocation-free process.
+Keep committed prior frames while withholding failed-frame raw prefixes.
+Qualify nine normal checks and nineteen directly instrumented translation
+units without an ordinary archive or fuzz runtime. All499 public independent
+raw fixtures match the owning path and normal/ASan products byte for byte;
+independently parse raw tokens and decode every production wire. Actual
+queries with65536 retained bytes and two65536 call buffers return1270239115/
+501772106 bytes, including200816 external-charge bytes. The1280MiB initial
+grant is logical admission based on checked requirements and actual creation,
+not a measured physical-memory cap. Restore/re-encode all starting88 and
+preceding92 archive bodies identically with the updated runtime. No fuzz or
+ratio/speed/peak benchmark is executed. CLI, schema83/93 exchange and final
+profile audit remain pending; hosted/external95 confirmation is separate.

@@ -1424,3 +1424,44 @@ Normal/static/shared tests,499 independent raw fixtures and direct ASan/UBSan
 checks retain failure/publication guarantees. Prior declarations and88/91
 archive bodies remain unchanged; CLI and later gates remain independently
 qualified.
+
+## Native sixteen-MiB position-distance Blocked Huffman
+
+`marc_lzss_position_distance_blocked_huffman_16m_config_init()`,
+`marc_lzss_position_distance_blocked_huffman_16m_resource_requirements()` and
+`marc_lzss_position_distance_blocked_huffman_16m_create()` select tuple
+`2/12+1/32+2/7`. The additive config/resources retain the established native
+field layouts. Wire matches are3..258; the encoder selects fixed-five
+longest/nearest matches. Unsupported identities are refused.
+
+Defaults are16777216-byte frame/window,150994944 decisions,283115520 payload
+bytes,31171 codebook entries, distance16777216 and match length258. Expansion
+ratio1024 has16777216 slack bytes; declared I/O capacities are65536 each and
+retained caller storage defaults0. The1280MiB logical grant derives from
+checked owning requirements and actual bounded construction, without a new
+physical-peak benchmark. It includes public controls and declared I/O and
+retention charges. Query the actual ABI/layout and configured caller scope;
+this grant is not process RSS.
+
+Queries distinguish owned buffers, controls, working storage, metadata floor
+and external charges. The decision ceiling is also a grant floor, not another
+buffer. Failed queries preserve output; failed create clears the handle,
+except config/handle overlap leaves storage unchanged. Validation precedes
+allocation, partial allocations roll back, and process allocates nothing.
+Direction is immutable; errors/EOS are sticky, Flush is neutral and ResetBlock
+is unsupported. Capacity checks and active model quotas precede unsafe intake.
+Only fully validated frames drain; failed frames publish no raw prefix.
+
+Public boundary qualification, CLI and schema83/93 exchange are separate gates.
+Further ratio/speed/physical-peak benchmarks and fuzz are omitted by user
+request through this goal. Same-window contextual size and performance goals
+remain unmeasured and are not reported as met.
+
+TVG-1529 qualifies the public boundary, including both full-default
+constructions in static/shared C consumers. Actual queries with65536 retained
+bytes and two65536 call buffers return1270239115 encode and501772106 decode
+bytes, including200816 external-charge bytes on the qualified layouts.
+Query each actual scope and ABI; these are not physical peaks. Nine normal
+checks,499 independent raw fixtures and direct ASan/UBSan preserve failure
+and publication contracts. Earlier declarations and all starting88/preceding92
+archive bodies remain unchanged. CLI and later gates remain separate.

@@ -42591,3 +42591,17 @@ or fuzz runtime is substituted. No external/restricted implementation was
 consulted and no fuzz or benchmark was executed. Physical peaks, same-window
 size target and performance trade-offs are unmeasured by user request. Public
 default/API/CLI construction, exchange and final audit remain unfinished.
+
+### CR-1904: 2026-10-17 — sixteen-MiB native Huffman public C integration
+
+Author/reviewer: Codex. Follow IR-1348 using the first-party additive boundary
+and qualified owning/core/frame path. TVG-1529 checks public layouts, actual
+default creation, exact/one-short grants, allocation failure rollback, aliases,
+call/retention bounds, sticky states and failed-frame quarantine. Nine normal
+checks and direct nineteen-unit ASan/UBSan qualify499 independent raw wires
+with exact owning/public/product agreement. Preserve prior declarations and
+restore/re-encode all starting88 and preceding92 archive bodies identically.
+Select1280MiB from verified logical requirements and construction; no new
+physical-peak inference is made. No external/restricted implementation was
+consulted and no fuzz or benchmark was executed. CLI, exchange, final local
+profile audit and later hosted/external gates remain unfinished.

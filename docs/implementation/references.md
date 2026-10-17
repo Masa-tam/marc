@@ -11867,3 +11867,13 @@ failure and prove no steady-state allocation. Compare deterministic raw
 parsing/wires independently and qualify one-byte buffers, all small splits,
 frame endpoints, strict errors and failed-frame quarantine. Direct finite
 ASan/UBSan is permitted; no fuzz or benchmark is executed or inferred.
+
+### IR-1348: sixteen-MiB native Huffman public C boundary
+
+Extend the first-party additive C factory, config/resources layouts and
+qualified owning transforms. Use the actual logical requirements and bounded
+construction evidence from TVG-1528 to select a1280MiB initial grant, with
+declared I/O, retention and public control charges. Verify actual full-default
+creation, aliases, allocation rollback, exact/one-short grants, active model
+quotas, finite independent raw wires and prior declarations/archive bodies.
+No external/restricted source, fuzz or performance/peak benchmark is used.
