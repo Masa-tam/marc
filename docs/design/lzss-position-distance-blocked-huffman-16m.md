@@ -75,7 +75,14 @@ classes through16777216, dense descriptor ceiling, odd alphabet25 padding,
 complete fifteen-bit codes and exact headers. The generator never calls
 production code and rejects overwriting an existing frozen file.
 
-Production core, token/history, frames/owners, public API/CLI, resource
+TVG-1525 qualifies the bounded entropy core with267 independent positive
+and62 negative wires per normal/direct ASan/UBSan build, independently
+decoded production model plans and identical planned bytes across builds.
+Ordinary destinations retain their commit-on-success guarantees; private
+scratch and maximum-decision admission receive directed finite checks.
+This checkpoint does not qualify dictionary history or raw frame publication.
+
+Token/history, frames/owners, public API/CLI, resource
 admission/default construction, schema83/93 exchange and final audit remain
 open. Further ratio/speed/physical-peak benchmarks and fuzz execution are
 omitted by user request through this goal; do not label them passed. Select

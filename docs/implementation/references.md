@@ -11826,3 +11826,13 @@ endpoint tokens from valid reset-frame references. Freeze exact positive and
 negative wires, including every context, odd distance-alphabet padding and
 the complete fifteen-bit code. Preserve previous sources/vectors and consult
 no external/restricted implementation. Execute no fuzz or benchmark campaign.
+
+### IR-1344: sixteen-MiB bounded Huffman entropy core
+
+Specialize the first-party qualified scalar descriptor/model/encoder/decoder
+for DD-1618. Retain ordinary destination commit-on-success, private scratch,
+exact resource admission, aliases, sticky errors and terminal usage checks.
+Qualify the full final mask byte and odd alphabet25 padding against frozen
+independent wires; preserve previous variants. Exercise directed finite
+differential and direct ASan/UBSan closures without a fuzz runtime or campaign.
+Do not execute benchmarks or consult external/restricted implementations.

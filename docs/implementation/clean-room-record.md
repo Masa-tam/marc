@@ -42537,3 +42537,16 @@ assertion forward. TVG-1524 freezes267 positives/62 actual negatives and
 checks exact regeneration without calling production code. No external or
 restricted implementation was consulted; no fuzz or benchmark was executed.
 Production implementation, resource admission, API/CLI and exchange remain open.
+
+### CR-1900: 2026-10-17 — sixteen-MiB bounded Huffman entropy core
+
+Author/reviewer: Codex. Follow IR-1344 with the first-party qualified scalar
+structure and DD-1618 constants, independently frozen mathematical wires
+and directed finite checks. TVG-1525 verifies267 positive/62 negative cases
+per normal/instrumented build, independent decoding of production plans,
+full final mask usage, odd alphabet padding, failure immutability and bounded
+private scratch. Correct the maximum-decision test's explicit internal limit
+to satisfy common configuration rules; retain the initial failing evidence.
+No external/restricted implementation was consulted; no fuzz or benchmark
+was executed. Only the entropy core is qualified here. Token/history, frame
+publication, public API/CLI, exchange and final profile audit remain pending.

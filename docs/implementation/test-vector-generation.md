@@ -25010,3 +25010,18 @@ events have maximum34 decisions per token; the endpoint/length3 example needs
 exclusively and compare exact contents on ordinary runs; preserve earlier
 eight-MiB files. No production decoder, fuzz or benchmark is invoked. Internal
 implementation, public boundary and exchange remain pending.
+
+### TVG-1525: sixteen-MiB bounded Huffman scalar differential
+
+Match all267 frozen independent descriptor/payload wires and reject62 actual
+negative cases in normal and directly instrumented ASan/UBSan builds. Decode
+all267 production model plans with the independent oracle and compare normal
+and instrumented planned bytes exactly. Check context55 and the fully used
+seventh mask byte, odd alphabet25 padding, fifteen-bit codes, terminal model
+usage, sticky errors, aliases, short scratch, exact/one-short logical budgets
+and ordinary output/count/symbol immutability. Exercise150994944 finite
+zero-bit decisions without allocating a decision array. This test requires
+an explicit valid internal limit at least as large as its block limit; retain
+the initial invalid test configuration and correct the test, not production
+admission rules. No fuzz or benchmark execution is performed. Token/history,
+frame quarantine, owned/public paths and schema83/93 exchange remain open.

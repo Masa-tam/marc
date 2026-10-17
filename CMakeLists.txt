@@ -71,6 +71,8 @@ set(MARC_SOURCES
     src/entropy/position_blocked_huffman_4m.cpp
     src/entropy/position_blocked_huffman_8m_format.cpp
     src/entropy/position_blocked_huffman_8m.cpp
+    src/entropy/position_blocked_huffman_16m_format.cpp
+    src/entropy/position_blocked_huffman_16m.cpp
     src/context/lzss_position_blocked_huffman_64k_tokens.cpp
     src/context/lzss_position_blocked_huffman_1m_tokens.cpp
     src/context/lzss_position_blocked_huffman_4m_tokens.cpp
@@ -10219,6 +10221,19 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
         COMMAND ${Python3_EXECUTABLE} -B -X utf8
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_blocked_huffman_8m_vectors.py)
     set_tests_properties(marc_position_blocked_huffman_8m_vectors PROPERTIES TIMEOUT 30)
+    add_executable(marc_position_blocked_huffman_16m_core_tests
+        tests/position_blocked_huffman_16m_core_tests.cpp)
+    target_compile_features(marc_position_blocked_huffman_16m_core_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_blocked_huffman_16m_core_tests PRIVATE src)
+    target_link_libraries(marc_position_blocked_huffman_16m_core_tests PRIVATE marc::static)
+    add_test(NAME marc_position_blocked_huffman_16m_core COMMAND marc_position_blocked_huffman_16m_core_tests)
+    set_tests_properties(marc_position_blocked_huffman_16m_core PROPERTIES TIMEOUT 30)
+    add_test(NAME marc_position_blocked_huffman_16m_differential
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_blocked_huffman_16m_differential.py
+            $<TARGET_FILE:marc_position_blocked_huffman_16m_core_tests>
+            ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-16m-differential)
+    set_tests_properties(marc_position_blocked_huffman_16m_differential PROPERTIES TIMEOUT 120)
     add_executable(marc_position_blocked_huffman_8m_core_tests
         tests/position_blocked_huffman_8m_core_tests.cpp)
     target_compile_features(marc_position_blocked_huffman_8m_core_tests PRIVATE cxx_std_20)
