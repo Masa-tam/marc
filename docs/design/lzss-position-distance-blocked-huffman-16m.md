@@ -95,9 +95,17 @@ the caller-scratch streaming decoder. Normal/direct ASan/UBSan checks restore
 prior committed frames, descriptor-before-payload refusal, full literal-frame
 hand bytes and exact/one-short logical budgets pass.
 
-Owned transforms, public API/CLI, resource
-admission/default construction, schema83/93 exchange and final audit remain
+TVG-1528 qualifies owning transforms with499 independent raw parses/wires,
+normal/direct ASan/UBSan byte equality, injected allocation failures, rollback,
+allocation-free processing, full-window endpoints and failed-frame quarantine.
+Qualified full-frame logical admission is1270038299 bytes for encoding and
+501571290 for decoding, with owned buffers1269662366/501471579. Keep these
+checked requirements separate from physical memory or a public default.
+
+Public API/CLI, public default admission/construction, schema83/93 exchange and final audit remain
 open. Further ratio/speed/physical-peak benchmarks and fuzz execution are
 omitted by user request through this goal; do not label them passed. Select
 future logical defaults from checked requirements and actual construction
 correctness evidence, explicitly without new process-peak measurements.
+The same-window contextual size target and speed/physical-memory trade-offs
+are therefore unverified for this profile; do not report the target as met.

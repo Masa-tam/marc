@@ -11856,3 +11856,14 @@ Use finite independent frames and exhaustive small stream splits/cuts to
 check transactional parsing, reset history, sticky state, retained preceding
 frames and descriptor refusal before payload intake. Verify direct ASan/UBSan
 without libFuzzer. No external/restricted implementation or benchmark is used.
+
+### IR-1347: sixteen-MiB owning native Huffman transforms
+
+Use the first-party bounded frame/token path and existing log24 fixed-five
+longest/nearest parser to specialize the qualified native owning transforms.
+Query checked requirements before any allocation, expose actual owned spans
+and conservative nonallocated floors separately, inject every allocation
+failure and prove no steady-state allocation. Compare deterministic raw
+parsing/wires independently and qualify one-byte buffers, all small splits,
+frame endpoints, strict errors and failed-frame quarantine. Direct finite
+ASan/UBSan is permitted; no fuzz or benchmark is executed or inferred.

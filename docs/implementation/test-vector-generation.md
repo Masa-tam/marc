@@ -25063,3 +25063,25 @@ keep structural invalid-size checks separate from configured resource limits.
 Seven normal checks and the direct instrumented frame/stream/differential
 closure pass. No fuzz or benchmark is executed. Owned transforms, public
 API/CLI, default construction, schema83/93 exchange and final audit remain open.
+
+### TVG-1528: sixteen-MiB owning Huffman transforms and independent raw wires
+
+Qualify499 fixed raw inputs with the independent longest/nearest fixed-five
+parser and mathematical entropy decoder: all256 one-byte values, exhaustive
+binary strings through length6, short eligibility cases, deterministic finite
+patterns and full-window material. Compare all input hashes and generated
+stream bytes between normal and direct17-translation-unit ASan/UBSan builds.
+Check every small input split and one-byte buffers, full-window minus/equal/
+plus-one lengths, final short frames and repeated terminal calls. Inject all
+eight encoder/five decoder allocation failures, verify complete rollback and
+no process-time allocation. Exact/one-short queries/creation retain ordinary
+query destinations and refuse below-grant construction before allocation.
+Late second-frame errors preserve the first frame and publish no failed raw.
+Five normal checks including the preceding profile regression and direct
+instrumented finite units/raw differential pass. Independently audit logical
+requirements, including owned spans, controls, working space and a separate
+nonallocated metadata floor. Full-frame encoder/decoder admission is1270038299/
+501571290 bytes in the qualified queries; this is not physical peak memory
+or a public default. No fuzz, comparison, throughput or peak benchmark is run.
+Public API/CLI, actual public default construction, schema83/93 exchange and
+the final profile audit remain pending.

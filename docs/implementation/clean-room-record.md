@@ -42577,3 +42577,17 @@ No product limit was loosened to accommodate these test corrections. No
 external/restricted implementation was consulted; no fuzz or benchmark was
 executed. Owned transforms, public API/CLI, defaults, exchange and final audit
 remain unfinished.
+
+### CR-1903: 2026-10-17 — sixteen-MiB owning Huffman transforms
+
+Author/reviewer: Codex. Follow IR-1347 with first-party bounded owners, log24
+fixed-five dictionary parsing and independently authored raw/entropy oracles.
+TVG-1528 qualifies499 independent raw cases, exact normal/direct instrumented
+wire agreement, allocation rollback, no allocation during process, full-window
+boundaries, private failed frames and exact/one-short logical admission.
+The finite test driver admits enough calls for sixteen-MiB one-byte draining.
+All seventeen translation units are directly instrumented; no ordinary archive
+or fuzz runtime is substituted. No external/restricted implementation was
+consulted and no fuzz or benchmark was executed. Physical peaks, same-window
+size target and performance trade-offs are unmeasured by user request. Public
+default/API/CLI construction, exchange and final audit remain unfinished.

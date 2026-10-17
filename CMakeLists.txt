@@ -96,6 +96,7 @@ set(MARC_SOURCES
     src/frame/lzss_position_blocked_huffman_1m_owned.cpp
     src/frame/lzss_position_blocked_huffman_4m_owned.cpp
     src/frame/lzss_position_blocked_huffman_8m_owned.cpp
+    src/frame/lzss_position_blocked_huffman_16m_owned.cpp
     src/frame/lzss_position_blocked_huffman_64k_owned.cpp
     src/frame/lzss_position_blocked_huffman_64k_c_factory.cpp
     src/frame/lzss_position_blocked_huffman_1m_c_factory.cpp
@@ -10309,6 +10310,19 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_8m_frame_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-8m-frame-differential)
     set_tests_properties(marc_position_blocked_huffman_8m_frame_differential PROPERTIES TIMEOUT 120)
+    add_executable(marc_position_blocked_huffman_16m_owned_tests
+        tests/position_blocked_huffman_16m_owned_tests.cpp)
+    target_compile_features(marc_position_blocked_huffman_16m_owned_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_blocked_huffman_16m_owned_tests PRIVATE src)
+    target_link_libraries(marc_position_blocked_huffman_16m_owned_tests PRIVATE marc::static)
+    add_test(NAME marc_position_blocked_huffman_16m_owned COMMAND marc_position_blocked_huffman_16m_owned_tests)
+    set_tests_properties(marc_position_blocked_huffman_16m_owned PROPERTIES TIMEOUT 30 RUN_SERIAL TRUE)
+    add_test(NAME marc_position_blocked_huffman_16m_raw_differential
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_blocked_huffman_16m_raw_differential.py
+            $<TARGET_FILE:marc_position_blocked_huffman_16m_owned_tests>
+            ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-16m-raw-differential)
+    set_tests_properties(marc_position_blocked_huffman_16m_raw_differential PROPERTIES TIMEOUT 180 RUN_SERIAL TRUE)
     add_executable(marc_position_blocked_huffman_8m_owned_tests
         tests/position_blocked_huffman_8m_owned_tests.cpp)
     target_compile_features(marc_position_blocked_huffman_8m_owned_tests PRIVATE cxx_std_20)
