@@ -232,3 +232,20 @@ Normal2/2 and independent artifact audit pass. Full twelve-member compression,
 speed and ordinary peak results, schema82 exchange and final audit remain
 open. Fuzz is omitted by user request.
 
+### Complete paired corpus and ordinary-peak checkpoint
+
+TVG-1522 and [BM-0253](../benchmarks.md) qualify all12 actual same-window
+comparisons, repeated bodies, restoration, normal timing and separate physical
+peaks. Native total63341198 bytes is3184 bytes smaller than contextual63344382;
+all12 members improve. Aggregate encode time is24.0854% lower, decode time
+45.7824% higher, and both directional peaks are higher on all12 members.
+The matched contextual profile retains its sixteen-MiB field-model identity
+while actually configuring an eight-MiB window/frame and eight-MiB limits.
+The small size margin and measured costs favor retaining explicit profiles;
+these are complete-path observations, not an entropy-only causal claim.
+Normal build/source/binary bindings, actual contextual queries, all120 serial
+intervals and raw observations pass independent audit. Retain the640MiB
+logical default; physical peaks do not redefine admission. Fuzz execution
+remains omitted by request. Schema82 exchange, final local profile audit and
+later family/hosted/external gates remain open.
+

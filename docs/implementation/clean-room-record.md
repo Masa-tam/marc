@@ -42500,3 +42500,16 @@ eight-MiB decoder limits; do not describe it as a newly defined public profile.
 Normal2/2 and independent artifact audit pass. Full corpus measurements and
 exchange remain unfinished. No external or restricted implementation was
 consulted, no fuzz was executed and no external CI result is claimed.
+
+### CR-1897: 2026-10-17 — complete eight-MiB paired public measurements
+
+Author/reviewer: Codex. Follow IR-1341 using only first-party public drivers
+and retained corpus verification metadata. TVG-1522 and BM-0253 qualify actual
+native and existing contextual identities, matched eight-MiB configuration,
+all twelve repeated/restored bodies, timing and independent ordinary process
+peaks. Verify every observation and aggregate,120 serial command intervals,
+separate contextual public queries, optimized normal flags and source/binary/
+library bindings. Size is smaller on all12 members and3184 bytes in total;
+encode-time benefits coexist with slower aggregate decode and higher peaks.
+No external/restricted implementation was consulted and no fuzz executed.
+Exchange, final local audit and hosted/external gates remain unfinished.

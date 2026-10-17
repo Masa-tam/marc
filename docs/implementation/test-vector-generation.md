@@ -24957,3 +24957,23 @@ charges, wrong-comparison refusal, pre-existing output retention and a failed
 frame with zero published output. Normal2/2 and independent artifact audit
 pass. Full twelve-member observations and aggregate audit remain pending.
 No fuzz is executed.
+
+### TVG-1522: complete eight-MiB paired corpus and ordinary peaks
+
+Verify all twelve corpus members at actual8388608-byte windows/reset frames.
+Native2/11+1/31+2/6 and configured contextual2/5+1/4+2/2 headers, known sizes,
+parameters, repeated bodies and source restorations match. Independently
+query the existing contextual sixteen-MiB profile with matched eight-MiB
+frame/distance/decision/payload limits in both directions for every member;
+returned workspace sizes agree with timing and streaming peak reports.
+
+Audit120 serial normal invocations, one warmup plus three timed samples per
+direction, separate fresh-process peaks, all source/binary/library bindings
+and ordinary optimized flags. BM-0253 records all per-material sizes, timing
+medians, physical peaks and totals. Aggregate size is63341198 versus63344382
+bytes; all12 members improve, by3184 bytes total. Encode sum of medians is
+170.474972/224.561605 seconds; decode is7.965941/5.464266 seconds. Native
+encode is faster on7 members, decode on1, and peaks are higher on all12 in
+both directions. Independent full artifact audit passes. The goal's fuzz
+execution exclusion remains in force; no fuzz is run or reported as passed.
+Schema82 exchange, final profile and larger-window/final95 gates remain open.
