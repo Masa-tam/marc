@@ -42924,3 +42924,14 @@ BM-0255 and DD-1623 retain all results and limitations. Original formats,
 production planning, generated products, fixed executable and the completed
 IX-0104 evidence remain unchanged. No speed, resource or new release claim is
 derived from the size experiment.
+
+### CR-1927: 2026-10-17 — approved residual-pool core integration
+
+Author/reviewer: Codex. Under the maintainer's explicit output-change approval,
+IR-1369/DD-1624 integrate the first-party DD-1623 experiment into the64KiB
+reference planner. No external/restricted implementation was consulted. Keep
+old generated artifacts and immutable prior receipts. The private candidate is
+fully validated before success-only destination commit, with explicit extra
+workspace admission. TVG-1552 qualifies hand cases and retained differential/
+failure tests. Public paths, legacy-decoder compatibility and speed/resident
+measurements are not inferred from the core milestone and remain to be recorded.

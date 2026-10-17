@@ -34,6 +34,10 @@ struct PositionBlockedHuffman64kDescriptor {
     std::array<PositionBlockedHuffmanModel,53> models{}; // Pools0..4, overrides5..52.
     bool operator==(const PositionBlockedHuffman64kDescriptor&) const = default;
 };
+// Additional private candidate descriptor, residual histogram and controls.
+// Conservative logical workspace charge; not measured RSS or an allocation.
+inline constexpr std::size_t position_blocked_huffman_64k_refit_workspace=
+    sizeof(PositionBlockedHuffman64kDescriptor)+4096;
 struct PositionBlockedHuffmanDecision {
     int context{}; // -1 is a raw uniform length bit.
     std::uint32_t symbol{};

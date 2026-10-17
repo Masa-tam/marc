@@ -25547,3 +25547,20 @@ rejected without changing its bytes or creating a temporary file. No production
 codec code or validated executable
 changes. No speed/physical-peak or new fuzz result is claimed. BM-0255 records
 actual sizes; DD-1623 records attribution, limits and follow-up requirements.
+
+### TVG-1552: residual-pool core integration qualification
+
+Retain frozen descriptor/payload/token/frame vectors. Add a hand-checkable
+hundred-A override with a B/C-only residual literal pool: fixed override,
+one-bit B/C codes, payload02 with two valid bits. Update the17/1 binary
+threshold case to the valid zero-bit residual singleton while retaining the
+original strict override threshold and sixteen-count tie. Require repeat finish
+identity, exact charged planner budget and one-short destination retention.
+Run existing scalar/token/frame differential and failure/publication tests.
+Public owner/API/CLI qualification, cross-policy compatibility and measured
+speed/peaks remain separate later gates; do not claim those from core tests.
+
+The eight core/vector/token/frame/stream registrations pass after updating the
+independently stated exact token-planner quota for the additional workspace.
+Both exact and one-short quota assertions remain required; no limit test is
+removed. The documentation layout check also passes at this core milestone.

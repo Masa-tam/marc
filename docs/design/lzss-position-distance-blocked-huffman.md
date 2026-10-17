@@ -127,6 +127,13 @@ record bytes. A tie retains the pool. Uniform bits are excluded from these
 models. Canonical record selection remains the rule above. Optimization
 policy is encoder-visible; the decoder admits all structurally valid models.
 
+The later approved [DD-1624 policy](lzss-position-distance-blocked-huffman-64k-pool-refit.md)
+retains that first-stage selection, then refits fallback-only pools and keeps
+the candidate only when complete descriptor-plus-payload bytes strictly improve.
+This explicitly revises the64KiB encoder reference output. Old streams and
+decoder grammar remain unchanged; historical bodies are preserved, while
+cross-policy re-encoding need not reproduce the old bytes.
+
 ### Stream and frame envelope
 
 Use the position-distance family's explicitly serialized112-byte MARC2.0

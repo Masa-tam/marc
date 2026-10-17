@@ -35078,3 +35078,15 @@ improve and restore with the unchanged decoder. Preserve production planning,
 deterministic outputs and exchange bytes; the experiment is not an integrated
 optimization. TVG-1551 records verification and the design records unmeasured
 speed/resource costs and further policy/compatibility work before adoption.
+
+### DD-1624: approved64KiB residual-pool output revision
+
+The [integration policy](../design/lzss-position-distance-blocked-huffman-64k-pool-refit.md)
+records explicit maintainer approval to change64KiB encoder output. Preserve
+decoder grammar, stream IDs and the other six native profiles. Freeze original
+overrides before refitting pools; validate and compare exact complete byte cost
+before destination commit. Charge the additional private workspace explicitly.
+Retain old artifacts and qualify old/new decoder compatibility independently of
+intentional re-encoding differences. Core qualification precedes public-path and
+same-driver old/new speed/physical-peak measurements; those results are recorded
+only after completion.

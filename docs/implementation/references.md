@@ -12102,3 +12102,11 @@ and retained normal-build archives; do not consult external implementation
 code. DD-1623's residual-pool experiment keeps tokens and overrides fixed and
 reuses the first-party package primitive. Binary Huffman's two-symbol length
 constraint follows directly from the complete prefix-code requirement.
+
+### IR-1369: approved residual-pool encoder integration
+
+Follow first-party DD-1623/BM-0255 and the maintainer's explicit output-change
+approval. DD-1624 defines the revised64KiB reference planning policy and retains
+the previous decoder grammar. Use existing canonical construction, frozen old
+wire vectors and saved experimental bodies as independent checks. No external
+implementation or new algorithm reference is used.
