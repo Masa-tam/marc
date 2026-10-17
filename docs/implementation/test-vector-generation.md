@@ -25653,3 +25653,19 @@ resource-query admission and allocation rollback. CLI tests retain deterministic
 identity and transactional file publication. No timeout or parallelism change is
 needed. Corpus timing/peaks, saved-old-decoder corpus restoration and the other
 five windows are still pending at this public milestone. No hosted CI is run.
+
+### TVG-1559: one-MiB matched measurements and independent frame-plan audit
+
+BM-0257 records all twelve member sizes, lifecycle timings and fresh-process
+peaks for saved old native/revised native/contextual controls. Manifest size/MD5,
+raw SHA256, actual identities/window/frame, repeated producer determinism and
+CLI/driver agreement pass. All24 old/new decoder cross-routes restore exactly.
+The separate audit reopens108 archive/restoration pairs,216 peak receipts and
+72 timing receipts; recalculates rates, medians and totals; and rehashes measured
+tools and retained source snapshots. The frozen independent descriptor parser
+compares207 old/new frame plans: fixed overrides/codebooks, fields and dictionary
+counts, no increased complete byte extent,206 strict improvements and one
+equal-cost original-pool retention. No frozen oracle is modified. All checks
+pass. The completed1MiB cohort and source/tool snapshots remain retained while
+later windows use distinct candidate products. Final family/runtime/95-body
+qualification and hosted/external results remain separate gates.

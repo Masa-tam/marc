@@ -36,3 +36,16 @@ No intermediate push is performed; the maintainer will push after all six
 windows are processed. Local, hosted-CI and external evidence remain distinct.
 At this design milestone no larger-window measured benefit or completion is
 claimed. DD-1624's completed64KiB policy remains qualified and unchanged.
+
+### One-MiB local milestone
+
+TVG-1557/1558 qualify the internal/public/failure paths. TVG-1559/BM-0257 qualify
+all twelve matched corpus comparisons and24 old/new decoder cross-routes.
+Every revised member is smaller than old native and same-window contextual;
+total reduction against old native is23,641 bytes (0.035480%). The observed
+encode-time change is+0.322884%, with maximum encoder/decode peaks+348KiB/320KiB.
+The unchanged decoder's shorter observed time is not a causal optimization claim.
+The native encoder query adds18,832 bytes; decoder queries/defaults are unchanged.
+This is a small size benefit with recorded costs. Remaining windows and final
+family/runtime/retained95-body qualification are pending, as are hosted/external
+results. Qualified one-MiB candidate products remain separately retained.

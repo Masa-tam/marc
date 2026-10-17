@@ -43003,3 +43003,15 @@ timeouts. Document intentional producer differences and current encoder query
 requirements in API/CLI notes. First-party code and previously retained vectors
 are the only implementation references. Measurements and old/new corpus
 compatibility are separate pending gates; no external implementation is used.
+
+### CR-1934: 2026-10-18 — one-MiB measured residual-pool tradeoffs
+
+Author/reviewer: Codex. TVG-1559 independently audits retained old/revised/control
+products using first-party drivers and the unchanged mathematical descriptor
+parser. BM-0257 records all twelve corpus sizes/speeds/peaks and actual format
+identities. The revised total shrinks only0.035480% against old native, with a
+small observed encode-time increase and larger measured process peaks. Do not
+turn unchanged-decoder timing variation into an optimization claim or conflate
+logical query charges with RSS. Old/new decoder compatibility passes on every
+member; other windows and final shared-runtime qualification remain pending.
+No external implementation was consulted.

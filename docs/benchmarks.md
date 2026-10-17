@@ -12108,3 +12108,116 @@ Subsequently, IX-0106 records maintainer-reported successful hosted CI and four
 2026-10-18. TVG-1556 rechecks retained qualification bindings. This closes the
 remaining revision-specific verification gates without changing these measured
 values or treating the external console reports as new performance measurements.
+
+### BM-0257: one-MiB residual-pool old/revised/contextual comparison
+
+DD-1625/TVG-1559 compare all twelve manifest-verified Silesia members,
+211,938,580 raw bytes, with saved old native, revised native and unchanged
+same-window contextual controls. Actual identities remain native2/9+1/29+2/4
+and contextual2/3+1/2+2/2, with1048576-byte window and frame. Every archive
+restores exactly; both old/new CLI decoder cross-routes pass for all members.
+Retain all old bodies and products. No decoder grammar or selector changes.
+
+Use serial old/revised/contextual measurements per member. For timing, the
+unchanged lifecycle driver excludes file I/O and comparisons and reports the
+median of three samples after one warmup. Separately take the maximum of three
+fresh streaming-process peaks per member/direction with two64KiB I/O buffers.
+These are process resident observations, not timing-vector RSS or logical grants.
+Repository tools `run_position_blocked_huffman_pool_refit_comparison.py` and
+`audit_position_blocked_huffman_pool_refit_comparison.py` retain and independently
+reopen outputs, tool/source bindings, headers and raw receipts. This is one
+local matched cohort; no hosted-CI performance or universal bound is claimed.
+
+Window: 1 MiB; members: 12; method: separate lifecycle timing driver (1 warmup, 3 samples) and fresh streaming peaks.
+
+| Member | Raw bytes | Old native bytes | Revised native bytes | Contextual bytes |
+| --- | ---: | ---: | ---: | ---: |
+| dickens | 10192446 | 3542010 | 3541245 | 3542416 |
+| mozilla | 51220480 | 19786100 | 19779435 | 19799500 |
+| mr | 9970564 | 3496629 | 3495252 | 3497265 |
+| nci | 33553445 | 2792379 | 2791546 | 2792730 |
+| ooffice | 6152192 | 3134959 | 3134147 | 3135327 |
+| osdb | 10085684 | 3547920 | 3546574 | 3548565 |
+| reymont | 6627202 | 1743301 | 1741339 | 1743417 |
+| samba | 21606400 | 5266395 | 5262923 | 5267172 |
+| sao | 7251944 | 5687422 | 5686464 | 5687800 |
+| webster | 41458703 | 11188627 | 11184753 | 11189378 |
+| xml | 5345280 | 587124 | 586763 | 587242 |
+| x-ray | 8474240 | 5859566 | 5858350 | 5860860 |
+
+| Member / producer | Encode MiB/s | Decode MiB/s | Encode peak bytes | Decode peak bytes |
+| --- | ---: | ---: | ---: | ---: |
+| dickens / old_position | 5.457635 | 23.138948 | 33,742,848 | 18,894,848 |
+| dickens / new_position | 6.124418 | 22.647724 | 34,062,336 | 19,251,200 |
+| dickens / contextual | 5.959480 | 37.766912 | 25,571,328 | 19,136,512 |
+| mozilla / old_position | 7.513342 | 31.361738 | 35,254,272 | 19,582,976 |
+| mozilla / new_position | 7.249459 | 31.236202 | 35,610,624 | 19,910,656 |
+| mozilla / contextual | 4.116443 | 26.674090 | 26,234,880 | 19,808,256 |
+| mr / old_position | 3.899573 | 24.877696 | 33,239,040 | 18,923,520 |
+| mr / new_position | 3.894891 | 24.618798 | 33,566,720 | 19,226,624 |
+| mr / contextual | 1.633751 | 32.803202 | 25,587,712 | 19,107,840 |
+| nci / old_position | 10.796396 | 101.754421 | 32,358,400 | 18,640,896 |
+| nci / new_position | 10.124746 | 100.007153 | 32,763,904 | 18,923,520 |
+| nci / contextual | 6.059754 | 145.689264 | 25,280,512 | 18,882,560 |
+| ooffice / old_position | 9.207555 | 21.947055 | 33,775,616 | 19,075,072 |
+| ooffice / new_position | 9.048419 | 21.828528 | 34,115,584 | 19,431,424 |
+| ooffice / contextual | 10.503195 | 19.136131 | 25,772,032 | 19,329,024 |
+| osdb / old_position | 12.691817 | 30.825565 | 33,169,408 | 18,907,136 |
+| osdb / new_position | 11.438517 | 30.623098 | 33,525,760 | 19,193,856 |
+| osdb / contextual | 15.948220 | 29.980771 | 25,563,136 | 19,148,800 |
+| reymont / old_position | 3.629300 | 30.665347 | 32,866,304 | 18,821,120 |
+| reymont / new_position | 3.619673 | 30.789324 | 33,275,904 | 19,144,704 |
+| reymont / contextual | 3.069485 | 50.611259 | 25,468,928 | 19,046,400 |
+| samba / old_position | 11.161180 | 42.422830 | 34,140,160 | 19,206,144 |
+| samba / new_position | 11.298954 | 43.306623 | 34,451,456 | 19,546,112 |
+| samba / contextual | 8.101368 | 46.253265 | 25,874,432 | 19,431,424 |
+| sao / old_position | 7.162559 | 17.376652 | 34,533,376 | 19,361,792 |
+| sao / new_position | 7.298565 | 17.177094 | 34,893,824 | 19,693,568 |
+| sao / contextual | 9.963608 | 13.539391 | 26,021,888 | 19,603,456 |
+| webster / old_position | 5.663485 | 23.983121 | 33,038,336 | 18,808,832 |
+| webster / new_position | 5.787037 | 29.513115 | 33,394,688 | 19,165,184 |
+| webster / contextual | 5.800951 | 45.407746 | 25,481,216 | 19,091,456 |
+| xml / old_position | 16.623544 | 74.091472 | 32,673,792 | 18,690,048 |
+| xml / new_position | 16.743408 | 74.621506 | 32,915,456 | 19,021,824 |
+| xml / contextual | 15.037055 | 103.244298 | 25,366,528 | 18,952,192 |
+| x-ray / old_position | 7.765229 | 14.716504 | 34,361,344 | 19,259,392 |
+| x-ray / new_position | 8.233055 | 14.991045 | 34,725,888 | 19,640,320 |
+| x-ray / contextual | 12.866199 | 14.792506 | 25,956,352 | 19,529,728 |
+
+Aggregate values (sum of member median seconds; maximum observed process peak):
+
+old_position: 66,632,432 bytes.
+encode: 27.961629300 s; 7.228491 MiB/s; peak 35,254,272 bytes.
+decode: 6.610053600 s; 30.577722 MiB/s; peak 19,582,976 bytes.
+
+new_position: 66,608,791 bytes.
+encode: 28.051913000 s; 7.205226 MiB/s; peak 35,610,624 bytes.
+decode: 6.312887700 s; 32.017104 MiB/s; peak 19,910,656 bytes.
+
+contextual: 66,651,672 bytes.
+encode: 38.839536600 s; 5.203985 MiB/s; peak 26,234,880 bytes.
+decode: 5.773204700 s; 35.010084 MiB/s; peak 19,808,256 bytes.
+
+
+Revised total66,608,791 bytes saves23,641 bytes (0.035480%) against old native
+and42,881 bytes (0.064336%) against contextual. Every member is smaller than
+both controls. The shrinkage is small: aggregate encode median time increases
+from27.961629300 to28.051913000 seconds, about0.322884%. Decode changes from
+6.610053600 to6.312887700 seconds; unchanged decoder code means that observation
+does not establish a causal decode optimization. Maximum encoder/decode process
+peaks increase348KiB/320KiB. Do not infer a worst-case ceiling or universal
+dominance from this cohort.
+
+Streaming logical queries O/N/C are74,842,839/74,861,671/31,722,067 encoder bytes
+and29,893,386/29,893,386/25,573,831 decoder bytes. The revised native query adds
+18,832 bytes; decoder requirements and public defaults are unchanged. Native
+queries include owner/calls/controls; contextual counts caller workspaces.
+Keep these accounting scopes distinct from measured resident peaks.
+
+The independent retained-file audit passes108 archive/restoration pairs,
+24 cross-restorations,216 peak receipts and72 timing receipts. In207 paired
+frames, override sets/codebooks, active fields and dictionary counts remain
+fixed;206 frames strictly shrink and the remaining equal-cost frame retains its
+original pool. This qualifies the1MiB local measurement and corpus compatibility
+milestone. The other five windows and final retained95-body/fixed-runtime audit
+are pending; no CI or external execution for DD-1625 is implied.
