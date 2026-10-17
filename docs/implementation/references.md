@@ -11836,3 +11836,13 @@ Qualify the full final mask byte and odd alphabet25 padding against frozen
 independent wires; preserve previous variants. Exercise directed finite
 differential and direct ASan/UBSan closures without a fuzz runtime or campaign.
 Do not execute benchmarks or consult external/restricted implementations.
+
+### IR-1345: sixteen-MiB private token Huffman integration
+
+Apply DD-1618 to the qualified first-party eight-MiB typed token adapter.
+Use the existing log24 short-length grammar, bounded history validator and
+checked region arithmetic. Preserve single-pass private token decoding and
+ordinary output commit only after complete entropy/history validation. Verify
+independent supplied-model wires, production-wire mathematical decoding,
+full reset-frame token spans, exact/one-short grants and late rejection.
+No external/restricted implementation, fuzz runtime or benchmark is used.

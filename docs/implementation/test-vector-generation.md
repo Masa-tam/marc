@@ -25025,3 +25025,20 @@ an explicit valid internal limit at least as large as its block limit; retain
 the initial invalid test configuration and correct the test, not production
 admission rules. No fuzz or benchmark execution is performed. Token/history,
 frame quarantine, owned/public paths and schema83/93 exchange remain open.
+
+### TVG-1526: sixteen-MiB private single-pass token integration
+
+Supply76 independent token descriptor/payload pairs and7 grammar-valid but
+history/extent-invalid pairs. Cover distance transitions across eight MiB,
+largest reachable distance16777213, full-frame late invalid history and an
+unreachable class24 endpoint. Independently decode production-selected wires
+and compare both normal/direct ASan/UBSan products byte for byte. Check exact
+private token progress on late refusal and unchanged ordinary destinations.
+Exercise all descriptor/payload cuts, terminal extra bits, malformed token
+fields, aliases, short scratch, committed-size overflow and exact/one-short
+aggregate grants. Full16777216-byte literal and overlapping-match token cases
+restore exactly. Compute finite test grants from declared spans and bounded
+workspace; they are not public defaults or physical-memory measurements.
+Run five normal checks including preceding eight-MiB regression and direct
+instrumented finite units/differential. No fuzz or benchmark is executed.
+Raw-frame quarantine, streaming owners, API/CLI and schema83/93 remain open.

@@ -77,6 +77,7 @@ set(MARC_SOURCES
     src/context/lzss_position_blocked_huffman_1m_tokens.cpp
     src/context/lzss_position_blocked_huffman_4m_tokens.cpp
     src/context/lzss_position_blocked_huffman_8m_tokens.cpp
+    src/context/lzss_position_blocked_huffman_16m_tokens.cpp
     src/frame/lzss_position_blocked_huffman_64k_format.cpp
     src/frame/lzss_position_blocked_huffman_64k_frame.cpp
     src/frame/lzss_position_blocked_huffman_64k_stream_decoder.cpp
@@ -10247,6 +10248,19 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_8m_core_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-8m-differential)
     set_tests_properties(marc_position_blocked_huffman_8m_differential PROPERTIES TIMEOUT 120)
+    add_executable(marc_position_blocked_huffman_16m_token_tests
+        tests/position_blocked_huffman_16m_token_tests.cpp)
+    target_compile_features(marc_position_blocked_huffman_16m_token_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_blocked_huffman_16m_token_tests PRIVATE src)
+    target_link_libraries(marc_position_blocked_huffman_16m_token_tests PRIVATE marc::static)
+    add_test(NAME marc_position_blocked_huffman_16m_tokens COMMAND marc_position_blocked_huffman_16m_token_tests)
+    set_tests_properties(marc_position_blocked_huffman_16m_tokens PROPERTIES TIMEOUT 30 RUN_SERIAL TRUE)
+    add_test(NAME marc_position_blocked_huffman_16m_token_differential
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_blocked_huffman_16m_token_differential.py
+            $<TARGET_FILE:marc_position_blocked_huffman_16m_token_tests>
+            ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-16m-token-differential)
+    set_tests_properties(marc_position_blocked_huffman_16m_token_differential PROPERTIES TIMEOUT 120 RUN_SERIAL TRUE)
     add_executable(marc_position_blocked_huffman_8m_token_tests
         tests/position_blocked_huffman_8m_token_tests.cpp)
     target_compile_features(marc_position_blocked_huffman_8m_token_tests PRIVATE cxx_std_20)

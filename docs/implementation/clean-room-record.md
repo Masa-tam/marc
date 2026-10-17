@@ -42550,3 +42550,15 @@ to satisfy common configuration rules; retain the initial failing evidence.
 No external/restricted implementation was consulted; no fuzz or benchmark
 was executed. Only the entropy core is qualified here. Token/history, frame
 publication, public API/CLI, exchange and final profile audit remain pending.
+
+### CR-1901: 2026-10-17 — sixteen-MiB private single-pass token layer
+
+Author/reviewer: Codex. Follow IR-1345 and the first-party log24 token grammar,
+history validator and bounded entropy core. TVG-1526 qualifies76 independent
+positive/7 negative wires per normal/direct instrumented build and exact
+production-wire agreement. Preserve private failure prefixes and ordinary
+commit-on-success, with full literal/overlapping-match spans and explicit
+checked storage admission. No external/restricted implementation was consulted;
+no fuzz or benchmark was executed. These are token-layer correctness checks,
+not public defaults, physical peaks or raw-frame publication qualification.
+Frames, streaming owners, public API/CLI, exchange and final audit remain open.

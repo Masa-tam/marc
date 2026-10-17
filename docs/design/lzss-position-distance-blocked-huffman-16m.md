@@ -82,7 +82,13 @@ Ordinary destinations retain their commit-on-success guarantees; private
 scratch and maximum-decision admission receive directed finite checks.
 This checkpoint does not qualify dictionary history or raw frame publication.
 
-Token/history, frames/owners, public API/CLI, resource
+TVG-1526 qualifies single-pass private token decoding and history validation
+with76 independent positive and7 negative wires, independent production-wire
+decoding, full-frame literal/match spans and exact/one-short storage grants.
+Late token or entropy rejection retains ordinary destinations. Token scratch
+may contain a private valid prefix and must be discarded after failure.
+
+Frames/owners, public API/CLI, resource
 admission/default construction, schema83/93 exchange and final audit remain
 open. Further ratio/speed/physical-peak benchmarks and fuzz execution are
 omitted by user request through this goal; do not label them passed. Select
