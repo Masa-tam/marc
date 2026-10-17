@@ -24,8 +24,8 @@ jobs:
       - name: Build
         run: cmake --build --preset windows-msvc-release --parallel
       - name: Test
-        # Benchmark and fuzz execution are deferred for the current qualification.
-        run: ctest --preset windows-msvc-release --parallel 2 --exclude-regex '[Ff][Uu][Zz][Zz]|[Bb]enchmark|public_measurements'
+        # Benchmarks remain deferred for the current qualification.
+        run: ctest --preset windows-msvc-release --parallel 2 --exclude-regex '[Bb]enchmark|public_measurements'
       - name: Generate interoperability bundle
         shell: pwsh
         run: >-
@@ -54,7 +54,7 @@ jobs:
       - name: Build
         run: cmake --build --preset ninja-release
       - name: Test
-        run: ctest --preset ninja-release --parallel 2 --exclude-regex '[Ff][Uu][Zz][Zz]|[Bb]enchmark|public_measurements'
+        run: ctest --preset ninja-release --parallel 2 --exclude-regex '[Bb]enchmark|public_measurements'
       - name: Generate interoperability bundle
         shell: pwsh
         run: >-
@@ -70,6 +70,28 @@ jobs:
           name: marc-interoperability-ubuntu-ninja-x64
           path: out/interoperability/ubuntu-ninja-x64
           if-no-files-found: error
+
+  ubuntu-fuzz-position-blocked-huffman:
+    name: Ubuntu 24.04 / position-distance blocked-Huffman fuzz
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - name: Configure fuzz targets
+        run: cmake --preset ninja-release -DMARC_BUILD_BENCHMARKS=OFF -DMARC_BUILD_FUZZERS=ON
+      - name: Build selected fuzz targets
+        run: >-
+          cmake --build out/build/ninja-release --parallel 2 --target
+          marc_fuzz_lzss_position_blocked_huffman_8m_public
+          marc_fuzz_lzss_position_blocked_huffman_16m_public
+          marc_fuzz_lzss_position_blocked_huffman_32m_public
+          marc_fuzz_lzss_position_blocked_huffman_64m_public
+      - name: Run selected fuzz smoke tests
+        run: >-
+          ctest --test-dir out/build/ninja-release --output-on-failure --parallel 1
+          --timeout 240
+          -R 'marc_fuzz_lzss_position_blocked_huffman_(8m|16m|32m|64m)_public_smoke'
 
   installed-package:
     name: ${{ matrix.os_name }} / ${{ matrix.linkage }} package
@@ -118,10 +140,10 @@ jobs:
         shell: pwsh
         run: |
           $env:PATH = '${{ github.workspace }}\out\install\bin;' + $env:PATH
-          ctest --test-dir out/consumer -C Release --output-on-failure --timeout 600 --exclude-regex '[Ff][Uu][Zz][Zz]|[Bb]enchmark|public_measurements'
+          ctest --test-dir out/consumer -C Release --output-on-failure --timeout 600 --exclude-regex '[Bb]enchmark|public_measurements'
       - name: Run installed consumer on Ubuntu
         if: runner.os == 'Linux'
         shell: bash
         run: >-
           LD_LIBRARY_PATH='${{ github.workspace }}/out/install/lib'
-          ctest --test-dir out/consumer -C Release --output-on-failure --timeout 600 --exclude-regex '[Ff][Uu][Zz][Zz]|[Bb]enchmark|public_measurements'
+          ctest --test-dir out/consumer -C Release --output-on-failure --timeout 600 --exclude-regex '[Bb]enchmark|public_measurements'

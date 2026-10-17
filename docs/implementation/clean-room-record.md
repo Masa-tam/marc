@@ -42865,3 +42865,13 @@ earlier measurement evidence. No external/restricted implementation was
 consulted; no fuzz or further benchmark was executed. The omissions are not
 passes or measured targets. Seven profiles are locally qualified; user push,
 hosted CI and external four-route95 confirmation/recording remain unfinished.
+
+### CR-1923: 2026-10-17 — large native Huffman sanitizer fuzz harness
+
+Author/reviewer: Codex. The shared public-boundary harness was authored from
+the repository's own C API contract and existing first-party 4 MiB harness
+pattern. No external or restricted implementation was consulted. Four Clang
+ASan/UBSan/libFuzzer targets cover the 8, 16, 32 and 64 MiB profiles. Each
+completed the deterministic 256-run campaign and its CTest smoke invocation
+without a finding. The campaign is bounded safety evidence only; it does not
+claim a performance, compression-ratio or physical-peak result.

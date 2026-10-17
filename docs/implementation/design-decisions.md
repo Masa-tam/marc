@@ -35022,3 +35022,17 @@ payload/frame bounds. A reachable class25/length3 witness takes29 decisions;
 distinguish it from the unreachable isolated class26 endpoint. Freeze exact
 independent vectors before production. Logical defaults require checked queries
 and construction tests; further benchmarks and fuzz remain omitted by request.
+
+### DD-1621: large native Huffman sanitizer fuzz boundary
+
+The explicit fuzz exclusion was later withdrawn for the four large native
+position-distance Blocked Huffman profiles. A shared first-party public-boundary
+harness now builds four Clang libFuzzer targets for 8, 16, 32 and 64 MiB. Each
+target exercises deterministic encode/decode round trips, whole versus split
+chunking, altered and truncated streams, sticky terminal status and output
+sentinels under ASan/UBSan. The campaign uses a 128-byte input limit, seed
+20261017 and 256 executions per profile; it is a bounded sanitizer campaign,
+not a performance or physical-peak measurement. The four campaigns and the
+four registered CTest smoke invocations completed without a finding. CI keeps
+benchmarks excluded, removes the fuzz exclusion from ordinary CTest filters,
+and adds a dedicated Ubuntu Clang job that builds and runs these four targets.

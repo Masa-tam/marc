@@ -25478,3 +25478,13 @@ with unchanged failure outputs. These logical resource checks are not physical
 peak measurements. No fuzz or further ratio/speed/physical-peak benchmark is
 executed. All seven profiles are locally qualified under those exceptions;
 user batch push, hosted CI and external four-route95 recording remain open.
+
+### TVG-1548: large native Huffman sanitizer fuzz campaign
+
+The later explicit request reinstated fuzzing for the 8, 16, 32 and 64 MiB
+native position-distance Blocked Huffman public boundaries. The shared
+first-party harness was built with Clang ASan/UBSan and libFuzzer. With
+`-runs=256 -max_len=128 -timeout=10 -rss_limit_mb=4096 -seed=20261017`,
+each target completed with exit status zero, no sanitizer report, no artifact,
+and no timeout. The registered CTest smoke tests also passed for all four
+targets. This receipt does not add compression, speed or physical-peak claims.

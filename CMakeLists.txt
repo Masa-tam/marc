@@ -8190,6 +8190,16 @@ if(MARC_BUILD_TESTS)
     endforeach()
 endif()
 
+if(MARC_BUILD_TESTS AND MARC_BUILD_FUZZERS)
+    foreach(window IN ITEMS 8m 16m 32m 64m)
+        add_test(NAME marc_fuzz_lzss_position_blocked_huffman_${window}_public_smoke
+            COMMAND marc_fuzz_lzss_position_blocked_huffman_${window}_public
+                -runs=16 -max_len=128 -timeout=10 -seed=20261017)
+        set_tests_properties(marc_fuzz_lzss_position_blocked_huffman_${window}_public_smoke
+            PROPERTIES TIMEOUT 180 RESOURCE_LOCK marc_position_blocked_huffman_fuzz_campaign)
+    endforeach()
+endif()
+
 if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
     foreach(component IN ITEMS token frame stream)
         if(component STREQUAL "stream")
@@ -9643,6 +9653,21 @@ if(MARC_BUILD_FUZZERS)
         target_link_options(marc_fuzz_lzss_position_tans_${window}_public PRIVATE
             -fsanitize=fuzzer,address,undefined)
         target_link_libraries(marc_fuzz_lzss_position_tans_${window}_public PRIVATE marc::static)
+    endforeach()
+    foreach(window IN ITEMS 8m 16m 32m 64m)
+        add_executable(marc_fuzz_lzss_position_blocked_huffman_${window}_public
+            fuzz/lzss_position_blocked_huffman_large_public_fuzz.cpp)
+        target_compile_features(marc_fuzz_lzss_position_blocked_huffman_${window}_public PRIVATE cxx_std_20)
+        target_compile_definitions(marc_fuzz_lzss_position_blocked_huffman_${window}_public PRIVATE
+            MARC_PD_BH_SUFFIX=${window})
+        target_include_directories(marc_fuzz_lzss_position_blocked_huffman_${window}_public PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/include)
+        target_compile_options(marc_fuzz_lzss_position_blocked_huffman_${window}_public PRIVATE
+            -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer
+            -Wall -Wextra -Wpedantic)
+        target_link_options(marc_fuzz_lzss_position_blocked_huffman_${window}_public PRIVATE
+            -fsanitize=fuzzer,address,undefined)
+        target_link_libraries(marc_fuzz_lzss_position_blocked_huffman_${window}_public PRIVATE marc::static)
     endforeach()
 endif()
 
