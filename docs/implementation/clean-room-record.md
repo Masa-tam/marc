@@ -42686,3 +42686,17 @@ unchanged. Bind retained sources/binaries and preserve the fixed runtime.
 No external or restricted implementation was consulted; no fuzz or additional
 benchmark was executed. Owned transforms, public API/CLI, exchange and later
 profile qualification remain unfinished.
+
+### CR-1911: 2026-10-17 — thirty-two-MiB owning Huffman transforms
+
+Author/reviewer: Codex. Follow IR-1355 with first-party owning state machines,
+the existing thirty-two-MiB fixed-five dictionary finder and qualified native
+frame/token/entropy components. Derive checked bounded storage from DD-1619's
+10R envelope without copying a smaller profile's resource grant. TVG-1536
+qualifies499 independent raw parses and matching normal/direct ASan/UBSan
+wires, all allocation-failure rollbacks, no process allocations and exact
+logical admission. Independently verify queries and retain source, binary,
+fixture and runtime-artifact bindings. No external/restricted implementation
+was consulted; no fuzz or additional benchmark was executed. Public defaults
+and C API construction, CLI, exchange and later-profile qualification remain
+unfinished. Performance targets remain unmeasured by explicit user request.

@@ -11941,3 +11941,16 @@ Check independent stream/frame wires, exact termination, partition/reset,
 split buffers, malformed prefixes and conservative logical admission without
 allocating maximum payloads. Consult no external or restricted implementation;
 execute no fuzz or ratio/speed/physical-peak benchmark.
+
+### IR-1355: thirty-two-MiB owning Huffman transforms and resource queries
+
+Use the qualified first-party owning state machines, native frame quarantine,
+and existing thirty-two-MiB longest/nearest fixed-five dictionary parser.
+Derive checked resource queries from150 bits per raw byte, descriptor2578,
+actual token/table/owner sizes and finder workspace. Admit every allocation
+before construction and expose conservative metadata floors separately from
+owned storage. Verify all allocation-failure rollbacks, no process allocations,
+exact/one-short quotas, arbitrary chunking, raw-parser differential wires and
+window/frame endpoints. Consult no external/restricted implementation; execute
+no fuzz or additional ratio/speed/physical-peak benchmark. Public defaults and
+their actual construction require a separate qualification checkpoint.

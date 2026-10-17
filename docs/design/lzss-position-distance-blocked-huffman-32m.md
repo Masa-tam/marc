@@ -84,7 +84,8 @@ exclusively and exact regeneration is checked. Public defaults require checked r
 actual construction tests. The entropy core has a separate qualification
 checkpoint. TVG-1534 separately qualifies private token/history integration,
 and TVG-1535 qualifies frame quarantine and caller-scratch streaming decoding.
-Owned transforms, public API/CLI, schema84/94
+TVG-1536 qualifies owning transforms and checked logical resource queries.
+Public default admission and C API construction, CLI, schema84/94
 exchange and final local audit remain pending.
 
 Ratio/speed/physical-peak benchmarks and fuzz execution are omitted through

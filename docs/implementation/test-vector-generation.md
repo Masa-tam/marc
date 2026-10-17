@@ -25216,3 +25216,25 @@ bind sources/binaries and preserve the validated runtime. Retain serial
 execution with a300-second differential ceiling supported by the measured
 finite-test duration. Owned transforms, public API/CLI and exchange remain
 pending. No fuzz or additional ratio/speed/physical-peak benchmark is executed.
+
+### TVG-1536: thirty-two-MiB owning Huffman transforms and logical admission
+
+Qualify499 fixed raw inputs against the independent longest/nearest fixed-five
+parser and independently decode every production wire. Include all256 single
+bytes, exhaustive binary inputs through length6,100 fixed-seed inputs, short
+match boundaries and four large thirty-two-MiB cases. Match all fixture hashes
+and encoded bytes between normal and direct ASan/UBSan builds. Five normal
+checks, including the preceding profile's regression, and direct17-translation-
+unit instrumentation pass with empty diagnostics. Verify eight encoder and
+five decoder allocation sites individually roll back; process calls allocate
+nothing. Exercise exact/one-short construction quotas, unchanged failed query
+destinations, every small input split, byte-sized buffers, empty input,
+frame-size minus/equal/plus one, strict trailing data and failed second-frame
+quarantine preserving the first frame. Independently sum all four small/full
+workspace queries from150 bits/raw byte, descriptor2578, token/table storage,
+finder space, owner/control overhead and the separate metadata floor. These
+are logical charges, not physical peaks or public default grants. Retain source
+and binary bindings and preserved runtime artifacts. Derive a600-second serial
+differential ceiling from the retained finite-test duration. Public default
+admission and actual C API construction, CLI and schema84/94 exchange remain
+pending. No fuzz or additional ratio/speed/physical-peak benchmark is executed.
