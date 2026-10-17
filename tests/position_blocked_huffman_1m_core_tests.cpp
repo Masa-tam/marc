@@ -246,7 +246,7 @@ void units() {
         && weighted_bytes[0]==std::byte{0xa0} && weighted_bytes[1]==std::byte{6},"hand weighted a006 payload");
     check(planner->finish({},again)==Error::none && plan==again,"repeat planner finish determinism");
     limits={};limits.max_block_size=8;
-    limits.max_internal_buffered_bytes=sizeof(*planner)+2*sizeof(Descriptor)+131072+2547;
+    limits.max_internal_buffered_bytes=sizeof(*planner)+2*sizeof(Descriptor)+131072+2547+position_blocked_huffman_1m_refit_workspace;
     check(planner->finish(limits,again)==Error::none && plan==again,"exact planner budget");
     const auto saved_plan=again;--limits.max_internal_buffered_bytes;
     check(planner->finish(limits,again)==Error::limit_exceeded && again==saved_plan,"one short planner retains destination");
@@ -259,9 +259,23 @@ void units() {
         check(plan.override_mask==(count==17 ? 1 : 0),"strict override bit cost tie");
         std::vector<std::byte> encoded(plan.payload_size);written=777;
         check(encode_position_blocked_huffman_1m(plan,requests,{},*encode_tables,encoded,written)==Error::none,"threshold encode");
-        check(count==17 ? encoded.size()==1 && encoded[0]==std::byte{1}
+        check(count==17 ? encoded.empty() && plan.models[0].single_symbol==1
             : encoded.size()==3 && encoded[0]==std::byte{0} && encoded[1]==std::byte{0} && encoded[2]==std::byte{1},"threshold hand payload");
     }
+    // Independent hand plan: context3's hundred As override, while the pool
+    // used only by context4 should code B/C with one bit each, not two.
+    auto residual=std::make_unique<PositionBlockedHuffman1mModelBuilder>();
+    std::vector<PositionBlockedHuffmanDecision> residual_requests;
+    for (unsigned i=0;i<100;++i) { check(residual->add(3,65)==Error::none,"residual A");residual_requests.push_back({3,65}); }
+    for (unsigned s : {66u,67u}) { check(residual->add(4,s)==Error::none,"residual BC");residual_requests.push_back({4,s}); }
+    check(residual->finish({},plan)==Error::none && plan.override_mask==(UINT64_C(1)<<3)
+        && plan.models[8].single_symbol==65 && plan.models[1].lengths[65]==0
+        && plan.models[1].lengths[66]==1 && plan.models[1].lengths[67]==1
+        && plan.payload_size==1 && plan.final_valid_bits==2,"hand residual pool and frozen override");
+    std::array<std::byte,1> residual_bytes{};written=777;
+    check(encode_position_blocked_huffman_1m(plan,residual_requests,{},*encode_tables,residual_bytes,written)==Error::none
+        && written==1 && residual_bytes[0]==std::byte{2},"hand residual 02 payload");
+    check(residual->finish({},again)==Error::none && again==plan,"residual repeat finish");
     auto bounded=std::make_unique<PositionBlockedHuffman1mModelBuilder>(1);
     check(bounded->add(-1,1)==Error::none && bounded->add(-1,0)==Error::limit_exceeded,"planner decision admission");
     again=saved_plan;check(bounded->finish({},again)==Error::limit_exceeded && again==saved_plan,"planner sticky limit retains output");
@@ -300,6 +314,9 @@ void units() {
         only_overrides.push_back({context,static_cast<unsigned>(context)});
     }
     check(all_overrides->finish({},plan)==Error::none && plan.field_mask==1 && plan.override_mask==3 && plan.payload_size==0,"active field with no pooled lookup");
+    check(plan.models[0].single_symbol==position_blocked_huffman_no_single
+        && plan.models[0].lengths[0]==1 && plan.models[0].lengths[1]==1,
+        "equal total bytes retain original unused binary pool rather than singleton refit");
     written=777;check(encode_position_blocked_huffman_1m(plan,only_overrides,{},*encode_tables,{},written)==Error::none && written==0,"all overrides zero-bit encode");
     check(decoder.begin(plan,{}, {},*decode_tables)==Error::none,"all overrides decoder");
     for (const auto request:only_overrides) check(decoder.read(request.context,value)==Error::none && value==request.symbol,"all overrides symbol");

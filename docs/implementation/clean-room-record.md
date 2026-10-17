@@ -42982,3 +42982,15 @@ encoder output revision and BM-0256's measured tradeoffs remain explicit;
 decoder compatibility and failure/publication guarantees remain qualified.
 No implementation, format, default, reference source or release claim changes.
 No external implementation was consulted for this documentation-only closure.
+
+### CR-1932: 2026-10-18 — one-MiB residual-pool core milestone
+
+Author/reviewer: Codex. IR-1370/DD-1625 extend the repository-authored approved
+planner to the52-context1MiB specialization. Retain original override selection,
+privately validate the candidate and commit only strictly smaller total bytes.
+Propagate the conservative extra encoder charge and leave decoder logic alone.
+TVG-1557 supplies hand-checkable cases, quota/failure retention and ten passing
+registrations. Previous Release products are saved and rehashed before builds;
+candidate products remain separate from the qualified runtime. No external
+implementation was consulted. Larger-window integration, corpus measurements
+and remaining compatibility gates are not claimed by this milestone.

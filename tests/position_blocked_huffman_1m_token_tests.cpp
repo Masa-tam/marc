@@ -153,7 +153,7 @@ void units() {
     check(encode_position_blocked_huffman_1m_tokens(tokens,frame,{},std::span(*et).first(56),scratch_payload,descriptor,payload).error!=Error::none
         && descriptor==saved_desc && payload==saved_payload,"short encode tables retain both outputs");
     limits={};limits.max_block_size=267;
-    constexpr std::uint64_t plan_work=sizeof(PositionBlockedHuffman1mModelBuilder)+2*sizeof(Descriptor)+131072+2547;
+    constexpr std::uint64_t plan_work=sizeof(PositionBlockedHuffman1mModelBuilder)+2*sizeof(Descriptor)+131072+2547+position_blocked_huffman_1m_refit_workspace;
     limits.max_internal_buffered_bytes=plan_work+tokens.size()*sizeof(LzssTypedToken)+sizeof(model)+sizeof(frame)+sizeof(limits)+ds+ps;
     check(plan_position_blocked_huffman_1m_tokens(tokens,frame,limits,plan_sentinel).error==Error::none && plan_sentinel==model,"exact aggregate plan quota");
     --limits.max_internal_buffered_bytes;

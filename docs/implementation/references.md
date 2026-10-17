@@ -12110,3 +12110,11 @@ approval. DD-1624 defines the revised64KiB reference planning policy and retains
 the previous decoder grammar. Use existing canonical construction, frozen old
 wire vectors and saved experimental bodies as independent checks. No external
 implementation or new algorithm reference is used.
+
+### IR-1370: larger-window residual-pool comparison
+
+Use the first-party DD-1624 planner and retained previous products as references
+for DD-1625. Inspect each existing bounded descriptor and context mapping
+independently. Reuse repository-authored canonical construction, independent
+wire vectors and manifest-verified corpus measurement drivers. No external
+implementation code or new algorithm reference is needed.

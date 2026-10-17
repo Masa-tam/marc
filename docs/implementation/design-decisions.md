@@ -35090,3 +35090,13 @@ Retain old artifacts and qualify old/new decoder compatibility independently of
 intentional re-encoding differences. Core qualification precedes public-path and
 same-driver old/new speed/physical-peak measurements; those results are recorded
 only after completion.
+
+### DD-1625: larger-window residual-pool investigation
+
+The [larger-window policy](../design/lzss-position-distance-blocked-huffman-large-pool-refit.md)
+extends the approved fixed-override candidate rule in1/4/8/16/32/64MiB order.
+Explicitly distinguish intentional producer-byte revisions from unchanged
+decoder-visible grammar. Save old products before building candidates; require
+per-window correctness, compatibility, resource and matched corpus evidence.
+Keep hosted/external gates separate and leave pushing to the maintainer after
+all six windows are processed. No measured larger-window result is assumed.

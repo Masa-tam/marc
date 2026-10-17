@@ -25627,3 +25627,17 @@ output configuration. All checks pass. The retained measurement audit records
 qualification rechecks, not a new benchmark, fuzz campaign or remote execution.
 The original local receipt remains unchanged; IX-0106 separately records the
 maintainer-reported successful CI and four95-archive external routes.
+
+### TVG-1557: one-MiB residual-pool core integration milestone
+
+DD-1625 first qualifies the1MiB planner. The hand case freezes context3's
+hundred-A singleton override and codes fallback-context4's B/C with one bit
+each, yielding payload02 with two valid bits. An all-overridden binary field
+retains its original binary pool on equal complete byte cost. Exact/one-short
+planner and aggregate token quotas include the extra descriptor-plus4096 charge
+and retain destinations on failure. Existing independent vectors, core, tokens,
+token differential, frames, frame differential, stream, owner and public API
+registrations pass, as does documentation layout: ten registrations total.
+No decoder grammar or decoder charge changes. Corpus performance, full public
+raw differentials, old/new corpus restoration and remaining five windows are
+pending at this milestone; this is not a completed six-window qualification.
