@@ -11824,3 +11824,16 @@ selection must also omit benchmark commands, including diagnostic aliases
 whose names lack the word benchmark. Review these temporary exclusions after
 the requested goal boundary. Hosted CI and final95 external-route confirmation
 remain distinct from local correctness qualification.
+
+### Large native Huffman measurements resumed
+
+The maintainer's subsequent request supersedes the temporary benchmark
+omission for16/32/64MiB measurements and restores CI benchmark execution.
+Ordinary CI now enables benchmark targets and includes benchmark and
+public-measurement tests. Package-only and dedicated fuzz builds need no
+benchmark tools. Full corpus measurements use
+`tools/run_position_blocked_huffman_large_measurements.py` with
+`marc_position_blocked_huffman_large_measure`; the default is three serial
+fresh-process repetitions per member, profile and direction. CI uses a small
+synthetic smoke and never downloads the external corpus. TVG-1549 records
+measurement-path qualification; all-member results follow after completion.

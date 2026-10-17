@@ -12081,3 +12081,14 @@ local self/cross paths and bind all seven windows' earlier milestones, ordinary
 source/object pairs, products and saved runtime artifacts. Derive serial limits
 from complete runs. Consult no external/restricted implementation and execute
 no fuzz or further ratio/speed/physical-peak benchmark.
+
+### IR-1367: large native Huffman paired measurement driver
+
+Follow the later maintainer request to resume benchmarks for native16/32/64MiB
+Blocked Huffman and remove CI benchmark exclusions. Use the existing public C
+APIs, first-party eight-MiB measurement drivers and verified local Silesia
+manifest. No external implementation reference is needed. Use contextual16MiB
+and64MiB profiles directly; try the existing64MiB API with both window/frame
+set to32MiB. Admit that comparison only after accepted configuration, actual
+wire identity/extent checks and exact restoration. Keep fresh-process physical
+peaks separate from logical queries and codec-only timing separate from I/O.

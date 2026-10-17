@@ -25488,3 +25488,16 @@ first-party harness was built with Clang ASan/UBSan and libFuzzer. With
 each target completed with exit status zero, no sanitizer report, no artifact,
 and no timeout. The registered CTest smoke tests also passed for all four
 targets. This receipt does not add compression, speed or physical-peak claims.
+
+### TVG-1549: large native Huffman measurement-path qualification
+
+For each16/32/64MiB window, drive native and same-window contextual encode and
+decode through a fresh process. Check actual112-byte header algorithm/variant
+identities and window/frame fields independently of driver JSON, exact source
+SHA256 after restoration, repeated deterministic wire SHA256 and positive
+timing/peak observations. The7168-byte patterned pilot passes all six pairs;
+native outputs and public contextual16/64MiB outputs also match CLI production
+bytes. The32MiB contextual configuration is accepted and restores exactly using
+the64MiB format. Register a corpus-independent CTest smoke using the same
+measurement/audit path. Complete corpus results are recorded separately in
+benchmarks documentation after all three samples per material are audited.

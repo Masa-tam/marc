@@ -42875,3 +42875,13 @@ ASan/UBSan/libFuzzer targets cover the 8, 16, 32 and 64 MiB profiles. Each
 completed the deterministic 256-run campaign and its CTest smoke invocation
 without a finding. The campaign is bounded safety evidence only; it does not
 claim a performance, compression-ratio or physical-peak result.
+
+### CR-1924: 2026-10-17 — large native Huffman paired measurements
+
+Author/reviewer: Codex. Follow IR-1367 and DD-1622 using public C API contracts
+and repository-authored prior measurement drivers. No external/restricted
+implementation was consulted. Add a streaming measurement driver and serial
+artifact-auditing runner for16/32/64MiB. Qualify both grammars, actual header
+identities/extents, source restoration and CLI agreement where selectors exist
+under TVG-1549. Keep all products and prior results; no codec or wire change.
+The corpus run and aggregate conclusions remain pending until audited.

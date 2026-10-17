@@ -9505,6 +9505,22 @@ if(MARC_BUILD_BENCHMARKS)
 endif()
 
 if(MARC_BUILD_BENCHMARKS)
+    add_executable(marc_position_blocked_huffman_large_measure
+        benchmarks/position_blocked_huffman_large_measure.cpp)
+    target_compile_features(marc_position_blocked_huffman_large_measure PRIVATE cxx_std_20)
+    target_link_libraries(marc_position_blocked_huffman_large_measure PRIVATE marc::static)
+    if(WIN32)
+        target_link_libraries(marc_position_blocked_huffman_large_measure PRIVATE psapi)
+    endif()
+    if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_blocked_huffman_large_public_measurements
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tools/run_position_blocked_huffman_large_measurements.py
+                --probe $<TARGET_FILE:marc_position_blocked_huffman_large_measure>
+                --samples 1 --output ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-large-measurements)
+        set_tests_properties(marc_position_blocked_huffman_large_public_measurements
+            PROPERTIES TIMEOUT 180 RUN_SERIAL TRUE)
+    endif()
     foreach(kind IN ITEMS benchmark public_resources)
         add_executable(marc_position_blocked_huffman_64k_${kind}
             benchmarks/position_blocked_huffman_64k_${kind}.cpp)

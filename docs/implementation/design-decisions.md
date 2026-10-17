@@ -35036,3 +35036,22 @@ not a performance or physical-peak measurement. The four campaigns and the
 four registered CTest smoke invocations completed without a finding. CI keeps
 benchmarks excluded, removes the fuzz exclusion from ordinary CTest filters,
 and adds a dedicated Ubuntu Clang job that builds and runs these four targets.
+
+### DD-1622: sixteen through sixty-four-MiB paired measurement scope
+
+The maintainer's later explicit request resumes ratio, speed and physical-peak
+measurements for16/32/64MiB and CI benchmark execution. Use a single first-party
+streaming driver with fixed64KiB I/O and unchanged public transforms. Measure
+allocation, creation, process and destruction with a monotonic clock; exclude
+file I/O and outside-process identity/restoration comparisons. Each repetition
+starts a fresh process; keep every receipt and artifact. Report median codec
+seconds and raw MiB/s, maximum process resident peak across three repetitions,
+per-member archive sizes and their sums. Process peaks include the streaming
+driver and are not worst-case bounds. Verify the published12-member Silesia
+manifest before measurement. API-configured32MiB contextual streams use the
+existing64MiB representation, retain its minimum-five grammar and declare
+both actual window and frame as32MiB. Preserve native minimum-three grammar.
+Do not equate differing logical ownership-query scopes. Restore ordinary CI
+benchmark builds/tests; the corpus campaign remains local and is not downloaded
+or required by CI. Dedicated fuzz builds explicitly select Clang as required
+by the existing libFuzzer configuration.
