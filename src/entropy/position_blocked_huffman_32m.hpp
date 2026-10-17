@@ -25,6 +25,9 @@ struct PositionBlockedHuffman32mDescriptor {
     std::array<PositionBlockedHuffmanModel,62> models{}; // Pools0..4, overrides5..61.
     bool operator==(const PositionBlockedHuffman32mDescriptor&) const = default;
 };
+// Additional private descriptor plus bounded residual histogram/control work.
+inline constexpr std::size_t position_blocked_huffman_32m_refit_workspace=
+    sizeof(PositionBlockedHuffman32mDescriptor)+4096;
 // All ordinary descriptor/size/serialized destinations commit only on success.
 [[nodiscard]] PositionBlockedHuffmanError validate_position_blocked_huffman_32m_descriptor(
     const PositionBlockedHuffman32mDescriptor&,const core::DecoderLimits&,std::size_t&) noexcept;

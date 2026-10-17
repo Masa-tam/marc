@@ -71,7 +71,7 @@ PositionBlockedHuffmanError PositionBlockedHuffman32mModelBuilder::finish(
     if (core::validate_limits(limits)!=core::LimitError::none || decisions_>limits.max_block_size) return Error::limit_exceeded;
     // The first-party package primitive has bounded 256-symbol/15-level
     // temporary storage. This is a conservative workspace charge, not RSS.
-    if (sizeof(*this)+UINT64_C(2)*sizeof(Descriptor)+131072+2578>limits.max_internal_buffered_bytes) return Error::limit_exceeded;
+    if (sizeof(*this)+UINT64_C(2)*sizeof(Descriptor)+131072+2578+position_blocked_huffman_32m_refit_workspace>limits.max_internal_buffered_bytes) return Error::limit_exceeded;
     Descriptor planned{};planned.decision_count=decisions_;
     auto build=[](const HuffmanFrequencies& counts,PositionBlockedHuffmanModel& model) noexcept {
         std::size_t present{};std::uint16_t sole{};
@@ -121,6 +121,36 @@ PositionBlockedHuffmanError PositionBlockedHuffman32mModelBuilder::finish(
     planned.final_valid_bits=payload_bits ? static_cast<std::uint8_t>((payload_bits-1)%8+1) : 0;
     std::size_t extent{};
     if (const auto e=validate_position_blocked_huffman_32m_descriptor(planned,limits,extent);e!=Error::none) return e;
+    // DD-1625: overrides are frozen before refitting the fallback-only pools.
+    // Retain the original reference plan unless complete byte cost improves.
+    Descriptor refined=planned;
+    for (std::size_t f=0;f<5;++f) if (planned.field_mask&(1U<<f)) {
+        HuffmanFrequencies remaining{};
+        for (std::size_t c=0;c<57;++c)
+            if (position_blocked_huffman_32m_field(c)==f && !(planned.override_mask&(UINT64_C(1)<<c)))
+                for (std::size_t s=0;s<remaining.size();++s)
+                    if (!core::checked_add(remaining[s],counts_[5+c][s],remaining[s])) return Error::arithmetic_overflow;
+        PositionBlockedHuffmanModel model{};
+        const auto e=build(remaining,model);
+        if (e==Error::inactive_context) model.single_symbol=0;
+        else if (e!=Error::none) return e;
+        refined.models[f]=model;
+    }
+    std::uint64_t refined_bits=uniform_bits_;
+    for (std::size_t c=0;c<57;++c) {
+        const auto slot=(refined.override_mask&(UINT64_C(1)<<c)) ? 5+c : position_blocked_huffman_32m_field(c);
+        std::uint64_t contribution{};
+        if (const auto e=cost(counts_[5+c],refined.models[slot],contribution);e!=Error::none) return e;
+        if (!core::checked_add(refined_bits,contribution,refined_bits)) return Error::arithmetic_overflow;
+    }
+    std::uint64_t rounded{};
+    if (!core::checked_add(refined_bits,UINT64_C(7),rounded) || rounded/8>UINT32_MAX) return Error::arithmetic_overflow;
+    refined.payload_size=static_cast<std::uint32_t>(rounded/8);
+    refined.final_valid_bits=refined_bits ? static_cast<std::uint8_t>((refined_bits-1)%8+1) : 0;
+    std::size_t refined_extent{};
+    if (const auto e=validate_position_blocked_huffman_32m_descriptor(refined,limits,refined_extent);e!=Error::none) return e;
+    if (static_cast<std::uint64_t>(refined_extent)+refined.payload_size
+        <static_cast<std::uint64_t>(extent)+planned.payload_size) planned=refined;
     output=planned;return Error::none;
 }
 PositionBlockedHuffmanError encode_position_blocked_huffman_32m(

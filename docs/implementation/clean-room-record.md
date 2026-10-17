@@ -43111,3 +43111,14 @@ universal dominance or equating logical queries with RSS. All old/new decoder
 corpus routes pass. Retain original products and receipts; final common-runtime,
 retained95-body and later remote gates remain distinct. No external
 implementation is consulted.
+
+### CR-1944: 2026-10-18 — thirty-two-MiB residual-pool core milestone
+
+Author/reviewer: Codex. Extend the first-party DD-1625 model planner to the
+existing 57-context 32MiB representation. Freeze overrides, validate both
+plans privately and select the revised plan only for a smaller complete byte
+extent. TVG-1569 supplies independent hand cases, destination-retaining quota
+tests and ten passing registrations. Decoder grammar and public defaults are
+unchanged. Preserve qualified smaller-window products and stage the 32MiB
+candidate separately. Public, corpus and final runtime gates remain pending.
+No external implementation is consulted.

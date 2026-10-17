@@ -25783,3 +25783,14 @@ sets/codebooks, fields and dictionary counts, no larger complete byte extent,
 19 strict improvements, original pools on ties. All checks pass.
 Old products and measured candidates remain retained. Final family/runtime and
 retained95-body qualification are not claimed by this measurement milestone.
+
+### TVG-1569: thirty-two-MiB residual-pool core integration milestone
+
+DD-1625 extends the fixed-override residual-pool rule to 57 contexts and 62 models.
+The independent A/BC residual case, original pool retention on equal complete
+byte cost, and exact/one-short planner/token quotas pass. Existing vectors,
+core, tokens, token differential, frames, frame differential, stream, owning
+and API registrations pass with documentation layout: ten registrations.
+Decoder grammar, decoder charges, defaults and frozen wire oracles are unchanged.
+Public raw/C/CLI qualification, full matched corpus measurements and final
+common-runtime/retained95-body qualification remain pending at this milestone.
