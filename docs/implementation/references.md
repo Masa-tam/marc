@@ -12022,3 +12022,15 @@ and new endpoints, retaining earlier cases. Check full-frame literal/overlap
 restoration, aliases and conservative logical workspace grants without physical
 peak measurement. Consult no external/restricted implementation; execute no
 fuzz or additional ratio/speed/physical-peak benchmark.
+
+### IR-1362: sixty-four-MiB native Huffman frames and private streaming decode
+
+Use the qualified first-party token/core components and DD-1620's exact header
+identity,36T/10R envelope and wide bounds. Independently construct stream/frame
+wires from mathematical models and reconstruct their expected bytes. Validate
+the complete descriptor before consuming payload. Decode tokens and raw frames
+privately, publishing only after exact entropy/history/reconstruction checks.
+Retain split-buffer, reset-history, late-error and exact/one-short logical
+admission tests, including a full-window singleton literal frame. Consult no
+external/restricted implementation and execute no fuzz or further ratio/speed/
+physical-peak benchmark.

@@ -25351,3 +25351,28 @@ complete directed set and derive its600-second serial budget from the observed
 runtime products. No fuzz or additional ratio/speed/physical-peak benchmark is
 executed. Frame publication, public resources/API/CLI, exchange and final
 qualification remain unfinished.
+
+### TVG-1543: sixty-four-MiB Huffman frame quarantine and streaming decode
+
+Construct90 independent streams/frames from mathematical token models and
+raw reconstruction; independently validate89 production-selected frames.
+Normal and direct ASan/UBSan builds pass these cases and7 actual invalid
+history/length frames, rejecting failed frames before raw publication. Check
+every small stream split, byte-sized source/sink, zero output, sticky terminal
+states, strict trailing data and every truncation of the two-frame stream.
+Preserve only previously validated frames after a late second-frame failure;
+reject an invalid descriptor before consuming or storing its declared payload.
+Exercise a full67108864-literal frame with an independently hand-built
+36-byte zero-payload descriptor and134217728 decisions. Restore the raw frame
+both directly and through streaming quarantine. Validate the maximum metadata
+envelope with wide15D arithmetic without allocating the maximum payload.
+Check aliases, short spans, reset history, final partial frames and exact/
+one-short logical frame and constructor grants. No fuzz or further ratio/
+speed/physical-peak benchmark is executed. Owned resources, public API/CLI,
+exchange and final qualification remain unfinished.
+
+Seven normal checks include the preceding profile's frame/stream regressions;
+all pass. All97 retained fixture inputs and89 production frames match exactly
+between builds. Bind source/binary manifests and unchanged validated runtime
+products. Preserve the complete directed set with a600-second serial budget
+derived from its observed169.16-second run. Independent artifact audit passes.

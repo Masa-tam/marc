@@ -42782,3 +42782,20 @@ implementation was consulted; no fuzz or additional benchmark was executed.
 Physical peaks and compression/performance goals remain unmeasured by explicit
 request. Frame/public-resource integration, API/CLI, exchange and final
 qualification remain unfinished.
+
+### CR-1918: 2026-10-17 — sixty-four-MiB Huffman frame quarantine
+
+Author/reviewer: Codex. Follow IR-1362 with the qualified first-party token/core
+components, independently generated headers/models and mathematical raw
+reconstruction. DD-1620's identity and wide bounds precede implementation.
+TVG-1543 qualifies90 independent streams,89 production frames and7 actual
+history/length refusals per build. Normal and direct ASan/UBSan checks cover
+full-window singleton reconstruction, arbitrary small splits, logical resource
+admission, descriptor-before-payload validation and late-frame quarantine.
+Seven normal checks, including the preceding profile, and artifact audit pass;
+all retained inputs and production frames match between builds. Source/binary
+bindings and preservation of the validated runtime pass.
+No external/restricted implementation was consulted; no fuzz or further
+benchmark was executed. Unmeasured performance targets are not reported as met.
+Owned transforms/resources, public API/CLI, exchange and final qualification
+remain unfinished.

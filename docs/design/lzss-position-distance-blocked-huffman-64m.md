@@ -98,7 +98,13 @@ descriptors and payloads match between builds and are independently decoded.
 The full67108864-literal and260113-token overlap cases restore exactly;
 exact/one-short logical grants retain failure invariants. These are bounded
 correctness tests, not process-peak measurements or public default grants.
-Frame integration, public resources/API/CLI, schema85/95 exchange and final
+TVG-1543 separately qualifies native frame admission, private raw reconstruction
+and the caller-scratch streaming decoder. Independent supplied-model streams
+restore exact raw bytes and production frames pass independent entropy checks.
+Descriptor validation precedes payload consumption; failed frames never enter
+the draining state. Full-window literal restoration, split-buffer behavior,
+late second-frame refusal and logical admission are finite correctness checks.
+Owned resource integration, public API/CLI, schema85/95 exchange and final
 audit remain unfinished.
 
 Fuzz and further ratio/speed/physical-peak benchmarks are omitted through this
