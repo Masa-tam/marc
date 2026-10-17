@@ -81,7 +81,8 @@ even distance-alphabet nibbles, odd length padding, full descriptors and
 complete fifteen-bit codes. Verify a reachable class24 short-match witness
 separately from isolated class25 endpoint evidence. Frozen output is created
 exclusively and exact regeneration is checked. Public defaults require checked requirements and
-actual construction tests. Implementation, public API/CLI, schema84/94
+actual construction tests. The entropy core has a separate qualification
+checkpoint; token/history/frame integration, public API/CLI, schema84/94
 exchange and final local audit remain pending.
 
 Ratio/speed/physical-peak benchmarks and fuzz execution are omitted through

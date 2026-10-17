@@ -25157,3 +25157,21 @@ exclusively and compare exact regeneration, earlier sixteen-MiB artifacts and
 the validated runtime. Three normal checks and independent artifact audit pass.
 No production encoder/decoder, fuzz or benchmark is invoked. Production and
 public/resource/exchange qualification remain pending.
+
+### TVG-1533: thirty-two-MiB bounded Huffman entropy core
+
+Qualify the descriptor, model planner, scalar reader and private payload writer
+against all283 frozen mathematical wires and69 actual descriptor/payload
+refusals. Independently decode every production plan and compare all283 plans
+byte-for-byte between normal and direct ASan/UBSan builds. Seven normal checks
+include the qualified sixteen-MiB core and both frozen vector sets. All pass;
+instrumented diagnostics are empty and source/binary bindings are verified.
+Check all seven unused mask bits, the even26-symbol alphabet, canonical models,
+alias rejection, exact/one-short grants, sticky errors, terminal model usage
+and unchanged ordinary destinations on failure. Exercise335544320 zero-bit
+decisions without a decision array. Validate the629145600-byte payload ceiling
+and reject ceiling+1 with a wide15D intermediate using metadata only; this is
+not a complete payload or frame qualification. Preserve the validated runtime.
+Token/history/frame integration, public API/CLI and exchange remain pending.
+No fuzz or ratio/speed/physical-peak benchmark is executed; these omissions
+remain explicit and are not successful performance comparisons.

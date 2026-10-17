@@ -42644,3 +42644,16 @@ manual headers, used/unused mask bits, even nibbles, wide bounds and exclusive
 artifact preservation. No external/restricted implementation was consulted;
 no production decoder, fuzz or benchmark was executed. Implementation,
 resource admission, public API/CLI and exchange remain unfinished.
+
+### CR-1908: 2026-10-17 — thirty-two-MiB bounded Huffman entropy core
+
+Author/reviewer: Codex. Follow IR-1352 using only qualified first-party scalar,
+canonical-code and bounded descriptor components. Specialize DD-1619's mask,
+alphabet, tables and wide bounds without changing earlier representations.
+TVG-1533 qualifies283 independent wires,69 actual refusals, matching normal
+and direct ASan/UBSan plans, bounded zero-bit maxima and failure invariants.
+The metadata-only maximum does not establish frame correctness. Source and
+binary hashes bind the retained results; fixed runtime artifacts are preserved.
+No external/restricted implementation was consulted, and no fuzz or benchmark
+was executed. Token/history/frame integration, public resources/API/CLI,
+exchange and later-profile qualification remain unfinished.

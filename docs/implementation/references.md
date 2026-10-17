@@ -11907,3 +11907,13 @@ the isolated class25 endpoint; use a proved conservative10R envelope rather
 than silently reusing the sixteen-MiB per-token9R proof. Freeze independent
 mask/nibble/descriptor/header vectors and finite negatives. Consult no
 external/restricted implementation and execute no fuzz or benchmark.
+
+### IR-1352: thirty-two-MiB bounded Huffman entropy core
+
+Specialize the qualified first-party scalar core for DD-1619, including the
+eight-byte mask, even distance alphabet and conservative10R decision ceiling.
+Preserve commit-on-success ordinary destinations, private tables/payload,
+alias preflight, exact/one-short admission, terminal usage and sticky errors.
+Check frozen independent wires and the wide15D payload calculation without
+allocating its maximum payload. Use finite direct ASan/UBSan without any
+fuzz runtime. No external/restricted source or benchmark is used.
