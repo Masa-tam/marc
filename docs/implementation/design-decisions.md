@@ -35031,7 +35031,7 @@ harness now builds four Clang libFuzzer targets for 8, 16, 32 and 64 MiB. Each
 target exercises deterministic encode/decode round trips, whole versus split
 chunking, altered and truncated streams, sticky terminal status and output
 sentinels under ASan/UBSan. The campaign uses a 128-byte input limit, seed
-20261017 and 256 executions per profile; it is a bounded sanitizer campaign,
+20261017 and 2,000 executions per profile; it is a bounded sanitizer campaign,
 not a performance or physical-peak measurement. The four campaigns and the
 four registered CTest smoke invocations completed without a finding. CI keeps
 benchmarks excluded, removes the fuzz exclusion from ordinary CTest filters,

@@ -25484,7 +25484,7 @@ user batch push, hosted CI and external four-route95 recording remain open.
 The later explicit request reinstated fuzzing for the 8, 16, 32 and 64 MiB
 native position-distance Blocked Huffman public boundaries. The shared
 first-party harness was built with Clang ASan/UBSan and libFuzzer. With
-`-runs=256 -max_len=128 -timeout=10 -rss_limit_mb=4096 -seed=20261017`,
+`-runs=2000 -max_len=128 -timeout=10 -rss_limit_mb=4096 -seed=20261017`,
 each target completed with exit status zero, no sanitizer report, no artifact,
 and no timeout. The registered CTest smoke tests also passed for all four
 targets. This receipt does not add compression, speed or physical-peak claims.
