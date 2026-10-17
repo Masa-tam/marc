@@ -25613,3 +25613,17 @@ same140/57 frozen differential cases also pass with that assertion included;
 all199 diagnostic stderr files are empty. Production code and measured tool hashes
 are unchanged. The integration remains local evidence, not another CI or
 external execution.
+
+### TVG-1556: revised64KiB final completion evidence audit
+
+On 2026-10-18 recheck the retained local completion receipt against the
+reported producer revision in IX-0106. Rehash all265 saved previous Release
+files; verify the fixed CLI, shared library and two measurement tools against
+their qualified staged hashes. Recheck the measured tool hashes, final directed
+sanitizer source bindings and all199 empty diagnostic files, the passed95-body
+legacy receipt, unchanged production sources since integration, and restored
+output configuration. All checks pass. The retained measurement audit records
+108 archive/restoration pairs and24 decoder cross-restorations. These are
+qualification rechecks, not a new benchmark, fuzz campaign or remote execution.
+The original local receipt remains unchanged; IX-0106 separately records the
+maintainer-reported successful CI and four95-archive external routes.

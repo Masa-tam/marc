@@ -42971,3 +42971,14 @@ logic changed after the measured cohort. The requested local integration is
 complete with recorded size/time/resident tradeoffs; prior hosted/external
 receipts remain revision-specific. No external implementation reference or
 unmeasured performance guarantee is introduced.
+
+### CR-1931: 2026-10-18 — revised64KiB final external completion receipt
+
+Author/reviewer: Codex. Record the maintainer's successful CI and four95-archive
+external console results at the exact revision in IX-0106. TVG-1556 rechecks
+retained local source/tool bindings and preserved products without changing
+historical receipts or rerunning measurement campaigns. DD-1624's intentional
+encoder output revision and BM-0256's measured tradeoffs remain explicit;
+decoder compatibility and failure/publication guarantees remain qualified.
+No implementation, format, default, reference source or release claim changes.
+No external implementation was consulted for this documentation-only closure.

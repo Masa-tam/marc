@@ -12102,3 +12102,9 @@ prior material-specific misses. These observations do not promise universal
 size, speed or memory dominance. Original binaries, archives and receipts
 are retained; previous BM-0250/BM-0255 results are not overwritten. Hosted
 CI and external routes for this policy are not established by local tests.
+
+Subsequently, IX-0106 records maintainer-reported successful hosted CI and four
+95-archive external routes at `edf7accf9ad9bce906225b80e3e5273f10cb1f45` on
+2026-10-18. TVG-1556 rechecks retained qualification bindings. This closes the
+remaining revision-specific verification gates without changing these measured
+values or treating the external console reports as new performance measurements.

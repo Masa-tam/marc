@@ -89,3 +89,13 @@ check pass. An additional hand case pins exact-byte-cost ties to the unchanged
 first-stage binary pool, rather than accepting a same-size singleton rewrite.
 This closes the requested local integration and measurement work; no updated
 hosted CI or external-route result is implied.
+
+### Final completion
+
+IX-0106 records the maintainer-reported successful hosted CI and four external
+95-archive routes at `edf7accf9ad9bce906225b80e3e5273f10cb1f45` on 2026-10-18.
+TVG-1556 rechecks the retained local evidence and preserved products. This
+closes the revised64KiB policy's remaining CI/external gates, superseding the
+earlier milestone-pending statements. The approved output revision, unchanged
+decoder compatibility and measured encode-time/memory tradeoffs remain as
+documented above; completion does not promise universal performance dominance.

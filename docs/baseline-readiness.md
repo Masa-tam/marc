@@ -4221,3 +4221,16 @@ speed/memory costs remain explicit, without claiming universal dominance.
 The requested extension goal is complete; baseline membership, release state
 and codec representations are unchanged. This recording commit does not
 claim another hosted or external execution.
+
+## 2026-10-18: revised64KiB Huffman encoder policy complete
+
+IX-0106 records maintainer-reported successful hosted CI and four95-archive
+external routes at `edf7accf9ad9bce906225b80e3e5273f10cb1f45`. TVG-1556
+rechecks the retained local evidence and preserved products. DD-1624 explicitly
+revises only the64KiB encoder policy; existing decoder grammar and old-archive
+compatibility remain qualified. BM-0256 shows all twelve revised corpus streams
+smaller than their same-window contextual controls, resolving the four prior
+member-specific misses, with measured encode-time and resident-memory costs.
+The requested64KiB revision is complete. Baseline membership, release state,
+schema and selector order are unchanged; this recording commit does not claim
+another hosted or external execution.

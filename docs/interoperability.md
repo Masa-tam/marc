@@ -2533,3 +2533,34 @@ Current-policy bundle verification still requires exact deterministic bytes.
 The producer source revision distinguishes these evidence sets; no new schema
 or silent verifier exemption is added. TVG-1553 supplies public/failure tests.
 Corpus old/new decoder cross-checks and measured speed/peaks are separate gates.
+
+## IX-0106: revised64KiB Huffman policy final CI and external receipt
+
+On 2026-10-18 the maintainer reports successful hosted CI after pushing
+`edf7accf9ad9bce906225b80e3e5273f10cb1f45`, and supplies four successful
+95-archive verification results for that same producer revision:
+
+| Producer bundle | Consumer | Verified archives |
+| --- | --- | ---: |
+| windows-msvc-x64 | Ubuntu | 95 |
+| ubuntu-ninja-x64 | Ubuntu | 95 |
+| ubuntu-26.04-ninja-x64 | Ubuntu | 95 |
+| ubuntu-26.04-ninja-x64 | Windows | 95 |
+
+Consumer roles follow the previously confirmed four-route procedure; the
+repeated producer label represents self-consumption and consumption on Windows.
+Before this recording edit, HEAD and the tracked remote branch both match the
+reported revision. Hosted and external evidence is the maintainer's report and
+pasted console results, not independent inspection of hosted jobs or binaries.
+
+TVG-1556 rechecks retained local qualification separately. IX-0105 preserves
+all old95 bodies and confirms exact reproduction of the other94 profiles;
+TVG-1554 covers all24 old/new corpus decoder cross-routes. The approved64KiB
+encoder output revision retains the decoder grammar, schema85, selector order,
+failure invariance and failed-frame publication contract. BM-0256 retains the
+complete size, timing and resident-memory comparison, including its costs.
+
+This closes the DD-1624 integration, local validation, measurement, hosted-CI
+and external four-route gates. Earlier pending statements describe their
+milestone state and are superseded by this receipt. The following documentation
+commit does not itself claim another CI run or external execution.
