@@ -12046,3 +12046,14 @@ streams, including full-window patterns and final partial frames. Resource
 queries and construction are correctness checks, not physical-peak benchmarks.
 Consult no external/restricted implementation; execute no fuzz or further
 ratio/speed/physical-peak measurement.
+
+### IR-1364: sixty-four-MiB public native Huffman boundary
+
+Add an independent C config/resources/factory family without changing earlier
+declarations or stream bytes. Use qualified owning-resource queries before
+choosing public admission, counting boundary controls, declared call buffers
+and retained caller storage. Qualify actual default construction in static and
+shared C consumers, exact/one-short and allocation failures, private-frame
+quarantine, independent finite raw fixtures and prior archives. Use direct
+ASan/UBSan source builds without a normal library or fuzz runtime. Consult no
+external/restricted implementation; execute no fuzz or further benchmark.

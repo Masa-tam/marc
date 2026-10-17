@@ -113,7 +113,14 @@ query destinations. The encoder aggregate exceeds u32 and requires checked
 wide arithmetic. These values are conservative logical storage charges,
 excluding public boundary controls and caller-retained capacities; they are
 not measured process peaks or public default grants.
-Public API/CLI, schema85/95 exchange and final audit remain unfinished.
+TVG-1545 qualifies the additive public C boundary and6144MiB logical default
+with actual construction in static/shared C consumers. With65536 retained
+bytes and two65536-byte call buffers, public admission is5454067158 encoder
+and2131268960 decoder bytes on the qualified layouts. This includes200816
+external-charge bytes; query each actual ABI and caller scope. Normal and
+direct ASan/UBSan checks retain failure/publication contracts. Earlier
+declarations and all starting88/preceding94 archive bodies remain unchanged.
+CLI, schema85/95 exchange and final audit remain unfinished.
 
 Fuzz and further ratio/speed/physical-peak benchmarks are omitted through this
 goal by explicit request. Same-window contextual compression and performance

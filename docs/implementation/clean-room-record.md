@@ -42818,3 +42818,18 @@ unfinished.
 Independent artifact audit confirms all499 retained input/output pairs,
 mathematical parses, logical resource components and source/binary bindings;
 the validated runtime remains unchanged.
+
+### CR-1920: 2026-10-17 — sixty-four-MiB public Huffman boundary
+
+Author/reviewer: Codex. Follow IR-1364 using the qualified first-party owned
+transforms, independent mathematical oracles and unchanged existing ABI shapes.
+TVG-1545 qualifies nine normal checks, complete defaults in static/shared C
+consumers,499 independent raw fixtures and direct19-unit ASan/UBSan builds.
+Actual public queries include external controls, call buffers and declared
+retention. Check exact/one-short admission, every factory allocation failure,
+rollback, allocation-free processing and failed-frame quarantine. Earlier
+declarations remain unchanged and all starting88/preceding94 archive bodies
+restore and reproduce exactly through the updated shared library. No external/
+restricted implementation was consulted; no fuzz or further benchmark was
+executed. Logical admission is not a physical-peak measurement. CLI, exchange
+and final family/hosted/external qualification remain unfinished.

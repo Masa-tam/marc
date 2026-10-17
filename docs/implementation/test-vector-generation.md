@@ -25405,3 +25405,30 @@ Artifact audit rereads all499 retained fixtures and production streams,
 independently checks their parses, entropy finish and resource components,
 and confirms byte-for-byte normal/instrumented equality. Source/binary bindings
 and preservation of the validated runtime pass.
+
+### TVG-1545: sixty-four-MiB public Huffman factory and resource boundary
+
+Qualify the additive C config/resources/factory, unchanged earlier declarations
+and actual complete default construction in static/shared C consumers. Nine
+normal checks include the preceding profile's API/C/raw regressions; all pass.
+Direct ASan/UBSan builds19 source translation units without a normal archive
+or fuzz runtime and passes unit/resource checks and499 independent raw fixtures.
+Check literal values, exhaustive small binary inputs, fixed patterns, full
+window/final-partial frames, byte-sized calls, zero output, immutable direction,
+sticky errors/EOS, exact/one-short budgets, all10 encoder/7 decoder allocation
+failures, rollback and allocation-free process calls. Failed queries retain
+output; failed creates clear disjoint handles and preserve overlapping metadata.
+Enforce call capacities, declared retention, block-floor admission and actual
+active model quotas before unsafe intake. Reject all two-frame cuts and late
+second-frame failure while retaining only earlier validated frames.
+
+The6144MiB logical default is checked against actual owning requirements and
+public construction. With65536 retained bytes and two65536-byte call buffers,
+queries return5454067158 encode and2131268960 decode admission bytes, including
+200816 external bytes on qualified layouts. These are logical storage charges,
+not process peaks. Preserve the full499-case set serially with a1200-second
+budget supported by the observed290.01-second run. All starting88/preceding94
+archives restore and re-encode exactly with the updated shared library. Fuzz
+and further ratio/speed/physical-peak benchmarks are omitted by explicit request.
+CLI, schema85/95 exchange, final family audit and hosted/external gates remain
+unfinished.

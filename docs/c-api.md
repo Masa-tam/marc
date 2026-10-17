@@ -1507,3 +1507,44 @@ preserve the failure/publication contracts. All earlier declarations and
 starting88/preceding93 archive bodies remain unchanged. The thirty-two-MiB
 local CLI/exchange gates are closed at [IX-0102](interoperability.md).
 Final95-family hosted/external qualification remains separate.
+
+## Native sixty-four-MiB position-distance Blocked Huffman
+
+`marc_lzss_position_distance_blocked_huffman_64m_config_init()`,
+`marc_lzss_position_distance_blocked_huffman_64m_resource_requirements()` and
+`marc_lzss_position_distance_blocked_huffman_64m_create()` select tuple
+`2/14+1/34+2/9`. The additive config/resources retain the existing native field
+layouts. Wire matches are3..258; the encoder uses fixed-five longest/nearest
+matches. Unsupported identities are refused.
+
+Defaults are67108864-byte frame/window,671088640 decisions,1258291200 payload
+bytes,32193 codebook entries, distance67108864 and match length258. Expansion
+ratio1024 has67108864 slack bytes. Encoder original_size defaults0; decoding
+uses the stored size. Maximum total output defaults to one TiB.
+Declared I/O capacities are65536 each and
+retained caller storage defaults0. The6144MiB logical grant derives from
+checked owning requirements and actual default construction in static/shared
+C consumers. It includes public controls and declared I/O/retention. Query the actual ABI,
+layout and caller scope; these are not process peaks.
+
+Queries distinguish owned buffers, controls, working storage, metadata floor
+and external charges. The decision ceiling is a grant floor, not a second
+buffer. Query failures preserve output; failed creation clears the handle,
+except config/handle overlap preserves storage. Admission precedes allocation;
+partial allocations roll back and process allocates nothing. Direction is
+immutable, errors/EOS are sticky, Flush is neutral and ResetBlock unsupported.
+Only fully validated frames drain; failed frames publish no raw prefix.
+
+Public boundary qualification, CLI and schema85/95 exchange are separate gates.
+Fuzz and further ratio/speed/physical-peak benchmarks are omitted by user request
+through this goal; same-window contextual size and performance goals remain
+unmeasured and are not reported as met.
+
+TVG-1545 qualifies the public boundary with nine normal checks and499
+independent raw fixtures in normal and direct ASan/UBSan builds. With65536
+retained bytes and two65536-byte call buffers, actual queries return5454067158
+encoder and2131268960 decoder admission bytes, including200816 external-charge
+bytes on the qualified layouts. Query each actual ABI and caller scope; these
+are not physical peaks. Earlier declarations and all starting88/preceding94
+archive bodies remain unchanged. CLI and schema85/95 exchange, final family
+audit and hosted/external confirmation remain separate.

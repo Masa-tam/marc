@@ -118,6 +118,7 @@ set(MARC_SOURCES
     src/frame/lzss_position_blocked_huffman_8m_c_factory.cpp
     src/frame/lzss_position_blocked_huffman_16m_c_factory.cpp
     src/frame/lzss_position_blocked_huffman_32m_c_factory.cpp
+    src/frame/lzss_position_blocked_huffman_64m_c_factory.cpp
     src/frame/lzss_position_distance_8m_c_factory.cpp
     src/frame/lzss_position_distance_8m_decoder_c_factory.cpp
     src/frame/lzss_position_distance_8m_stream_decoder.cpp
@@ -10689,6 +10690,29 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_4m_api_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-4m-public-raw --public)
     set_tests_properties(marc_position_blocked_huffman_4m_public_raw_differential PROPERTIES TIMEOUT 180)
+    add_executable(marc_position_blocked_huffman_64m_api_tests
+        tests/position_blocked_huffman_64m_api_tests.cpp)
+    target_compile_features(marc_position_blocked_huffman_64m_api_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_blocked_huffman_64m_api_tests PRIVATE src)
+    target_link_libraries(marc_position_blocked_huffman_64m_api_tests PRIVATE marc::static)
+    add_test(NAME marc_position_blocked_huffman_64m_api COMMAND marc_position_blocked_huffman_64m_api_tests)
+    # Full-window boundary tests took 53.50 seconds; keep a serial margin.
+    set_tests_properties(marc_position_blocked_huffman_64m_api PROPERTIES TIMEOUT 240 RUN_SERIAL TRUE)
+    foreach(linkage IN ITEMS static shared)
+        add_executable(marc_position_blocked_huffman_64m_c_${linkage}
+            tests/position_blocked_huffman_64m_c_smoke.c)
+        target_link_libraries(marc_position_blocked_huffman_64m_c_${linkage} PRIVATE marc::${linkage})
+        add_test(NAME marc_position_blocked_huffman_64m_c_${linkage} COMMAND marc_position_blocked_huffman_64m_c_${linkage})
+        set_tests_properties(marc_position_blocked_huffman_64m_c_${linkage} PROPERTIES TIMEOUT 60 RUN_SERIAL TRUE)
+    endforeach()
+    add_test(NAME marc_position_blocked_huffman_64m_public_raw_differential
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_blocked_huffman_64m_raw_differential.py
+            $<TARGET_FILE:marc_position_blocked_huffman_64m_api_tests>
+            ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-64m-public-raw --public)
+    # All 499 directed public inputs took 290.01 seconds; retain every case
+    # and more than four times that duration for slower runners.
+    set_tests_properties(marc_position_blocked_huffman_64m_public_raw_differential PROPERTIES TIMEOUT 1200 RUN_SERIAL TRUE)
     add_executable(marc_position_blocked_huffman_32m_api_tests
         tests/position_blocked_huffman_32m_api_tests.cpp)
     target_compile_features(marc_position_blocked_huffman_32m_api_tests PRIVATE cxx_std_20)
