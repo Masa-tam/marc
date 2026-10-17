@@ -25501,3 +25501,14 @@ bytes. The32MiB contextual configuration is accepted and restores exactly using
 the64MiB format. Register a corpus-independent CTest smoke using the same
 measurement/audit path. Complete corpus results are recorded separately in
 benchmarks documentation after all three samples per material are audited.
+
+The revised measurement diagnostics pass all six synthetic pairs on both
+supported process-peak implementations. The five available selectors again
+match the fixed CLI bytes. The registered measurement smoke and documentation
+check pass. Native diagnostics now expose actual initializer limits and query
+scope; the Linux driver establishes a post-exec high-water interval. The original
+measured binary remains saved. A manifest-member filter permits an isolated
+three-sample sixteen-MiB dickens recheck after the full serial campaign, avoiding
+possible overlap with the initial smoke. Its wire sizes and hashes must equal
+the original pair before its timing/peak receipts replace that pair in the
+derived report; all original receipts remain retained.

@@ -35055,3 +35055,14 @@ Do not equate differing logical ownership-query scopes. Restore ordinary CI
 benchmark builds/tests; the corpus campaign remains local and is not downloaded
 or required by CI. Dedicated fuzz builds explicitly select Clang as required
 by the existing libFuzzer configuration.
+
+The measured campaign retains the original helper binary and source binding.
+Subsequent diagnostics report native initializer limits explicitly and distinguish
+owner/call/control admission from contextual caller-workspace queries. These
+reporting changes do not alter codec configuration or the retained measurements.
+On Linux, start the resident high-water epoch in a post-exec child before codec
+allocation, following the existing resource driver. The parent propagates the
+child exit status; do not charge inherited launcher high-water as codec RSS.
+An independent retained-artifact audit reopens every archive/restoration and
+raw receipt before deriving public tables. Never substitute a revised helper's
+unmeasured output for an original observation.

@@ -21,7 +21,7 @@ def digest(path):
     return result.hexdigest()
 
 
-def header(path, window, profile):
+def header(path, window, profile, raw_bytes):
     with path.open('rb') as source:
         h = source.read(112)
     assert len(h) == 112 and h[:4] == b'MARC'
@@ -32,6 +32,8 @@ def header(path, window, profile):
     extent = window * 1048576
     assert struct.unpack_from('<I', h, 20)[0] == extent
     assert struct.unpack_from('<I', h, 64)[0] == extent
+    assert struct.unpack_from('<II', h, 68) == (3 if profile == 'position' else 5, 258)
+    assert struct.unpack_from('<Q', h, 40)[0] == raw_bytes
     return {'ids': ids, 'frame_size': extent, 'window_size': extent,
             'header_sha256': hashlib.sha256(h).hexdigest()}
 
@@ -43,9 +45,11 @@ def main():
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--samples', type=int, default=3)
     parser.add_argument('--windows', nargs='+', type=int, default=[16, 32, 64])
+    parser.add_argument('--members', nargs='+', choices=[m.name for m in SILESIA_MANIFEST])
     parser.add_argument('--cli', type=Path)
     args = parser.parse_args()
     assert args.samples >= 1 and all(w in (16, 32, 64) for w in args.windows)
+    assert not args.members or args.corpus, '--members requires --corpus'
     stage = args.output.resolve() / ('run-' + uuid.uuid4().hex)
     stage.mkdir(parents=True)
     probe = args.probe.resolve()
@@ -57,7 +61,8 @@ def main():
             path = args.corpus.resolve() / member.name
             assert path.stat().st_size == member.size
             assert hashlib.md5(path.read_bytes(), usedforsecurity=False).hexdigest() == member.md5
-            files.append(path)
+            if not args.members or member.name in args.members:
+                files.append(path)
     else:
         files = [stage / 'smoke.bin']
         files[0].write_bytes(bytes(range(256))*16 + b'abc'*1024)
@@ -80,7 +85,7 @@ def main():
                     wire = stage / (label + '.marc')
                     restored = stage / (label + '.raw')
                     enc = invoke(label + '-encode', [probe, window, profile, 'encode', raw, wire])
-                    metadata = header(wire, window, profile)
+                    metadata = header(wire, window, profile, row['raw_bytes'])
                     current_hash = digest(wire)
                     assert wire_hash is None or current_hash == wire_hash, 'nondeterministic'
                     wire_hash = current_hash

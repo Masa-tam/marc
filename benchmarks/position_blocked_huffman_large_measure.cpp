@@ -15,7 +15,10 @@
 #include <windows.h>
 #include <psapi.h>
 #else
+#include <cerrno>
 #include <sys/resource.h>
+#include <sys/wait.h>
+#include <unistd.h>
 #endif
 
 namespace {
@@ -36,11 +39,15 @@ std::uint64_t peak() {
 struct Destroy { void operator()(marc_transform* p) const { marc_transform_destroy(p); } };
 template<class Config,class Resources,class Init,class Query,class Create>
 marc_transform* position(marc_direction direction,std::uint64_t size,std::uint64_t& queried,
+    std::uint64_t& max_block,std::uint64_t& max_payload,std::uint64_t& budget,
     Init init,Query query,Create create) {
     Config config{}; Resources resources{};
     check(init(direction,&config)==MARC_STATUS_OK,"position init");
     config.original_size=size; config.external_retained_bytes=65536;
     config.input_capacity_bytes=config.output_capacity_bytes=capacity;
+    max_block=config.max_block_size;
+    max_payload=config.max_compressed_payload_size;
+    budget=config.max_internal_buffered_bytes;
     check(query(&config,&resources)==MARC_STATUS_OK,"position query");
     queried=resources.minimum_aggregate_bytes;
     marc_transform* handle{};
@@ -49,7 +56,7 @@ marc_transform* position(marc_direction direction,std::uint64_t size,std::uint64
 }
 }
 
-int main(int argc,char** argv) {
+int run(int argc,char** argv) {
     try {
         if (argc!=6) return 2;
         const auto window=std::stoul(argv[1]);
@@ -71,7 +78,7 @@ int main(int argc,char** argv) {
         marc_transform* handle{};
         auto start=Clock::now();
         if (profile=="position") {
-#define POSITION_CASE(N) case N: handle=position<marc_lzss_position_distance_blocked_huffman_##N##m_config,marc_lzss_position_distance_blocked_huffman_##N##m_resources>(direction,size,queried,marc_lzss_position_distance_blocked_huffman_##N##m_config_init,marc_lzss_position_distance_blocked_huffman_##N##m_resource_requirements,marc_lzss_position_distance_blocked_huffman_##N##m_create); break
+#define POSITION_CASE(N) case N: handle=position<marc_lzss_position_distance_blocked_huffman_##N##m_config,marc_lzss_position_distance_blocked_huffman_##N##m_resources>(direction,size,queried,max_block,max_payload,budget,marc_lzss_position_distance_blocked_huffman_##N##m_config_init,marc_lzss_position_distance_blocked_huffman_##N##m_resource_requirements,marc_lzss_position_distance_blocked_huffman_##N##m_create); break
             switch (window) { POSITION_CASE(16); POSITION_CASE(32); POSITION_CASE(64); }
 #undef POSITION_CASE
             min_match=3;
@@ -94,7 +101,7 @@ int main(int argc,char** argv) {
             if (status!=MARC_STATUS_OK) {
                 std::cout<<"{\"configuration_accepted\":false,\"query_status\":"<<status
                     <<",\"frame_size\":"<<extent<<",\"window_size\":"<<extent
-                    <<",\"profile_id\":"<<profile_id<<"}\n";
+                    <<",\"contextual_profile_id\":"<<profile_id<<"}\n";
                 return 4;
             }
             check(r.views_alignment<=alignof(std::max_align_t),"views alignment");
@@ -136,15 +143,32 @@ int main(int argc,char** argv) {
         codec_seconds+=elapsed(start);
         sink.close(); check(static_cast<bool>(sink),"close");
         std::filesystem::rename(temporary,target);
-        std::cout<<std::setprecision(12)<<"{\"configuration_accepted\":true,\"transform_completed\":true"
-            <<",\"frame_size\":"<<extent<<",\"window_size\":"<<extent<<",\"profile_id\":"<<profile_id
+        std::cout<<std::setprecision(12)<<"{\"measurement_schema\":2,\"configuration_accepted\":true,\"transform_completed\":true"
+            <<",\"frame_size\":"<<extent<<",\"window_size\":"<<extent<<",\"contextual_profile_id\":"<<profile_id
             <<",\"min_match_length\":"<<min_match<<",\"max_block_size\":"<<max_block
-            <<",\"max_payload_size\":"<<max_payload<<",\"contextual_budget\":"<<budget
+            <<",\"max_payload_size\":"<<max_payload<<",\"max_internal_buffered_bytes\":"<<budget
             <<",\"input_bytes\":"<<size<<",\"output_bytes\":"<<produced
             <<",\"codec_seconds\":"<<codec_seconds<<",\"peak_resident_bytes\":"<<peak()
             <<",\"queried_bytes\":"<<queried
+            <<",\"query_scope\":\""<<(profile=="position" ? "owner_calls_and_controls" : "caller_workspaces")<<"\""
             <<",\"timer_scope\":\"allocation_create_process_destroy_excludes_file_io\""
             <<",\"peak_scope\":\"fresh_process_including_streaming_driver\",\"io_bytes\":131072}\n";
         return 0;
     } catch (const std::exception& error) { std::cerr<<error.what()<<'\n'; return 8; }
+}
+
+int main(int argc,char** argv) {
+#ifdef _WIN32
+    return run(argc,argv);
+#else
+    // Begin the Linux RSS high-water interval after exec, before codec allocation.
+    const auto child=fork(); if (child<0) return 9;
+    if (child==0) {
+        const auto status=run(argc,argv);
+        std::cout.flush();std::cerr.flush();_exit(status);
+    }
+    int status{};
+    while (waitpid(child,&status,0)<0) if (errno!=EINTR) return 9;
+    return WIFEXITED(status) ? WEXITSTATUS(status) : 9;
+#endif
 }
