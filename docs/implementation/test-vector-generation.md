@@ -25706,3 +25706,15 @@ sets/codebooks, fields and dictionary counts, no larger complete byte extent,
 57 strict improvements, original pools on ties. All checks pass.
 Old products and measured candidates remain retained. Final family/runtime and
 retained95-body qualification are not claimed by this measurement milestone.
+
+### TVG-1563: eight-MiB residual-pool core integration milestone
+
+DD-1625 extends the frozen-override candidate rule to55 contexts and60 models.
+The hand A/BC residual pool and original binary-pool retention on exact byte
+ties pass. Exact/one-short planner and aggregate token encoder quotas include
+the additional descriptor-plus4096 charge and preserve destinations on failure.
+Existing vectors, core, tokens, token differential, frames, frame differential,
+stream, owning and public API registrations pass alongside documentation layout:
+ten registrations. Keep frozen oracles, decoder grammar/charges and defaults
+unchanged. Full public raw/C/CLI qualification, matched corpus comparison and
+final family/runtime/retained95 audit remain pending at this milestone.

@@ -7,7 +7,8 @@ namespace marc::context::internal {
 // Conservative simultaneous workspace charges; caller spans/control objects
 // are additional. These are neither measured process peaks nor public grants.
 inline constexpr std::size_t position_blocked_huffman_8m_plan_workspace=
-    sizeof(entropy::internal::PositionBlockedHuffman8mModelBuilder)+2*sizeof(entropy::internal::PositionBlockedHuffman8mDescriptor)+131072+2563;
+    sizeof(entropy::internal::PositionBlockedHuffman8mModelBuilder)+2*sizeof(entropy::internal::PositionBlockedHuffman8mDescriptor)+131072+2563
+    +entropy::internal::position_blocked_huffman_8m_refit_workspace;
 inline constexpr std::size_t position_blocked_huffman_8m_encode_workspace=
     position_blocked_huffman_8m_plan_workspace+sizeof(entropy::internal::PositionBlockedHuffman8mDescriptor)
     +sizeof(entropy::internal::PositionBlockedHuffman8mPrivateWriter)+2*2563;

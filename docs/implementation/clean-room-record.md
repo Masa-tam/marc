@@ -43046,3 +43046,14 @@ universal dominance or equating logical queries with RSS. All old/new decoder
 corpus routes pass. Retain original products and receipts; final common-runtime,
 retained95-body and later remote gates remain distinct. No external
 implementation is consulted.
+
+### CR-1938: 2026-10-18 — eight-MiB residual-pool core milestone
+
+Author/reviewer: Codex. Use first-party DD-1625 and the existing55-context8MiB
+descriptor to construct a private fallback-only candidate after freezing the
+original overrides. Retain the original plan unless total byte extent strictly
+improves, and admit the extra workspace explicitly. TVG-1563 supplies hand cases,
+destination-retaining quota checks and ten passing registrations. Preserve the
+qualified1MiB/4MiB products and build8MiB candidates separately. No external
+implementation is consulted. Public, corpus and final common-runtime gates
+remain pending.
