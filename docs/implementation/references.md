@@ -11977,3 +11977,15 @@ independent length3/4/258 references, foreign-profile refusal and first/failed
 second-frame behavior. Preserve existing target/temporary files and all93
 preceding archive bodies. Consult no external/restricted implementation and
 execute no fuzz or additional ratio/speed/physical-peak benchmark.
+
+### IR-1358: thirty-two-MiB ordered interoperability exchange
+
+Extend the first-party producer, exact admission functions and historical
+conversion chain to schema84 with94 archives. Append only the new native
+profile after the qualified93 entries and preserve the starting88 prefix,
+input/property order and archive bodies. Verify every actual restore/re-encode
+output through all past schemas, directed pre-launch refusals and all four
+local self/cross execution routes. Bind independent headers, milestone receipts,
+normal compiled source/object pairs and preserved products. Consult no external
+or restricted implementation; execute no fuzz or additional benchmark. Keep
+hosted/external completion separate from these local gates.

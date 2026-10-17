@@ -89,7 +89,10 @@ TVG-1537 qualifies the additive C API, its3072MiB logical default and actual
 static/shared construction, including preservation of earlier archives.
 TVG-1538 qualifies exact-name CLI routing, static/shared byte identity and
 transactional file publication while retaining all93 preceding archive bodies.
-Schema84/94 exchange and final local audit remain pending.
+IX-0102 closes schema84/94 exchange and the final local profile audit, including
+all historical schema1..84 outputs, directed pre-launch refusals and the four
+local routes. The sixty-four-MiB profile, final95 audit and hosted/external
+completion remain separate.
 
 Ratio/speed/physical-peak benchmarks and fuzz execution are omitted through
 this goal by explicit user request. Same-window contextual compression and

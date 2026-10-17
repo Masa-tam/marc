@@ -10,12 +10,12 @@ marc-interoperability-windows-msvc-x64
 marc-interoperability-ubuntu-ninja-x64
 ```
 
-The current local schema-83 bundle contains the same generated `input.bin`, the
+The current local schema-84 bundle contains the same generated `input.bin`, the
 frozen 42 stable-profile archives, twenty-five preceding experimental Format 2
 archives, seven position-distance Dynamic Range archives, seven
 position-distance rANS archives, seven position-distance tANS archives,
-five position-distance Blocked Huffman archives (64KiB,1MiB,4MiB,8MiB,16MiB),
-and `manifest.json`. The manifest declares codec set `marc-cli-v83` and records
+six position-distance Blocked Huffman archives (64KiB,1MiB,4MiB,8MiB,16MiB,32MiB),
+and `manifest.json`. The manifest declares codec set `marc-cli-v84` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.
 
@@ -23,8 +23,10 @@ The latest maintainer-confirmed hosted CI and external four-route result is
 schema78 with88 archives (IX-0096). Schema79 adds the first Blocked Huffman
 profile locally (IX-0097). Schema80/81/82 append the one/four/eight-MiB profiles
 (IX-0098/0099/0100). Schema83 appends the sixteen-MiB profile, qualified through
-four local routes and all historical/admission checks at IX-0101. No hosted
-CI or external93-archive result is claimed.
+four local routes and all historical/admission checks at IX-0101. Schema84
+appends the thirty-two-MiB profile with four local routes; historical/final
+qualification is recorded separately at IX-0102. No hosted
+CI or external94-archive result is claimed.
 
 Download and extract a bundle from a successful GitHub Actions run. Build marc
 at the same commit on the platform being tested, then use an output directory
@@ -2389,3 +2391,39 @@ requested through this goal. Same-window size and performance targets remain
 unmeasured and are not reported as met. This closes the sixteen-MiB local
 profile under those exceptions. Two larger profiles, final95 local audit,
 user push, hosted CI and external four-route95 confirmation remain open.
+
+## IX-0102: thirty-two-MiB native Huffman local qualification
+
+Schema84/`marc-cli-v84` appends
+`lzss-position-distance-blocked-huffman-32m` at index93. Its112-byte header
+matches identity2/13+1/33+2/8, window/frame33554432,57 contexts and extent4669.
+Both independently built producers preserve all93 preceding entries and the
+starting88 prefix, including entry/input property order, input descriptors
+and exact input/archive bytes. All94 archives restore and reproduce through
+four local self/cross routes. These are local results, not external reports.
+Both exact header admission functions reject all112 changed bytes and short
+headers against the independently generated specification header.
+
+Historical conversion/execution completes for every schema1..84. Independent
+audit reads each actual restored and re-encoded body. All750 schema79..84
+Huffman admission negatives reject before codec launch and file publication,
+with empty output directories and absent launch markers. The retained inputs
+also prove672 exact single-byte header mutations and six short headers.
+Retained full-run timing supports the1800-second serial budget; no historical
+or negative cases are removed.
+
+The local closure binds qualified format/core/token/frame/owner/API/CLI
+milestones,127 current source/test bindings and673 ordinary source/object
+pairs, normal optimization flags without sanitizer instrumentation, product
+hashes, preserved runtime backups and all exchange evidence. Earlier milestones
+independently qualify283 positive/69 negative entropy wires,83 supplied token
+streams, failed-frame contracts,499 independently parsed raw inputs, public
+resource admission/rollback and whole-file CLI publication. Exchange round
+trips do not replace these checks.
+
+This closes the thirty-two-MiB local profile under the explicit omission of
+fuzz and further ratio/speed/physical-peak benchmarks. Those omissions are not
+passes or measured targets; same-window comparison goals remain unmeasured.
+The sixty-four-MiB profile, final95 local audit, user push, hosted CI and
+external four-route95 confirmation remain open. The four local routes do not
+supply external validation results.

@@ -25275,3 +25275,23 @@ restore and reproduce every preceding93 archive body. Bind source/product
 hashes and preserved pre-update runtime artifacts. No fuzz or additional
 ratio/speed/physical-peak benchmark is executed. Schema84/94 exchange, final
 local audit and larger/final hosted/external gates remain unfinished.
+
+### TVG-1539: thirty-two-MiB ordered exchange and local profile audit
+
+Append only the exact thirty-two-MiB selector to schema84/94, preserving all93
+preceding and starting88 entries, input/property order and archive bytes.
+Both independently built producers pass; all four local self/cross paths
+restore and reproduce all94 archives. Keep every schema1..84 conversion and
+actual restored/re-encoded file; independently inspect every body. All750
+schema79..84 native Huffman negatives reject before codec launch/publication
+with empty output directories and absent markers. Inspect retained inputs for
+all672 exact one-byte identity mutations and six truncated headers. Both exact
+admission functions independently reject all112 changed bytes and short headers.
+Bind seven qualified implementation milestones,127 current source/test hashes,
+all673 normal source/object pairs, ordinary flags, products and pre-update
+runtime backups. The complete historical duration supports a1800-second serial
+budget without dropping cases. Independent artifact audit and documentation
+checks pass. No fuzz or additional ratio/speed/physical-peak benchmark is run;
+do not count those explicit omissions as passes or measured comparison goals.
+The sixty-four-MiB profile, final95 local audit, hosted CI and external95
+confirmation remain unfinished.

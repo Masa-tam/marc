@@ -42724,3 +42724,18 @@ Preserve pre-update artifacts and all93 prior archive bodies through both
 products; bind current sources and binaries. No external/restricted source was
 consulted; no fuzz or additional benchmark was executed. Schema84/94 exchange,
 final local audit and later/final qualification remain unfinished.
+
+### CR-1914: 2026-10-17 — thirty-two-MiB ordered exchange and local closure
+
+Author/reviewer: Codex. Follow IR-1358 with first-party producers, exact header
+admission and the complete historical conversion/execution chain. TVG-1539
+and IX-0102 qualify all four94-archive local routes, preserved93/88 prefixes,
+every actual output through schema84 and750 directed pre-launch Huffman
+refusals. Retained input evidence also proves672 one-byte header mutations and
+six short headers. Bind earlier milestone receipts,127 current source/test
+hashes,673 ordinary source/object pairs, normal flags, products and pre-update
+artifacts. Keep every historical case and derive the serial timeout from the
+full run. No external/restricted implementation was consulted; no fuzz or
+additional benchmark was executed. Performance targets remain unmeasured by
+explicit request. The larger profile, final95 audit and hosted/external gates
+remain unfinished.

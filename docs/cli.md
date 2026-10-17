@@ -1115,4 +1115,6 @@ full frames plus a tail, all212 small-stream cuts, independent length3/4/258
 references, malformed metadata/models/padding, ten existing foreign profiles
 and a valid first/failed second frame. Both paths restore and reproduce all93
 preceding archives. Existing target/temporary files and pre-update runtime
-artifacts are preserved. Schema84/94 exchange and final audit remain pending.
+artifacts are preserved. Schema84/94 exchange and the final local audit are
+qualified at [IX-0102](interoperability.md).
+Final95-family hosted/external qualification remains separate.

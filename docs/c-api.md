@@ -1504,5 +1504,6 @@ and two65536-byte call buffers, actual queries return2727764634 encoder and
 the qualified layouts. Query each actual ABI and scope; these are not physical
 peaks. Nine normal checks,499 independent raw fixtures and direct ASan/UBSan
 preserve the failure/publication contracts. All earlier declarations and
-starting88/preceding93 archive bodies remain unchanged. CLI and later gates
-remain separate.
+starting88/preceding93 archive bodies remain unchanged. The thirty-two-MiB
+local CLI/exchange gates are closed at [IX-0102](interoperability.md).
+Final95-family hosted/external qualification remains separate.

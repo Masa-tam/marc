@@ -20,9 +20,9 @@ $escapedMarker = $launchMarker.Replace("'", "''")
 $baselineJson = Get-Content -LiteralPath (Join-Path $source 'manifest.json') -Raw
 $baseline = $baselineJson | ConvertFrom-Json
 $expectedSchema = [int]$baseline.schema_version
-$expectedCount = if ($expectedSchema -eq 83) { 93 } elseif ($expectedSchema -eq 82) { 92 } elseif ($expectedSchema -eq 81) { 91 } elseif ($expectedSchema -eq 80) { 90 } else { 0 }
+$expectedCount = if ($expectedSchema -eq 84) { 94 } elseif ($expectedSchema -eq 83) { 93 } elseif ($expectedSchema -eq 82) { 92 } elseif ($expectedSchema -eq 81) { 91 } elseif ($expectedSchema -eq 80) { 90 } else { 0 }
 if ($expectedCount -eq 0 -or @($baseline.archives).Count -ne $expectedCount) {
-    throw 'Negative tests require a complete schema-80, schema-81, schema-82 or schema-83 source bundle'
+    throw 'Negative tests require a complete schema-80, schema-81, schema-82, schema-83 or schema-84 source bundle'
 }
 $cases = @('old-name', 'downgrade', 'codec-set', 'missing', 'duplicate', 'order', 'archive-hash',
     'archive-size', 'input-hash', 'identity-dictionary', 'identity-context', 'identity-context-count', 'header-truncated')
@@ -63,12 +63,14 @@ foreach ($case in $cases) {
             $manifest.archives[$last].bytes = $bytes.Length
             $manifest.archives[$last].sha256 = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
             $expected = if ($case -eq 'header-truncated') {
-                if ($expectedSchema -eq 83) { '16 MiB position Blocked Huffman archive header is truncated' }
+                if ($expectedSchema -eq 84) { '32 MiB position Blocked Huffman archive header is truncated' }
+                elseif ($expectedSchema -eq 83) { '16 MiB position Blocked Huffman archive header is truncated' }
                 elseif ($expectedSchema -eq 82) { '8 MiB position Blocked Huffman archive header is truncated' }
                 elseif ($expectedSchema -eq 81) { '4 MiB position Blocked Huffman archive header is truncated' }
                 else { '1 MiB position Blocked Huffman archive header is truncated' }
             } else {
-                if ($expectedSchema -eq 83) { '16 MiB position Blocked Huffman archive does not carry exact identity*' }
+                if ($expectedSchema -eq 84) { '32 MiB position Blocked Huffman archive does not carry exact identity*' }
+                elseif ($expectedSchema -eq 83) { '16 MiB position Blocked Huffman archive does not carry exact identity*' }
                 elseif ($expectedSchema -eq 82) { '8 MiB position Blocked Huffman archive does not carry exact identity*' }
                 elseif ($expectedSchema -eq 81) { '4 MiB position Blocked Huffman archive does not carry exact identity*' }
                 else { '1 MiB position Blocked Huffman archive does not carry exact identity*' }
