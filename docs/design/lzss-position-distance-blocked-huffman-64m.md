@@ -124,8 +124,10 @@ TVG-1546 separately qualifies the exact CLI selector, static/shared output
 identity, seven boundaries through two full frames plus a tail, all212 small
 cuts and whole-file transaction preservation. Both paths reproduce all94
 preceding archives. The previous validated runtime products are retained before
-updating the fixed executable. Schema85/95 exchange and final audit remain
-unfinished.
+updating the fixed executable. TVG-1547 and IX-0103 qualify schema85/95 exchange,
+all historical schemas1..85 and the final seven-profile local audit. The four
+local self/cross routes preserve all94 prior and88 starting archives. User
+push, hosted CI and external four-route95 confirmation remain unfinished.
 
 Fuzz and further ratio/speed/physical-peak benchmarks are omitted through this
 goal by explicit request. Same-window contextual compression and performance

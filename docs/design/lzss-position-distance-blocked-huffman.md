@@ -8,6 +8,10 @@ position-distance tANS profiles. Keep all88 entries, order, sizes and bodies;
 append the following seven selectors, in order, to reach95 archives. Planned
 schemas are79 through85. No existing format or public selector changes.
 
+The subsequent [seven-window local checkpoint](../interoperability.md)
+at IX-0103 now qualifies all seven additions and95-archive local exchange.
+Hosted CI and external four-route95 results remain separate.
+
 | Window bytes | CLI suffix | Dictionary | Context | Entropy | Contexts | Alphabet extent | Descriptor ceiling bytes |
 | ---: | --- | --- | --- | --- | ---: | ---: | ---: |
 | 65536 | none | 2/8 | 1/28 | 2/3 | 48 | 4570 | 2518 |
@@ -380,3 +384,20 @@ The size target is met on all12 materials with a small aggregate gain, while
 decode time and memory costs remain explicit. Two of seven local profiles are
 complete; four-MiB work may proceed. Five larger windows and the final95 local,
 hosted CI and external four-route gates remain open.
+
+### Seven-window local qualification
+
+[IX-0103](../interoperability.md) closes the local format/implementation,
+failure/resource, API/CLI and exchange gates for64KiB,1MiB,4MiB,8MiB,16MiB,
+32MiB and64MiB. Schema85 retains the original88 entries and appends seven,
+with all95 verified through four local self/cross routes and every historical
+schema1..85. The family audit binds all56 production units to qualified
+milestones and rechecks current public logical resource admission.
+
+Earlier completed comparisons remain intact, including the64KiB member-specific
+size misses and the measured speed/memory tradeoffs. By explicit request, fuzz
+and further ratio/speed/physical-peak benchmarks were omitted for the rest of
+this goal. Unmeasured results are not passes or claims that the contextual
+comparison target was met. User batch push, hosted CI and external four-route
+confirmation of95 archives remain open; local qualification does not supply
+those results.

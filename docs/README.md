@@ -17,6 +17,9 @@ navigate chronological development records.
 
 ## Experimental design
 
+- [Native position-distance Blocked Huffman family](design/lzss-position-distance-blocked-huffman.md):
+  seven exact window profiles, local resource/publication and95-archive exchange
+  qualification, retained measurements and separate hosted/external gates.
 - [Native 64KiB position-distance rANS](design/lzss-position-distance-rans-64k.md):
   exact stream/model representation, public resources and qualification gates.
 

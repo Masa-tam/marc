@@ -300,3 +300,10 @@ both producers' exact90-entry and starting88-entry prefixes, and all250
 pre-launch refusal receipts for schemas80/81. All match. This strengthens the
 exchange evidence without a new codec or fuzz execution; later hosted/external
 and family completion gates remain open.
+
+## Subsequent family local checkpoint
+
+[IX-0103](../interoperability.md) now closes the seven-window local audit and
+schema85/95 exchange gates, superseding the earlier remaining-local-work
+checkpoint above. Earlier measurements and explicit omissions remain intact.
+User batch push, hosted CI and external four-route95 confirmation remain open.

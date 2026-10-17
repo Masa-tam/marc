@@ -265,3 +265,9 @@ instruction. Resource admission and failure correctness remain mandatory.
 Three larger profiles, final95 local audit, user push, hosted CI and external
 four-route95 confirmation remain separate unfinished gates.
 
+## Subsequent family local checkpoint
+
+[IX-0103](../interoperability.md) now closes the seven-window local audit and
+schema85/95 exchange gates, superseding the earlier remaining-local-work
+checkpoint above. Earlier measurements and explicit omissions remain intact.
+User batch push, hosted CI and external four-route95 confirmation remain open.

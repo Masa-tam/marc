@@ -25454,3 +25454,27 @@ and reproduce every preceding94-archive body. Preserve the candidate snapshot
 and unchanged shared library. Fuzz and further ratio/speed/physical-peak
 benchmarks are omitted by explicit request. Schema85/95 exchange, final family
 audit and hosted/external confirmation remain unfinished.
+
+### TVG-1547: sixty-four-MiB ordered exchange and seven-profile local audit
+
+Schema85 appends exactly one native64MiB profile to94 entries, preserving the
+starting88 and preceding94 expressions, property order and input/archive bytes.
+Both normal producers and all four local95-archive self/cross routes restore
+and reproduce every body. Each exact header admission function independently
+rejects112 single-byte changes and a short mathematical header before producers.
+Retain and audit every actual output for schemas1..85. All875 native Huffman
+schema79..85 refusals prevent codec launch and publication, with absent markers
+and empty output directories; retained inputs prove784 exact one-byte changes
+and seven short headers. Keep all other historical/negative cases. The full
+560.69-second run supports the existing1800-second serial registration.
+
+Bind qualified milestones,127 current source/test hashes,681 ordinary normal
+source/object pairs, normal flags, products and saved runtime artifacts. A
+separate family audit binds56 production implementation units and206 current
+source/header/tool files, rechecks28 retained exchange routes and exact headers
+for all seven windows, and preserves earlier completed comparison evidence.
+Fourteen finite current-DLL default/exact/one-short resource-query checks pass
+with unchanged failure outputs. These logical resource checks are not physical
+peak measurements. No fuzz or further ratio/speed/physical-peak benchmark is
+executed. All seven profiles are locally qualified under those exceptions;
+user batch push, hosted CI and external four-route95 recording remain open.

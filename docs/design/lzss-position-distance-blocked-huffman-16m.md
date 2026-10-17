@@ -136,3 +136,10 @@ current logical default derives from checked requirements and actual
 construction evidence, without new process-peak measurements.
 The same-window contextual size target and speed/physical-memory trade-offs
 are therefore unverified for this profile; do not report the target as met.
+
+## Subsequent family local checkpoint
+
+[IX-0103](../interoperability.md) now closes the seven-window local audit and
+schema85/95 exchange gates, superseding the earlier remaining-local-work
+checkpoint above. Earlier measurements and explicit omissions remain intact.
+User batch push, hosted CI and external four-route95 confirmation remain open.

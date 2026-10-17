@@ -6121,3 +6121,26 @@ Interoperability schema 57 freezes schema 56 byte for byte and appends only
 the exact `lzss-contextual-adaptive-huffman-64m` application stream as archive
 67. The manifest schema selects the inventory; it neither changes the codec
 pipeline nor derives resource limits from stream metadata.
+
+## Native position-distance Blocked Huffman family
+
+The optional typed-token interface also supports seven native position-distance
+Blocked Huffman profiles, from64KiB through64MiB. The first-party fixed-five
+LZSS parser feeds bounded per-frame pooled/contextual canonical Huffman models;
+each window has its own exact dictionary/context/entropy variant tuple. These
+profiles retain the byte-stream baseline and expose no standalone Static
+Huffman algorithm. Complete representations are linked from the
+[family design](design/lzss-position-distance-blocked-huffman.md).
+
+Checked resource queries separate owned buffers, controls, working admission,
+metadata floors and declared caller retention/call capacities. Logical grants
+are not process resident-memory limits. Entropy and history validation complete
+in private token scratch, raw reconstruction remains private, and only fully
+validated frames enter the draining state. The CLI additionally publishes a
+whole output file only after exact stream completion and successful sink close.
+
+[IX-0103](interoperability.md) records local qualification of all seven windows,
+the95-archive schema85 bundle and complete historical/local exchange evidence.
+Fuzz and further ratio/speed/physical-peak measurement were explicitly omitted
+through this goal; earlier measurements remain recorded. Hosted CI and external
+four-route95 confirmation remain separate gates.

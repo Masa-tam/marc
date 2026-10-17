@@ -98,3 +98,10 @@ completion remain separate.
 Ratio/speed/physical-peak benchmarks and fuzz execution are omitted through
 this goal by explicit user request. Same-window contextual compression and
 performance targets remain unmeasured and must not be reported as met.
+
+## Subsequent family local checkpoint
+
+[IX-0103](../interoperability.md) now closes the seven-window local audit and
+schema85/95 exchange gates, superseding the earlier remaining-local-work
+checkpoint above. Earlier measurements and explicit omissions remain intact.
+User batch push, hosted CI and external four-route95 confirmation remain open.

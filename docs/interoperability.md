@@ -10,12 +10,12 @@ marc-interoperability-windows-msvc-x64
 marc-interoperability-ubuntu-ninja-x64
 ```
 
-The current local schema-84 bundle contains the same generated `input.bin`, the
+The current local schema-85 bundle contains the same generated `input.bin`, the
 frozen 42 stable-profile archives, twenty-five preceding experimental Format 2
 archives, seven position-distance Dynamic Range archives, seven
 position-distance rANS archives, seven position-distance tANS archives,
-six position-distance Blocked Huffman archives (64KiB,1MiB,4MiB,8MiB,16MiB,32MiB),
-and `manifest.json`. The manifest declares codec set `marc-cli-v84` and records
+seven position-distance Blocked Huffman archives (64KiB,1MiB,4MiB,8MiB,16MiB,32MiB,64MiB),
+and `manifest.json`. The manifest declares codec set `marc-cli-v85` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.
 
@@ -25,8 +25,10 @@ profile locally (IX-0097). Schema80/81/82 append the one/four/eight-MiB profiles
 (IX-0098/0099/0100). Schema83 appends the sixteen-MiB profile, qualified through
 four local routes and all historical/admission checks at IX-0101. Schema84
 appends the thirty-two-MiB profile with four local routes; historical/final
-qualification is recorded separately at IX-0102. No hosted
-CI or external94-archive result is claimed.
+qualification is recorded separately at IX-0102. Schema85 appends the sixty-four-
+MiB profile. All95 archives pass four local self/cross routes, every historical
+schema1..85 and the final seven-profile local audit recorded at IX-0103.
+No hosted CI or external95-archive result is claimed.
 
 Download and extract a bundle from a successful GitHub Actions run. Build marc
 at the same commit on the platform being tested, then use an output directory
@@ -2427,3 +2429,46 @@ passes or measured targets; same-window comparison goals remain unmeasured.
 The sixty-four-MiB profile, final95 local audit, user push, hosted CI and
 external four-route95 confirmation remain open. The four local routes do not
 supply external validation results.
+
+## IX-0103: sixty-four-MiB native Huffman and seven-profile local qualification
+
+Schema85/`marc-cli-v85` appends
+`lzss-position-distance-blocked-huffman-64m` at index94. Its exact112-byte
+header identifies2/14+1/34+2/9, window/frame67108864,58 contexts and extent4680.
+Both independent normal producers retain the preceding94 entries and starting
+88, including entry/input property order, input descriptors and exact archive
+bytes. All95 archives restore and reproduce through four local self/cross
+routes. Both header admission functions independently reject all112 changed
+bytes and a short header against the mathematical specification header.
+
+Historical conversion/execution completes for every schema1..85; artifact
+audit reads every actual restored and re-encoded body. All875 schema79..85
+native Huffman admission negatives reject before codec launch/publication,
+with empty output directories and absent launch markers. Retained inputs prove
+784 exact single-byte header mutations and seven short headers. Other retained
+negative families are also executed. The full560.69-second run supports the
+1800-second serial budget without removing historical or negative cases.
+
+The sixty-four-MiB closure binds its qualified format/core/token/frame/owner/
+API/CLI milestones,127 current source/test bindings,681 ordinary source/object
+pairs, normal flags without sanitizer instrumentation, product hashes and saved
+runtime artifacts. Earlier milestones separately qualify298 positive/69
+negative entropy wires,90 supplied token streams with7 actual refusals,
+private-frame and whole-file publication,499 independent raw inputs, public
+resources and allocation rollback. Exchange round trips do not replace these
+checks.
+
+The family audit additionally binds all56 production implementation units
+across the seven windows and206 current source/header/tool files to qualified
+milestones. It rechecks all28 retained per-window exchange routes, exact
+identities, starting88 preservation and current public resources. Fourteen
+finite resource-query checks qualify normal/exact/one-short admission and
+failure retention for every current public profile; these are not physical
+memory measurements. Earlier completed comparison evidence is retained.
+
+All seven native profiles are locally qualified under the explicit omission
+of fuzz and further ratio/speed/physical-peak benchmarks. Omitted measurements
+are neither passes nor measured compression/performance targets. The next
+steps are the user's batch push, successful hosted CI and external four-route
+verification of95 archives, followed by recording those results. No hosted
+CI or external95 result is implied by local qualification.

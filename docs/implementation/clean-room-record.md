@@ -42848,3 +42848,20 @@ No external/restricted implementation was consulted; no fuzz or additional
 benchmark was executed. Unmeasured compression/performance goals are not
 reported as met. Schema85/95 exchange, final family audit and later hosted/
 external qualification remain unfinished.
+
+### CR-1922: 2026-10-17 — native Huffman ordered exchange and family local audit
+
+Author/reviewer: Codex. Follow IR-1366 with first-party exact admission,
+independent mathematical headers and normal independent producers. TVG-1547
+and IX-0103 qualify95 archives through four local routes, preserved94/88
+prefixes, all85 historical output sets and875 native Huffman prelaunch refusals.
+Retained input evidence proves784 exact one-byte changes and seven short
+headers; all prior negative families remain. Bind127 current source/test
+hashes,681 ordinary source/object pairs, product hashes and preserved runtime
+artifacts. The final family audit binds56 production units and206 current
+source/header/tool files to qualified milestones, rechecks28 earlier/current
+local routes, exact identities and14 finite public-resource checks, and retains
+earlier measurement evidence. No external/restricted implementation was
+consulted; no fuzz or further benchmark was executed. The omissions are not
+passes or measured targets. Seven profiles are locally qualified; user push,
+hosted CI and external four-route95 confirmation/recording remain unfinished.

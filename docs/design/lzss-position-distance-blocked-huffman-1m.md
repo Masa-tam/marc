@@ -313,3 +313,10 @@ with measured encode benefits and decode/memory costs; retain both selectors.
 Together with FZ-0098 and the retained full-frame sanitizer cases, this closes
 the one-MiB local profile and permits four-MiB format work. Five larger windows,
 final95 local audit, user push and hosted/external confirmation remain open.
+
+## Subsequent family local checkpoint
+
+[IX-0103](../interoperability.md) now closes the seven-window local audit and
+schema85/95 exchange gates, superseding the earlier remaining-local-work
+checkpoint above. Earlier measurements and explicit omissions remain intact.
+User batch push, hosted CI and external four-route95 confirmation remain open.

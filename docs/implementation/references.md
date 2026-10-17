@@ -12068,3 +12068,16 @@ maximum matches, all small cuts, malformed fields/models/padding, reset frames,
 strict EOS, aliases and preexisting output/temporary preservation. Reproduce
 all preceding archives through both paths. Consult no external/restricted
 implementation and execute no fuzz or additional benchmark.
+
+### IR-1366: sixty-four-MiB ordered Huffman exchange and family audit
+
+Append one exact64MiB identity to the qualified94-entry producer/verifier,
+preserving every preceding entry, property order and archive byte. Use the
+independent112-byte specification header to qualify both admission functions
+before producers. Keep every historical schema and directed prelaunch refusal;
+inspect retained mutated inputs, launch markers, output directories and actual
+restored/re-encoded bodies. Qualify independent normal producers through four
+local self/cross paths and bind all seven windows' earlier milestones, ordinary
+source/object pairs, products and saved runtime artifacts. Derive serial limits
+from complete runs. Consult no external/restricted implementation and execute
+no fuzz or further ratio/speed/physical-peak benchmark.

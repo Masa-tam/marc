@@ -1546,5 +1546,6 @@ retained bytes and two65536-byte call buffers, actual queries return5454067158
 encoder and2131268960 decoder admission bytes, including200816 external-charge
 bytes on the qualified layouts. Query each actual ABI and caller scope; these
 are not physical peaks. Earlier declarations and all starting88/preceding94
-archive bodies remain unchanged. CLI and schema85/95 exchange, final family
-audit and hosted/external confirmation remain separate.
+archive bodies remain unchanged. CLI and schema85/95 exchange and the final
+family local audit are qualified at [IX-0103](interoperability.md). Hosted CI
+and external four-route95 confirmation remain separate.

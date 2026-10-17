@@ -9275,10 +9275,12 @@ bytes per65536-byte frame. Failed frames stay private until complete entropy,
 history and raw-size validation succeeds. The linked design specifies every
 field, model record, planning tie and count bound. This is a new typed-event
 format; it changes no byte-stream or contextual Blocked Huffman variant.
-Only the64KiB representation and independent vectors are admitted at this
-stage. Public APIs, CLI, runtime validation, measurements and exchange remain
-unfinished. The actual retained exchange baseline is88 archives/schema78;
-the seven planned additions will produce95 archives/schema85.
+The initial representation/vector checkpoint preceded implementation. Its
+public API/CLI, runtime and local exchange gates are recorded at
+[IX-0097](interoperability.md); the completed seven-profile local audit and
+95-archive schema85 exchange are recorded at [IX-0103](interoperability.md).
+The retained starting baseline is88 archives/schema78. Hosted/external95
+qualification remains separate.
 
 ### DD-1612: native one-MiB position-distance Blocked Huffman
 
@@ -9301,7 +9303,9 @@ optional-override canonical Huffman payload,112-byte stream and64-byte reset
 frame envelopes with no coder state. The linked design fixes every offset,
 zero field and count/history rule, including 2T<=D<=min(32T,9R) and checked
 full-frame payload/frame ceilings70778880/70781505. This format checkpoint
-does not add public API/CLI or modify an earlier representation.
+does not modify an earlier representation. Later local API/CLI and exchange
+qualification is recorded at [IX-0099](interoperability.md), and the complete
+seven-profile local audit at [IX-0103](interoperability.md).
 
 ### DD-1616: native eight-MiB position-distance Blocked Huffman
 
@@ -9312,8 +9316,10 @@ unused high bit. Length residuals are uniform; distance bits use their binary
 position contexts. The linked specification fixes every header offset,
 model record, count and terminal usage rule. Require2T<=D<=min(33T,9R),
 payload<=ceil(15D/8), and full-frame payload/frame ceilings141557760/141560387.
-This additive format leaves prior bytes unchanged. Public API/CLI, resource
-defaults and exchange require later qualification.
+This additive format leaves prior bytes unchanged. Local public API/CLI,
+resource defaults and exchange are qualified at [IX-0100](interoperability.md);
+the complete seven-profile local audit is recorded at
+[IX-0103](interoperability.md).
 
 ### DD-1618: native sixteen-MiB position-distance Blocked Huffman
 
@@ -9344,11 +9350,13 @@ API/CLI and schema84 exchange are qualified at
 ### DD-1620: native sixty-four-MiB position-distance Blocked Huffman
 
 The [sixty-four-MiB representation](design/lzss-position-distance-blocked-huffman-64m.md)
-defines reserved tuple2/14+1/34+2/9,67108864-byte window,58 contexts,4680
+defines tuple2/14+1/34+2/9,67108864-byte window,58 contexts,4680
 alphabet extent,63 codebooks and descriptor32..2590 bytes. Eight mask bytes
 have unused bits58..63; both alphabet9 and alphabet27 require zero final dense
 high nibbles. Require2T<=D<=min(36T,10R), with checked payload/frame ceilings
 1258291200/1258293854. Use a wide intermediate for15D. The linked specification
 fixes every stream/frame/model offset and distinguishes isolated endpoint
 evidence from reachable reset history. Earlier bytes remain unchanged.
-Production code, public defaults/API/CLI and schema85/95 exchange remain pending.
+Production code, checked public defaults/API/CLI, schema85/95 exchange and the
+seven-profile local audit are qualified at [IX-0103](interoperability.md).
+Hosted CI and external four-route95 confirmation remain separate.
