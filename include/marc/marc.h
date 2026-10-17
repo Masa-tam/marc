@@ -2386,6 +2386,39 @@ MARC_API marc_status marc_lzss_position_distance_blocked_huffman_16m_resource_re
 MARC_API marc_status marc_lzss_position_distance_blocked_huffman_16m_create(
     const marc_lzss_position_distance_blocked_huffman_16m_config* config, marc_transform** transform) MARC_NOEXCEPT;
 
+/* Native thirty-two-MiB position-distance Blocked Huffman (2/13 + 1/33 + 2/8).
+ * Fixed-five encoder; decoder grammar3..258; Huffman cap15.
+ * max_block_size counts decisions. Default3072MiB is logical admission,
+ * not process RSS; declared IO/retention/control charges are included.
+ * Query failure preserves output. Failed create sets NULL except config/
+ * handle overlap, which leaves storage unchanged. Failed frames stay private. */
+typedef struct marc_lzss_position_distance_blocked_huffman_32m_config {
+    uint32_t struct_size, abi_version;
+    marc_direction direction;
+    uint32_t reserved;
+    uint64_t original_size;
+    uint32_t frame_size, reserved2;
+    uint64_t max_total_output_size, max_frame_size, max_block_size;
+    uint64_t max_compressed_payload_size, max_internal_buffered_bytes;
+    uint64_t max_lz_distance, max_lz_match_length, max_entropy_table_entries;
+    uint64_t max_expansion_ratio, expansion_slack;
+    uint64_t external_retained_bytes, input_capacity_bytes, output_capacity_bytes;
+} marc_lzss_position_distance_blocked_huffman_32m_config;
+typedef struct marc_lzss_position_distance_blocked_huffman_32m_resources {
+    uint32_t struct_size, abi_version;
+    uint64_t raw_bytes, token_bytes, serialized_bytes, finder_bytes;
+    uint64_t fixed_working_bytes, external_charge_bytes, minimum_aggregate_bytes;
+    uint64_t private_payload_bytes, private_serialized_bytes, table_bytes;
+    uint64_t owned_buffer_bytes, owner_bytes, metadata_floor_bytes, private_admission_bytes;
+} marc_lzss_position_distance_blocked_huffman_32m_resources;
+MARC_API marc_status marc_lzss_position_distance_blocked_huffman_32m_config_init(
+    marc_direction direction, marc_lzss_position_distance_blocked_huffman_32m_config* config) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_position_distance_blocked_huffman_32m_resource_requirements(
+    const marc_lzss_position_distance_blocked_huffman_32m_config* config,
+    marc_lzss_position_distance_blocked_huffman_32m_resources* resources) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_position_distance_blocked_huffman_32m_create(
+    const marc_lzss_position_distance_blocked_huffman_32m_config* config, marc_transform** transform) MARC_NOEXCEPT;
+
 /* Native64KiB position-distance tANS (2/8 + 1/21 + 5/3).
  * Fixed-five encoder; decoder accepts match lengths3..258.
  * max_block_size limits binary decisions, not bytes. Other sizes are bytes.

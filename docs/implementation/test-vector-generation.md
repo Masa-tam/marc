@@ -25238,3 +25238,23 @@ and binary bindings and preserved runtime artifacts. Derive a600-second serial
 differential ceiling from the retained finite-test duration. Public default
 admission and actual C API construction, CLI and schema84/94 exchange remain
 pending. No fuzz or additional ratio/speed/physical-peak benchmark is executed.
+
+### TVG-1537: thirty-two-MiB public Huffman API and resource default
+
+Select the3072MiB logical default from qualified owning requirements and
+include declared external I/O/retention/control charges. Verify real complete
+default construction in static/shared C consumers, unchanged existing C
+declarations, exact/one-short admission and pre-allocation refusal. Inject
+all10 encoder/7 decoder factory-allocation failures and require full rollback.
+Check process allocation freedom, call capacities, invalid configurations,
+alias guards, sticky terminal states, one-byte chunks, full window boundaries,
+strict trailing input, identity/model quotas and failed-frame quarantine.
+Nine normal checks and direct19-translation-unit ASan/UBSan pass. Independently
+parse and decode499 fixed raw fixtures; match public, owning, normal and
+instrumented wires exactly. Inspect every old decoded/re-encoded archive body
+for both starting88 and preceding93 sets after the shared-library update.
+Retain pre-update artifacts, source/binary bindings, finite-test logs and
+actual resource-query results. Logical grants are not physical peaks. Keep
+the measured-duration-based serial600-second differential ceiling. CLI,
+schema84/94 exchange and later/final gates remain pending. No fuzz or further
+ratio/speed/physical-peak benchmark is executed.

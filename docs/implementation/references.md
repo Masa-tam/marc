@@ -11954,3 +11954,15 @@ exact/one-short quotas, arbitrary chunking, raw-parser differential wires and
 window/frame endpoints. Consult no external/restricted implementation; execute
 no fuzz or additional ratio/speed/physical-peak benchmark. Public defaults and
 their actual construction require a separate qualification checkpoint.
+
+### IR-1356: thirty-two-MiB public Huffman C boundary
+
+Extend the qualified first-party C factory and additive native config/resource
+layouts with DD-1619's identity. Select a3072MiB logical default from the checked
+owning queries, including external I/O/retention/control charges. Verify actual
+default creation in static/shared C consumers, exact/one-short admission,
+configuration and alias refusal, all partial-allocation rollbacks, no process
+allocations and failed-frame quarantine. Bind499 independent public/owning
+wires and all starting88/preceding93 archive bodies after rebuilding the shared
+library. Consult no external/restricted source; execute no fuzz or additional
+ratio/speed/physical-peak benchmark. CLI and exchange remain separate gates.

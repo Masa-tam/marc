@@ -42700,3 +42700,15 @@ fixture and runtime-artifact bindings. No external/restricted implementation
 was consulted; no fuzz or additional benchmark was executed. Public defaults
 and C API construction, CLI, exchange and later-profile qualification remain
 unfinished. Performance targets remain unmeasured by explicit user request.
+
+### CR-1912: 2026-10-17 — thirty-two-MiB public Huffman C API
+
+Author/reviewer: Codex. Follow IR-1356 using the existing first-party C boundary
+and qualified native owning transforms. Preserve all prior declarations and
+add the DD-1619 identity with a checked3072MiB logical grant. TVG-1537 qualifies
+actual static/shared default construction, allocation cleanup, resource and
+publication invariants,499 matching independently checked wires and every
+starting88/preceding93 archive body after the shared-library update. Retain
+pre-update artifacts and source/binary bindings. No external/restricted code
+was consulted; no fuzz or additional benchmark was executed. CLI, exchange,
+larger-profile and final hosted/external gates remain unfinished.
