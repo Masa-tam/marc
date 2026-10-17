@@ -12340,3 +12340,124 @@ override sets/codebooks, active fields and dictionary counts;57 strictly
 shrink. Equal-byte-cost frames keep original pools. This closes this window's
 matched corpus and saved-decoder compatibility milestone. Final common-runtime,
 retained95-body, hosted-CI and external qualifications remain separate gates.
+
+### BM-0259: 8-MiB residual-pool old/revised/contextual comparison
+
+DD-1625/TVG-1565 compare all twelve manifest-verified Silesia members,
+211,938,580 raw bytes, with saved old native, revised native and same-window
+contextual controls. Actual native identity is2/11+1/31+2/6;
+contextual identity is2/5+1/4+2/2. Window and frame are both
+8388608 bytes. Every output restores exactly; all24 old/new CLI decoder
+cross-routes pass. Retain old bodies, products and source/tool bindings.
+
+The contextual control uses the existing16MiB API profile with both window/frame set to8MiB; no same-window CLI selector is claimed. Configuration acceptance, actual identities and restoration are checked.
+
+Use the unchanged lifecycle timing driver (one warmup, three samples; I/O/comparison excluded), separately from three fresh streaming-process peak samples per direction.
+Run old/revised/contextual serially per member. Peak observations include the
+streaming runtime and two64KiB I/O arrays, not whole-file timing vectors or
+logical query grants. This is one matched local cohort; no universal ceiling
+or statistically established speed guarantee is inferred. Repository tools
+`run_position_blocked_huffman_pool_refit_comparison.py` and
+`audit_position_blocked_huffman_pool_refit_comparison.py` retain and independently
+reopen outputs, headers, source/tool bindings and raw observations.
+
+Window: 8 MiB; members: 12; method: separate lifecycle timing driver (1 warmup, 3 samples) and fresh streaming peaks.
+
+| Member | Raw bytes | Old native bytes | Revised native bytes | Contextual bytes |
+| --- | ---: | ---: | ---: | ---: |
+| dickens | 10192446 | 3309581 | 3309386 | 3309658 |
+| mozilla | 51220480 | 19353410 | 19352432 | 19353948 |
+| mr | 9970564 | 3378289 | 3378013 | 3378435 |
+| nci | 33553445 | 2388360 | 2387952 | 2388474 |
+| ooffice | 6152192 | 3065123 | 3064984 | 3065673 |
+| osdb | 10085684 | 3347086 | 3346813 | 3347220 |
+| reymont | 6627202 | 1583212 | 1583054 | 1583275 |
+| samba | 21606400 | 4947181 | 4946422 | 4947440 |
+| sao | 7251944 | 5536508 | 5536369 | 5536569 |
+| webster | 41458703 | 10348436 | 10347616 | 10348615 |
+| xml | 5345280 | 561463 | 561332 | 561585 |
+| x-ray | 8474240 | 5522549 | 5522288 | 5523490 |
+
+| Member / producer | Encode MiB/s | Decode MiB/s | Encode peak bytes | Decode peak bytes |
+| --- | ---: | ---: | ---: | ---: |
+| dickens / old_position | 0.971962 | 21.852436 | 224,526,336 | 116,961,280 |
+| dickens / new_position | 0.991263 | 22.788342 | 224,595,968 | 116,985,856 |
+| dickens / contextual | 0.919953 | 43.286829 | 152,649,728 | 116,899,840 |
+| mozilla / old_position | 1.091136 | 24.116205 | 231,444,480 | 119,422,976 |
+| mozilla / new_position | 1.332948 | 27.361935 | 231,444,480 | 119,463,936 |
+| mozilla / contextual | 0.909577 | 29.351248 | 155,136,000 | 119,361,536 |
+| mr / old_position | 0.606339 | 23.297492 | 224,325,632 | 117,100,544 |
+| mr / new_position | 0.597729 | 23.389637 | 224,337,920 | 117,067,776 |
+| mr / contextual | 0.237187 | 38.959648 | 152,752,128 | 116,973,568 |
+| nci / old_position | 1.464167 | 107.961551 | 217,841,664 | 114,946,048 |
+| nci / new_position | 1.727102 | 108.575287 | 217,841,664 | 114,954,240 |
+| nci / contextual | 0.875070 | 198.092430 | 150,552,576 | 114,831,360 |
+| ooffice / old_position | 2.216767 | 19.751435 | 196,190,208 | 115,154,944 |
+| ooffice / new_position | 2.386959 | 20.331875 | 196,096,000 | 115,163,136 |
+| ooffice / contextual | 4.412474 | 20.963487 | 115,003,392 | 115,048,448 |
+| osdb / old_position | 1.805057 | 30.253325 | 224,210,944 | 117,071,872 |
+| osdb / new_position | 1.710460 | 30.336052 | 224,235,520 | 117,080,064 |
+| osdb / contextual | 5.039849 | 33.644276 | 152,707,072 | 116,953,088 |
+| reymont / old_position | 0.631803 | 31.511406 | 197,820,416 | 114,155,520 |
+| reymont / new_position | 0.634684 | 31.262606 | 197,816,320 | 114,118,656 |
+| reymont / contextual | 0.535127 | 61.768644 | 121,606,144 | 114,044,928 |
+| samba / old_position | 2.718567 | 44.503647 | 223,789,056 | 116,903,936 |
+| samba / new_position | 2.751622 | 44.661261 | 223,764,480 | 116,932,608 |
+| samba / contextual | 2.444843 | 53.590867 | 152,580,096 | 116,776,960 |
+| sao / old_position | 0.789479 | 17.056760 | 217,899,008 | 118,730,752 |
+| sao / new_position | 0.789026 | 17.020718 | 217,837,568 | 118,738,944 |
+| sao / contextual | 3.077989 | 14.291098 | 136,179,712 | 118,599,680 |
+| webster / old_position | 0.910880 | 31.062438 | 222,228,480 | 116,412,416 |
+| webster / new_position | 0.939007 | 32.375299 | 222,269,440 | 116,404,224 |
+| webster / contextual | 0.814094 | 56.729881 | 152,076,288 | 116,277,248 |
+| xml / old_position | 7.206931 | 65.491848 | 178,208,768 | 111,849,472 |
+| xml / new_position | 6.811267 | 65.858469 | 178,081,792 | 111,865,856 |
+| xml / contextual | 7.468612 | 120.654015 | 98,762,752 | 111,742,976 |
+| x-ray / old_position | 1.569765 | 13.684799 | 232,300,544 | 119,762,944 |
+| x-ray / new_position | 1.306491 | 12.983696 | 232,304,640 | 119,775,232 |
+| x-ray / contextual | 6.177001 | 18.634650 | 155,422,720 | 119,660,544 |
+
+Aggregate values (sum of member median seconds; maximum observed process peak):
+
+old_position: 63,341,198 bytes.
+encode: 175.885923200 s; 1.149156 MiB/s; peak 232,300,544 bytes.
+decode: 6.800139400 s; 29.722976 MiB/s; peak 119,762,944 bytes.
+
+new_position: 63,336,661 bytes.
+encode: 164.221448100 s; 1.230779 MiB/s; peak 232,304,640 bytes.
+decode: 6.509630900 s; 31.049438 MiB/s; peak 119,775,232 bytes.
+
+contextual: 63,344,382 bytes.
+encode: 217.208271100 s; 0.930537 MiB/s; peak 155,422,720 bytes.
+decode: 5.003811100 s; 40.393288 MiB/s; peak 119,660,544 bytes.
+
+Revised total63,336,661 bytes saves4,537 bytes
+(0.007163%) against old native and7,721
+bytes (0.012189%) against contextual.
+Of the4,537 saved bytes,2,329 are descriptor bytes and2,208 are payload bytes.
+Strictly smaller members: 12/12 versus old native,
+12/12 versus contextual. Raw-size ratios O/N/C are
+29.886582%/29.884442%/29.888085%.
+Members not strictly smaller than contextual: none.
+
+Observed aggregate encode/decode median-time changes versus old native are
+-6.631841%/-4.272096%. Encoder/decode maximum resident-peak
+changes are+4.000KiB/+12.000KiB.
+Decoder code is unchanged, but changed codebooks can change its workload;
+the observations do not establish a causal or universal speed improvement.
+Keep size benefits and measured time/memory costs distinct.
+
+Streaming logical query ranges O/N/C are635,845,671/
+635,865,271/163,126,373..254,806,629 encoder bytes and
+251,157,534/251,157,534/219,298,265 decoder bytes.
+Native includes owner/calls/controls; contextual counts caller workspaces.
+The private encoder charge is the profile descriptor plus4096 bytes;
+decoder accounting and public defaults are unchanged. Queries are not RSS.
+
+The audit reopens108 archive/restoration pairs,
+24 cross-restorations,216 peak receipts and
+72 separate timing receipts. All31 paired frames retain
+override sets/codebooks, active fields and dictionary counts;31 strictly
+shrink. Equal-byte-cost frames keep original pools. This closes this window's
+matched corpus and saved-decoder compatibility milestone. Final common-runtime,
+retained95-body, hosted-CI and external qualifications remain separate gates.

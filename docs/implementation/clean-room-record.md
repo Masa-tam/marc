@@ -43065,3 +43065,16 @@ registrations. Retain frozen oracles, existing test limits and failure/publicati
 contracts. Public API/CLI notes distinguish the revised candidate from remaining
 corpus and common-runtime gates. Only first-party references and retained
 products are used. No external implementation is consulted.
+
+### CR-1940: 2026-10-18 — 8-MiB measured residual-pool qualification
+
+Author/reviewer: Codex. TVG-1565 independently audits saved/revised/control
+products with first-party drivers and the unchanged mathematical descriptor
+parser. BM-0259 records complete member and aggregate size/speed/peak results,
+actual identities and accepted settings. The revised total saves4,537 bytes
+against old native, with observed encode/decode time changes
+-6.631841%/-4.272096%. Preserve the measured tradeoffs without inferring
+universal dominance or equating logical queries with RSS. All old/new decoder
+corpus routes pass. Retain original products and receipts; final common-runtime,
+retained95-body and later remote gates remain distinct. No external
+implementation is consulted.
