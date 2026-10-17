@@ -42799,3 +42799,22 @@ No external/restricted implementation was consulted; no fuzz or further
 benchmark was executed. Unmeasured performance targets are not reported as met.
 Owned transforms/resources, public API/CLI, exchange and final qualification
 remain unfinished.
+
+### CR-1919: 2026-10-17 — sixty-four-MiB owned Huffman resources
+
+Author/reviewer: Codex. Follow IR-1363 using qualified first-party frame/token
+components, fixed-five matching and independently written mathematical oracles.
+TVG-1544 qualifies499 finite raw inputs in normal and direct ASan/UBSan builds,
+five normal checks including the preceding profile, checked full-window logical
+requirements and actual construction/restoration at exact grants. One-short
+grants refuse before allocation; queries retain failure invariants. Exercise
+every allocation failure, rollback, allocation-free process calls, wide encoder
+aggregate arithmetic and failed-frame quarantine. No external/restricted
+implementation was consulted; no fuzz or additional benchmark was executed.
+Logical storage charges are not measured physical peaks or public defaults.
+Public boundary resource/API/CLI tests, exchange and final qualification remain
+unfinished.
+
+Independent artifact audit confirms all499 retained input/output pairs,
+mathematical parses, logical resource components and source/binary bindings;
+the validated runtime remains unchanged.

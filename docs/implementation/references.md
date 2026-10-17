@@ -12034,3 +12034,15 @@ Retain split-buffer, reset-history, late-error and exact/one-short logical
 admission tests, including a full-window singleton literal frame. Consult no
 external/restricted implementation and execute no fuzz or further ratio/speed/
 physical-peak benchmark.
+
+### IR-1363: sixty-four-MiB owned Huffman transforms and logical resources
+
+Use the qualified native frame quarantine, first-party fixed-five parser and
+checked resource calculations. Query full-window requirements before choosing
+any public grant. Test exact/one-short admission, every injected allocation
+failure, partial rollback, allocation-free process calls and deterministic
+chunking. Independently parse finite raw inputs and check their production
+streams, including full-window patterns and final partial frames. Resource
+queries and construction are correctness checks, not physical-peak benchmarks.
+Consult no external/restricted implementation; execute no fuzz or further
+ratio/speed/physical-peak measurement.

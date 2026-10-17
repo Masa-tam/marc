@@ -25376,3 +25376,32 @@ all pass. All97 retained fixture inputs and89 production frames match exactly
 between builds. Bind source/binary manifests and unchanged validated runtime
 products. Preserve the complete directed set with a600-second serial budget
 derived from its observed169.16-second run. Independent artifact audit passes.
+
+### TVG-1544: sixty-four-MiB owned Huffman transforms and resource admission
+
+Qualify499 finite raw inputs with an independently written longest/nearest
+fixed-five parser and mathematical entropy reader. Include all256 one-byte
+values, every binary string through length6, fixed patterns, four inputs at or
+just below the full window and100 fixed seeded valid inputs. Normal and direct ASan/UBSan builds
+restore all inputs and independently validate their production streams. Five
+normal checks include the preceding profile's owned/raw regressions; all pass.
+Check chunk-independent output, every small encoder split, byte-sized sinks,
+empty/final-partial streams, late second-frame failure, all two-frame cuts,
+strict trailing refusal and unchanged tails. Inject all8 encoder and5 decoder
+allocation failures, verify partial rollback and forbid allocation in process.
+Use checked requirements before any construction. Full-window exact grants
+construct and restore at67108863/67108864/67108865 raw bytes; one-short grants
+refuse before allocating and retain query outputs. The encoder's5453866342-byte
+and decoder's2131068144-byte internal admission charges agree between qualified
+64-bit layouts. Check the encoder aggregate beyond u32, every buffer/table/
+finder component and the nonallocated metadata floor independently. These
+logical storage charges do not measure physical peaks or establish a public
+default. Keep all499 inputs serial with a1200-second budget supported by the
+observed273.51-second normal run. No fuzz or further ratio/speed/physical-peak
+benchmark is executed. Public boundary resources/API/CLI, schema85/95 exchange
+and final qualification remain unfinished.
+
+Artifact audit rereads all499 retained fixtures and production streams,
+independently checks their parses, entropy finish and resource components,
+and confirms byte-for-byte normal/instrumented equality. Source/binary bindings
+and preservation of the validated runtime pass.

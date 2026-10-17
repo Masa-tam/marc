@@ -104,8 +104,16 @@ restore exact raw bytes and production frames pass independent entropy checks.
 Descriptor validation precedes payload consumption; failed frames never enter
 the draining state. Full-window literal restoration, split-buffer behavior,
 late second-frame refusal and logical admission are finite correctness checks.
-Owned resource integration, public API/CLI, schema85/95 exchange and final
-audit remain unfinished.
+TVG-1544 qualifies owned transforms using the first-party fixed-five parser,
+499 independent raw inputs and exact/one-short logical resource admission.
+On the qualified64-bit layouts, full-window internal admission is5453866342
+bytes for encode and2131068144 for decode. Actual construction and restoration
+at exact grants pass; one-short grants reject before allocating and preserve
+query destinations. The encoder aggregate exceeds u32 and requires checked
+wide arithmetic. These values are conservative logical storage charges,
+excluding public boundary controls and caller-retained capacities; they are
+not measured process peaks or public default grants.
+Public API/CLI, schema85/95 exchange and final audit remain unfinished.
 
 Fuzz and further ratio/speed/physical-peak benchmarks are omitted through this
 goal by explicit request. Same-window contextual compression and performance
