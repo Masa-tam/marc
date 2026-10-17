@@ -43015,3 +43015,13 @@ turn unchanged-decoder timing variation into an optimization claim or conflate
 logical query charges with RSS. Old/new decoder compatibility passes on every
 member; other windows and final shared-runtime qualification remain pending.
 No external implementation was consulted.
+
+### CR-1935: 2026-10-18 — four-MiB residual-pool core milestone
+
+Author/reviewer: Codex. Extend only the first-party DD-1625 bounded planner to
+the existing54-context4MiB specialization. Reuse the mathematical hand cases
+whose participating context alphabets are identical, retaining independent
+frozen wire vectors. TVG-1560 supplies ten passing core/public-path registrations
+and destination-retaining quota checks. Keep the measured1MiB products and source
+snapshots intact and build4MiB candidates separately. No external implementation
+is consulted. Full public, measurement and final compatibility gates are pending.

@@ -25669,3 +25669,14 @@ equal-cost original-pool retention. No frozen oracle is modified. All checks
 pass. The completed1MiB cohort and source/tool snapshots remain retained while
 later windows use distinct candidate products. Final family/runtime/95-body
 qualification and hosted/external results remain separate gates.
+
+### TVG-1560: four-MiB residual-pool core integration milestone
+
+DD-1625 extends the frozen-override candidate rule to54 contexts and59 models.
+The hand residual A/BC plan, equal-byte-cost binary-pool retention, and exact/
+one-short planner/token encoder quotas include the additional private charge.
+Existing vectors, core, tokens, token differential, frames, frame differential,
+stream, owning and API registrations pass alongside documentation layout: ten
+registrations total. Keep decoder grammar and charges unchanged. Full public
+raw/CLI qualification, matched corpus comparisons and final retained95/runtime
+audit remain pending here; larger windows have not yet been integrated.
