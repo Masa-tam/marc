@@ -125,10 +125,14 @@ seven boundaries,211 cuts, independent grammar, malformed/foreign inputs,
 transactional output retention and all prior92 archive bodies. Earlier
 products are preserved before updating the fixed validated executable.
 
-Schema83/93 exchange and final audit remain open. Further
-ratio/speed/physical-peak benchmarks and fuzz execution are
-omitted by user request through this goal; do not label them passed. Select
-future logical defaults from checked requirements and actual construction
-correctness evidence, explicitly without new process-peak measurements.
+IX-0101 and TVG-1531 close local schema83/93 exchange and profile audit:
+four local routes, unchanged92/88 prefixes, all schema1..83 output bodies,
+625 native Huffman admission negatives and665 normal source/object pairs.
+Prior runtime/build/bundle artifacts remain preserved. Two larger profiles,
+final95 local audit, user push and hosted/external confirmation remain open.
+Ratio/speed/physical-peak benchmarks and fuzz execution are
+omitted by user request through this goal; do not label them passed. The
+current logical default derives from checked requirements and actual
+construction evidence, without new process-peak measurements.
 The same-window contextual size target and speed/physical-memory trade-offs
 are therefore unverified for this profile; do not report the target as met.

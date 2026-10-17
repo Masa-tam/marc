@@ -1087,3 +1087,5 @@ every small-stream cut, malformed fields/models/padding, foreign profiles and
 a valid first/failed second frame. Schema83 exchange and final audit are
 separate gates. Ratio/speed/physical-peak benchmarks and fuzz are omitted by
 user request through this goal; no unmeasured compression target is claimed.
+Those sixteen-MiB local gates are closed at [IX-0101](interoperability.md).
+Final95-family hosted/external qualification remains separate.

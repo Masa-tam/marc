@@ -11887,3 +11887,13 @@ grammar, truncations, malformed headers/models/padding, foreign profiles and
 failed-second-frame refusal. Preserve existing output/temporary files and
 compare static/shared command paths and all prior92 archive bodies. No
 external/restricted implementation, fuzz or performance benchmark is used.
+
+### IR-1350: sixteen-MiB ordered Huffman exchange extension
+
+Append exactly one profile to the first-party schema82/92 producer and
+verifier, retaining prior order, property representation, inputs and bodies.
+Use exact DD-1618 headers and whole-manifest pre-launch validation. Exercise
+all historical schema conversions with retained decoded/re-encoded bodies,
+directed malformed metadata/header rejection and all four local self/cross
+execution paths. Bind normal build sources, objects, flags and products to
+the qualified profile. No external/restricted source, fuzz or benchmark is used.

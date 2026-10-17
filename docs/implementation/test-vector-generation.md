@@ -25124,3 +25124,20 @@ preceding profile regression and independent artifact audit pass. Preserve
 pre-update runtime artifacts and retain the fixed validated executable path.
 No fuzz or ratio/speed/physical-peak benchmark is executed. Schema83/93 exchange,
 final profile audit and later hosted/external95 gates remain unfinished.
+
+### TVG-1531: sixteen-MiB ordered exchange and local profile audit
+
+Append the exact sixteen-MiB selector to schema83/93 while preserving all92
+preceding and starting88 entries, input/property order and archive bodies.
+All four local self/cross paths restore and reproduce all93 archives. Retain
+the full schema1..83 conversion outputs and independently inspect every
+decoded/re-encoded body. Verify625 schema79..83 Huffman negatives before any
+codec launch/file publication, with empty retained output directories and
+absent launch markers. Both exact header admission functions reject all112
+changed bytes and truncation. Bind all qualified milestone receipts,127
+current source/test hashes,665 normal source/object pairs, flags, products
+and preserved fixed-runtime artifacts. All checks and independent artifact
+audit pass. Keep the complete historical suite and use its retained duration
+to select a1800-second serial budget. No fuzz or further benchmark is run;
+do not treat those explicit omissions as passes. Larger profiles, final95
+local audit and hosted/external confirmation remain unfinished.

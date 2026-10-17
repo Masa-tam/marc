@@ -315,6 +315,25 @@ function Assert-PositionBlockedHuffman1mHeader([byte[]]$Bytes, [uint64]$Original
     }
 }
 
+function Assert-PositionBlockedHuffman16mHeader([byte[]]$Bytes, [uint64]$OriginalBytes) {
+    if ($Bytes.Length -lt 112) { throw '16 MiB position Blocked Huffman archive header is truncated' }
+    $expected = [byte[]]::new(112)
+    [System.Text.Encoding]::ASCII.GetBytes('MARC').CopyTo($expected, 0)
+    foreach ($field in @(@(4,2,2), @(8,2,64), @(10,2,1), @(12,2,2), @(14,2,12),
+            @(16,2,2), @(18,2,7), @(20,4,16777216), @(28,4,16), @(32,4,16),
+            @(40,8,$OriginalBytes), @(48,4,16), @(64,4,16777216), @(68,4,3), @(72,4,258),
+            @(80,1,15), @(81,1,5), @(82,2,56), @(84,4,4658), @(96,2,1), @(98,2,32))) {
+        for ($index = 0; $index -lt $field[1]; ++$index) {
+            $expected[$field[0] + $index] = [byte](([uint64]$field[2] -shr (8 * $index)) -band 255)
+        }
+    }
+    for ($index = 0; $index -lt 112; ++$index) {
+        if ($Bytes[$index] -ne $expected[$index]) {
+            throw '16 MiB position Blocked Huffman archive does not carry exact identity and parameters'
+        }
+    }
+}
+
 function Assert-PositionBlockedHuffman8mHeader([byte[]]$Bytes, [uint64]$OriginalBytes) {
     if ($Bytes.Length -lt 112) { throw '8 MiB position Blocked Huffman archive header is truncated' }
     $expected = [byte[]]::new(112)
@@ -541,6 +560,7 @@ $schema79Profiles = $schema78Profiles + @('lzss-position-distance-blocked-huffma
 $schema80Profiles = $schema79Profiles + @('lzss-position-distance-blocked-huffman-1m')
 $schema81Profiles = $schema80Profiles + @('lzss-position-distance-blocked-huffman-4m')
 $schema82Profiles = $schema81Profiles + @('lzss-position-distance-blocked-huffman-8m')
+$schema83Profiles = $schema82Profiles + @('lzss-position-distance-blocked-huffman-16m')
 if ($manifest.schema_version -eq 1) {
     if ($null -ne $manifest.PSObject.Properties['codec_set']) {
         throw 'Schema 1 interoperability manifests must not declare a codec set'
@@ -951,6 +971,11 @@ if ($manifest.schema_version -eq 1) {
         throw "Unsupported interoperability codec set: $($manifest.codec_set)"
     }
     $expectedProfiles = $schema82Profiles
+} elseif ($manifest.schema_version -eq 83) {
+    if ([string]$manifest.codec_set -ne 'marc-cli-v83') {
+        throw "Unsupported interoperability codec set: $($manifest.codec_set)"
+    }
+    $expectedProfiles = $schema83Profiles
 } else {
     throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
 }
@@ -1262,6 +1287,19 @@ foreach ($entry in $manifest.archives) {
             }
         } finally { $stream.Dispose() }
         Assert-PositionBlockedHuffman4mHeader $header ([uint64]$manifest.input.bytes)
+    }
+    if ($codec -eq 'lzss-position-distance-blocked-huffman-16m') {
+        $header = [byte[]]::new(112)
+        $stream = [System.IO.File]::OpenRead($archivePath)
+        try {
+            $offset = 0
+            while ($offset -lt 112) {
+                $read = $stream.Read($header, $offset, 112 - $offset)
+                if ($read -eq 0) { throw '16 MiB position Blocked Huffman archive header is truncated' }
+                $offset += $read
+            }
+        } finally { $stream.Dispose() }
+        Assert-PositionBlockedHuffman16mHeader $header ([uint64]$manifest.input.bytes)
     }
     if ($codec -eq 'lzss-position-distance-blocked-huffman-8m') {
         $header = [byte[]]::new(112)

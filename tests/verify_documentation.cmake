@@ -1432,13 +1432,13 @@ foreach(required_current_interoperability_term IN ITEMS
         "marc-cli-v59"
         "containing 69 archives"
         "does not exercise its full window"
-        "The current local schema-80 bundle"
-        "marc-cli-v80"
-        "lzss-position-distance-blocked-huffman-1m"
-        "90 archives"
+        "The current local schema-83 bundle"
+        "marc-cli-v83"
+        "lzss-position-distance-blocked-huffman-16m"
+        "All93 archives"
         "seven position-distance tANS archives"
         "schema78 with88 archives (IX-0096)"
-        "eighty-two foreign archives"
+        "every archive in the admitted schema"
         "Schema 58 requires"
         "Schema 57 requires"
         "schemas 1 through 56"
@@ -1996,12 +1996,12 @@ foreach(required_gtest_discovery_contract IN ITEMS
     endif()
 endforeach()
 string(FIND "${root_cmake_content}"
-    "set_tests_properties(marc_interoperability_schema_compatibility\n                PROPERTIES TIMEOUT 600)"
+    "set_tests_properties(marc_interoperability_schema_compatibility\n                PROPERTIES TIMEOUT 1800 RUN_SERIAL TRUE)"
     interoperability_timeout_offset)
 if(interoperability_timeout_offset EQUAL -1)
     message(FATAL_ERROR
-        "Interoperability schema compatibility must retain its 600-second "
-        "registered CTest timeout")
+        "Interoperability schema compatibility must retain its 1800-second "
+        "serial registered CTest timeout")
 endif()
 if(NOT root_cmake_content MATCHES
    "project\\(marc VERSION ([0-9]+\\.[0-9]+\\.[0-9]+)")

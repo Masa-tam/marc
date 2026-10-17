@@ -6988,9 +6988,9 @@ if(MARC_BUILD_TESTS)
                 COMMAND ${MARC_POWERSHELL_EXECUTABLE}
                     -NoProfile -ExecutionPolicy Bypass
                     -File ${CMAKE_CURRENT_SOURCE_DIR}/tests/interoperability_schema_compatibility.ps1
-                    -MarcCli $<TARGET_FILE:marc_position_tans_8m_cli_candidate>)
+                    -MarcCli $<TARGET_FILE:marc_position_blocked_huffman_16m_cli_candidate>)
             set_tests_properties(marc_interoperability_schema_compatibility
-                PROPERTIES TIMEOUT 600)
+                PROPERTIES TIMEOUT 1800 RUN_SERIAL TRUE)
         endif()
     endif()
 endif()

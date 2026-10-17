@@ -1465,3 +1465,5 @@ Query each actual scope and ABI; these are not physical peaks. Nine normal
 checks,499 independent raw fixtures and direct ASan/UBSan preserve failure
 and publication contracts. Earlier declarations and all starting88/preceding92
 archive bodies remain unchanged. CLI and later gates remain separate.
+The sixteen-MiB local CLI/exchange gates are closed at [IX-0101](interoperability.md).
+Final95-family hosted/external qualification remains separate.

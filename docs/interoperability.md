@@ -10,20 +10,21 @@ marc-interoperability-windows-msvc-x64
 marc-interoperability-ubuntu-ninja-x64
 ```
 
-The current local schema-80 bundle contains the same generated `input.bin`, the
+The current local schema-83 bundle contains the same generated `input.bin`, the
 frozen 42 stable-profile archives, twenty-five preceding experimental Format 2
 archives, seven position-distance Dynamic Range archives, seven
 position-distance rANS archives, seven position-distance tANS archives,
-two position-distance Blocked Huffman archives (64 KiB and1MiB), and `manifest.json`.
-The manifest declares codec set `marc-cli-v80` and records
+five position-distance Blocked Huffman archives (64KiB,1MiB,4MiB,8MiB,16MiB),
+and `manifest.json`. The manifest declares codec set `marc-cli-v83` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.
 
 The latest maintainer-confirmed hosted CI and external four-route result is
 schema78 with88 archives (IX-0096). Schema79 adds the first Blocked Huffman
-profile locally (IX-0097). Schema80 appends the one-MiB profile, qualified in
-all four local routes and historical/admission tests at IX-0098. No hosted CI
-or external90-archive result is claimed.
+profile locally (IX-0097). Schema80/81/82 append the one/four/eight-MiB profiles
+(IX-0098/0099/0100). Schema83 appends the sixteen-MiB profile, qualified through
+four local routes and all historical/admission checks at IX-0101. No hosted
+CI or external93-archive result is claimed.
 
 Download and extract a bundle from a successful GitHub Actions run. Build marc
 at the same commit on the platform being tested, then use an output directory
@@ -42,7 +43,7 @@ arguments. The verifier performs all of the following:
 
 1. validates the manifest version, exact codec set and profile order, leaf-only
    file names, sizes, and SHA-256 values;
-2. decodes all eighty-two foreign archives and compares their output byte
+2. decodes every archive in the admitted schema and compares its output byte
    for byte with `input.bin`;
 3. re-encodes `input.bin` with the local executable and compares every complete
    archive byte for byte with the foreign archive.
@@ -55,7 +56,7 @@ has this form:
 artifact: marc-interoperability-windows-msvc-x64
 local platform: <OS, architecture, compiler>
 commit: <manifest source_revision and local Git commit>
-result: Verified 82 archives from windows-msvc-x64 (...), revision <Git object ID>
+result: Verified <archive-count> archives from windows-msvc-x64 (...), revision <Git object ID>
 ```
 
 ## Schema compatibility
@@ -2358,3 +2359,33 @@ eight-MiB local profile under those explicit exceptions. Three larger profiles,
 the final95 local audit, user push, hosted CI and external four-route95
 confirmation remain open. The four local routes do not supply those external
 results.
+
+## IX-0101: sixteen-MiB native Huffman local qualification
+
+Schema83/`marc-cli-v83` appends
+`lzss-position-distance-blocked-huffman-16m` at index92. Its112-byte header
+matches identity2/12+1/32+2/7, window/frame16777216,56 contexts and extent4658.
+Both independently built producers preserve all92 preceding entries and the
+starting88 prefix, including entry/input property order, input descriptors
+and exact input/archive bytes. All93 archives restore and reproduce through
+four local self/cross routes. These are local results, not external reports.
+
+Historical conversion/execution completes for every schema1..83. Independent
+audit reads each actual restored and re-encoded body. All625 schema79..83
+Huffman admission negatives reject before codec launch and file publication,
+with empty output directories and absent launch markers. Retained full-run
+timing supports the1800-second serial test budget; no cases are removed.
+
+The local closure binds qualified format/core/token/frame/owner/API/CLI
+milestones,127 current source/test bindings and665 ordinary source/object
+pairs, normal optimization flags without sanitizer instrumentation, product
+hashes, retained runtime backups and exchange evidence. Earlier milestones
+independently prove267 positive/62 negative entropy wires, token/history and
+frame failure contracts,499 raw inputs, resource admission/rollback and CLI
+whole-file publication. Exchange round trips do not replace those checks.
+
+No new ratio/speed/physical-peak benchmark or fuzz is executed, as explicitly
+requested through this goal. Same-window size and performance targets remain
+unmeasured and are not reported as met. This closes the sixteen-MiB local
+profile under those exceptions. Two larger profiles, final95 local audit,
+user push, hosted CI and external four-route95 confirmation remain open.

@@ -42618,3 +42618,16 @@ pass; preserve pre-update products and the fixed executable location. No
 external/restricted implementation was consulted, and no fuzz or benchmark
 was executed. Exchange, final local profile audit and hosted/external gates
 remain unfinished.
+
+### CR-1906: 2026-10-17 — sixteen-MiB ordered exchange and local closure
+
+Author/reviewer: Codex. Follow IR-1350 with first-party producers, strict
+admission and historical compatibility paths. TVG-1531 and IX-0101 qualify
+all four93-archive local routes, exact92/88 prefixes and every actual output
+through schema83, with625 directed pre-launch Huffman refusals. The closure
+binds qualified milestones,127 current source/test hashes,665 ordinary
+source/object pairs, normal flags, products and retained pre-update artifacts.
+Keep all historical cases and derive the serial timeout from the retained
+full run. No external/restricted implementation was consulted; no fuzz or
+benchmark was executed. Performance targets remain unmeasured by request.
+The two larger profiles, final95 audit and hosted/external gates remain open.

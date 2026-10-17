@@ -14,6 +14,7 @@ def audit(baseline, candidate, additions):
     assert new['schema_version'] == old['schema_version'] + additions
     assert new['codec_set'] == f"marc-cli-v{new['schema_version']}"
     assert new['input'] == old['input'], 'Input descriptor changed'
+    assert list(new['input'].items()) == list(old['input'].items()), 'Input property order changed'
     for before, after in zip(old['archives'], new['archives']):
         assert list(before.items()) == list(after.items()), 'Entry property order changed'
     checked = []
