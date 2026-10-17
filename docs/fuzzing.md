@@ -2130,8 +2130,8 @@ consumers. The same exclusion applies to local broad CTest qualification.
 Retain all registered tests and source code. A show-only inventory at this
 checkpoint contains4476 tests, of which201 are excluded and4275 retained;
 no retained command names a fuzz entry or fuzz test filter. This inventory
-check executes no tests and is not a hosted CI result. Counts may grow as
-the remaining windows are added. Record later selected/excluded counts when
+check executes no tests and is not a hosted CI result. Counts change as
+later windows and qualified exclusions are applied. Record selected/excluded counts when
 qualifying the final tree. Explicitly review and remove the temporary CI
 execution exclusion after the maintainer's stated goal boundary; it must not
 be silently treated as completed fuzz coverage.

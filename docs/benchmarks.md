@@ -11799,3 +11799,28 @@ controls. This closes the eight-MiB corpus/speed/ordinary-peak measurement gate.
 Fuzz execution is omitted by user request. Schema82 exchange, the final local
 profile audit, larger windows and final95 local/hosted/external qualification
 remain unfinished.
+
+### Remaining native Huffman qualification: benchmark omission by request
+
+After BM-0253, the maintainer requests omission of further compression-ratio,
+encode/decode-speed and peak-memory benchmarks until the current seven-window
+goal finishes. Preserve all completed measurements and artifacts. Record later
+window comparisons, timing and physical peaks as omitted by request rather
+than measured, passed or inferred from smaller windows. Do not launch new
+resource-precursor measurement campaigns or repeat completed measurements.
+
+Format, independent vectors, restoration, determinism, differential and
+malformed-input tests, checked memory/resource admission, failure invariants,
+API/CLI integration and exchange compatibility remain required. Qualify
+logical resource queries, exact/one-short grants and actual construction as
+correctness tests; do not relabel these as physical-memory measurements.
+Further default limits must use checked resource requirements and documented
+construction evidence, with the absence of new process-peak measurements
+explicitly stated. The separate fuzz-execution exclusion remains in force.
+
+CI configures `MARC_BUILD_BENCHMARKS=OFF` and excludes benchmark/measurement
+test names alongside fuzz entries for this qualification. Local broad test
+selection must also omit benchmark commands, including diagnostic aliases
+whose names lack the word benchmark. Review these temporary exclusions after
+the requested goal boundary. Hosted CI and final95 external-route confirmation
+remain distinct from local correctness qualification.
