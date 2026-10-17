@@ -91,9 +91,15 @@ the reachable class25 short-match witness from the isolated class26 endpoint.
 Preserve frozen output exclusively and verify exact regeneration. Public
 defaults require checked resource queries and actual construction tests.
 TVG-1541 separately qualifies the bounded entropy core against independent
-wires, scalar failure invariants and wide metadata bounds. Token/history/frame
-integration, public resources/API/CLI, schema85/95 exchange and final audit
-remain unfinished.
+wires, scalar failure invariants and wide metadata bounds. TVG-1542 qualifies
+the private token integration with90 independent valid wires and7 actual
+history/length refusals in normal and direct ASan/UBSan builds. Production
+descriptors and payloads match between builds and are independently decoded.
+The full67108864-literal and260113-token overlap cases restore exactly;
+exact/one-short logical grants retain failure invariants. These are bounded
+correctness tests, not process-peak measurements or public default grants.
+Frame integration, public resources/API/CLI, schema85/95 exchange and final
+audit remain unfinished.
 
 Fuzz and further ratio/speed/physical-peak benchmarks are omitted through this
 goal by explicit request. Same-window contextual compression and performance

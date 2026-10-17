@@ -12010,3 +12010,15 @@ exact/one-short admission, sticky errors and terminal model usage. Verify
 independent frozen wires and wide15D arithmetic without allocating the maximum
 payload. Use finite direct ASan/UBSan tests without a fuzz runtime. Consult no
 external/restricted implementation and execute no fuzz or additional benchmark.
+
+### IR-1361: sixty-four-MiB private Huffman token integration
+
+Use the first-party typed-token validator, short-length escape and DD-1620's
+qualified scalar core. Apply the log26 dictionary identity and36T/10R envelope,
+validating history before assigning each private token. Commit ordinary token
+destinations only after exact entropy termination and raw-size checks. Extend
+finite independent supplied-model wires through the thirty-two-MiB transition
+and new endpoints, retaining earlier cases. Check full-frame literal/overlap
+restoration, aliases and conservative logical workspace grants without physical
+peak measurement. Consult no external/restricted implementation; execute no
+fuzz or additional ratio/speed/physical-peak benchmark.

@@ -42766,3 +42766,19 @@ evidence separately. Source/binary bindings and runtime preservation pass.
 No external/restricted implementation was consulted; no fuzz or additional
 benchmark was executed. Token/history/frame integration, public resources,
 API/CLI and exchange remain unfinished.
+
+### CR-1917: 2026-10-17 — sixty-four-MiB private Huffman token integration
+
+Author/reviewer: Codex. Follow IR-1361 using first-party typed-token validation,
+short-length escapes, the qualified bounded Huffman core and independent
+mathematical oracles. Preserve private single-pass token decoding and ordinary
+destination failure invariants. TVG-1542 qualifies90 supplied-model wires,
+7 actual refusals per build, matching production descriptors/payloads, full
+literal/overlap reconstruction and conservative logical storage admission.
+Five normal checks and direct ASan/UBSan pass; source/binary bindings and
+validated runtime preservation pass. Keep every boundary case and derive
+the serial timeout from the full observed run. No external/restricted
+implementation was consulted; no fuzz or additional benchmark was executed.
+Physical peaks and compression/performance goals remain unmeasured by explicit
+request. Frame/public-resource integration, API/CLI, exchange and final
+qualification remain unfinished.

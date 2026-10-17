@@ -25330,3 +25330,24 @@ Instrumented qualification uses a fixed runner snapshot; an earlier interrupted
 runner is retained and excluded from qualification. Token/history/frame
 integration, public resources/API/CLI and exchange remain pending. No fuzz or
 additional ratio/speed/physical-peak benchmark is executed.
+
+### TVG-1542: sixty-four-MiB private Huffman token integration
+
+Qualify90 independent supplied-model token wires and7 actual history/length
+refusals in normal and direct ASan/UBSan builds. Preserve the preceding
+distance transitions and add the thirty-two-MiB boundary and final reachable
+sixty-four-MiB distances. Include class26 reset-history refusals, late raw-size
+and entropy-finish errors, aliases, short destinations/tables and exact/one-short
+logical plan/encode/decode grants. Validate every token before assigning private
+scratch and commit ordinary destinations only after complete validation.
+Independently decode all90 production-selected descriptor/payload pairs and
+require byte-for-byte equality between builds. Retained fixture inputs also
+match. Five normal checks include the preceding profile's token regressions;
+all pass. The full67108864-literal and260113-token overlap cases restore
+exactly, including one-short failure retention. Logical grants are finite-test
+storage charges, not physical peaks or proposed public defaults. Retain the
+complete directed set and derive its600-second serial budget from the observed
+175.14-second differential run. Bind sources/binaries and preserve validated
+runtime products. No fuzz or additional ratio/speed/physical-peak benchmark is
+executed. Frame publication, public resources/API/CLI, exchange and final
+qualification remain unfinished.
