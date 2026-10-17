@@ -25596,3 +25596,20 @@ the corpus manifest, rounding and aggregate calculations. All checks pass;
 BM-0256 records all per-member values and the measured encode-time cost.
 Tool hashes remain unchanged throughout the serial campaign. No hosted or
 external run, new random fuzz coverage or worst-case RSS ceiling is inferred.
+
+### TVG-1555: fixed-runtime deployment and byte-cost tie retention
+
+Preserve the previously validated runtime products before any update. Restore
+the ordinary local output configuration and promote only the already qualified
+runtime files, checking byte identity to the measured stage. Seven fixed-path
+core/stream/owner/API/static/shared-C/documentation smoke checks pass. A fixed-path
+corpus encode exactly matches the qualified revised body and restores the source
+hash. Retain all staged and old files. A hand-checkable all-overridden binary
+field has equal two-byte pooled records before/after refit and zero payload;
+require the original complete one-bit binary pool to remain on the byte-cost
+tie. That additional assertion passes in the normal core test. Only the test
+source changed after the corpus run. Final directed ASan/UBSan units and the
+same140/57 frozen differential cases also pass with that assertion included;
+all199 diagnostic stderr files are empty. Production code and measured tool hashes
+are unchanged. The integration remains local evidence, not another CI or
+external execution.

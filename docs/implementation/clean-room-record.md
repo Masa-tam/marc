@@ -42960,3 +42960,14 @@ differences. Resource defaults are unchanged; explicit additional encoder
 admission is not conflated with RSS. All former generated bodies/products stay
 retained. No external/restricted implementation was consulted, and no claim
 about hosted/external validation of this revision is made from local evidence.
+
+### CR-1930: 2026-10-17 — validated residual-pool runtime promotion
+
+Author/reviewer: Codex. TVG-1555 promotes byte-identical qualified runtime files
+to the established fixed location after retaining the old products. Fixed-path
+API/static/shared smoke and corpus identity checks pass. A final independent
+hand case pins original-plan retention on exact byte-cost ties. No production
+logic changed after the measured cohort. The requested local integration is
+complete with recorded size/time/resident tradeoffs; prior hosted/external
+receipts remain revision-specific. No external implementation reference or
+unmeasured performance guarantee is introduced.

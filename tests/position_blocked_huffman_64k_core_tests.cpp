@@ -259,6 +259,9 @@ void units() {
         only_overrides.push_back({context,static_cast<unsigned>(context)});
     }
     check(all_overrides->finish({},plan)==Error::none && plan.field_mask==1 && plan.override_mask==3 && plan.payload_size==0,"active field with no pooled lookup");
+    check(plan.models[0].single_symbol==position_blocked_huffman_no_single
+        && plan.models[0].lengths[0]==1 && plan.models[0].lengths[1]==1,
+        "equal total bytes retain original unused binary pool rather than singleton refit");
     written=777;check(encode_position_blocked_huffman_64k(plan,only_overrides,{},*encode_tables,{},written)==Error::none && written==0,"all overrides zero-bit encode");
     check(decoder.begin(plan,{}, {},*decode_tables)==Error::none,"all overrides decoder");
     for (const auto request:only_overrides) check(decoder.read(request.context,value)==Error::none && value==request.symbol,"all overrides symbol");

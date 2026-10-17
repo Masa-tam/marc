@@ -79,3 +79,13 @@ universal speed or memory improvement. No default grant is reduced.
 All previous products remain saved. Only fully qualified staged runtime files
 may replace the fixed Release products. Hosted CI and external verification for
 the revised policy remain distinct, not inherited from earlier IX-0104 results.
+
+### Fixed runtime promotion
+
+TVG-1555 confirms that the validated staged runtime files are copied to the
+existing fixed Release location with identical hashes, after preserving previous
+products. Fixed-location public smoke tests and a corpus encode/decode identity
+check pass. An additional hand case pins exact-byte-cost ties to the unchanged
+first-stage binary pool, rather than accepting a same-size singleton rewrite.
+This closes the requested local integration and measurement work; no updated
+hosted CI or external-route result is implied.
