@@ -35066,3 +35066,15 @@ child exit status; do not charge inherited launcher high-water as codec RSS.
 An independent retained-artifact audit reopens every archive/restoration and
 raw receipt before deriving public tables. Never substitute a revised helper's
 unmeasured output for an original observation.
+
+### DD-1623: sixty-four-KiB Huffman size-miss diagnosis
+
+The [retained-wire study](../design/lzss-position-distance-blocked-huffman-64k-size-diagnosis.md)
+attributes all four BM-0250 misses to descriptor cost exceeding payload
+savings with identical token streams. A diagnostic-only residual-pool refit
+keeps original override decisions/codebooks, replays actual streams and tests
+exact frame size before selecting a candidate. All twelve experimental outputs
+improve and restore with the unchanged decoder. Preserve production planning,
+deterministic outputs and exchange bytes; the experiment is not an integrated
+optimization. TVG-1551 records verification and the design records unmeasured
+speed/resource costs and further policy/compatibility work before adoption.

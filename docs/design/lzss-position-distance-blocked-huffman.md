@@ -415,3 +415,11 @@ gates are superseded. All seven requested profiles are complete with their
 documented tradeoffs. The64KiB size misses on dickens, nci, webster and xml
 remain explicit; retain both selectors, without silent fallback or a claim
 that every input improves. No codec representation or default changes here.
+
+### Subsequent size-miss investigation
+
+[DD-1623](lzss-position-distance-blocked-huffman-64k-size-diagnosis.md) and
+BM-0255 diagnose the four64KiB misses and qualify a residual-pool experiment.
+The experimental outputs restore under the unchanged decoder and improve all
+twelve corpus members. This is not a production-policy change; the original
+BM-0250 results, encoder behavior and IX-0104 qualification remain intact.

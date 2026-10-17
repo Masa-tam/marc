@@ -25528,3 +25528,22 @@ validated executable hash remains unchanged. These checks pass; documentation
 validation is required for the recording edit. External execution evidence
 remains maintainer-reported and is recorded separately at IX-0104. No new fuzz,
 benchmark, codec execution or hosted run is implied by this receipt audit.
+
+### TVG-1551: native Huffman four-miss attribution and pool-refit experiment
+
+Verify all24 original measured wire hashes and all twelve corpus identities.
+Decode both streams and compare every typed token in3239 matched frames.
+Replay original native requests to exact original bytes. Reconcile actual
+descriptor record/prefix and per-field payload-bit counts with both headers;
+an independent Python pass checks frame sizes, bit rounding and totals.
+Generate fixed-mask residual-pool candidates under new names and restore all
+twelve through the unchanged validated CLI. A second full run reproduces all
+candidate hashes. The frozen mathematical parser separately checks all3239
+original/candidate descriptor pairs, identical overrides/activation and token
+metadata, and non-increasing complete frame sizes. All checks pass. The
+diagnostic builds with the existing optimized toolchain and passes a separate
+portable compilation check. Reusing an existing candidate destination is
+rejected without changing its bytes or creating a temporary file. No production
+codec code or validated executable
+changes. No speed/physical-peak or new fuzz result is claimed. BM-0255 records
+actual sizes; DD-1623 records attribution, limits and follow-up requirements.

@@ -11987,3 +11987,51 @@ CI and four external95-archive routes for
 status above. BM-0250..0254 supply the full seven-window measurement record;
 the64KiB per-material size misses and all speed/memory tradeoffs remain intact.
 No benchmark values are changed or inferred from the external console reports.
+
+### BM-0255: sixty-four-KiB native Huffman size attribution and pool-refit experiment
+
+[DD-1623](design/lzss-position-distance-blocked-huffman-64k-size-diagnosis.md)
+attributes the four BM-0250 misses using retained original wires. All3239
+frame pairs have identical typed tokens; exact original native payload replay
+and per-field descriptor/bit accounting pass. Each of the four native payloads
+is already smaller than contextual, but its descriptor increase is larger.
+The complete-stream deltas are descriptor/payload bytes: dickens+1091/-957,
+nci+4876/-3667, webster+3790/-1547, xml+601/-371. Stream/frame envelopes cancel.
+
+A diagnostic-only fixed-mask residual-pool refit rebuilds each shared model
+from contexts that actually use it, retaining all original override codebooks.
+Retain the original frame when exact candidate descriptor-plus-payload size
+does not strictly improve. These are actual experimental streams, not new
+production encoder outputs or a replacement for the frozen BM-0250 values.
+
+|Member|Original native bytes|Contextual bytes|Experimental bytes|Experiment minus original native|
+|---|---:|---:|---:|---:|
+|dickens|4,163,400|4,163,266|4,157,139|-6,261|
+|mozilla|21,081,808|21,474,136|20,999,921|-81,887|
+|mr|3,762,812|3,764,750|3,710,099|-52,713|
+|nci|3,581,749|3,580,540|3,579,635|-2,114|
+|ooffice|3,481,398|3,483,926|3,467,782|-13,616|
+|osdb|4,411,518|4,412,335|4,405,006|-6,512|
+|reymont|2,055,459|2,055,913|2,052,869|-2,590|
+|samba|6,022,949|6,033,368|6,016,802|-6,147|
+|sao|6,030,211|6,128,512|5,999,459|-30,752|
+|webster|13,161,553|13,159,310|13,144,054|-17,499|
+|xml|780,366|780,136|780,021|-345|
+|x-ray|6,653,996|6,704,767|6,631,403|-22,593|
+|Total|75,187,219|75,740,959|74,944,190|-243,029|
+
+The experimental total improves original native by243,029 bytes,0.3232318%,
+and contextual by796,769 bytes,1.0519658%. Every member improves over both.
+The four previous misses become smaller than contextual by6,127/905/15,256/
+115 bytes for dickens/nci/webster/xml respectively. Improvements come from
+literal/length/distance-class pools; distance-bit payload counts do not change
+in this refit. A non-singleton binary Huffman model still uses one bit per symbol.
+
+Two full runs reproduce all twelve candidate hashes, and the unchanged CLI
+restores exact source hashes. A separate frozen mathematical parser verifies
+all3239 original/candidate descriptor pairs and unchanged overrides. TVG-1551
+records checks. No encode/decode throughput or physical peaks were measured
+for this experiment. Existing CLI, admission defaults, production byte streams
+and95-archive bundle remain unchanged. Integration requires a deliberate
+encoder-policy/baseline decision and correctness/resource/performance validation;
+decoder compatibility alone does not establish adoption readiness.

@@ -12092,3 +12092,13 @@ and64MiB profiles directly; try the existing64MiB API with both window/frame
 set to32MiB. Admit that comparison only after accepted configuration, actual
 wire identity/extent checks and exact restoration. Keep fresh-process physical
 peaks separate from logical queries and codec-only timing separate from I/O.
+
+### IR-1368: sixty-four-KiB native Huffman retained-wire diagnosis
+
+Use only repository-authored DD-1610, BM-0250, both Huffman descriptor formats,
+canonical length-limited construction, typed-token decoders and the frozen
+independent mathematical vector parser. Inspect current pool/override planning
+and retained normal-build archives; do not consult external implementation
+code. DD-1623's residual-pool experiment keeps tokens and overrides fixed and
+reuses the first-party package primitive. Binary Huffman's two-symbol length
+constraint follows directly from the complete prefix-code requirement.

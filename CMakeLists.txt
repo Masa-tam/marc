@@ -9505,6 +9505,11 @@ if(MARC_BUILD_BENCHMARKS)
 endif()
 
 if(MARC_BUILD_BENCHMARKS)
+    add_executable(marc_position_blocked_huffman_64k_diagnose
+        benchmarks/position_blocked_huffman_64k_diagnose.cpp)
+    target_compile_features(marc_position_blocked_huffman_64k_diagnose PRIVATE cxx_std_20)
+    target_include_directories(marc_position_blocked_huffman_64k_diagnose PRIVATE src)
+    target_link_libraries(marc_position_blocked_huffman_64k_diagnose PRIVATE marc::static)
     add_executable(marc_position_blocked_huffman_large_measure
         benchmarks/position_blocked_huffman_large_measure.cpp)
     target_compile_features(marc_position_blocked_huffman_large_measure PRIVATE cxx_std_20)

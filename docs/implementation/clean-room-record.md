@@ -42911,3 +42911,16 @@ statements describe historical milestones; the requested goal is complete.
 This edit only records evidence and status, without new implementation,
 external references, codec/wire changes or a release/legal guarantee. Hosted
 jobs and external binaries were not independently inspected by this audit.
+
+### CR-1926: 2026-10-17 — native Huffman size-miss investigation
+
+Author/reviewer: Codex. Follow IR-1368 using first-party formats, current
+planner, retained measurement artifacts and independent vector parser. No
+external/restricted implementation was consulted. The diagnostic identifies
+net descriptor overhead with identical tokens and tests fixed-mask residual
+pool reconstruction as a non-production experiment. TVG-1551 qualifies actual
+candidate streams, repeated determinism and unchanged-decoder restoration;
+BM-0255 and DD-1623 retain all results and limitations. Original formats,
+production planning, generated products, fixed executable and the completed
+IX-0104 evidence remain unchanged. No speed, resource or new release claim is
+derived from the size experiment.
