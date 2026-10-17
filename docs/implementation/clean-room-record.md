@@ -43089,3 +43089,12 @@ registrations. Decoder grammar and public defaults are unchanged. Keep qualified
 smaller-window products intact and build16MiB candidates separately. No external
 implementation is consulted. Full public, corpus and final runtime gates remain
 pending at this milestone.
+
+### CR-1942: 2026-10-18 — sixteen-MiB revised-producer public qualification
+
+Author/reviewer: Codex. TVG-1567 adds six passing independent-wire/public/C/CLI
+registrations. Preserve frozen oracles and the existing serial/time-limit policy.
+Keep failure/publication guarantees, decoder grammar and public defaults
+unchanged. API/CLI notes separate the candidate producer from remaining corpus
+and common-runtime gates. Only first-party references and retained products are
+used; no external implementation is consulted.
