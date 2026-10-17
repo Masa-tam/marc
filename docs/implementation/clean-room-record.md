@@ -42671,3 +42671,18 @@ runtime artifacts, finite-test evidence and source/binary bindings. No external
 or restricted implementation was consulted. No fuzz or additional benchmark
 was executed. Frame publication, public resources/API/CLI and exchange remain
 unfinished; performance targets remain unmeasured by explicit request.
+
+### CR-1910: 2026-10-17 — thirty-two-MiB Huffman frame quarantine
+
+Author/reviewer: Codex. Follow IR-1354 using first-party bounded header parsing,
+private token reconstruction and the existing quarantine state machine.
+Specialize DD-1619's exact identities,35T/10R bounds and descriptor extent.
+TVG-1535 qualifies83 independent streams,82 matching production frames and
+seven pre-publication refusals under normal and direct ASan/UBSan builds.
+Check full literal restoration, prefix admission, split buffers, terminal
+handling and preservation of earlier successful frames. Correct an inherited
+test endpoint while preserving its initial evidence; production limits remain
+unchanged. Bind retained sources/binaries and preserve the fixed runtime.
+No external or restricted implementation was consulted; no fuzz or additional
+benchmark was executed. Owned transforms, public API/CLI, exchange and later
+profile qualification remain unfinished.

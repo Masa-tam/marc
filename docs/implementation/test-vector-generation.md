@@ -25194,3 +25194,25 @@ bind source/binary hashes and preserve the validated runtime. Keep serial
 execution; the retained differential duration supports a300-second ceiling.
 Raw frame quarantine, public resources/API/CLI and exchange remain pending.
 No fuzz or further ratio/speed/physical-peak benchmark is executed.
+
+### TVG-1535: thirty-two-MiB native frames and publication quarantine
+
+Wrap83 independently supplied streams/frames and check82 production frames
+with the mathematical entropy oracle. Compare all fixture bytes and generated
+frames between normal and direct ASan/UBSan builds. Seven history/length
+failures publish no raw bytes. Verify the exact112-byte native identity,
+64-byte frame header,36-byte single-literal descriptor and100-byte zero-payload
+frame. Exercise every small split/truncation, one-byte source/sink, zero output,
+sticky terminal states, strict trailing data, final short partitions and reset
+history. A failed second frame retains the first; an invalid descriptor is
+rejected before its payload byte is consumed or stored. Check ordinary output
+and unused tails, alias preflight and exact/one-short logical admission.
+Restore a full thirty-two-MiB literal frame and validate maximum metadata
+335544320/629145600/629148242 without allocating the maximum payload. The
+initial upper-endpoint test retained a sixteen-MiB literal; preserve that
+failure and correct the test to33554433 without changing production behavior.
+Seven normal checks and direct instrumented checks pass with empty diagnostics;
+bind sources/binaries and preserve the validated runtime. Retain serial
+execution with a300-second differential ceiling supported by the measured
+finite-test duration. Owned transforms, public API/CLI and exchange remain
+pending. No fuzz or additional ratio/speed/physical-peak benchmark is executed.

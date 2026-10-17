@@ -11929,3 +11929,15 @@ independent supplied-model wires through the new distance transitions and
 full-frame literal/overlap cases. Check conservative logical workspace grants,
 not physical peak measurements. Consult no external/restricted implementation;
 execute no fuzz or further ratio/speed/physical-peak benchmark.
+
+### IR-1354: thirty-two-MiB Huffman framing and private publication
+
+Use the qualified first-party sixteen-MiB frame/quarantine controller and
+DD-1619's exact thirty-two-MiB headers, native entropy and typed-token layer.
+Validate35T/10R, eight-byte masks and all descriptor metadata before buffering
+payload. Restore tokens and raw bytes privately; failed frames must never
+enter the drain state, and earlier committed frames remain visible unchanged.
+Check independent stream/frame wires, exact termination, partition/reset,
+split buffers, malformed prefixes and conservative logical admission without
+allocating maximum payloads. Consult no external or restricted implementation;
+execute no fuzz or ratio/speed/physical-peak benchmark.
