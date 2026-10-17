@@ -11846,3 +11846,13 @@ ordinary output commit only after complete entropy/history validation. Verify
 independent supplied-model wires, production-wire mathematical decoding,
 full reset-frame token spans, exact/one-short grants and late rejection.
 No external/restricted implementation, fuzz runtime or benchmark is used.
+
+### IR-1346: sixteen-MiB Huffman frame quarantine and streaming decoder
+
+Specialize the qualified first-party native frame/controller for DD-1618,
+including exact stream identity, checked prefix/envelope bounds and ordinary
+destinations committed only after private entropy, token and raw validation.
+Use finite independent frames and exhaustive small stream splits/cuts to
+check transactional parsing, reset history, sticky state, retained preceding
+frames and descriptor refusal before payload intake. Verify direct ASan/UBSan
+without libFuzzer. No external/restricted implementation or benchmark is used.

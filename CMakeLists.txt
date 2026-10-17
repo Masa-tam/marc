@@ -84,12 +84,15 @@ set(MARC_SOURCES
     src/frame/lzss_position_blocked_huffman_1m_format.cpp
     src/frame/lzss_position_blocked_huffman_4m_format.cpp
     src/frame/lzss_position_blocked_huffman_8m_format.cpp
+    src/frame/lzss_position_blocked_huffman_16m_format.cpp
     src/frame/lzss_position_blocked_huffman_1m_frame.cpp
     src/frame/lzss_position_blocked_huffman_4m_frame.cpp
     src/frame/lzss_position_blocked_huffman_8m_frame.cpp
+    src/frame/lzss_position_blocked_huffman_16m_frame.cpp
     src/frame/lzss_position_blocked_huffman_1m_stream_decoder.cpp
     src/frame/lzss_position_blocked_huffman_4m_stream_decoder.cpp
     src/frame/lzss_position_blocked_huffman_8m_stream_decoder.cpp
+    src/frame/lzss_position_blocked_huffman_16m_stream_decoder.cpp
     src/frame/lzss_position_blocked_huffman_1m_owned.cpp
     src/frame/lzss_position_blocked_huffman_4m_owned.cpp
     src/frame/lzss_position_blocked_huffman_8m_owned.cpp
@@ -10274,6 +10277,22 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_8m_token_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-8m-token-differential)
     set_tests_properties(marc_position_blocked_huffman_8m_token_differential PROPERTIES TIMEOUT 120)
+    foreach(kind frame stream)
+        add_executable(marc_position_blocked_huffman_16m_${kind}_tests
+            tests/position_blocked_huffman_16m_${kind}_tests.cpp)
+        target_compile_features(marc_position_blocked_huffman_16m_${kind}_tests PRIVATE cxx_std_20)
+        target_include_directories(marc_position_blocked_huffman_16m_${kind}_tests PRIVATE src)
+        target_link_libraries(marc_position_blocked_huffman_16m_${kind}_tests PRIVATE marc::static)
+    endforeach()
+    add_test(NAME marc_position_blocked_huffman_16m_frames COMMAND marc_position_blocked_huffman_16m_frame_tests)
+    add_test(NAME marc_position_blocked_huffman_16m_stream COMMAND marc_position_blocked_huffman_16m_stream_tests)
+    set_tests_properties(marc_position_blocked_huffman_16m_frames marc_position_blocked_huffman_16m_stream PROPERTIES TIMEOUT 30 RUN_SERIAL TRUE)
+    add_test(NAME marc_position_blocked_huffman_16m_frame_differential
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_blocked_huffman_16m_frame_differential.py
+            $<TARGET_FILE:marc_position_blocked_huffman_16m_frame_tests>
+            ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-16m-frame-differential)
+    set_tests_properties(marc_position_blocked_huffman_16m_frame_differential PROPERTIES TIMEOUT 120 RUN_SERIAL TRUE)
     foreach(kind frame stream)
         add_executable(marc_position_blocked_huffman_8m_${kind}_tests
             tests/position_blocked_huffman_8m_${kind}_tests.cpp)

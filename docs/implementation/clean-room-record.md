@@ -42562,3 +42562,18 @@ checked storage admission. No external/restricted implementation was consulted;
 no fuzz or benchmark was executed. These are token-layer correctness checks,
 not public defaults, physical peaks or raw-frame publication qualification.
 Frames, streaming owners, public API/CLI, exchange and final audit remain open.
+
+### CR-1902: 2026-10-17 — sixteen-MiB frame quarantine and streaming decoder
+
+Author/reviewer: Codex. Follow IR-1346 and DD-1618 using first-party frame
+parsers, the bounded private token path and raw reconstruction. TVG-1527
+qualifies76 independent streams,75 production frames and7 pre-publication
+refusals per normal/direct ASan/UBSan build. Verify exhaustive small splits,
+late frame failure, prior committed output, descriptor-before-payload refusal,
+transactional bounds, logical grants and full literal-frame restoration.
+Retain initial test failures; account for the frame header's minimum private
+decoder footprint and isolate structural endpoint checks from resource limits.
+No product limit was loosened to accommodate these test corrections. No
+external/restricted implementation was consulted; no fuzz or benchmark was
+executed. Owned transforms, public API/CLI, defaults, exchange and final audit
+remain unfinished.

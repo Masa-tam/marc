@@ -88,7 +88,14 @@ decoding, full-frame literal/match spans and exact/one-short storage grants.
 Late token or entropy rejection retains ordinary destinations. Token scratch
 may contain a private valid prefix and must be discarded after failure.
 
-Frames/owners, public API/CLI, resource
+TVG-1527 qualifies transactional frame parsing, private raw restoration and
+the caller-scratch streaming decoder. Normal/direct ASan/UBSan checks restore
+76 independent streams, independently inspect75 production frames and reject
+7 invalid frames before publication. Small exhaustive splits, reset history,
+prior committed frames, descriptor-before-payload refusal, full literal-frame
+hand bytes and exact/one-short logical budgets pass.
+
+Owned transforms, public API/CLI, resource
 admission/default construction, schema83/93 exchange and final audit remain
 open. Further ratio/speed/physical-peak benchmarks and fuzz execution are
 omitted by user request through this goal; do not label them passed. Select

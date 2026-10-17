@@ -25042,3 +25042,24 @@ workspace; they are not public defaults or physical-memory measurements.
 Run five normal checks including preceding eight-MiB regression and direct
 instrumented finite units/differential. No fuzz or benchmark is executed.
 Raw-frame quarantine, streaming owners, API/CLI and schema83/93 remain open.
+
+### TVG-1527: sixteen-MiB native frames and caller-scratch streaming quarantine
+
+Restore76 independently constructed streams/frames, including the empty
+header-only stream, and independently decode75 re-encoded production frames.
+Reject7 history/extent-invalid frames with zero committed counts and unchanged
+ordinary raw destinations. Compare all independent inputs and75 production
+frames between normal and directly instrumented ASan/UBSan builds. Verify
+exact stream identities, every fixed header byte, all header/frame cuts,
+reserved fields, prefix-before-payload admission and reset history. Exhaust
+small two-frame splits with one-byte buffers, short buffers, unsupported
+flags, sticky terminal states, final empty EndInput and strict trailing data.
+Preserve prior valid output while refusing a failed second frame; do not drain
+any failed-frame raw prefix. Check exact/one-short constructor and nested
+frame budgets, maximum metadata without payload allocation and a full16MiB
+literal frame against its hand descriptor and raw restoration. Test grants
+include the header's promised private decoder footprint, even for encoding;
+keep structural invalid-size checks separate from configured resource limits.
+Seven normal checks and the direct instrumented frame/stream/differential
+closure pass. No fuzz or benchmark is executed. Owned transforms, public
+API/CLI, default construction, schema83/93 exchange and final audit remain open.
