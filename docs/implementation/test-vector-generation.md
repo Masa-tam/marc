@@ -25680,3 +25680,14 @@ stream, owning and API registrations pass alongside documentation layout: ten
 registrations total. Keep decoder grammar and charges unchanged. Full public
 raw/CLI qualification, matched corpus comparisons and final retained95/runtime
 audit remain pending here; larger windows have not yet been integrated.
+
+### TVG-1561: four-MiB revised-producer public qualification
+
+The independent entropy differential, owning raw differential, public raw
+differential, static-C, shared-C and CLI registrations pass: six further
+registrations, with unchanged frozen oracles and timeout settings. Public raw
+differential takes122.80 seconds in this serial run; this is test wall time,
+not benchmark throughput. Existing failure invariance, failed-frame withholding,
+query/admission and allocation rollback remain qualified. CLI identity and
+transactional file publication pass. Matched corpus measurements, saved-old
+decoder corpus routes and final family/runtime audit remain pending here.

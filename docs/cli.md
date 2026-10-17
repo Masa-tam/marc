@@ -1171,3 +1171,8 @@ TVG-1558 qualifies current CLI identity and transactional failure publication.
 Corpus measurements and old/new corpus restoration remain separate gates;
 no other larger-window integration is implied at this milestone. Candidate
 runtime files remain staged until the full local qualification permits promotion.
+
+TVG-1561 additionally qualifies the existing
+`lzss-position-distance-blocked-huffman-4m` selector with the same candidate
+policy and unchanged decoder grammar. Determinism and transactional failure
+publication pass; corpus and final family/runtime gates remain separate.

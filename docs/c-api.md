@@ -1571,3 +1571,8 @@ Query the current implementation; do not reuse an older minimum as a fixed
 constant. Decoder charges, public structures and default grants are unchanged.
 TVG-1558 qualifies static/shared and public failure paths; corpus performance
 and old/new corpus compatibility are separate pending gates at that milestone.
+
+TVG-1561 also qualifies the4MiB candidate's static/shared public paths under
+DD-1625. Its query includes the corresponding descriptor-plus4096 private
+encoder charge. Decoder requirements, ABI and defaults remain unchanged;
+matched corpus measurements and final family/runtime qualification are separate.

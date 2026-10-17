@@ -43025,3 +43025,11 @@ frozen wire vectors. TVG-1560 supplies ten passing core/public-path registration
 and destination-retaining quota checks. Keep the measured1MiB products and source
 snapshots intact and build4MiB candidates separately. No external implementation
 is consulted. Full public, measurement and final compatibility gates are pending.
+
+### CR-1936: 2026-10-18 — four-MiB revised-producer public qualification
+
+Author/reviewer: Codex. TVG-1561 adds six passing independent-wire/public/C/CLI
+registrations. Keep frozen oracles, failure/publication contracts, decoder grammar
+and test limits unchanged. API/CLI notes distinguish the candidate producer
+revision from remaining corpus and family/runtime gates. Only first-party
+references and retained products are used; no external implementation is consulted.
