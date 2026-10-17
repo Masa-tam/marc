@@ -1147,3 +1147,16 @@ preceding archives. Existing target/temporary files and pre-update runtime
 artifacts are preserved. Schema85/95 exchange and the final family local audit
 are qualified at [IX-0103](interoperability.md). Later hosted CI and external
 four-route95 confirmation remain separate.
+
+### Revised64KiB position-distance Huffman producer output
+
+The existing `lzss-position-distance-blocked-huffman` selector now uses the
+approved residual-pool reference policy in DD-1624. No new selector, stream ID
+or decoder rule is introduced. Decode accepts prior and revised streams; the
+previous decoder also accepts revised codebooks. Re-encoding an old64KiB
+archive's raw content may intentionally differ from its old body. Preserve old
+artifacts and compare deterministic reproduction within the appropriate producer
+revision; do not confuse cross-revision encoder differences with decode failure.
+The other six native Huffman selectors retain their policy. TVG-1553 qualifies
+whole-file failure publication and static/shared public paths. Updated products
+are staged and validated before promotion to the existing fixed Release path.

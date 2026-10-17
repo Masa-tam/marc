@@ -42935,3 +42935,15 @@ fully validated before success-only destination commit, with explicit extra
 workspace admission. TVG-1552 qualifies hand cases and retained differential/
 failure tests. Public paths, legacy-decoder compatibility and speed/resident
 measurements are not inferred from the core milestone and remain to be recorded.
+
+### CR-1928: 2026-10-17 — revised64KiB public path and legacy evidence
+
+Author/reviewer: Codex. The first-party public paths retain the existing ABI
+and decoder grammar under DD-1624. TVG-1553 qualifies owner/API/static/shared
+and CLI paths, exact and one-short budgets, fault cleanup and failure quarantine.
+Directed sanitizer units and frozen differential wires pass. IX-0105 separates
+the intentional64KiB re-encoding difference from restoration of all95 retained
+archives and exact reproduction of the other94. Stage all new products away
+from the validated fixed runtime; retain the previous release products. No
+external/restricted implementation reference was used. Corpus cross-policy
+decoder and performance evidence remains separate from this public milestone.

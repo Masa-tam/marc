@@ -1549,3 +1549,15 @@ are not physical peaks. Earlier declarations and all starting88/preceding94
 archive bodies remain unchanged. CLI and schema85/95 exchange and the final
 family local audit are qualified at [IX-0103](interoperability.md). Hosted CI
 and external four-route95 confirmation remain separate.
+
+### Revised64KiB native Huffman output policy
+
+[DD-1624](design/lzss-position-distance-blocked-huffman-64k-pool-refit.md)
+explicitly revises the default64KiB encoder reference to refit residual pools.
+Public structures, ABI, selector and decoder grammar are unchanged. Existing
+streams remain valid; re-encoding under the new policy can change bytes. Query
+the current encoder's resource requirements: its additional conservative
+private charge is one descriptor plus4096 bytes, propagated through encoder
+workspace accounting. Decoder requirements and default grants remain unchanged.
+Exact/one-short admission and allocation-failure rollback remain mandatory.
+TVG-1553 records static/shared public qualification separately from measurements.

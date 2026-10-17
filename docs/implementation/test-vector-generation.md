@@ -25564,3 +25564,20 @@ The eight core/vector/token/frame/stream registrations pass after updating the
 independently stated exact token-planner quota for the additional workspace.
 Both exact and one-short quota assertions remain required; no limit test is
 removed. The documentation layout check also passes at this core milestone.
+
+### TVG-1553: revised64KiB public and prior-decoder qualification
+
+The eight owner/API/static-C/shared-C/raw-differential/CLI/measurement-path
+registrations pass. Retain499 independent raw fixtures, public query/output
+retention, exact/one-short admission, allocation-fault rollback, partial-buffer
+determinism and failed-frame/file quarantine. The two raw differential tests
+complete in99.99 and100.56 seconds under the existing120-second registrations;
+no tests, cases or limits are removed. Direct ASan/UBSan core qualification
+also passes its units,140 supplied wires and57 malformed cases with empty
+diagnostics. This is directed sanitizer coverage, not a new random fuzz run.
+
+The staged revised CLI additionally decodes all95 old bundle bodies and
+reproduces every re-encoded body except the explicitly changed64KiB native
+profile. All original hashes remain intact. IX-0105 records this policy boundary.
+Old/new corpus decoder cross-routes, size identity to the retained experiment,
+and speed/physical-peak measurements remain to be recorded after completion.

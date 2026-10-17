@@ -2514,3 +2514,22 @@ exchange, hosted-CI and external four-route95 goal. Earlier pending statements
 describe their milestone state and are superseded by this final receipt. The
 following documentation-only recording commit is not itself another CI or
 external execution, and does not change codecs, defaults, schema or artifacts.
+
+## IX-0105: revised64KiB encoder policy and retained95-body compatibility
+
+DD-1624 explicitly revises only the64KiB native Huffman producer policy. Keep
+schema85 and the95-selector order: no decoder-visible representation changes.
+The staged revised CLI decodes all95 retained previous-policy archives to
+their exact input hashes. Re-encoding their inputs reproduces all94 other
+bodies, including the starting88 and all six larger native Huffman profiles.
+Only the approved64KiB native body changes. Every old archive remains retained
+and still matches its original hash. These are local executions, not new
+hosted or external verification results.
+
+Old64KiB archive restoration remains required; old-body reproduction by the
+revised encoder is intentionally not promised. Historical receipts and old
+products must not be rewritten to manufacture cross-policy byte identity.
+Current-policy bundle verification still requires exact deterministic bytes.
+The producer source revision distinguishes these evidence sets; no new schema
+or silent verifier exemption is added. TVG-1553 supplies public/failure tests.
+Corpus old/new decoder cross-checks and measured speed/peaks are separate gates.
