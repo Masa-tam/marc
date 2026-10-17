@@ -11989,3 +11989,14 @@ local self/cross execution routes. Bind independent headers, milestone receipts,
 normal compiled source/object pairs and preserved products. Consult no external
 or restricted implementation; execute no fuzz or additional benchmark. Keep
 hosted/external completion separate from these local gates.
+
+### IR-1359: sixty-four-MiB native Huffman format and independent vectors
+
+Specialize the existing first-party reserved family tuple2/14+1/34+2/9 without
+changing earlier wire representations. Derive the58-context alphabet partition,
+63 codebooks, descriptor extent, odd distance padding and conservative36T/10R
+envelope from the mathematical grammar. Separate reachable reset history from
+the isolated endpoint. Freeze independent finite wires and actual refusal cases
+before production; manually check headers, masks, dense nibbles and wide bounds.
+Consult no external/restricted implementation and execute no fuzz or additional
+ratio/speed/physical-peak benchmark. Resource/API/CLI/exchange remain later gates.

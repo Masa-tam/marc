@@ -42739,3 +42739,16 @@ full run. No external/restricted implementation was consulted; no fuzz or
 additional benchmark was executed. Performance targets remain unmeasured by
 explicit request. The larger profile, final95 audit and hosted/external gates
 remain unfinished.
+
+### CR-1915: 2026-10-17 — sixty-four-MiB native Huffman format
+
+Author/reviewer: Codex. Follow IR-1359 using first-party mathematical grammar,
+canonical-code oracles and the reserved family tuple. DD-1620 defines the exact
+log26 identity, alphabets, masks, record padding and wide bounds before
+production. TVG-1540 freezes298 positive/69 actual refusal wires, independently
+checks manual envelopes and a compact reachable class25 witness, and preserves
+preceding vectors and validated products. Clarify the preceding profile's
+zero-bit singleton wording to match its existing frozen vectors; no earlier
+bytes change. No external/restricted implementation was consulted; no production
+coder, fuzz or additional benchmark was executed. Implementation, resource
+admission, public API/CLI and exchange remain unfinished.

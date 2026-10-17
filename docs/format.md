@@ -9337,5 +9337,18 @@ unused bits57..63; alphabet26's final dense high nibble is used. Require
 2T<=D<=min(35T,10R), with payload/frame ceilings629145600/629148242.
 The linked definition proves a conservative bound without transplanting the
 sixteen-MiB per-token9R argument and fixes all stream/frame/model offsets.
-Earlier bytes remain unchanged. Production code, public resource defaults,
-API/CLI and schema84 exchange require later qualification.
+Earlier bytes remain unchanged. Local implementation, public resource defaults,
+API/CLI and schema84 exchange are qualified at
+[IX-0102](interoperability.md); final95 hosted/external gates remain separate.
+
+### DD-1620: native sixty-four-MiB position-distance Blocked Huffman
+
+The [sixty-four-MiB representation](design/lzss-position-distance-blocked-huffman-64m.md)
+defines reserved tuple2/14+1/34+2/9,67108864-byte window,58 contexts,4680
+alphabet extent,63 codebooks and descriptor32..2590 bytes. Eight mask bytes
+have unused bits58..63; both alphabet9 and alphabet27 require zero final dense
+high nibbles. Require2T<=D<=min(36T,10R), with checked payload/frame ceilings
+1258291200/1258293854. Use a wide intermediate for15D. The linked specification
+fixes every stream/frame/model offset and distinguishes isolated endpoint
+evidence from reachable reset history. Earlier bytes remain unchanged.
+Production code, public defaults/API/CLI and schema85/95 exchange remain pending.

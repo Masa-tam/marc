@@ -35010,3 +35010,15 @@ breaks the prior per-token9R argument; no tighter whole-frame bound is claimed.
 Define exact wire and independent vectors before production. Logical defaults
 require checked resource queries and actual construction. Further benchmarks
 and fuzz execution remain omitted under the explicit goal policy.
+
+### DD-1620: sixty-four-MiB native Huffman exact format
+
+The [sixty-four-MiB definition](../design/lzss-position-distance-blocked-huffman-64m.md)
+uses the reserved dictionary2/14, context1/34, entropy2/9 tuple with58 contexts
+and63 codebooks. Eight mask bytes reject unused bits58..63. Alphabet27 is odd,
+so its final dense high nibble is zero. Define descriptor32..2590 and a
+conservative min(36T,10R) decision envelope, wide15D intermediates and exact
+payload/frame bounds. A reachable class25/length3 witness takes29 decisions;
+distinguish it from the unreachable isolated class26 endpoint. Freeze exact
+independent vectors before production. Logical defaults require checked queries
+and construction tests; further benchmarks and fuzz remain omitted by request.

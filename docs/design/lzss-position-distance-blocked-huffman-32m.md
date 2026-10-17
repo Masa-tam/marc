@@ -38,7 +38,8 @@ noncanonical, truncated, unused or trailing records. Alphabet26 is even: its
 last high nibble is an actual code length, not padding. The odd alphabet9
 still requires a zero final dense high nibble. Descriptor extent is32..2578
 bytes. Empty entropy uses32 zero-model bytes, no payload and valid bits0.
-Otherwise valid bits are1..8 and unused high payload bits are zero.
+For nonempty payload, valid bits are1..8. Zero-bit singleton decisions keep an
+empty payload and valid bits0. Unused high payload bits are zero.
 
 The112-byte MARC2.0 stream header has magicMARC, u16@4/6/8/10=2/0/64/1,
 u16@12/14/16/18=2/13/2/8, frame size u32@20, u32@28/32/48=16,

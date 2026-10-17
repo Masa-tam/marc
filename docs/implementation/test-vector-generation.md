@@ -25295,3 +25295,20 @@ checks pass. No fuzz or additional ratio/speed/physical-peak benchmark is run;
 do not count those explicit omissions as passes or measured comparison goals.
 The sixty-four-MiB profile, final95 local audit, hosted CI and external95
 confirmation remain unfinished.
+
+### TVG-1540: sixty-four-MiB independent Huffman format vectors
+
+Freeze298 positive and69 actual negative mathematical vectors at log26 and
+tuple2/14+1/34+2/9. Verify58 contexts,63 codebooks, extent4680, eight mask
+bytes with usable bits56/57, refusal of bits58..63 and descriptor32..2590.
+Both odd alphabets9/27 require zero final dense high nibbles. Hand-check the
+112-byte stream headers,64-byte frame header and36-byte single-A descriptor.
+Distinguish the reachable class25/length3 witness needing29 decisions from
+the isolated class26 endpoint needing30; prove36T/10R and full bounds671088640/
+1258291200/1258293854 with wide15D arithmetic. Verify all lengths3..258 and
+distance classes0..26 against the conservative per-token envelope without
+building maximum raw history. Preserve frozen output exclusively and require
+exact regeneration, retained preceding vectors and unchanged validated products.
+Three normal checks and independent artifact audit pass. No production coder,
+fuzz or benchmark is executed. Implementation, logical defaults, public API/CLI
+and schema85/95 exchange remain unfinished.
