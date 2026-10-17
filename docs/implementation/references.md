@@ -12057,3 +12057,14 @@ shared C consumers, exact/one-short and allocation failures, private-frame
 quarantine, independent finite raw fixtures and prior archives. Use direct
 ASan/UBSan source builds without a normal library or fuzz runtime. Consult no
 external/restricted implementation; execute no fuzz or further benchmark.
+
+### IR-1365: sixty-four-MiB native Huffman command-line boundary
+
+Connect the qualified public C factory through an additive exact selector,
+counting complete CLI controls and declared call buffers. Qualify a static
+candidate before replacing the saved fixed-path executable, then validate the
+shared path and preceding profile. Inspect exact identities, independent short/
+maximum matches, all small cuts, malformed fields/models/padding, reset frames,
+strict EOS, aliases and preexisting output/temporary preservation. Reproduce
+all preceding archives through both paths. Consult no external/restricted
+implementation and execute no fuzz or additional benchmark.

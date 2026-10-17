@@ -1971,6 +1971,16 @@ foreach(thirty_two_mib_huffman_cli_contract IN ITEMS
         message(FATAL_ERROR "Missing thirty-two-MiB Huffman CLI contract: ${thirty_two_mib_huffman_cli_contract}")
     endif()
 endforeach()
+foreach(sixty_four_mib_huffman_cli_contract IN ITEMS
+        "### Sixty-four-MiB position-distance Blocked Huffman"
+        "lzss-position-distance-blocked-huffman-64m"
+        "dictionary2/14, context1/34 and entropy2/9" "6144MiB"
+        "first/failed" "second frame")
+    string(FIND "${cli_content}" "${sixty_four_mib_huffman_cli_contract}" sixty_four_mib_huffman_cli_offset)
+    if(sixty_four_mib_huffman_cli_offset EQUAL -1)
+        message(FATAL_ERROR "Missing sixty-four-MiB position Huffman CLI contract: ${sixty_four_mib_huffman_cli_contract}")
+    endif()
+endforeach()
 foreach(sixteen_mib_huffman_cli_contract IN ITEMS
         "### Sixteen-MiB position-distance Blocked Huffman"
         "lzss-position-distance-blocked-huffman-16m"

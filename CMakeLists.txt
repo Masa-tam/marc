@@ -10773,6 +10773,25 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_8m_api_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-8m-public-raw --public)
     set_tests_properties(marc_position_blocked_huffman_8m_public_raw_differential PROPERTIES TIMEOUT 180)
+    add_executable(marc_position_blocked_huffman_64m_cli_candidate tools/marc_cli.cpp)
+    target_compile_features(marc_position_blocked_huffman_64m_cli_candidate PRIVATE cxx_std_20)
+    target_link_libraries(marc_position_blocked_huffman_64m_cli_candidate PRIVATE marc::static)
+    add_test(NAME marc_cli_position_blocked_huffman_64m_static
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_blocked_huffman_64m.py
+            $<TARGET_FILE:marc_position_blocked_huffman_64m_cli_candidate>
+            ${CMAKE_CURRENT_BINARY_DIR}/cli-position-blocked-huffman-64m-static)
+    # Complete static/shared CLI runs took 125.67/130.09 seconds. Keep every
+    # case serial and leave more than four times the longer observed duration.
+    set_tests_properties(marc_cli_position_blocked_huffman_64m_static PROPERTIES TIMEOUT 600 RUN_SERIAL TRUE)
+    if(MARC_BUILD_TOOLS)
+        add_test(NAME marc_cli_position_blocked_huffman_64m
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_blocked_huffman_64m.py
+                $<TARGET_FILE:marc_cli>
+                ${CMAKE_CURRENT_BINARY_DIR}/cli-position-blocked-huffman-64m)
+        set_tests_properties(marc_cli_position_blocked_huffman_64m PROPERTIES TIMEOUT 600 RUN_SERIAL TRUE)
+    endif()
     add_executable(marc_position_blocked_huffman_32m_cli_candidate tools/marc_cli.cpp)
     target_compile_features(marc_position_blocked_huffman_32m_cli_candidate PRIVATE cxx_std_20)
     target_link_libraries(marc_position_blocked_huffman_32m_cli_candidate PRIVATE marc::static)

@@ -120,7 +120,12 @@ and2131268960 decoder bytes on the qualified layouts. This includes200816
 external-charge bytes; query each actual ABI and caller scope. Normal and
 direct ASan/UBSan checks retain failure/publication contracts. Earlier
 declarations and all starting88/preceding94 archive bodies remain unchanged.
-CLI, schema85/95 exchange and final audit remain unfinished.
+TVG-1546 separately qualifies the exact CLI selector, static/shared output
+identity, seven boundaries through two full frames plus a tail, all212 small
+cuts and whole-file transaction preservation. Both paths reproduce all94
+preceding archives. The previous validated runtime products are retained before
+updating the fixed executable. Schema85/95 exchange and final audit remain
+unfinished.
 
 Fuzz and further ratio/speed/physical-peak benchmarks are omitted through this
 goal by explicit request. Same-window contextual compression and performance

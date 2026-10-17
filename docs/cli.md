@@ -1118,3 +1118,31 @@ preceding archives. Existing target/temporary files and pre-update runtime
 artifacts are preserved. Schema84/94 exchange and the final local audit are
 qualified at [IX-0102](interoperability.md).
 Final95-family hosted/external qualification remains separate.
+
+### Sixty-four-MiB position-distance Blocked Huffman
+
+The exact selector `lzss-position-distance-blocked-huffman-64m` selects native
+dictionary2/14, context1/34 and entropy2/9 with67108864-byte window/reset frames.
+It uses the sixty-four-MiB public C factory, fixed-five longest/nearest encoding
+and length3..258 decoder grammar. Distance-less spellings, upper-case64M and
+an extra64k suffix are not aliases. Earlier identities remain unchanged.
+
+The6144MiB logical grant includes65536-byte input/output arrays and65536
+declared control-retention bytes. Checked public admission is5454067158 encoder
+and2131268960 decoder bytes on the qualified layouts; these are not process
+peaks. Admission precedes transform consumption. Completely validated private
+frames drain before whole-file rename, which follows exact EOS, strict trailing
+checks and successful sink close. Existing output and temporary files remain
+unchanged on refusal; only a newly created temporary file from this run is
+removed after failure. A valid first/failed second frame must never publish a
+partial target file. CLI qualification and schema85/95 exchange are separate
+gates. Ratio/speed/physical-peak benchmarks and fuzz are omitted by user request;
+no unmeasured same-window compression or performance target is claimed.
+
+TVG-1546 qualifies static/shared byte identity at seven boundaries through two
+full frames plus a tail, all212 small-stream cuts, independent length3/4/258
+references, malformed metadata/models/padding, eleven existing foreign profiles
+and a valid first/failed second frame. Both paths restore and reproduce all94
+preceding archives. Existing target/temporary files and pre-update runtime
+artifacts are preserved. Schema85/95 exchange, the final family audit and later
+hosted/external qualification remain separate.

@@ -42833,3 +42833,18 @@ restore and reproduce exactly through the updated shared library. No external/
 restricted implementation was consulted; no fuzz or further benchmark was
 executed. Logical admission is not a physical-peak measurement. CLI, exchange
 and final family/hosted/external qualification remain unfinished.
+
+### CR-1921: 2026-10-17 — sixty-four-MiB Huffman command-line boundary
+
+Author/reviewer: Codex. Follow IR-1365 using the qualified public C factory and
+first-party independent grammar oracles. TVG-1546 qualifies the static candidate
+before the fixed-path update, then the shared CLI and preceding-profile
+regression. Compare seven boundary streams,212 cuts, independent grammar,
+malformed/foreign inputs and whole-file transaction preservation. Both paths
+reproduce all94 preceding archives. Retain previous products, the qualified
+candidate snapshot and the unchanged shared library. Avoid repeating an
+unchanged candidate run, and derive serial budgets from complete observations.
+No external/restricted implementation was consulted; no fuzz or additional
+benchmark was executed. Unmeasured compression/performance goals are not
+reported as met. Schema85/95 exchange, final family audit and later hosted/
+external qualification remain unfinished.

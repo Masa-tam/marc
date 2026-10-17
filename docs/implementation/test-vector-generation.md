@@ -25432,3 +25432,25 @@ archives restore and re-encode exactly with the updated shared library. Fuzz
 and further ratio/speed/physical-peak benchmarks are omitted by explicit request.
 CLI, schema85/95 exchange, final family audit and hosted/external gates remain
 unfinished.
+
+### TVG-1546: sixty-four-MiB Huffman CLI transaction boundary
+
+Qualify the static CLI before updating the fixed executable, retaining the
+previous products. The candidate gate passes two checks; the final shared/
+preceding-profile gate passes three. The unchanged qualified candidate hash
+avoids repeating its identical run. Together these qualify four distinct
+checks: documentation, static candidate, fixed shared CLI and the preceding
+profile's fixed CLI. Keep the two600-second serial registrations, supported by
+complete125.67/130.09-second directed runs without dropping cases.
+
+Compare seven deterministic boundary streams at0/1/256/67108863/67108864/
+67108865/134217745 raw bytes. Verify exact identity, independent length3/4/258
+grammar, all212 small-stream cuts, malformed metadata/records/padding, strict
+trailing refusal, three near spellings and eleven existing foreign profiles.
+Independently validate the first frame before constructing a late failed
+second frame; no partial target or newly created temporary file may remain.
+Preexisting output and temporary files retain their bytes. Both paths restore
+and reproduce every preceding94-archive body. Preserve the candidate snapshot
+and unchanged shared library. Fuzz and further ratio/speed/physical-peak
+benchmarks are omitted by explicit request. Schema85/95 exchange, final family
+audit and hosted/external confirmation remain unfinished.
