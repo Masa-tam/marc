@@ -1561,3 +1561,13 @@ private charge is one descriptor plus4096 bytes, propagated through encoder
 workspace accounting. Decoder requirements and default grants remain unchanged.
 Exact/one-short admission and allocation-failure rollback remain mandatory.
 TVG-1553 records static/shared public qualification separately from measurements.
+
+### Larger-window residual-pool investigation
+
+DD-1625 extends qualification to the larger native Huffman encoders. The1MiB
+candidate revises encoder bytes under the existing API and selector, with an
+extra private descriptor-plus4096 encoder charge propagated by resource queries.
+Query the current implementation; do not reuse an older minimum as a fixed
+constant. Decoder charges, public structures and default grants are unchanged.
+TVG-1558 qualifies static/shared and public failure paths; corpus performance
+and old/new corpus compatibility are separate pending gates at that milestone.

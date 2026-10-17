@@ -42994,3 +42994,12 @@ registrations. Previous Release products are saved and rehashed before builds;
 candidate products remain separate from the qualified runtime. No external
 implementation was consulted. Larger-window integration, corpus measurements
 and remaining compatibility gates are not claimed by this milestone.
+
+### CR-1933: 2026-10-18 — one-MiB revised-producer public qualification
+
+Author/reviewer: Codex. TVG-1558 adds six passing public/independent-wire
+registrations without changing the frozen oracle, failure contracts or test
+timeouts. Document intentional producer differences and current encoder query
+requirements in API/CLI notes. First-party code and previously retained vectors
+are the only implementation references. Measurements and old/new corpus
+compatibility are separate pending gates; no external implementation is used.

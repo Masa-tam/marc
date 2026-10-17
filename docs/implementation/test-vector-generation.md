@@ -25641,3 +25641,15 @@ registrations pass, as does documentation layout: ten registrations total.
 No decoder grammar or decoder charge changes. Corpus performance, full public
 raw differentials, old/new corpus restoration and remaining five windows are
 pending at this milestone; this is not a completed six-window qualification.
+
+### TVG-1558: one-MiB residual-pool public and independent-wire milestone
+
+The independent entropy differential, owning raw differential, public raw
+differential, static-C, shared-C and CLI registrations all pass: six additional
+registrations. Keep the frozen independent decoder oracle unchanged; validate
+revised producer frames through that oracle rather than requiring old encoder
+bytes. Public/owner tests retain failure invariance, failed-frame withholding,
+resource-query admission and allocation rollback. CLI tests retain deterministic
+identity and transactional file publication. No timeout or parallelism change is
+needed. Corpus timing/peaks, saved-old-decoder corpus restoration and the other
+five windows are still pending at this public milestone. No hosted CI is run.

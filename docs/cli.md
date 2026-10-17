@@ -1160,3 +1160,14 @@ revision; do not confuse cross-revision encoder differences with decode failure.
 The other six native Huffman selectors retain their policy. TVG-1553 qualifies
 whole-file failure publication and static/shared public paths. Updated products
 are staged and validated before promotion to the existing fixed Release path.
+
+### Larger-window Huffman producer investigation
+
+DD-1625 investigates the remaining native Huffman windows. The1MiB candidate
+uses the same frozen-override residual-pool policy under the existing
+`lzss-position-distance-blocked-huffman-1m` selector. Revised producer bytes
+remain in the existing grammar; old-body re-encoding identity is not promised.
+TVG-1558 qualifies current CLI identity and transactional failure publication.
+Corpus measurements and old/new corpus restoration remain separate gates;
+no other larger-window integration is implied at this milestone. Candidate
+runtime files remain staged until the full local qualification permits promotion.
