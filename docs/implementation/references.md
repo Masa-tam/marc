@@ -11877,3 +11877,13 @@ declared I/O, retention and public control charges. Verify actual full-default
 creation, aliases, allocation rollback, exact/one-short grants, active model
 quotas, finite independent raw wires and prior declarations/archive bodies.
 No external/restricted source, fuzz or performance/peak benchmark is used.
+
+### IR-1349: sixteen-MiB native Huffman CLI integration
+
+Use the qualified first-party owning public factory through a distinct exact
+selector, retaining shared file admission and transactional rename behavior.
+Check exact wire identity, deterministic reset boundaries, independent wire
+grammar, truncations, malformed headers/models/padding, foreign profiles and
+failed-second-frame refusal. Preserve existing output/temporary files and
+compare static/shared command paths and all prior92 archive bodies. No
+external/restricted implementation, fuzz or performance benchmark is used.

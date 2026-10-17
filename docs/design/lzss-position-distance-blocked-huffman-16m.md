@@ -120,7 +120,12 @@ wires across owning/public/normal/direct ASan paths. Public queries with
 bytes, including200816 external-charge bytes. Prior public declarations and
 all starting88/preceding92 archive bodies remain unchanged.
 
-CLI, schema83/93 exchange and final audit remain open. Further
+TVG-1530 qualifies the exact CLI selector through shared/static products:
+seven boundaries,211 cuts, independent grammar, malformed/foreign inputs,
+transactional output retention and all prior92 archive bodies. Earlier
+products are preserved before updating the fixed validated executable.
+
+Schema83/93 exchange and final audit remain open. Further
 ratio/speed/physical-peak benchmarks and fuzz execution are
 omitted by user request through this goal; do not label them passed. Select
 future logical defaults from checked requirements and actual construction

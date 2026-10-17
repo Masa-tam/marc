@@ -25106,3 +25106,21 @@ not a measured physical-memory cap. Restore/re-encode all starting88 and
 preceding92 archive bodies identically with the updated runtime. No fuzz or
 ratio/speed/peak benchmark is executed. CLI, schema83/93 exchange and final
 profile audit remain pending; hosted/external95 confirmation is separate.
+
+### TVG-1530: sixteen-MiB native Huffman shared/static CLI boundary
+
+Select the exact distance-bearing sixteen-MiB name and reject near spellings.
+Check seven raw extents0,1,256,16777215,16777216,16777217,33554449 through the
+shared and static command paths, exact independent headers, repeated byte
+identity and complete restoration. Exercise independent lengths3/4/258,
+all211 cuts of the small stream, malformed fields/models/padding, oversized
+metadata, strict trailing data and nine foreign profiles including the
+same-window contextual codec. Independently validate the first frame before
+making a failed second frame; neither failed output nor a new temporary file
+survives. Existing output and temporary files remain unchanged. Compare every
+shared/static receipt and wire; restore/re-encode all prior92 archive bodies
+through both updated paths identically. Four normal checks including the
+preceding profile regression and independent artifact audit pass. Preserve
+pre-update runtime artifacts and retain the fixed validated executable path.
+No fuzz or ratio/speed/physical-peak benchmark is executed. Schema83/93 exchange,
+final profile audit and later hosted/external95 gates remain unfinished.

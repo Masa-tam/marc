@@ -1917,6 +1917,16 @@ foreach(sixteen_mib_huffman_api_contract IN ITEMS
         message(FATAL_ERROR "Missing sixteen-MiB position Huffman API contract: ${sixteen_mib_huffman_api_contract}")
     endif()
 endforeach()
+foreach(sixteen_mib_huffman_cli_contract IN ITEMS
+        "### Sixteen-MiB position-distance Blocked Huffman"
+        "lzss-position-distance-blocked-huffman-16m"
+        "dictionary2/12, context1/32 and entropy2/7" "1280MiB"
+        "first/failed" "second frame")
+    string(FIND "${cli_content}" "${sixteen_mib_huffman_cli_contract}" sixteen_mib_huffman_cli_offset)
+    if(sixteen_mib_huffman_cli_offset EQUAL -1)
+        message(FATAL_ERROR "Missing sixteen-MiB position Huffman CLI contract: ${sixteen_mib_huffman_cli_contract}")
+    endif()
+endforeach()
 if(NOT c_api_profile_count EQUAL expected_c_api_profile_count)
     message(FATAL_ERROR
         "C API initializer count ${c_api_profile_count} must contain the "

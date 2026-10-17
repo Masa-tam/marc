@@ -42605,3 +42605,16 @@ Select1280MiB from verified logical requirements and construction; no new
 physical-peak inference is made. No external/restricted implementation was
 consulted and no fuzz or benchmark was executed. CLI, exchange, final local
 profile audit and later hosted/external gates remain unfinished.
+
+### CR-1905: 2026-10-17 — sixteen-MiB native Huffman CLI boundary
+
+Author/reviewer: Codex. Follow IR-1349 with the first-party public factory
+and shared CLI admission/transactional file behavior. TVG-1530 qualifies
+seven extents,211 truncations, independent grammar wires, foreign identities,
+retained output/temporary files and failed-second-frame refusal. Shared/static
+products agree exactly and restore/re-encode every prior92 archive body.
+Four normal checks, directed artifact audit and documentation verification
+pass; preserve pre-update products and the fixed executable location. No
+external/restricted implementation was consulted, and no fuzz or benchmark
+was executed. Exchange, final local profile audit and hosted/external gates
+remain unfinished.
