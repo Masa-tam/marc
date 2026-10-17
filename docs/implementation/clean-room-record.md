@@ -43033,3 +43033,16 @@ registrations. Keep frozen oracles, failure/publication contracts, decoder gramm
 and test limits unchanged. API/CLI notes distinguish the candidate producer
 revision from remaining corpus and family/runtime gates. Only first-party
 references and retained products are used; no external implementation is consulted.
+
+### CR-1937: 2026-10-18 — 4-MiB measured residual-pool qualification
+
+Author/reviewer: Codex. TVG-1562 independently audits saved/revised/control
+products with first-party drivers and the unchanged mathematical descriptor
+parser. BM-0258 records complete member and aggregate size/speed/peak results,
+actual identities and accepted settings. The revised total saves7,795 bytes
+against old native, with observed encode/decode time changes
++3.311929%/-7.291158%. Preserve the measured tradeoffs without inferring
+universal dominance or equating logical queries with RSS. All old/new decoder
+corpus routes pass. Retain original products and receipts; final common-runtime,
+retained95-body and later remote gates remain distinct. No external
+implementation is consulted.

@@ -72,3 +72,14 @@ The native encoder query adds18,832 bytes; decoder queries/defaults are unchange
 This is a small size benefit with recorded costs. Remaining windows and final
 family/runtime/retained95-body qualification are pending, as are hosted/external
 results. Qualified one-MiB candidate products remain separately retained.
+
+### 4-MiB local measurement milestone
+
+TVG-1562/BM-0258 qualify all twelve matched corpus comparisons and24 old/new
+decoder cross-routes. Revised total64,243,116 bytes saves7,795 bytes
+(0.012132%) against old native. Observed aggregate encode/decode
+time changes are+3.311929%/-7.291158%; measured resident peaks and all
+member-specific values remain explicit in the benchmark record. The unchanged
+decoder's workload can vary with codebooks; no causal speed guarantee is made.
+This window's measured candidate remains retained separately. Final common
+runtime, retained95-body and remote gates remain separate.

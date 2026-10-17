@@ -25691,3 +25691,18 @@ not benchmark throughput. Existing failure invariance, failed-frame withholding,
 query/admission and allocation rollback remain qualified. CLI identity and
 transactional file publication pass. Matched corpus measurements, saved-old
 decoder corpus routes and final family/runtime audit remain pending here.
+
+### TVG-1562: 4-MiB matched residual-pool measurements and frame audit
+
+BM-0258 records all twelve matched corpus sizes, lifecycle timings and fresh
+streaming-process peaks. Manifest size/MD5, raw SHA256, actual identities and
+window/frame settings, repeated bytes and available CLI/driver agreement pass.
+All24 old/new decoder cross-routes restore exactly. The independent audit
+rehashes108 archive/restoration pairs and24 cross-restorations,
+checks216 peak receipts and72 separate timing receipts, recalculates
+medians/rates/totals, and verifies retained source/tool bindings. The unchanged
+mathematical parser checks57 old/new frame plans: fixed override
+sets/codebooks, fields and dictionary counts, no larger complete byte extent,
+57 strict improvements, original pools on ties. All checks pass.
+Old products and measured candidates remain retained. Final family/runtime and
+retained95-body qualification are not claimed by this measurement milestone.
