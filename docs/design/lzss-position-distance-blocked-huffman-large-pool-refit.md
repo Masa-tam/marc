@@ -37,6 +37,29 @@ windows are processed. Local, hosted-CI and external evidence remain distinct.
 At this design milestone no larger-window measured benefit or completion is
 claimed. DD-1624's completed64KiB policy remains qualified and unchanged.
 
+### Structural applicability inspection
+
+The existing native headers define the following finite partitions. Each
+builder has exactly one histogram for each of its five pools and each context;
+each descriptor already has the corresponding pooled and override codebooks.
+
+| Window MiB | Contexts | Codebooks / histograms | Descriptor capacity bytes |
+| ---: | ---: | ---: | ---: |
+| 1 | 52 | 57 | 2547 |
+| 4 | 54 | 59 | 2561 |
+| 8 | 55 | 60 | 2563 |
+| 16 | 56 | 61 | 2575 |
+| 32 | 57 | 62 | 2578 |
+| 64 | 58 | 63 | 2590 |
+
+All context indices fit the existing64-bit override mask. Rebuilding a pool
+uses the same field/context partition and existing bounded byte-symbol Huffman
+primitive; it adds neither contexts nor a decoder-visible codebook slot. A
+fixed-mask candidate can therefore be expressed using each existing descriptor.
+This structural result does not prove a size benefit, runtime correctness,
+resource admission or measured peaks. Those remain per-window qualification
+gates; table entries must not be treated as completed larger-window integrations.
+
 ### One-MiB local milestone
 
 TVG-1557/1558 qualify the internal/public/failure paths. TVG-1559/BM-0257 qualify
