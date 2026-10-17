@@ -11917,3 +11917,15 @@ alias preflight, exact/one-short admission, terminal usage and sticky errors.
 Check frozen independent wires and the wide15D payload calculation without
 allocating its maximum payload. Use finite direct ASan/UBSan without any
 fuzz runtime. No external/restricted source or benchmark is used.
+
+### IR-1353: thirty-two-MiB private Huffman token integration
+
+Use the existing first-party typed-token validator and short-length escape
+with DD-1619's scalar core. Keep the log25 dictionary identity,35T/10R decision
+envelope and bounded history checks separate from abstract entropy endpoints.
+Decode once into private token scratch and commit ordinary token destinations
+only after exact entropy termination and raw-size validation. Extend finite
+independent supplied-model wires through the new distance transitions and
+full-frame literal/overlap cases. Check conservative logical workspace grants,
+not physical peak measurements. Consult no external/restricted implementation;
+execute no fuzz or further ratio/speed/physical-peak benchmark.

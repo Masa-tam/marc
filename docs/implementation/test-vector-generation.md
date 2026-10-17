@@ -25175,3 +25175,22 @@ not a complete payload or frame qualification. Preserve the validated runtime.
 Token/history/frame integration, public API/CLI and exchange remain pending.
 No fuzz or ratio/speed/physical-peak benchmark is executed; these omissions
 remain explicit and are not successful performance comparisons.
+
+### TVG-1534: thirty-two-MiB private single-pass Huffman tokens
+
+Use83 independent supplied-model token wires, including the sixteen-MiB
+distance transition, the largest reset-frame distances, length3/4/258 and
+fixed mixed patterns. Independently decode every production-selected wire;
+compare all83 descriptor/payload pairs across normal and direct ASan/UBSan
+builds. Seven grammar-valid history/length failures preserve ordinary output,
+with exact private-prefix counts and no assignment of the failing token.
+Check all descriptor/payload truncations for the small fixture, terminal
+padding/usage, alias preflight, output bounds, canonical token fields and
+exact/one-short aggregate workspace grants. Full thirty-two-MiB literal and
+overlap token sequences restore exactly with checked finite-test grants.
+These logical storage charges are not public defaults or physical peaks.
+Five normal checks and direct instrumented tests pass with empty diagnostics;
+bind source/binary hashes and preserve the validated runtime. Keep serial
+execution; the retained differential duration supports a300-second ceiling.
+Raw frame quarantine, public resources/API/CLI and exchange remain pending.
+No fuzz or further ratio/speed/physical-peak benchmark is executed.

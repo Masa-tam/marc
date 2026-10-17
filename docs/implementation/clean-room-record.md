@@ -42657,3 +42657,17 @@ binary hashes bind the retained results; fixed runtime artifacts are preserved.
 No external/restricted implementation was consulted, and no fuzz or benchmark
 was executed. Token/history/frame integration, public resources/API/CLI,
 exchange and later-profile qualification remain unfinished.
+
+### CR-1909: 2026-10-17 — thirty-two-MiB private Huffman token layer
+
+Author/reviewer: Codex. Follow IR-1353 using only first-party typed-token
+validation, short-length escape, independent model oracle and qualified
+scalar Huffman components. Apply the log25 dictionary and35T/10R envelope;
+retain single-pass private token reconstruction and commit-on-success output.
+TVG-1534 qualifies83 independently supplied and production-selected wires,
+seven actual history/length refusals, full-frame token restoration and logical
+admission boundaries under normal and direct ASan/UBSan builds. Preserve prior
+runtime artifacts, finite-test evidence and source/binary bindings. No external
+or restricted implementation was consulted. No fuzz or additional benchmark
+was executed. Frame publication, public resources/API/CLI and exchange remain
+unfinished; performance targets remain unmeasured by explicit request.
