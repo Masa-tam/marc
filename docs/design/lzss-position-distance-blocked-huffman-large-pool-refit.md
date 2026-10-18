@@ -116,3 +116,14 @@ member-specific values remain explicit in the benchmark record. The unchanged
 decoder's workload can vary with codebooks; no causal speed guarantee is made.
 This window's measured candidate remains retained separately. Final common
 runtime, retained95-body and remote gates remain separate.
+
+### 64-MiB local measurement milestone
+
+TVG-1574/BM-0262 qualify all twelve matched corpus comparisons and24 old/new
+decoder cross-routes. Revised total62,258,463 bytes saves1,633 bytes
+(0.002623%) against old native. Observed aggregate encode/decode
+time changes are-5.233581%/-0.197004%; measured resident peaks and all
+member-specific values remain explicit in the benchmark record. The unchanged
+decoder's workload can vary with codebooks; no causal speed guarantee is made.
+This window's measured candidate remains retained separately. Final common
+runtime, retained95-body and remote gates remain separate.

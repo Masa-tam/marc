@@ -43164,3 +43164,16 @@ Keep failure/publication guarantees, decoder grammar, ABI and public defaults
 unchanged. API/CLI notes identify the candidate producer and pending corpus and
 common-runtime gates. Use only first-party references and retained products;
 no external implementation is consulted.
+
+### CR-1949: 2026-10-18 — 64-MiB measured residual-pool qualification
+
+Author/reviewer: Codex. TVG-1574 independently audits saved/revised/control
+products with first-party drivers and the unchanged mathematical descriptor
+parser. BM-0262 records complete member and aggregate size/speed/peak results,
+actual identities and accepted settings. The revised total saves1,633 bytes
+against old native, with observed encode/decode time changes
+-5.233581%/-0.197004%. Preserve the measured tradeoffs without inferring
+universal dominance or equating logical queries with RSS. All old/new decoder
+corpus routes pass. Retain original products and receipts; final common-runtime,
+retained95-body and later remote gates remain distinct. No external
+implementation is consulted.
