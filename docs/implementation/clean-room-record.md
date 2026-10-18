@@ -43155,3 +43155,12 @@ ten passing registrations. Decoder grammar and public defaults are unchanged.
 Preserve qualified smaller-window products and stage this candidate separately.
 Public, corpus and final runtime gates remain pending at this milestone.
 No external implementation is consulted.
+
+### CR-1948: 2026-10-18 — sixty-four-MiB revised-producer public qualification
+
+Author/reviewer: Codex. TVG-1573 adds six passing independent-wire/public/C/CLI
+registrations with frozen oracles and unchanged serial/time-limit settings.
+Keep failure/publication guarantees, decoder grammar, ABI and public defaults
+unchanged. API/CLI notes identify the candidate producer and pending corpus and
+common-runtime gates. Use only first-party references and retained products;
+no external implementation is consulted.
