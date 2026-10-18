@@ -35104,5 +35104,6 @@ all six windows are processed. No measured larger-window result is assumed.
 TVG-1576/BM-0263 now qualify all six windows locally with measured tradeoffs,
 old-decoder compatibility and preserved artifacts. The strict complete-byte
 candidate rule is the qualified producer policy; decoder representation and
-failure contracts remain unchanged. IX-0107 leaves hosted/external status
-explicitly pending for the maintainer's later push.
+failure contracts remain unchanged. IX-0107 records the local milestone;
+IX-0108 adds the maintainer's successful hosted/external report and closes
+DD-1625 for all six windows without changing its policy or representation.

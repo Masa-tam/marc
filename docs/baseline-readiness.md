@@ -4250,3 +4250,17 @@ The requested local investigation is complete. Baseline membership, release
 state, decoder representations, schema85 and95-profile ordering remain
 unchanged. IX-0107 separately leaves hosted CI and external four-route validation
 pending for the maintainer's combined push; this record claims neither.
+
+## 2026-10-18: six-window Huffman residual-pool revision complete
+
+IX-0108 records maintainer-reported successful hosted CI and four95-archive
+external routes at `a284ab3c975836784e3a4717901414e2055f6939`. TVG-1577
+rechecks the retained local qualifications and preserved products separately.
+DD-1625 is complete for1/4/8/16/32/64MiB: implementation, correctness,
+old-decoder compatibility, failure guarantees, matched size/time/peak comparison,
+fixed-runtime qualification and hosted/external evidence are all recorded.
+BM-0263 preserves the small size benefits and measured speed/memory costs.
+
+Earlier pending remote gates are superseded. Baseline membership, release
+state, decoder representations, schema85 and95-profile ordering remain
+unchanged. This recording commit does not claim another hosted or external run.

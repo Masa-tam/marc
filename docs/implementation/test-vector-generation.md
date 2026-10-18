@@ -25903,3 +25903,22 @@ CLI wire-equality/round-trip checks and twelve static/shared C checks. Original
 products, measured candidates and historical bundles remain retained. Final
 documentation checks are required before the recording commit. This closes
 local qualification only; hosted CI/external routes await the maintainer's push.
+
+### TVG-1577: six-window completion evidence and product recheck
+
+Before recording IX-0108, HEAD and the tracked remote branch both match the
+reported producer revision; the tracked working tree is clean. Rehash all nine
+evidence files bound by the retained local-completion receipt, and confirm six
+passed twelve-member audits with144 corpus decoder cross-routes in total.
+Retained runtime evidence confirms72 corpus reproductions/restorations,
+95 historical restorations,95 new-self and95 saved-decoder routes,89 unrelated
+exact producer bodies and twelve no-publication truncation refusals.
+
+Rehash265 starting products,265 pre-promotion products and58 fixed qualified
+products against their retained manifests. Recheck all95 historical archive
+sizes and hashes under schema85. All checks pass; preserve the original
+receipts, artifacts and measurement cohorts. No benchmark or codec campaign is
+repeated by this recording audit. Hosted CI and four95-archive external results
+are maintainer-supplied evidence at the exact revision in IX-0108, not newly
+executed local tests or independent inspection of remote binaries. Required
+documentation and diff checks precede the recording commit.

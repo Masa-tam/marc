@@ -9388,5 +9388,6 @@ the private candidate only when the complete descriptor plus byte-rounded
 payload is strictly smaller. Whole-byte ties retain original pools. This is an
 intentional encoder-output revision within the existing representation, not a
 promise to reproduce an earlier producer's bytes. Old decoder compatibility,
-failure invariance and failed-frame withholding remain required. Hosted CI and
-external execution for this revision remain separately pending in IX-0107.
+failure invariance and failed-frame withholding remain required. IX-0107
+records local qualification; IX-0108 separately records the maintainer's
+successful hosted CI and external execution for the qualified producer revision.

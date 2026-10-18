@@ -43203,3 +43203,15 @@ No external source implementation is consulted. Preserve intentional producer
 output revision and measured costs explicitly. This is a process/provenance
 record, not a legal guarantee. Hosted/external evidence remains separately
 pending under IX-0107; the agent does not push.
+
+### CR-1952: 2026-10-18 — six-window final external completion record
+
+Author/reviewer: Codex. Task: record the maintainer's hosted-CI and external
+four-route95-archive success for DD-1625, and recheck retained local evidence.
+TVG-1577 rehashes the bound evidence, historical archives and saved/fixed
+products without changing codec code, generated streams or prior receipts.
+IX-0108 explicitly attributes hosted/external results to the maintainer and
+closes the outstanding gates at the reported producer revision. Preserve the
+independently authored policy, unchanged decoder representation and measured
+tradeoffs. No external source implementation is consulted. This documentation
+record does not imply another CI run or external execution; no push is made.

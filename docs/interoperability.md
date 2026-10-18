@@ -2589,3 +2589,37 @@ Hosted CI and external four-route95-archive validation for this revision have
 not been reported or independently run. They remain pending after the
 maintainer's combined push. Earlier remote completion receipts concern their
 own revisions and do not establish those gates for this revision.
+
+### IX-0108: six-window Huffman residual-pool final CI and external receipt
+
+On 2026-10-18 the maintainer reports successful hosted CI after pushing
+`a284ab3c975836784e3a4717901414e2055f6939`, and supplies four successful
+95-archive verification results for that same producer revision:
+
+| Producer bundle | Consumer | Verified archives |
+| --- | --- | ---: |
+| windows-msvc-x64 | Ubuntu | 95 |
+| ubuntu-ninja-x64 | Ubuntu | 95 |
+| ubuntu-26.04-ninja-x64 | Ubuntu | 95 |
+| ubuntu-26.04-ninja-x64 | Windows | 95 |
+
+Consumer roles follow the previously confirmed four-route procedure; the
+repeated producer label represents self-consumption and consumption on Windows.
+Before this recording edit, HEAD and the tracked remote branch both match the
+reported revision. Hosted and external evidence is the maintainer's report and
+pasted console results, not independent inspection of hosted jobs or binaries.
+
+TVG-1577 rechecks retained local evidence, historical archives and preserved
+products. TVG-1576/IX-0107 retain schema1..85 compatibility, all95 historical
+restorations,95 current/saved decoder routes each,89 unrelated exact producer
+bodies,72 final corpus reproductions/restorations and failure/publication checks.
+BM-0263 retains all six windows' measured size/time/peak tradeoffs, including
+slower cases and small deterministic size gains; no universal speed claim is
+introduced. Decoder grammar, stream identities, schema85 and95-profile order
+remain unchanged.
+
+This closes the DD-1625 integration, local validation, measurement, hosted-CI
+and external four-route gates for1/4/8/16/32/64MiB. Earlier pending statements
+describe their milestone state and are superseded by this receipt. This
+documentation-only recording commit does not claim another CI run or external
+execution. The agent does not push.

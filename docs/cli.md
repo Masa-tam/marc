@@ -1209,5 +1209,6 @@ remain preserved. The existing fixed Release location now contains the
 hash-identical qualified runtime, with six CLI round-trips and twelve
 static/shared C checks passing after promotion. Producer bytes may intentionally
 change; selectors, decoder grammar and transactional publication do not.
-Earlier pending statements describe their milestone state. Hosted CI and
-external routes remain pending separately; the maintainer performs the push.
+Earlier pending statements describe their milestone state. IX-0108 separately
+records successful hosted CI and external routes reported by the maintainer
+after the combined push. This recording does not change CLI behavior.

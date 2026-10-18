@@ -12885,6 +12885,6 @@ sets/codebooks, active fields and dictionary counts: 339 strictly shrink and
 one equal-byte plan retains its original pools. All 144 old/new corpus decoder
 cross-routes pass. TVG-1576 additionally reproduces all 72 measured wires and
 restorations with the final common runtime and qualifies retained95-body
-compatibility. IX-0107 records local schema/runtime completion separately from
-pending hosted CI and external routes. No additional timing campaign is implied
-by that final compatibility check.
+compatibility. IX-0107 records local schema/runtime completion; IX-0108
+separately records the maintainer's successful hosted CI and external routes.
+No additional timing campaign is implied by either completion record.

@@ -160,3 +160,13 @@ size benefit is small, with the measured time/peak costs retained in BM-0263;
 do not claim a universal speed improvement. Earlier local pending statements
 are superseded by this qualification. Hosted CI and external95 routes for this
 revision remain pending, and the maintainer performs the eventual push.
+
+### Final hosted and external completion
+
+IX-0108 records maintainer-reported successful hosted CI and all four95-archive
+external routes at `a284ab3c975836784e3a4717901414e2055f6939`.
+TVG-1577 separately rechecks retained local evidence, preserved products and
+historical archives. All six requested windows are complete, including the
+previously pending remote gates. BM-0263's measured tradeoffs and the unchanged
+decoder/failure contracts remain explicit. Earlier pending statements describe
+their milestone state; this recording adds no codec changes or new execution.
