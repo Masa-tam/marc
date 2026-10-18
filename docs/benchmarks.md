@@ -12826,3 +12826,62 @@ override sets/codebooks, active fields and dictionary counts;12 strictly
 shrink. Equal-byte-cost frames keep original pools. This closes this window's
 matched corpus and saved-decoder compatibility milestone. Final common-runtime,
 retained95-body, hosted-CI and external qualifications remain separate gates.
+
+### BM-0263: six-window residual-pool comparison overview
+
+DD-1625/TVG-1575 summarize the independently audited BM-0257..0262 cohorts.
+Each window uses the same twelve manifest-verified Silesia members, totaling
+211,938,580 raw bytes. O/N/C mean saved original native, revised native and
+same-window contextual Blocked Huffman. Every revised member is strictly
+smaller than both controls: 12/12 per window, 72/72 comparisons per control.
+These are per-window corpus totals, not disjoint datasets to add together.
+Paired frame counts for 1/4/8/16/32/64MiB are 207/57/31/19/14/12.
+Total savings depend on both the frame count and each frame's gain; frame count
+is not held constant when comparing the windows.
+
+| Window MiB | Original bytes | Revised bytes | Contextual bytes | Saved vs original bytes | Saved vs original % |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | 66,632,432 | 66,608,791 | 66,651,672 | 23,641 | 0.035480 |
+| 4 | 64,250,911 | 64,243,116 | 64,254,572 | 7,795 | 0.012132 |
+| 8 | 63,341,198 | 63,336,661 | 63,344,382 | 4,537 | 0.007163 |
+| 16 | 62,838,200 | 62,835,603 | 62,841,406 | 2,597 | 0.004133 |
+| 32 | 62,492,508 | 62,490,560 | 62,495,847 | 1,948 | 0.003117 |
+| 64 | 62,260,096 | 62,258,463 | 62,265,609 | 1,633 | 0.002623 |
+
+The following changes are revised versus original within each matched cohort.
+Time changes use sums of member median seconds; negative means less time.
+Peaks are maximum observed fresh-process resident peaks, in KiB differences.
+The final column is the additional logical encoder query charge, in bytes.
+
+| Window MiB | Encode time % | Decode time % | Encode peak KiB | Decode peak KiB | Encoder query bytes added |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | +0.322884 | -4.495666 | +348 | +320 | 18,832 |
+| 4 | +3.311929 | -7.291158 | +388 | +320 | 19,344 |
+| 8 | -6.631841 | -4.272096 | +4 | +12 | 19,600 |
+| 16 | -3.215950 | +1.019318 | -4 | +8 | 19,864 |
+| 32 | -1.244832 | -0.464347 | +28 | +28 | 20,120 |
+| 64 | -5.233581 | -0.197004 | +16 | +44 | 20,376 |
+
+The deterministic size benefit becomes small at large windows. Extra logical
+encoder workspace is one profile descriptor plus 4096 bytes; decoder queries
+and public default grants are unchanged. Resident observations are not query
+grants or universal ceilings. Timing observations come from one matched cohort
+per window and do not establish causal or universal speed superiority. In
+particular, 1/4MiB encode and 16MiB decode times increase in their cohorts.
+Changed codebooks can alter the unchanged decoder's workload.
+
+Use the individual records for all member values, absolute speed/peaks, actual
+identities and method details. Small-window lifecycle timings and fresh-process
+peaks are separate drivers; 16/32/64MiB combine lifecycle timing and peaks in
+fresh streaming processes. Each uses one discarded timing warmup and three
+timing samples, with file I/O excluded. Contextual 8MiB uses the existing 16MiB
+API with window/frame 8MiB; contextual 32MiB uses the existing 64MiB API with
+window/frame 32MiB. Their actual identities and restoration are verified.
+Other windows have same-window public controls. Dynamic Range compression
+size is not an adoption condition.
+
+Across the six independent audits, 340 paired frame plans retain override
+sets/codebooks, active fields and dictionary counts: 339 strictly shrink and
+one equal-byte plan retains its original pools. All 144 old/new corpus decoder
+cross-routes pass. Common-runtime final corpus reproduction, retained95-body
+qualification and later hosted/external gates remain separately recorded.

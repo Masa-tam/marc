@@ -25859,3 +25859,17 @@ sets/codebooks, fields and dictionary counts, no larger complete byte extent,
 12 strict improvements, original pools on ties. All checks pass.
 Old products and measured candidates remain retained. Final family/runtime and
 retained95-body qualification are not claimed by this measurement milestone.
+
+### TVG-1575: six-window residual-pool measurement reconciliation
+
+BM-0263 reconciles all six independently audited twelve-member cohorts with
+their retained reports. The underlying audits reopened 756 archive/restoration
+pairs, 144 corpus cross-restorations, 1296 peak receipts and 216 separate timing
+receipts across BM-0257..0262. All 72 revised corpus members are smaller than each
+same-window control. Of 340 paired frame plans, 339 strictly shrink and one
+tie keeps original pools; override sets/codebooks, fields and dictionary counts
+remain fixed. API-configured 8/32MiB contextual controls have accepted matching
+windows/frames, verified identities and exact restoration. The overview retains
+size, time and peak costs, including the observed slower cases, without claiming
+universal speed superiority. Final common-runtime corpus reproduction and
+retained95-body qualification remain separate gates at this milestone.

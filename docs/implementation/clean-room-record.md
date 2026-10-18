@@ -43177,3 +43177,13 @@ universal dominance or equating logical queries with RSS. All old/new decoder
 corpus routes pass. Retain original products and receipts; final common-runtime,
 retained95-body and later remote gates remain distinct. No external
 implementation is consulted.
+
+### CR-1950: 2026-10-18 — six-window residual-pool measured tradeoffs
+
+Author/reviewer: Codex. TVG-1575/BM-0263 reconcile the six first-party audited
+cohorts, their 144 decoder cross-routes and 340 paired frame plans. Record small
+deterministic size benefits separately from observed timing/resident variation
+and conservative logical encoder charges. Preserve measured slower cases,
+actual contextual API settings, old products and source/tool bindings. No
+external implementation is consulted. Final common-runtime and retained95-body
+qualification remain separately required; no hosted or external run is claimed.

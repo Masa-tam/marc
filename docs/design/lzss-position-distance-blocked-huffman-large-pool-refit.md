@@ -127,3 +127,17 @@ member-specific values remain explicit in the benchmark record. The unchanged
 decoder's workload can vary with codebooks; no causal speed guarantee is made.
 This window's measured candidate remains retained separately. Final common
 runtime, retained95-body and remote gates remain separate.
+
+### Six-window measured conclusion
+
+TVG-1575/BM-0263 reconcile all six matched twelve-member cohorts. The bounded
+residual-pool rule applies to every requested window. All 72 revised corpus
+members are smaller than both saved native and same-window contextual controls.
+Savings against native range from 0.035480% at 1MiB to 0.002623% at 64MiB.
+Additional logical encoder charges range from 18,832 to 20,376 bytes; decoder
+queries remain unchanged. Keep the measured time and resident-memory changes
+explicit: encode time rises in the 1/4MiB cohorts and decode time rises at 16MiB.
+No causal or universal speed advantage is inferred from these matched cohorts.
+The audits check 340 paired plans with frozen overrides, 339 strict reductions
+and original pools on the one tie, plus 144 successful corpus cross-routes.
+Final common-runtime, retained95-body and later remote gates remain separate.
