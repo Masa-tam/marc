@@ -1596,3 +1596,10 @@ TVG-1573 qualifies the 64MiB candidate's static/shared public paths under DD-162
 Query the current encoder requirements, including its profile-descriptor-plus4096
 private charge. Decoder accounting, ABI and defaults remain unchanged. Full
 corpus measurements and final common-runtime qualification remain separate.
+
+TVG-1576 completes common-runtime qualification for all six larger windows.
+Static/shared producers agree for all 95 current profiles on identical input;
+the fixed qualified runtime passes both C linkage checks for each revised
+window. BM-0263 retains the measured tradeoffs and extra encoder query charges.
+Decoder queries, ABI, public defaults and failure/publication contracts remain
+unchanged. This local qualification does not claim hosted or external execution.

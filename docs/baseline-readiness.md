@@ -4234,3 +4234,19 @@ member-specific misses, with measured encode-time and resident-memory costs.
 The requested64KiB revision is complete. Baseline membership, release state,
 schema and selector order are unchanged; this recording commit does not claim
 another hosted or external execution.
+
+## 2026-10-18: larger-window Huffman residual-pool local qualification complete
+
+DD-1625/TVG-1576 close local implementation, correctness, resource, measurement,
+old-decoder and preserved-artifact gates for1/4/8/16/32/64MiB. BM-0263 summarizes
+the six complete twelve-member comparisons: all revised members shrink against
+saved native and same-window contextual controls, with small size benefits and
+explicit speed/peak tradeoffs. The final common runtime reproduces all72 corpus
+wires and restores all72 inputs; retained95 profiles, schema1..85 and
+static/shared identity pass. Qualified products replace the usual fixed Release
+runtime only after preserving earlier products and pass fixed-path checks.
+
+The requested local investigation is complete. Baseline membership, release
+state, decoder representations, schema85 and95-profile ordering remain
+unchanged. IX-0107 separately leaves hosted CI and external four-route validation
+pending for the maintainer's combined push; this record claims neither.

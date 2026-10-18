@@ -25873,3 +25873,33 @@ windows/frames, verified identities and exact restoration. The overview retains
 size, time and peak costs, including the observed slower cases, without claiming
 universal speed superiority. Final common-runtime corpus reproduction and
 retained95-body qualification remain separate gates at this milestone.
+
+### TVG-1576: six-window final runtime, schema and preservation qualification
+
+All six windows pass their ten core and six public registrations. A final
+common build passes31 integrated core/API/static-C/shared-C/CLI/documentation
+registrations. The final runtime then reproduces all72 measured corpus wire
+hashes and restores all72 inputs, independently of the measured candidates.
+BM-0257..0263 retain all member sizes, timings, peaks and144 corpus cross-routes.
+
+The source audit limits production changes to18 intended encoder/accounting
+files and confirms unchanged decoder/entropy-packer code, descriptor layouts
+and decoder charges. All265 saved starting products are rehashed successfully.
+All95 retained historical archives restore; all95 revised streams restore with
+both current and saved decoders. The unrelated89 streams exactly reproduce
+the saved starting producer. Six intended producer bodies change; the older
+historical64KiB change is not attributed to this goal. Twelve target truncated
+streams, across both decoders, fail without publishing an output file.
+
+The existing retained-evidence compatibility script passes schemas1 through85,
+including its ordering/identity and invalid-manifest cases. Its schema85 static
+producer and the qualified shared producer use verified identical8193-byte
+input and produce identical bytes for all95 profiles. Schema85, profile order
+and archive count remain unchanged.
+
+After restoring ordinary Release routing, preserve the265 pre-promotion files
+and copy58 qualified products with hash equality. The fixed runtime passes six
+CLI wire-equality/round-trip checks and twelve static/shared C checks. Original
+products, measured candidates and historical bundles remain retained. Final
+documentation checks are required before the recording commit. This closes
+local qualification only; hosted CI/external routes await the maintainer's push.

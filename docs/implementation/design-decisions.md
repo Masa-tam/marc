@@ -35100,3 +35100,9 @@ decoder-visible grammar. Save old products before building candidates; require
 per-window correctness, compatibility, resource and matched corpus evidence.
 Keep hosted/external gates separate and leave pushing to the maintainer after
 all six windows are processed. No measured larger-window result is assumed.
+
+TVG-1576/BM-0263 now qualify all six windows locally with measured tradeoffs,
+old-decoder compatibility and preserved artifacts. The strict complete-byte
+candidate rule is the qualified producer policy; decoder representation and
+failure contracts remain unchanged. IX-0107 leaves hosted/external status
+explicitly pending for the maintainer's later push.

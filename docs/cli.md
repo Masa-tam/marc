@@ -1157,11 +1157,12 @@ previous decoder also accepts revised codebooks. Re-encoding an old64KiB
 archive's raw content may intentionally differ from its old body. Preserve old
 artifacts and compare deterministic reproduction within the appropriate producer
 revision; do not confuse cross-revision encoder differences with decode failure.
-The other six native Huffman selectors retain their policy. TVG-1553 qualifies
+At TVG-1553, the other six native Huffman selectors retained their policy.
+TVG-1553 qualifies
 whole-file failure publication and static/shared public paths. Updated products
 are staged and validated before promotion to the existing fixed Release path.
 
-### Larger-window Huffman producer investigation
+### Larger-window Huffman producer output
 
 DD-1625 investigates the remaining native Huffman windows. The1MiB candidate
 uses the same frozen-override residual-pool policy under the existing
@@ -1200,3 +1201,13 @@ TVG-1573 qualifies the existing
 candidate producer policy. Determinism and transactional failure publication
 pass with unchanged decoder grammar and identities. Full corpus measurements
 and final common-runtime qualification remain separate gates.
+
+TVG-1576 closes those local gates for all six selectors under DD-1625.
+The qualified common runtime reproduces all 72 measured corpus streams and
+restores their contents. Saved decoders accept revised streams; old artifacts
+remain preserved. The existing fixed Release location now contains the
+hash-identical qualified runtime, with six CLI round-trips and twelve
+static/shared C checks passing after promotion. Producer bytes may intentionally
+change; selectors, decoder grammar and transactional publication do not.
+Earlier pending statements describe their milestone state. Hosted CI and
+external routes remain pending separately; the maintainer performs the push.

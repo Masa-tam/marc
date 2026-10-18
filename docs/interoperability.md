@@ -2564,3 +2564,28 @@ This closes the DD-1624 integration, local validation, measurement, hosted-CI
 and external four-route gates. Earlier pending statements describe their
 milestone state and are superseded by this receipt. The following documentation
 commit does not itself claim another CI run or external execution.
+
+### IX-0107: larger-window Huffman residual-pool local qualification
+
+DD-1625/TVG-1576 qualify the revised1/4/8/16/32/64MiB producers locally.
+The final common runtime restores all95 retained historical archives, and both
+saved and current decoders restore all95 revised streams. Compare re-encoding
+against the saved starting producer: the unrelated89 bodies remain exact and
+only the six intended producer bodies change. The historical64KiB revision
+predates this investigation. Preserve every historical body and manifest.
+
+All72 measured corpus streams reproduce exactly and restore with the final
+runtime; the independent window audits retain144 old/new corpus cross-routes.
+Twelve target truncation cases fail without output publication. The existing
+schema compatibility script passes1..85, including invalid-manifest checks.
+Static/shared producers agree on all95 bodies for verified identical input.
+Schema85, archive order and95-profile membership remain unchanged. The usual
+fixed Release runtime is updated only after qualification and passes six CLI
+and twelve C-linkage checks; both starting and pre-promotion products remain
+preserved.
+
+This completes the requested local six-window comparison and integration.
+Hosted CI and external four-route95-archive validation for this revision have
+not been reported or independently run. They remain pending after the
+maintainer's combined push. Earlier remote completion receipts concern their
+own revisions and do not establish those gates for this revision.

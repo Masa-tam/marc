@@ -141,3 +141,22 @@ No causal or universal speed advantage is inferred from these matched cohorts.
 The audits check 340 paired plans with frozen overrides, 339 strict reductions
 and original pools on the one tie, plus 144 successful corpus cross-routes.
 Final common-runtime, retained95-body and later remote gates remain separate.
+
+### Final local qualification
+
+TVG-1576/IX-0107 close all local gates for the six-window investigation.
+The final common runtime reproduces all 72 measured corpus wires and restores
+all 72 inputs. Retained historical95 archives restore; revised95 bodies restore
+with both saved and current decoders. The unrelated89 profiles reproduce the
+saved starting producer exactly. Only the six intended larger-window producer
+bodies change in that comparison; the historical64KiB revision predates this
+goal. Schema1..85 compatibility, static/shared95 body identity, twelve target
+truncation refusals and fixed-runtime public checks pass. Saved products and
+historical bundles remain intact. The source audit confirms unchanged decoder
+and entropy-packer code, descriptor layouts and decoder charges.
+
+Apply the residual-pool policy to all six requested windows. Its deterministic
+size benefit is small, with the measured time/peak costs retained in BM-0263;
+do not claim a universal speed improvement. Earlier local pending statements
+are superseded by this qualification. Hosted CI and external95 routes for this
+revision remain pending, and the maintainer performs the eventual push.

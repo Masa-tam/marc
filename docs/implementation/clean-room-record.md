@@ -43187,3 +43187,19 @@ and conservative logical encoder charges. Preserve measured slower cases,
 actual contextual API settings, old products and source/tool bindings. No
 external implementation is consulted. Final common-runtime and retained95-body
 qualification remain separately required; no hosted or external run is claimed.
+
+### CR-1951: 2026-10-18 — six-window residual-pool final local audit
+
+Author/reviewer: Codex. Task: extend the independently authored DD-1624
+frozen-override residual-pool rule to six larger native Huffman windows, compare
+matched size/time/peaks, preserve decoder compatibility and old artifacts.
+TVG-1576 binds the final runtime to the intended18 production files, unchanged
+decoder/packer code and preserved products. Independent corpus audits retain
+the mathematical descriptor parser and first-party drivers; final runtime
+reproduction, saved-decoder routes, static/shared identity and schema1..85 pass.
+Review finds no new external implementation expression introduced: the changes
+extend the repository's own candidate selection and bounded resource accounting.
+No external source implementation is consulted. Preserve intentional producer
+output revision and measured costs explicitly. This is a process/provenance
+record, not a legal guarantee. Hosted/external evidence remains separately
+pending under IX-0107; the agent does not push.
