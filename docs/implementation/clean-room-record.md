@@ -43253,3 +43253,26 @@ checks pass. Production code and stream policy remain unchanged. Review uses
 only first-party source and independently specified diagnostic expressions;
 no external implementation is consulted. The investigation is locally complete
 without a new format, CI execution or push.
+
+### CR-1956: 2026-10-19 — native position-distance Adaptive Huffman design
+
+Author/reviewer: Codex. Task: implement seven native Adaptive Huffman windows
+with independent format/vector/internal/public/measurement/exchange milestones,
+retaining artifacts and failure contracts. IR-1372/DD-1627 reference only the
+repository's first-party FGK trees, position-distance schedule and native
+framing. Reserve distinct identities and define a separate mathematical vector
+generator before encoder work. No external implementation is consulted. The
+starting inventory is verified schema85/95 archives; products are preserved.
+All implementation, measurement, fuzz and exchange completion remains pending;
+the maintainer explicitly defers fuzz execution and controls eventual pushing.
+
+### CR-1957: 2026-10-19 — native64KiB Adaptive Huffman format milestone
+
+Author/reviewer: Codex. TVG-1580 uses a separate mathematical object-tree FGK
+oracle, independently stated token scheduling and direct hand-packed first
+symbol checks. New bounded descriptor code uses explicit little-endian fields
+and success-only ordinary commits. It does not alter the existing tree or any
+prior decoder identity. Related format/vector/documentation tests pass before
+the milestone commit. Public implementation and measurements remain pending;
+no external source implementation is consulted. Fuzz execution remains deferred
+by the maintainer rather than represented as completed validation.

@@ -35117,3 +35117,14 @@ bits and true pooled/override models. An absent fallback pool is an explicit
 inapplicability result, not permission to change a decoder representation.
 Qualify bounded synthetic evidence and preserve prior products; record omitted
 candidate benchmarks honestly and leave pushing to the maintainer.
+
+### DD-1627: position-distance Adaptive Huffman family
+
+The [native FGK design](../design/lzss-position-distance-adaptive-huffman.md)
+specifies seven exact new profiles, implemented64KiB through64MiB in order.
+Reuse first-party variable-alphabet FGK trees under independent position-based
+contexts, retaining short-length escapes, modeled distance bits, bounded frames
+and success-only publication. Require per-window correctness and matched
+contextual comparisons. Resource grants and heavy test settings follow pilots.
+Preserve the starting95 bodies and append seven in order. Fuzz is deferred by
+the maintainer; local and later hosted/external completion remain distinct.

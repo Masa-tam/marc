@@ -12127,3 +12127,12 @@ DD-1626 distinguishes independent context models from a shared fallback pool.
 Use independently stated opposite-singleton vectors and actual serialized
 extents; consult no external implementation code. No new algorithm reference
 or external compatibility claim is introduced.
+
+### IR-1372: native position-distance Adaptive Huffman profiles
+
+Use the repository's independently authored FGK tree, contextual Adaptive
+Huffman NYT/update rules, full-literal position-distance token schedule, bounded
+native frames and existing public failure contracts. DD-1627 defines new exact
+identities rather than altering earlier streams. Author a separate small
+mathematical FGK vector generator and retain hand-checkable payloads. No
+external implementation source or new external compatibility claim is used.

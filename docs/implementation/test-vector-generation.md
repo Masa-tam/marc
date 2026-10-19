@@ -25972,3 +25972,29 @@ campaign is performed because no residual-pool production candidate exists;
 no zero measurement delta or new fuzz result is claimed. This completes the
 local applicability investigation, with alternatives and their unmeasured
 costs explicit. No hosted CI run or agent push is performed.
+
+### TVG-1580: native Adaptive Huffman64KiB format and independent vectors
+
+DD-1627 reserves seven distinct native identities and first qualifies64KiB.
+An independently authored object-tree FGK generator creates fourteen frozen
+token/decision/raw/descriptor/payload vectors. It imports no production tree
+or serializer. First-literal payloads for0,255 and65 are hand-checked as
+`00 00`, `fe 01` and `82 00`, each with nine valid bits. Other vectors cover
+repeated/new literals, nibble contexts, length3/4/5/258 escapes, nonpower-of-two
+alphabets, distance residuals and literal state retained across matches.
+
+The bounded native descriptor parser/serializer checks all fourteen expected
+descriptors. Directed tests cover truncated/trailing metadata, reserved bytes,
+flags, context/count/size contradictions, one-short destination and resource
+admission, invalid profile selection and untouched ordinary outputs/tails.
+Format, vector and documentation registrations pass3/3. The stream/frame
+specification is defined, but stream/frame parsing, entropy encoding/decoding,
+token/public/CLI integration, full measurements and exchange remain pending.
+Reserved larger-window rows are not public completion claims.
+
+Starting schema85/95 archive sizes, hashes and order are verified; all273
+starting Windows Release products are copied and rehashed before changes.
+No unrelated repository build/test process is observed before this work.
+The diagnostic build writes separately from the qualified fixed CLI. Fuzz
+execution is deferred by explicit maintainer instruction, including disabling
+the existing CI fuzz job until instructed otherwise; no fuzz result is claimed.

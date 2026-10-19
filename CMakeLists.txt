@@ -10937,6 +10937,20 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
                 ${CMAKE_CURRENT_BINARY_DIR}/cli-position-blocked-huffman-1m)
         set_tests_properties(marc_cli_position_blocked_huffman_1m PROPERTIES TIMEOUT 180)
     endif()
+    add_executable(marc_position_adaptive_huffman_format_tests
+        tests/position_adaptive_huffman_format_tests.cpp
+        src/entropy/position_adaptive_huffman_format.cpp src/core/limits.cpp)
+    target_compile_features(marc_position_adaptive_huffman_format_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_adaptive_huffman_format_tests PRIVATE src)
+    set_target_properties(marc_position_adaptive_huffman_format_tests PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
+    add_test(NAME marc_position_adaptive_huffman_64k_format COMMAND marc_position_adaptive_huffman_format_tests)
+    add_test(NAME marc_position_adaptive_huffman_64k_vectors
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tools/generate_position_adaptive_huffman_vectors.py
+            --check ${CMAKE_CURRENT_SOURCE_DIR}/tests/data/position_adaptive_huffman_64k_vectors.json
+            --format-tool $<TARGET_FILE:marc_position_adaptive_huffman_format_tests>)
+
     add_executable(marc_position_ans_pool_applicability
         tests/position_ans_pool_applicability.cpp
         src/entropy/position_rans_4m_format.cpp

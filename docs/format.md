@@ -9400,3 +9400,14 @@ existing rANS/tANS profile. Current per-context normalized frequencies and
 implicit uniform residual bits retain their specified interpretation. A future
 shared-model representation requires its own variant and compatibility work;
 synthetic repeated models in existing context slots do not create such a rule.
+
+### DD-1627: position-distance Adaptive Huffman reserved native profiles
+
+The [native FGK specification](design/lzss-position-distance-adaptive-huffman.md)
+defines the exact context schedule, tree update/NYT rules,16-byte entropy
+descriptor,112-byte stream header,64-byte frame header, count/size bounds and
+strict finish rules. Reserve dictionary variants8/9/10/11/12/13/14 paired with
+context algorithm1 variants35..41 and Adaptive Huffman algorithm1 variants3..9.
+Each tuple is inseparable. Earlier Adaptive Huffman variants and all other
+identities are unchanged. Reservation does not imply public admission or
+completion; implement and qualify the seven windows sequentially.

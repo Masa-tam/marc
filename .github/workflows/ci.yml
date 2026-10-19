@@ -71,6 +71,8 @@ jobs:
           if-no-files-found: error
 
   ubuntu-fuzz-position-blocked-huffman:
+    # Fuzz execution is deferred until the maintainer explicitly requests it.
+    if: ${{ false }}
     name: Ubuntu 24.04 / position-distance blocked-Huffman fuzz
     runs-on: ubuntu-24.04
     steps:
