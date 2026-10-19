@@ -43642,3 +43642,13 @@ cover committed byte counts, chunk invariance and withholding a failed frame
 from both output and its digest. Both build registrations pass. No external
 source, fuzz, push or fixed-runtime replacement is involved; remaining goal
 gates are not reclassified as complete.
+
+### CR-1996: 2026-10-20 — native64MiB Adaptive Huffman exchange
+
+Author/reviewer: Codex. TVG-1619 and IX-0117 extend the existing first-party
+append-only exchange scheme to102 profiles. Exact native identity validation,
+pre-launch rejection and saved-consumer checks preserve earlier representation
+and publication contracts. No external source or implementation is consulted.
+Failed execution-service evidence is preserved separately from successful
+qualification. No fuzz, push or fixed-runtime replacement is involved. Final
+local and remote gates remain explicitly unfinished.

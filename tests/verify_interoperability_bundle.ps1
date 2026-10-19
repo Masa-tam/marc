@@ -608,6 +608,7 @@ $schema88Profiles = $schema87Profiles + @('lzss-position-distance-adaptive-huffm
 $schema89Profiles = $schema88Profiles + @('lzss-position-distance-adaptive-huffman-8m')
 $schema90Profiles = $schema89Profiles + @('lzss-position-distance-adaptive-huffman-16m')
 $schema91Profiles = $schema90Profiles + @('lzss-position-distance-adaptive-huffman-32m')
+$schema92Profiles = $schema91Profiles + @('lzss-position-distance-adaptive-huffman-64m')
 if ($manifest.schema_version -eq 1) {
     if ($null -ne $manifest.PSObject.Properties['codec_set']) {
         throw 'Schema 1 interoperability manifests must not declare a codec set'
@@ -1063,6 +1064,11 @@ if ($manifest.schema_version -eq 1) {
         throw "Unsupported interoperability codec set: $($manifest.codec_set)"
     }
     $expectedProfiles = $schema91Profiles
+} elseif ($manifest.schema_version -eq 92) {
+    if ([string]$manifest.codec_set -ne 'marc-cli-v92') {
+        throw "Unsupported interoperability codec set: $($manifest.codec_set)"
+    }
+    $expectedProfiles = $schema92Profiles
 } else {
     throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
 }
@@ -1108,7 +1114,8 @@ foreach ($entry in $manifest.archives) {
             elseif ($codec -eq 'lzss-position-distance-adaptive-huffman-1m') { '1 MiB' }
             elseif ($codec -eq 'lzss-position-distance-adaptive-huffman-4m') { '4 MiB' }
             elseif ($codec -eq 'lzss-position-distance-adaptive-huffman-8m') { '8 MiB' }
-            elseif ($codec -eq 'lzss-position-distance-adaptive-huffman-16m') { '16 MiB' } else { '32 MiB' }
+            elseif ($codec -eq 'lzss-position-distance-adaptive-huffman-16m') { '16 MiB' }
+            elseif ($codec -eq 'lzss-position-distance-adaptive-huffman-32m') { '32 MiB' } else { '64 MiB' }
         $header = [byte[]]::new(112)
         $stream = [System.IO.File]::OpenRead($archivePath)
         try {

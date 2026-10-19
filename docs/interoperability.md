@@ -2817,3 +2817,32 @@ These are incremental local schema91/90 and preceding-consumer results.
 Complete schema history, larger-window corpus/peak measurements, the final
 64MiB profile,102-body audit, deferred fuzz and hosted/external qualification
 remain pending. The fixed Release runtime has not been replaced.
+
+### IX-0117: native64MiB Adaptive Huffman local102-profile exchange
+
+Schema92 appends exactly `lzss-position-distance-adaptive-huffman-64m` after
+the unchanged101-entry schema91 prefix. Three producer bundles preserve every
+preceding body and input byte, entry/property order and input metadata. All102
+bodies agree across builds; seven static/shared self/cross and second-build
+exchange routes pass strict restoration and re-encoding. The original95-entry
+starting-producer prefix also remains byte-identical and in its original order.
+
+Saved preceding101-profile static consumers from both builds verify a derived
+schema91 prefix. The saved starting95-profile executable verifies the derived
+schema85 prefix. The second-build static consumer has no dependency on the
+current codec library. Adapter execution remains distinct from native-shell
+execution. Seven independent header sets each check19 frozen headers and2147
+directed alterations. Schema92 rejects132 manifest/header cases before codec
+launch or output publication; the preceding schema91 guard rejects131.
+
+The initial second-build bundle attempt could not start its execution service;
+retain that incomplete directory and log, then create a separately named bundle
+under the permitted execution context. No failed attempt is counted as passing.
+The fixed273-product baseline and its saved copies remain unchanged; all95
+retained historical bodies and their manifest are intact. IX-0110's historical
+restore-only distinction remains applicable.
+
+These are local incremental results, not the final whole-history/repository
+qualification. Full corpus/peak comparisons, complete schema history and final
+runtime promotion remain pending. Fuzz remains deferred by user instruction;
+no push or hosted/external102-profile result is claimed.

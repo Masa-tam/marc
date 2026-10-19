@@ -26797,3 +26797,19 @@ The dedicated registration passes on both builds. An initial compilation exposed
 an omitted explicit string header; add that standard header and retain the failed
 build evidence. This test changes no codec representation or production path.
 Corpus, exchange, deferred fuzz and final remote gates remain pending.
+
+### TVG-1619: native64MiB Adaptive Huffman102-profile exchange
+
+IX-0117 checks three producer bundles, seven strict local exchange routes,
+101-to102 and original95-to102 prefix preservation, preceding101-profile
+static consumers and the retained starting95-profile executable. All seven
+independent header sets pass19 positive and2147 directed negative cases each.
+The new schema92 guard rejects132 cases before launching a codec or publishing
+output; the preceding schema91 guard rejects131 against its derived prefix.
+The public64MiB source revision identifies the measured codec generation;
+no later test-only edit is represented as a new codec output generation.
+
+Retain failed service-start evidence and use a new output directory for its
+successful retry. Existing95 historical bodies, manifest,273 fixed products
+and saved copies remain unchanged. Full schema history, repository audit,
+remaining corpus measurements, deferred fuzz and remote gates remain pending.
