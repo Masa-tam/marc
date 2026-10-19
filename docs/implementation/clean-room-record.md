@@ -43681,3 +43681,13 @@ restoration are checked before qualification. Machine information remains in
 local evidence. Larger outputs and resource trade-offs are recorded without
 altering a format or claiming universal improvements. No external implementation,
 fuzz or push is involved; final local review and remote gates remain pending.
+
+### CR-2000: 2026-10-20 — public native Adaptive Huffman4m corpus audit
+
+Author/reviewer: Codex. BM-0268 and TVG-1623 derive sizes, throughput and
+resident peaks from first-party public APIs and independently audited retained
+observations. All12 inputs, actual format/settings, deterministic output and
+restoration are checked before qualification. Machine information remains in
+local evidence. Larger outputs and resource trade-offs are recorded without
+altering a format or claiming universal improvements. No external implementation,
+fuzz or push is involved; final local review and remote gates remain pending.
