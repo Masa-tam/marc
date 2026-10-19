@@ -8,11 +8,11 @@ import tempfile
 
 driver=Path(sys.argv[1]).resolve()
 public='--public' in sys.argv[3:]
-assert all(option in ('--public','--window=1m','--window=4m','--window=8m') for option in sys.argv[3:])
+assert all(option in ('--public','--window=1m','--window=4m','--window=8m','--window=16m') for option in sys.argv[3:])
 windows=[option.split('=',1)[1] for option in sys.argv[3:] if option.startswith('--window=')];assert len(windows)<=1
 window=windows[0] if windows else '64k'
 assert public or window=='64k'
-extent,index={'64k':(65536,0),'1m':(1048576,1),'4m':(4194304,2),'8m':(8388608,3)}[window]
+extent,index={'64k':(65536,0),'1m':(1048576,1),'4m':(4194304,2),'8m':(8388608,3),'16m':(16777216,4)}[window]
 base=Path(sys.argv[2]).resolve();base.mkdir(parents=True,exist_ok=True)
 root=Path(tempfile.mkdtemp(prefix='run-',dir=base))
 raw=bytes(range(256))*(extent//256+1)
@@ -35,7 +35,9 @@ for profile in ('position','contextual'):
     assert struct.unpack_from('<Q',data,40)[0]==len(raw) and restored.read_bytes()==raw
     identity=struct.unpack_from('<4H',data,12)+struct.unpack_from('<2H',data,96)
     if profile=='position':assert identity==(2,8+index,1,3+index,1,35+index)
-    else:assert identity==(2,2+index,1,2,1,1+index)
+    else:
+        control_index=3 if window in ('8m','16m') else index
+        assert identity==(2,2+control_index,1,2,1,1+control_index)
     row['identity']=identity;rows.append(row)
 (root/'receipt.json').write_text(json.dumps({'passed':True,'rows':rows},indent=2),encoding='utf-8')
 print(json.dumps({'passed':True,'stage':str(root),'rows':rows}))

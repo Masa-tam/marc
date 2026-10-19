@@ -1618,7 +1618,7 @@ The family uses a common configuration with an explicit profile field and
 `marc_lzss_position_distance_adaptive_huffman_config_apply_profile`. Initialization
 selects64KiB. Applying a profile resets its window-dependent defaults while
 preserving direction, original size, caller retention and I/O declarations.
-Profile values16MiB and larger are reserved and return Unsupported until individually
+Profile values32MiB and larger are reserved and return Unsupported until individually
 qualified; unknown values return InvalidArgument. Failed application preserves
 the configuration. Existing codec configurations and ABI layouts are unchanged.
 
@@ -1711,3 +1711,21 @@ then setting both window and frame to8388608 succeeds through the existing API.
 The resource pilot verifies dictionary2/5, entropy1/2, context1/4, actual window/
 frame8388608 and complete restoration. This is a configured existing-API control,
 not an additional public contextual8MiB profile.
+
+### Native16MiB position-distance Adaptive Huffman
+
+Apply `MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_16M` to select
+dictionary2/12, context1/39 and Adaptive Huffman1/7. The dictionary window is
+16777216 bytes; frame size may be1..16777216. Defaults are frame/max-frame
+16777216, maximum block150994944 decisions, maximum payload559939584 bytes,
+14030 model entries and1024MiB logical admission, with65536-byte I/O capacities.
+Earlier profile defaults and stream representations remain unchanged.
+
+With65536 retained control bytes and two65536-byte I/O declarations, actual
+minimum grants are980779268 encode and778551684 decode bytes. Query the actual
+ABI/configuration before construction. The owner retains one private encoded
+frame and publishes only after complete validation; ordinary output and terminal
+failure contracts remain unchanged. The same-window public contextual16MiB
+control verifies dictionary2/5, entropy1/2, context1/4, actual window/frame
+16777216 and complete restoration. These pilots do not replace full-corpus
+size/rate/resident-peak comparisons or exchange qualification.

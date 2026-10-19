@@ -43547,3 +43547,13 @@ profile/variant pairings and avoid further nested selection. Exact admission,
 ordinary failure invariance and failed-frame withholding remain mandatory.
 No external source, fuzz, push or fixed-runtime replacement is involved;
 public, corpus and exchange qualification remain separate unfinished gates.
+
+### CR-1986: 2026-10-20 — native16MiB public integration
+
+Author/reviewer: Codex. TVG-1609 connects the independently defined16MiB identity
+through the existing common first-party factory and CLI. Actual resource
+queries and pilots determine admission and test limits. Earlier profile
+representations, allocation-failure assertions and failed-frame/transactional
+publication contracts remain intact. No external implementation source, fuzz,
+push or fixed-runtime update is involved. Full corpus and exchange evidence
+remain subsequent independent gates.

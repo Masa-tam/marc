@@ -26566,3 +26566,31 @@ executed and earlier executable products remain retained.
 Both builds pass24 related registrations. The full16MiB owner takes1.48 and
 2.75 seconds respectively. Full-corpus and resident-peak comparisons remain
 separate from these private correctness/resource-query results.
+
+### TVG-1609: native16MiB public boundary and resource qualification
+
+Admit16MiB through the common factory and exact CLI selector. Use the qualified
+private charges to select1024MiB logical admission. With65536 retained control
+bytes and two65536-byte I/O declarations, measured public minimum grants are
+980779268 encode and778551684 decode bytes. Full-frame exact/one-short quotas,
+every factory allocation failure, allocation-free processing, immutable
+direction and stable terminal states retain their preceding assertions.
+
+The same-window public contextual control emits dictionary2/5, entropy1/2,
+context1/4 and window/frame16777216; both APIs restore16777472 pilot bytes.
+Both C linkages pass. CLI tests retain19 independent golden files, seven
+boundary round trips, strict foreign/near-name rejection, all small truncations,
+padding/trailing validation, late failed-frame withholding and target/tmp
+preservation. Existing window cases are rerun with the new public implementation.
+
+Initial API/resource/C pilots pass four registrations on each build below13
+seconds. Both CLI linkages pass on each build; the slowest pilot takes51.65
+seconds. Retain the inherited large-window resource lock; set API60 seconds,
+resource/C30 seconds and CLI180 seconds from these observations. Full12
+size/rate/resident-peak comparisons,100-profile exchange, two larger profiles,
+deferred fuzz and remote results remain pending. No fuzz is run.
+
+Final related runs pass62 registrations on the first build and58 on the
+second, taking205.77 and253.97 seconds. The slowest related16MiB CLI observation
+is71.36 seconds. Earlier SDK products and fixed Release files remain retained;
+full measurements and exchange are separate unfinished gates.
