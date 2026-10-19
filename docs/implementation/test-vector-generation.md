@@ -26696,3 +26696,28 @@ configurations are regenerated. The six native header registrations and
 document layout pass. Starting273 products and historical95 bodies remain
 unchanged. Full schema/102 audit, larger-window measurements, the final profile,
 deferred fuzz and remote results remain unfinished. No fuzz is run.
+
+### TVG-1615: independently generated64MiB native FGK vectors
+
+Freeze14 stream/frame fixtures and five boundaries from the independent
+mathematical generator. The full-window late-reference case has67108864 raw
+bytes,260114 tokens,2601151 decisions,325147 payload bytes and eight valid final
+bits, ending at distance67108861. Retain complete wire bytes and bounded
+little-endian token/raw files; the fixture bridge now admits all seven reserved
+identities while public ownership remains separately qualified.
+
+Two full raw spans alone exhaust128MiB, before token/model/control charges.
+The full64MiB ordinary decode explicitly rejects that insufficient quota with
+zero committed sizes and unchanged output. Use a finite192MiB fixture grant
+for positive reference/scratch equality, tails, aliases, one-short serialized
+storage, truncation and padding checks. Earlier selected windows retain their
+preceding fixture limits. Rerun all earlier frozen vectors. Internal ownership,
+public integration, full corpus/peak measurements,102-profile exchange, deferred
+fuzz and final family/remote gates remain pending. No fuzz is run.
+
+Both builds pass20 vector/document registrations, taking37.02 and38.92
+seconds. The full64MiB fixture proves128MiB quota rejection without publication
+and successful192MiB reference/scratch decoding. Its slowest new registration
+is10.88 seconds, within the retained60-second limit. Initial test compilation
+caught a const-reference assignment; a separate limits object fixes it, with
+original and corrected build logs retained.

@@ -43603,3 +43603,12 @@ equality, launch guards, reciprocal execution and preceding static decoders
 provide incremental local evidence. No external source, fuzz, push or fixed
 runtime replacement is involved. Complete family and remote gates remain
 pending.
+
+### CR-1992: 2026-10-20 — independent64MiB native FGK fixtures
+
+Author/reviewer: Codex. TVG-1615 freezes the last reserved window through the
+existing independently authored FGK generator and file transport. Explicit
+insufficient-quota rejection accompanies the finite larger fixture grant;
+ordinary failure invariance is retained. Both first-party frame paths are
+compared with complete independent bytes. No external source, public factory
+admission, fuzz, push or fixed-runtime replacement is involved.

@@ -59,7 +59,7 @@ void fixture(const std::vector<std::byte>& stream_bytes,const std::vector<std::b
     check(stream_bytes.size()==112);
     const auto variant=std::to_integer<unsigned>(stream_bytes[14])
         | (std::to_integer<unsigned>(stream_bytes[15])<<8);
-    check(variant>=8 && variant<=13);
+    check(variant>=8 && variant<=14);
     const auto selected=static_cast<PositionAdaptiveHuffmanProfile>(variant-8);
     auto limits=marc::core::DecoderLimits{};
     limits.max_block_size=std::max(limits.max_block_size,
@@ -68,6 +68,9 @@ void fixture(const std::vector<std::byte>& stream_bytes,const std::vector<std::b
         static_cast<std::uint64_t>(position_adaptive_huffman_spec(selected)->window_size));
     limits.max_lz_distance=std::max(limits.max_lz_distance,
         static_cast<std::uint64_t>(position_adaptive_huffman_spec(selected)->window_size));
+    // Two full64MiB raw spans already exhaust the generic128MiB test grant.
+    if (selected==PositionAdaptiveHuffmanProfile::window_64m)
+        limits.max_internal_buffered_bytes=UINT64_C(192)<<20;
     PositionAdaptiveHuffmanStreamHeader stream{};std::size_t used{};
     check(parse_position_adaptive_huffman_stream(selected,stream_bytes,limits,stream,used)==PositionAdaptiveHuffmanFormatError::none);
     check(stream.original_size==raw.size());
@@ -94,6 +97,13 @@ void fixture(const std::vector<std::byte>& stream_bytes,const std::vector<std::b
     failed(alias);check(alias.error==Error::overlapping_buffers);
     std::vector<LzssTypedToken> scratch(tokens.size());
     std::vector<std::byte> private_raw(raw.size()+1,std::byte{0x39}),ordinary(raw.size()+3,std::byte{0x64});
+    if (raw.size()==67108864) {
+        auto reduced_limits=limits;reduced_limits.max_internal_buffered_bytes=UINT64_C(128)<<20;
+        const PositionAdaptiveHuffmanFrameContext limited{stream,reduced_limits,0,0};
+        const auto rejected=decode_position_adaptive_huffman_frame(frame,limited,work.nodes,work.symbols,scratch,private_raw,ordinary);
+        failed(rejected);check(rejected.error==Error::limit_exceeded);
+        check(std::all_of(ordinary.begin(),ordinary.end(),[](auto b){return b==std::byte{0x64};}));
+    }
     const auto decoded=decode_position_adaptive_huffman_frame(frame,context,work.nodes,work.symbols,scratch,private_raw,ordinary);
     check(decoded.error==Error::none && decoded.raw_size==raw.size() && decoded.serialized_size==frame.size());
     check(std::equal(raw.begin(),raw.end(),ordinary.begin()));
@@ -141,7 +151,7 @@ std::vector<std::byte> fixture_file(const char* path,std::size_t maximum) {
     check(static_cast<bool>(source));return bytes;
 }
 void files(char** paths) {
-    constexpr std::size_t maximum_raw=33554432;
+    constexpr std::size_t maximum_raw=67108864;
     auto stream=fixture_file(paths[0],112);
     auto frame=fixture_file(paths[1],80+(267*maximum_raw+7)/8);
     auto raw=fixture_file(paths[2],maximum_raw);

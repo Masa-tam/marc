@@ -322,3 +322,12 @@ serialized-frame staging remain unchanged. Observed full-window logical
 requirements are1959948826 encode and1556394650 decode bytes, with a
 403439616-byte encode finder. Earlier pairings remain covered by regression
 checks; these figures are not resident peaks or a public memory grant.
+
+The64MiB format step freezes dictionary2/14, context1/41 and Adaptive
+Huffman1/9, with58 contexts,4680 alphabet entries and9418 nodes. Its full-window
+late-reference fixture represents67108864 raw bytes with260114 tokens,
+2601151 decisions,325147 payload bytes and eight valid final bits, ending at
+distance67108861. Two full raw spans alone require128MiB in the ordinary frame
+test; it explicitly checks rejection under that insufficient grant and uses a
+finite192MiB fixture grant for the complete reference/scratch comparison.
+This test-only grant does not admit a public owner or set a public default.
