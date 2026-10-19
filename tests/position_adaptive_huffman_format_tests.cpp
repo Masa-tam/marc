@@ -53,7 +53,9 @@ int main(int argc,char** argv) {
         check(serialize_position_adaptive_huffman_descriptor(profile,d,{},std::span(target).first(15))==Error::output_too_small);
         check(target==before);
         auto limits=marc::core::DecoderLimits{};
+        limits.max_block_size=2;
         limits.max_internal_buffered_bytes=17;
+        check(marc::core::validate_limits(limits)==marc::core::LimitError::none);
         check(serialize_position_adaptive_huffman_descriptor(profile,d,limits,target)==Error::limit_exceeded);
         check(target==before);
         check(validate_position_adaptive_huffman_descriptor(static_cast<PositionAdaptiveHuffmanProfile>(255),d,2,2,{})==Error::invalid_profile);

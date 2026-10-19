@@ -43276,3 +43276,15 @@ prior decoder identity. Related format/vector/documentation tests pass before
 the milestone commit. Public implementation and measurements remain pending;
 no external source implementation is consulted. Fuzz execution remains deferred
 by the maintainer rather than represented as completed validation.
+
+### CR-1958: 2026-10-19 — native64KiB FGK entropy reference
+
+Author/reviewer: Codex. TVG-1581 connects a new bounded bank of the existing
+first-party variable-alphabet FGK tree to the independently specified native
+decision schedule. The new forward planner/writer and decoder match the frozen
+mathematical oracle, preserve success-only ordinary destinations and admit
+explicit private workspace before mutation. No prior tree implementation or
+stream identity is changed. Correct the unit configuration invariant without
+changing boundary expectations. Related tests pass before committing this
+entropy-only milestone; token/frame/public/comparison gates remain pending.
+No external implementation is consulted and no fuzz execution is performed.

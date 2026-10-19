@@ -25998,3 +25998,24 @@ No unrelated repository build/test process is observed before this work.
 The diagnostic build writes separately from the qualified fixed CLI. Fuzz
 execution is deferred by explicit maintainer instruction, including disabling
 the existing CI fuzz job until instructed otherwise; no fuzz result is claimed.
+
+### TVG-1581: native Adaptive Huffman64KiB entropy reference milestone
+
+The private forward planner/writer and decoder reuse unchanged first-party
+FGK tree primitives in a bounded position-context bank. All fourteen frozen
+payload/descriptor vectors match the independent oracle and decode exactly.
+Direct hand-packed first-literal tests cover all256 byte values. Directed
+cases cover absent initialization, invalid contexts/symbols, repeated finish,
+insufficient node/symbol/payload workspaces, valid exact/one-short admission,
+nonzero padding, late truncation, trailing bits, duplicate NYT symbols,
+unused nonpower-of-two symbol values and overlapping scratch/symbol outputs.
+Ordinary descriptors and failed read destinations remain unchanged.
+
+The initial exact-boundary test configuration violated the common block-size
+versus internal-buffer invariant. Correct the configuration and assert its
+validity; the original exact/one-short workspace expectations remain intact.
+Format/vector/core/entropy-vector/documentation registrations then pass5/5.
+The oracle, old vectors, limits and failure assertions are not weakened.
+No allocation occurs inside this entropy core. Token traversal, reconstruction,
+complete-frame withholding, public integration, measurements, exchange and
+all larger-window qualifications remain pending. Fuzz is still deferred.

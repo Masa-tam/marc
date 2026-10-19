@@ -126,3 +126,22 @@ past schemas, malformed-manifest prelaunch refusal and local self/cross routes.
 Make reviewable local commits after each related test/documentation gate.
 No intermediate push occurs. Hosted CI and external four-route102 evidence
 remain separate, maintainer-controlled completion gates.
+
+### Initial64KiB entropy resource contract
+
+The reference entropy core accepts caller-private node and symbol spans and
+uses no dynamic allocation. Its conservative minimum charge is65536 control
+bytes plus16 descriptor bytes, node entries times `sizeof(AdaptiveHuffmanNode)`,
+alphabet entries times `sizeof(uint16_t)`, and planned payload bytes. Supplied
+larger workspace spans are charged at their supplied extents. This is logical
+admission accounting, not a measured resident peak or an eventual public grant.
+Limits must also satisfy common configuration invariants, including block size
+not exceeding internal-buffer allowance. Exact/one-short tests use valid common
+configurations so that the tested failure is the workspace boundary itself.
+
+Planning and writing reset the same per-context trees. A write receives exactly
+the planned private payload span and checks both final decision count and bit
+extent. The decoder checks padding before traversing payload, stages each
+symbol and validates exact finish; tokens/raw frames still need their own
+later all-or-nothing validation. Bit extents use wide intermediate arithmetic
+and reject unrepresentable host offsets before traversal.

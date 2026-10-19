@@ -162,12 +162,18 @@ def main():
     parser.add_argument('--output',type=Path)
     parser.add_argument('--check',type=Path)
     parser.add_argument('--format-tool',type=Path)
+    parser.add_argument('--entropy-tool',type=Path)
     args=parser.parse_args()
     result=vectors()
     if args.format_tool:
         for row in result['vectors']:
             subprocess.run([str(args.format_tool),row['descriptor_hex'],str(len(row['decisions'])),
                             str(len(bytes.fromhex(row['payload_hex'])))],check=True,timeout=30)
+    if args.entropy_tool:
+        for row in result['vectors']:
+            operations=','.join(f'{context}:{symbol}' for context,symbol in row['decisions'])
+            subprocess.run([str(args.entropy_tool),row['descriptor_hex'],row['payload_hex'],operations],
+                           check=True,timeout=30)
     if args.check:
         assert json.loads(args.check.read_text(encoding='utf-8'))==result
     elif args.output:
