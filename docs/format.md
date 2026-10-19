@@ -9391,3 +9391,12 @@ promise to reproduce an earlier producer's bytes. Old decoder compatibility,
 failure invariance and failed-frame withholding remain required. IX-0107
 records local qualification; IX-0108 separately records the maintainer's
 successful hosted CI and external execution for the qualified producer revision.
+
+### DD-1626: ANS pool applicability does not change existing representations
+
+The [ANS investigation](design/lzss-position-distance-ans-pool-investigation.md)
+does not add a pooled model, fallback mask or model-reference record to any
+existing rANS/tANS profile. Current per-context normalized frequencies and
+implicit uniform residual bits retain their specified interpretation. A future
+shared-model representation requires its own variant and compatibility work;
+synthetic repeated models in existing context slots do not create such a rule.

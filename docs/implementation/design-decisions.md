@@ -35107,3 +35107,13 @@ candidate rule is the qualified producer policy; decoder representation and
 failure contracts remain unchanged. IX-0107 records the local milestone;
 IX-0108 adds the maintainer's successful hosted/external report and closes
 DD-1625 for all six windows without changing its policy or representation.
+
+### DD-1626: ANS shared-model applicability investigation
+
+The [ANS investigation](../design/lzss-position-distance-ans-pool-investigation.md)
+checks all existing rANS/tANS windows and four-MiB rANS variants before changing
+producer policy. Distinguish independent normalized contexts, implicit uniform
+bits and true pooled/override models. An absent fallback pool is an explicit
+inapplicability result, not permission to change a decoder representation.
+Qualify bounded synthetic evidence and preserve prior products; record omitted
+candidate benchmarks honestly and leave pushing to the maintainer.

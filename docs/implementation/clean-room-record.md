@@ -43215,3 +43215,15 @@ closes the outstanding gates at the reported producer revision. Preserve the
 independently authored policy, unchanged decoder representation and measured
 tradeoffs. No external source implementation is consulted. This documentation
 record does not imply another CI run or external execution; no push is made.
+
+### CR-1953: 2026-10-19 — ANS shared-model investigation design
+
+Author/reviewer: Codex. Task: investigate shared-model rebuilding across all
+existing position-distance rANS/tANS windows while retaining old representations
+and artifacts. IR-1371/DD-1626 use only repository-authored descriptors,
+normalization, writers, decoders and the earlier Huffman study. Separate
+independent context models from actual fallback pools before considering any
+implementation change. The initial inspection finds no existing pool/override
+rule in the inspected ANS builders; complete profile/runtime evidence is still
+pending. Specify the opposite-singleton experiment independently. No external
+implementation is consulted and no compression/performance benefit is assumed.

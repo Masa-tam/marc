@@ -12118,3 +12118,12 @@ for DD-1625. Inspect each existing bounded descriptor and context mapping
 independently. Reuse repository-authored canonical construction, independent
 wire vectors and manifest-verified corpus measurement drivers. No external
 implementation code or new algorithm reference is needed.
+
+### IR-1371: position-distance ANS shared-model applicability
+
+Use first-party position-distance rANS/tANS descriptors, context layouts,
+normalizers, writers and decoders, with DD-1624/1625 as the motivating comparison.
+DD-1626 distinguishes independent context models from a shared fallback pool.
+Use independently stated opposite-singleton vectors and actual serialized
+extents; consult no external implementation code. No new algorithm reference
+or external compatibility claim is introduced.
