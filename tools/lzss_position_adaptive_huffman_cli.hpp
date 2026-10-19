@@ -1,17 +1,20 @@
-#ifndef MARC_TOOLS_POSITION_ADAPTIVE_HUFFMAN_64K_CLI_HPP
-#define MARC_TOOLS_POSITION_ADAPTIVE_HUFFMAN_64K_CLI_HPP
+#ifndef MARC_TOOLS_POSITION_ADAPTIVE_HUFFMAN_CLI_HPP
+#define MARC_TOOLS_POSITION_ADAPTIVE_HUFFMAN_CLI_HPP
 #include <marc/marc.h>
 #include <algorithm>
 #include <array>
 #include <fstream>
 #include <iostream>
 #include <memory>
-namespace marc_cli_position_adaptive_huffman_64k {
+namespace marc_cli_position_adaptive_huffman {
 struct Destroy {void operator()(marc_transform* p) const noexcept {marc_transform_destroy(p);}};
-inline bool process_file(marc_direction direction,std::uint64_t size,std::ifstream& source,std::ofstream& sink) {
+inline bool process_file(marc_direction direction,std::uint64_t size,std::ifstream& source,std::ofstream& sink,
+    marc_lzss_position_distance_adaptive_huffman_profile profile) {
     constexpr std::size_t capacity=65536;
     marc_lzss_position_distance_adaptive_huffman_config config{};
     auto status=marc_lzss_position_distance_adaptive_huffman_config_init(direction,&config);
+    if (status!=MARC_STATUS_OK) return false;
+    status=marc_lzss_position_distance_adaptive_huffman_config_apply_profile(&config,profile);
     if (status!=MARC_STATUS_OK) return false;
     config.original_size=size;config.external_retained_bytes=65536;
     marc_lzss_position_distance_adaptive_huffman_resources resources{};

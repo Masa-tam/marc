@@ -1,5 +1,6 @@
 #include <marc/marc.h>
 #include <string.h>
+static marc_lzss_position_distance_adaptive_huffman_profile selected_profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64K;
 
 static int run(marc_direction direction,const unsigned char* input,size_t size,
     unsigned char* output,size_t capacity,size_t* written,int expect_failure) {
@@ -10,7 +11,7 @@ static int run(marc_direction direction,const unsigned char* input,size_t size,
     marc_status status;
     if (marc_lzss_position_distance_adaptive_huffman_config_init(direction,&config)) return 1;
     if (config.profile!=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64K
-        || marc_lzss_position_distance_adaptive_huffman_config_apply_profile(&config,MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64K)) return 1;
+        || marc_lzss_position_distance_adaptive_huffman_config_apply_profile(&config,selected_profile)) return 1;
     config.frame_size=17;config.input_capacity_bytes=config.output_capacity_bytes=1;
     config.original_size=direction==MARC_DIRECTION_ENCODE ? size : 0;
     if (marc_lzss_position_distance_adaptive_huffman_resource_requirements(&config,&resources)) return 2;
@@ -44,10 +45,13 @@ static int run(marc_direction direction,const unsigned char* input,size_t size,
     }
     marc_transform_destroy(transform);return 10;
 }
-int main(void) {
+int main(int argc,char** argv) {
     unsigned char raw[256],wire[4096],restored[256];size_t encoded=0,decoded=0,i;
+    if (argc==2 && strcmp(argv[1],"1m")==0) selected_profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_1M;
+    else if (argc!=1) return 11;
     if (run(MARC_DIRECTION_ENCODE,NULL,0,wire,sizeof(wire),&encoded,0) || encoded!=112) return 1;
-    if (memcmp(wire,"MARC",4) || wire[12]!=2 || wire[14]!=8 || wire[16]!=1 || wire[18]!=3 || wire[96]!=1 || wire[98]!=35) return 2;
+    if (memcmp(wire,"MARC",4) || wire[12]!=2 || wire[14]!=8+selected_profile || wire[16]!=1
+        || wire[18]!=3+selected_profile || wire[96]!=1 || wire[98]!=35+selected_profile) return 2;
     for (i=0;i<256;++i) raw[i]=(unsigned char)i;
     if (run(MARC_DIRECTION_ENCODE,raw,sizeof(raw),wire,sizeof(wire),&encoded,0)) return 3;
     if (run(MARC_DIRECTION_DECODE,wire,encoded,restored,sizeof(restored),&decoded,0) || decoded!=sizeof(raw)

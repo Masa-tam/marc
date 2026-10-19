@@ -1609,8 +1609,8 @@ unchanged. This local qualification does not claim hosted or external execution.
 DD-1627 introduces `marc_lzss_position_distance_adaptive_huffman_config_init`,
 `marc_lzss_position_distance_adaptive_huffman_resource_requirements` and
 `marc_lzss_position_distance_adaptive_huffman_create`. They select exactly
-dictionary2/8, context1/35 and Adaptive Huffman1/3; they do not auto-detect or
-accept another entropy profile. Direction is immutable. The known source size
+dictionary2/8, context1/35 and Adaptive Huffman1/3 by default; they do not
+auto-detect a different selected profile. Direction is immutable. The known source size
 is mandatory on encode; decode obtains it from the stream header. Frame size
 may be1..65536 with the dictionary window fixed at65536.
 
@@ -1618,7 +1618,7 @@ The family uses a common configuration with an explicit profile field and
 `marc_lzss_position_distance_adaptive_huffman_config_apply_profile`. Initialization
 selects64KiB. Applying a profile resets its window-dependent defaults while
 preserving direction, original size, caller retention and I/O declarations.
-Larger profile values are reserved and return Unsupported until individually
+Profile values4MiB and larger are reserved and return Unsupported until individually
 qualified; unknown values return InvalidArgument. Failed application preserves
 the configuration. Existing codec configurations and ABI layouts are unchanged.
 
@@ -1644,3 +1644,27 @@ failure. The public resource smoke with65536 retained control bytes and two
 decode; callers must query their actual ABI/configuration. The encode requirement
 exceeds8MiB, so the next whole power-of-two grant is16MiB. BM-0265's full-corpus
 reference peaks remain separate from public corpus reproduction and exchange.
+
+### Native1MiB position-distance Adaptive Huffman
+
+Apply `MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_1M` to the common
+configuration. It selects dictionary2/9, context1/36 and Adaptive Huffman1/4,
+with fixed dictionary window1048576 and frame size1..1048576. Initialization
+still selects64KiB; applying1MiB preserves direction, original size and caller
+memory/I/O declarations. There is no stream auto-detection or alternate name.
+
+The1MiB defaults are frame/max-frame1048576 bytes, maximum block8388608
+decisions, maximum payload34996224 bytes,13894 model entries and128MiB logical
+internal admission. I/O defaults remain65536 bytes each. The full private owner
+has measured logical requirements132410060 bytes for encode and48933628 for
+decode before public external charges. They do not describe resident peaks.
+Caller retention or enlarged I/O may require a larger grant; query the exact
+configuration and ABI. Reset, end, alias, allocation-failure and failed-frame
+publication contracts remain those of the64KiB family.
+
+TVG-1595 qualifies static/shared C linkage, full-capacity exact/one-short quotas,
+every factory allocation failure, no allocation during processing and failed-frame
+withholding. With65536 retained control bytes and two65536-byte I/O declarations,
+the observed minimum grants are132610876 encode and49134444 decode; callers
+must query their actual ABI/configuration. Full corpus measurements and exchange
+qualification remain separate from this public API milestone.

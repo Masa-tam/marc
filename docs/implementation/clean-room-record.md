@@ -43418,3 +43418,13 @@ detect and regress the decoder-query window mismatch. Existing64KiB vectors and
 owner checks remain unchanged in meaning. No external source is consulted;
 public admission and final resource/performance evidence remain separate gates.
 No fuzz or push is performed, and existing generated products are retained.
+
+### CR-1972: 2026-10-20 — native1MiB public boundary integration
+
+Author/reviewer: Codex. TVG-1595 extends the first-party common profile factory
+and transactional CLI helper. The exact selector retains position-distance
+naming; existing64KiB meaning and ABI layouts are unchanged. Full-capacity quota,
+allocation-failure and independent vector assertions remain active on both
+builds. Compiler diagnostics motivate only an explicit bounded assignment.
+No external source is consulted, no fuzz or push is performed and prior SDK
+products remain available. Corpus and exchange qualification are separate gates.

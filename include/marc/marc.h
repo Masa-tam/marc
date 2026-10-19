@@ -2254,14 +2254,15 @@ MARC_API marc_status marc_lzss_position_distance_blocked_huffman_resource_requir
 MARC_API marc_status marc_lzss_position_distance_blocked_huffman_create(
     const marc_lzss_position_distance_blocked_huffman_config* config, marc_transform** transform) MARC_NOEXCEPT;
 
-/* Native64KiB position-distance Adaptive Huffman (2/8 + 1/35 + 1/3).
+/* Native position-distance Adaptive Huffman with explicit profile selection.
+ * Exact identities, supported profiles and defaults are in docs/c-api.md.
  * FGK, reset per frame, no rescaling; encoder minimum eligible match5.
  * max_block_size counts decisions; remaining size fields count bytes.
- * Default16MiB is logical admission, not resident memory. IO capacities and
+ * Default grants are logical admission, not resident memory. IO capacities and
  * retained caller memory are included in the resource query. Query failures
  * preserve resources; create refuses with NULL except overlapping destinations.
  * Flush retains the frame, ResetBlock is unsupported, and size must be known. */
-/* Larger identities are reserved until their individual qualification. */
+/* Reserved identities return Unsupported until their individual qualification. */
 typedef uint32_t marc_lzss_position_distance_adaptive_huffman_profile;
 #define MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64K UINT32_C(0)
 #define MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_1M UINT32_C(1)

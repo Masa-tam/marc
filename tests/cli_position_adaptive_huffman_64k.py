@@ -9,7 +9,10 @@ import sys
 import tempfile
 
 tool=Path(sys.argv[1]).resolve();base=Path(sys.argv[2]).resolve();base.mkdir(parents=True,exist_ok=True)
-stage=Path(tempfile.mkdtemp(prefix='run-',dir=base));codec='lzss-position-distance-adaptive-huffman'
+stage=Path(tempfile.mkdtemp(prefix='run-',dir=base))
+window=sys.argv[3] if len(sys.argv)==4 else '64k';assert window in ('64k','1m')
+extent=65536 if window=='64k' else 1048576;index=int(window=='1m')
+suffix='' if window=='64k' else '-1m';codec='lzss-position-distance-adaptive-huffman'+suffix
 
 
 def invoke(mode,source,target,success=True,selected=codec):
@@ -23,20 +26,20 @@ usage=subprocess.run([str(tool)],capture_output=True)
 text=(usage.stdout+usage.stderr).decode(errors='replace')
 assert usage.returncode==2 and len(re.findall(r'(?<![a-z0-9-])'+codec+r'(?![a-z0-9-])',text))==1
 receipts=[]
-for size in (0,1,256,65535,65536,65537,131089):
+for size in (0,1,256,extent-1,extent,extent+1,2*extent+17):
     raw=bytes((i*31+i//251)&255 for i in range(size));source=stage/f'{size}.input';source.write_bytes(raw)
     wire=stage/f'{size}.marc';again=stage/f'{size}.again.marc';restored=stage/f'{size}.raw'
     invoke('encode',source,wire);invoke('encode',source,again);data=wire.read_bytes();assert data==again.read_bytes()
-    assert data[:4]==b'MARC' and struct.unpack_from('<4H',data,12)==(2,8,1,3)
-    assert struct.unpack_from('<2H',data,96)==(1,35)
-    assert struct.unpack_from('<I',data,20)[0]==struct.unpack_from('<I',data,64)[0]==65536
+    assert data[:4]==b'MARC' and struct.unpack_from('<4H',data,12)==(2,8+index,1,3+index)
+    assert struct.unpack_from('<2H',data,96)==(1,35+index)
+    assert struct.unpack_from('<I',data,20)[0]==struct.unpack_from('<I',data,64)[0]==extent
     assert struct.unpack_from('<Q',data,40)[0]==size
     invoke('decode',wire,restored);assert restored.read_bytes()==raw
-    invoke('decode',wire,stage/f'{size}.contextual.raw',False,'lzss-contextual-adaptive-huffman')
+    invoke('decode',wire,stage/f'{size}.contextual.raw',False,'lzss-contextual-adaptive-huffman'+suffix)
     receipts.append({'raw_bytes':size,'wire_bytes':len(data),'wire_sha256':hashlib.sha256(data).hexdigest()})
 
 vectors=[]
-for filename in ('position_adaptive_huffman_64k_frame_vectors.json','position_adaptive_huffman_64k_boundary_vectors.json'):
+for filename in (f'position_adaptive_huffman_{window}_frame_vectors.json',f'position_adaptive_huffman_{window}_boundary_vectors.json'):
     vectors+=json.loads((Path(__file__).parent/'data'/filename).read_text(encoding='utf-8'))['vectors']
 for i,row in enumerate(vectors):
     archive=stage/f'oracle-{i}.marc';restored=stage/f'oracle-{i}.raw'
@@ -51,7 +54,7 @@ for cut in range(len(wire)):
 for offset in (10,18,52,80,81,98,104,112+6,112+48,112+64+11):
     damaged=bytearray(wire);damaged[offset]^=1;source=stage/f'bad-{offset}.marc';source.write_bytes(damaged)
     invoke('decode',source,stage/f'bad-{offset}.raw',False)
-for label,offset,value in (('payload',144,0xffffffff),('descriptor',148,17),('raw',128,65537)):
+for label,offset,value in (('payload',144,0xffffffff),('descriptor',148,17),('raw',128,extent+1)):
     damaged=bytearray(wire);struct.pack_into('<I',damaged,offset,value)
     source=stage/f'oversized-{label}.marc';source.write_bytes(damaged);invoke('decode',source,stage/f'oversized-{label}.raw',False)
 padding=stage/'padding.marc';padding.write_bytes(wire[:-1]+bytes([wire[-1]|0x80]));invoke('decode',padding,stage/'padding.raw',False)
@@ -66,10 +69,11 @@ prefix=stage/'prefix.marc';prefix_header=bytearray(header);struct.pack_into('<Q'
 prefix.write_bytes(prefix_header+first);invoke('decode',prefix,stage/'prefix.raw');assert (stage/'prefix.raw').read_bytes()==b'ABABA'
 late=stage/'late.marc';late.write_bytes(header+first+second);invoke('decode',late,stage/'late.raw',False)
 
-for i,selected in enumerate(('lzss-position-adaptive-huffman',codec+'-64k',codec+'-64K')):
+for i,selected in enumerate(('lzss-position-adaptive-huffman'+suffix,codec+'-64k',codec+'-64K')):
     invoke('encode',stage/'1.input',stage/f'near-{i}.marc',False,selected)
-for i,selected in enumerate(('adaptive-huffman','lzss-adaptive-huffman','lzss-contextual-adaptive-huffman',
-                             'lzss-position-distance-blocked-huffman','lzss-position-distance-tans')):
+for i,selected in enumerate(('adaptive-huffman','lzss-adaptive-huffman','lzss-contextual-adaptive-huffman'+suffix,
+                             'lzss-position-distance-blocked-huffman'+suffix,'lzss-position-distance-tans'+suffix,
+                             'lzss-position-distance-adaptive-huffman'+('-1m' if window=='64k' else ''))):
     old=stage/f'old-{i}.marc';invoke('encode',stage/'256.input',old,True,selected)
     invoke('decode',old,stage/f'old-{i}.raw',False)
 retained=stage/'retained.raw';retained.write_bytes(b'keep output')

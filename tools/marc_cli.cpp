@@ -7,7 +7,7 @@
 #include "lzss_position_rans_64k_cli.hpp"
 #include "lzss_position_tans_64k_cli.hpp"
 #include "lzss_position_blocked_huffman_64k_cli.hpp"
-#include "lzss_position_adaptive_huffman_64k_cli.hpp"
+#include "lzss_position_adaptive_huffman_cli.hpp"
 #include "lzss_position_blocked_huffman_1m_cli.hpp"
 #include "lzss_position_blocked_huffman_4m_cli.hpp"
 #include "lzss_position_blocked_huffman_8m_cli.hpp"
@@ -233,6 +233,7 @@ enum class Codec {
     lzss_position_tans_64k,
     lzss_position_blocked_huffman_64k,
     lzss_position_adaptive_huffman_64k,
+    lzss_position_adaptive_huffman_1m,
     lzss_position_blocked_huffman_1m,
     lzss_position_blocked_huffman_4m,
     lzss_position_blocked_huffman_8m,
@@ -1656,8 +1657,10 @@ bool process_file(const marc_direction direction,
         return marc_cli_position_tans_64m::process_file(direction, source_size, source, sink);
     if (codec == Codec::lzss_position_blocked_huffman_64k)
         return marc_cli_position_blocked_huffman_64k::process_file(direction, source_size, source, sink);
-    if (codec == Codec::lzss_position_adaptive_huffman_64k)
-        return marc_cli_position_adaptive_huffman_64k::process_file(direction, source_size, source, sink);
+    if (codec == Codec::lzss_position_adaptive_huffman_64k || codec == Codec::lzss_position_adaptive_huffman_1m)
+        return marc_cli_position_adaptive_huffman::process_file(direction, source_size, source, sink,
+            codec == Codec::lzss_position_adaptive_huffman_64k ? MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64K
+                : MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_1M);
     if (codec == Codec::lzss_position_blocked_huffman_1m)
         return marc_cli_position_blocked_huffman_1m::process_file(direction, source_size, source, sink);
     if (codec == Codec::lzss_position_blocked_huffman_4m)
@@ -2521,7 +2524,7 @@ void usage() {
                  "lzss-position-distance-dynamic-range-16m, "
                  "lzss-position-distance-dynamic-range-32m, "
                  "lzss-position-distance-dynamic-range-64m, "
-                 "lzss-position-distance-adaptive-huffman, lzss-position-distance-blocked-huffman, lzss-position-distance-blocked-huffman-1m, lzss-position-distance-blocked-huffman-4m, lzss-position-distance-blocked-huffman-8m, lzss-position-distance-blocked-huffman-16m, lzss-position-distance-blocked-huffman-32m, lzss-position-distance-blocked-huffman-64m, lzss-position-distance-tans, lzss-position-distance-tans-1m, lzss-position-distance-tans-4m, lzss-position-distance-tans-8m, lzss-position-distance-tans-16m, lzss-position-distance-tans-32m, lzss-position-distance-tans-64m, lzss-position-distance-rans, lzss-position-distance-rans-1m, lzss-position-distance-rans-4m, lzss-position-distance-rans-8m, lzss-position-distance-rans-16m, lzss-position-distance-rans-32m, lzss-position-distance-rans-64m, lzss-contextual-rans, lzss-contextual-rans-1m, "
+                 "lzss-position-distance-adaptive-huffman, lzss-position-distance-adaptive-huffman-1m, lzss-position-distance-blocked-huffman, lzss-position-distance-blocked-huffman-1m, lzss-position-distance-blocked-huffman-4m, lzss-position-distance-blocked-huffman-8m, lzss-position-distance-blocked-huffman-16m, lzss-position-distance-blocked-huffman-32m, lzss-position-distance-blocked-huffman-64m, lzss-position-distance-tans, lzss-position-distance-tans-1m, lzss-position-distance-tans-4m, lzss-position-distance-tans-8m, lzss-position-distance-tans-16m, lzss-position-distance-tans-32m, lzss-position-distance-tans-64m, lzss-position-distance-rans, lzss-position-distance-rans-1m, lzss-position-distance-rans-4m, lzss-position-distance-rans-8m, lzss-position-distance-rans-16m, lzss-position-distance-rans-32m, lzss-position-distance-rans-64m, lzss-contextual-rans, lzss-contextual-rans-1m, "
                  "lzss-contextual-rans-4m, lzss-contextual-rans-16m, "
                  "lzss-contextual-rans-64m, "
                  "lzss-contextual-tans, lzss-contextual-tans-1m, "
@@ -2649,6 +2652,8 @@ int main(const int argc, const char* const argv[]) {
             codec = Codec::lzss_position_blocked_huffman_64k;
         else if (name == "lzss-position-distance-adaptive-huffman")
             codec = Codec::lzss_position_adaptive_huffman_64k;
+        else if (name == "lzss-position-distance-adaptive-huffman-1m")
+            codec = Codec::lzss_position_adaptive_huffman_1m;
         else if (name == "lzss-position-distance-blocked-huffman-1m")
             codec = Codec::lzss_position_blocked_huffman_1m;
         else if (name == "lzss-position-distance-blocked-huffman-4m")

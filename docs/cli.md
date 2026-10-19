@@ -1232,6 +1232,18 @@ strict trailing data are errors. SDK byte chunking does not alter encoder bytes.
 
 The64KiB candidate passes static/shared C integration and both CLI linkage paths,
 including nineteen independent stream/frame vectors and directed failures.
-BM-0265 remains an internal-owner precursor; public corpus reproduction, exchange
-qualification, the six larger windows, deferred fuzz, hosted CI and external
+BM-0265 remains an internal-owner precursor; IX-0111 records96-profile local
+exchange qualification. Public corpus reproduction, the six larger windows, deferred fuzz, hosted CI and external
 four-route evidence remain separate gates.
+
+### Native1MiB position-distance Adaptive Huffman
+
+Select `lzss-position-distance-adaptive-huffman-1m` explicitly for encode and
+decode. It carries dictionary2/9, context1/36 and entropy1/4, with window/frame
+1048576 bytes and eligible match length5. Decoder lengths3/4 remain valid.
+The CLI requests128MiB logical admission and retains65536-byte input/output
+arrays. The payload ceiling is34996224 bytes plus80 metadata bytes. Query
+admission precedes construction, and the same private frame validation and
+transactional file publication contract applies. The64KiB selector retains its
+existing meaning and encoded representation. Corpus comparisons, exchange
+addition and final remote evidence are tracked separately from API/CLI tests.

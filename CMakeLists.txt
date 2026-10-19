@@ -11028,6 +11028,11 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_precursor_smoke.py
             $<TARGET_FILE:marc_position_adaptive_huffman_measure>
             ${CMAKE_CURRENT_BINARY_DIR}/position-adaptive-huffman-public-resource-smoke --public)
+    add_test(NAME marc_position_adaptive_huffman_1m_public_resource_smoke
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_precursor_smoke.py
+            $<TARGET_FILE:marc_position_adaptive_huffman_measure>
+            ${CMAKE_CURRENT_BINARY_DIR}/position-adaptive-huffman-1m-public-resource-smoke --public --window=1m)
     if(MARC_POWERSHELL_EXECUTABLE)
         add_test(NAME marc_position_adaptive_huffman_64k_bundle_headers
             COMMAND ${MARC_POWERSHELL_EXECUTABLE} -NoProfile -ExecutionPolicy Bypass
@@ -11042,6 +11047,10 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
     set_target_properties(marc_position_adaptive_huffman_api_tests PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
     add_test(NAME marc_position_adaptive_huffman_64k_api COMMAND marc_position_adaptive_huffman_api_tests)
+    add_test(NAME marc_position_adaptive_huffman_1m_api COMMAND marc_position_adaptive_huffman_api_tests 1m)
+    # Public1MiB API/resource pilots completed below one second per registration.
+    set_tests_properties(marc_position_adaptive_huffman_1m_api
+        marc_position_adaptive_huffman_1m_public_resource_smoke PROPERTIES TIMEOUT 30)
     add_executable(marc_position_adaptive_huffman_cli_candidate tools/marc_cli.cpp)
     target_compile_features(marc_position_adaptive_huffman_cli_candidate PRIVATE cxx_std_20)
     target_link_libraries(marc_position_adaptive_huffman_cli_candidate PRIVATE marc::static)
@@ -11052,11 +11061,20 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_adaptive_huffman_cli_candidate>
             ${CMAKE_CURRENT_BINARY_DIR}/cli-position-adaptive-huffman-static)
     set_tests_properties(marc_cli_position_adaptive_huffman_64k_static PROPERTIES TIMEOUT 120)
+    add_test(NAME marc_cli_position_adaptive_huffman_1m_static
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_adaptive_huffman_64k.py
+            $<TARGET_FILE:marc_position_adaptive_huffman_cli_candidate> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-adaptive-huffman-1m-static 1m)
+    # First1MiB CLI pilots completed below36 seconds with both linkages active.
+    set_tests_properties(marc_cli_position_adaptive_huffman_1m_static PROPERTIES TIMEOUT 120)
     if(TARGET marc_cli)
         add_test(NAME marc_cli_position_adaptive_huffman_64k
             COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_adaptive_huffman_64k.py
                 $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-adaptive-huffman)
         set_tests_properties(marc_cli_position_adaptive_huffman_64k PROPERTIES TIMEOUT 120)
+        add_test(NAME marc_cli_position_adaptive_huffman_1m
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_adaptive_huffman_64k.py
+                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-adaptive-huffman-1m 1m)
+        set_tests_properties(marc_cli_position_adaptive_huffman_1m PROPERTIES TIMEOUT 120)
     endif()
     foreach(linkage IN ITEMS static shared)
         if(TARGET marc_${linkage})
@@ -11065,8 +11083,12 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             set_target_properties(marc_position_adaptive_huffman_c_${linkage} PROPERTIES
                 RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
             add_test(NAME marc_position_adaptive_huffman_64k_c_${linkage} COMMAND marc_position_adaptive_huffman_c_${linkage})
+            add_test(NAME marc_position_adaptive_huffman_1m_c_${linkage} COMMAND marc_position_adaptive_huffman_c_${linkage} 1m)
+            set_tests_properties(marc_position_adaptive_huffman_1m_c_${linkage} PROPERTIES TIMEOUT 30)
             if(linkage STREQUAL "shared")
                 set_tests_properties(marc_position_adaptive_huffman_64k_c_${linkage} PROPERTIES
+                    ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:marc_shared>")
+                set_tests_properties(marc_position_adaptive_huffman_1m_c_${linkage} PROPERTIES
                     ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:marc_shared>")
             endif()
         endif()

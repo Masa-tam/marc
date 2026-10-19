@@ -26271,3 +26271,35 @@ the slowest new owner test is0.37 seconds, with a30-second registered limit.
 The preceding full related runs' only failure was the corrected new query test.
 Public1MiB API/CLI, corpus/peak measurements, exchange extension and larger
 owners remain unfinished. Fuzz is not executed.
+
+### TVG-1595: native1MiB public API and transactional CLI qualification
+
+Admit the1MiB profile through the existing common C configuration and factory;
+the initializer still selects64KiB and no additional initializer or ABI layout
+is introduced. The factory selects the actual profile window and preserves
+ordinary resource/configuration destinations on failed queries/application.
+The128MiB default admits the measured full-capacity private owner plus ordinary
+public controls and I/O. With65536 retained control bytes and two65536-byte I/O
+declarations, the observed minimum grants are132610876 encode and49134444 decode.
+These are logical admission values, not resident peak bounds. The allocation
+test explicitly adds its separately declared retained vectors to its initial
+grant before testing the exact computed minimum and one-byte-short refusal.
+
+All factory allocation failure positions leave no live allocation and publish
+no handle; process calls make no allocations. Test one-byte/zero/varied output,
+full1MiB boundaries, deterministic bytes, invalid configuration and alias
+refusal, stable terminals and failed-frame withholding. C11 static/shared smoke
+checks one-byte I/O and late malformed-frame rejection. Both CLI linkages verify
+all19 independently frozen1MiB vectors, seven round trips through two full frames
+and a final short frame, small-stream truncations, identity/padding/trailing
+failures, reciprocal foreign native-profile rejection and target/tmp preservation.
+The public resource smoke restores1048832 bytes with both selected APIs and
+checks their actual1MiB window/frame and identities.
+
+The final related runs pass32 registrations on the first stack and31 actual
+C++/Python registrations on the second. A bounded constant assignment is split
+to remove a conversion warning; no bytes change. New API/resource registrations
+have30-second limits after sub-second pilots; CLI limits are120 seconds after
+pilots below36 seconds. Previous candidate products are saved with hashes
+before rebuilding. Full corpus measurements,97-profile exchange addition,
+five larger profiles, deferred fuzz and remote qualification remain pending.
