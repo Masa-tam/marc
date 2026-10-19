@@ -43521,3 +43521,12 @@ receipts before publication. Larger output sizes and distinct logical/resident
 memory scopes are retained explicitly. No external implementation source,
 fuzz, push or fixed-runtime replacement is involved. Later windows and final
 remote qualification remain separate unfinished work.
+
+### CR-1983: 2026-10-20 — native8MiB exchange extension
+
+Author/reviewer: Codex. TVG-1606 and IX-0114 extend the first-party schema and
+independent header validator with the defined8MiB identity. Retained prefix/body
+equality, launch guards, reciprocal execution and preceding static decoders
+provide incremental local evidence. No external source, fuzz, push or fixed
+runtime replacement is involved. Complete family and remote qualification
+remain pending.

@@ -11068,6 +11068,11 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
                 -File ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_bundle_header_tests.ps1 -Window 4m)
         set_tests_properties(marc_position_adaptive_huffman_4m_bundle_headers PROPERTIES
             PASS_REGULAR_EXPRESSION "Verified19 independent headers and rejected2147 directed header alterations")
+        add_test(NAME marc_position_adaptive_huffman_8m_bundle_headers
+            COMMAND ${MARC_POWERSHELL_EXECUTABLE} -NoProfile -ExecutionPolicy Bypass
+                -File ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_bundle_header_tests.ps1 -Window 8m)
+        set_tests_properties(marc_position_adaptive_huffman_8m_bundle_headers PROPERTIES
+            PASS_REGULAR_EXPRESSION "Verified19 independent headers and rejected2147 directed header alterations")
     endif()
 
     add_executable(marc_position_adaptive_huffman_api_tests tests/position_adaptive_huffman_api_tests.cpp)

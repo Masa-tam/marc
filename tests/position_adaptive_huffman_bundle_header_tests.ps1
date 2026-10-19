@@ -1,4 +1,4 @@
-param([ValidateSet('64k','1m','4m')][string]$Window = '64k')
+param([ValidateSet('64k','1m','4m','8m')][string]$Window = '64k')
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 . (Join-Path $PSScriptRoot 'position_adaptive_huffman_bundle_header.ps1')

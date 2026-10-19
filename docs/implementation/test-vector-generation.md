@@ -26508,3 +26508,19 @@ pilot runs alone were not used to publish these totals. Public ownership/caller
 workspace scopes remain explicit. Source and executable hashes are retained.
 Larger-window measurements, final exchange/family audit, deferred fuzz and
 hosted/external results remain pending. No fuzz or push is performed.
+
+### TVG-1606: native8MiB incremental exchange qualification
+
+IX-0114 appends the exact8MiB identity as the99th archive. Re-read all98 prior
+entries/properties and bodies from three retained producer bundles; compare
+all99 bodies across builds. Check seven strict self/cross routes and both saved
+preceding98-profile static consumers against a derived schema88 prefix. Verify
+that the preceding second-build consumer cannot load the current codec library.
+
+Four independent header sets each check19 headers and2147 directed alterations.
+The schema89 launch guard rejects129 cases with zero codec launches and output
+files, and the existing schema88 guard's128 cases pass against the derived
+prefix. Regenerate both build configurations and run native header/document
+checks. Preserve the original fixed273 products and historical95-body bundle.
+Complete schema history/final102 audit, larger-window measurements, deferred
+fuzz and hosted/external results remain separate pending gates. No fuzz is run.
