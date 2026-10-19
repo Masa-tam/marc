@@ -5,6 +5,7 @@
 #include "dictionary/lzss_position_distance_8m_five_prefix_candidate.hpp"
 #include "dictionary/lzss_position_distance_16m_five_prefix_candidate.hpp"
 #include "dictionary/lzss_position_distance_32m_five_prefix_candidate.hpp"
+#include "dictionary/lzss_position_distance_64m_five_prefix_candidate.hpp"
 #include "core/buffer_overlap.hpp"
 #include <algorithm>
 #include <array>
@@ -24,26 +25,29 @@ using Tokenizer=Dictionary::LzssShortMatchCandidateResult(*)(std::span<const std
     const Dictionary::LzssParameters&,const core::DecoderLimits&,std::uint32_t,
     std::span<Token>,std::span<std::byte>) noexcept;
 // Immutable ordered dispatch; only qualified private owners are admitted.
-constexpr std::array<FinderQuery,6> finder_queries{
+constexpr std::array<FinderQuery,7> finder_queries{
     Dictionary::calculate_lzss_short_prefix_workspace,
     Dictionary::calculate_lzss_position_distance_1m_five_prefix_workspace,
     Dictionary::calculate_lzss_position_distance_4m_five_prefix_workspace,
     Dictionary::calculate_lzss_position_distance_8m_five_prefix_workspace,
     Dictionary::calculate_lzss_position_distance_16m_five_prefix_workspace,
-    Dictionary::calculate_lzss_position_distance_32m_five_prefix_workspace};
+    Dictionary::calculate_lzss_position_distance_32m_five_prefix_workspace,
+    Dictionary::calculate_lzss_position_distance_64m_five_prefix_workspace};
 constexpr std::array variants{Variant::field_context_64k_short_length_escape,
     Variant::field_context_1m_short_length_escape,Variant::field_context_4m_short_length_escape,
     Variant::field_context_8m_short_length_escape,Variant::field_context_16m_short_length_escape,
-    Variant::field_context_32m_short_length_escape};
-constexpr std::array<Tokenizer,6> tokenizers{
+    Variant::field_context_32m_short_length_escape,
+    Variant::field_context_64m_short_length_escape};
+constexpr std::array<Tokenizer,7> tokenizers{
     Dictionary::tokenize_lzss_short_length_escape_candidate_indexed_scratch,
     Dictionary::tokenize_lzss_position_distance_1m_five_prefix_candidate,
     Dictionary::tokenize_lzss_position_distance_4m_five_prefix_candidate,
     Dictionary::tokenize_lzss_position_distance_8m_five_prefix_candidate,
     Dictionary::tokenize_lzss_position_distance_16m_five_prefix_candidate,
-    Dictionary::tokenize_lzss_position_distance_32m_five_prefix_candidate};
+    Dictionary::tokenize_lzss_position_distance_32m_five_prefix_candidate,
+    Dictionary::tokenize_lzss_position_distance_64m_five_prefix_candidate};
 static_assert(finder_queries.size()==variants.size() && variants.size()==tokenizers.size()
-    && tokenizers.size()==static_cast<std::size_t>(Profile::window_32m)+1);
+    && tokenizers.size()==static_cast<std::size_t>(Profile::window_64m)+1);
 
 template<class T> bool allocate(std::unique_ptr<T[]>& target,std::size_t count) noexcept {
     target.reset(new(std::nothrow) T[count]);return static_cast<bool>(target);
@@ -54,8 +58,8 @@ Code mapped(PositionAdaptiveHuffmanFormatError e) noexcept {
 }
 Code workspace(const PositionAdaptiveHuffmanStreamHeader& stream,const core::DecoderLimits& limits,
     bool encode,std::size_t owner,PositionAdaptiveHuffmanWorkspace& output) noexcept {
-    // Other reserved identities are not admitted before their ordered qualification.
-    if (stream.profile>Profile::window_32m) return Code::unsupported;
+    // Reject unknown identities before querying or indexing the ordered tables.
+    if (stream.profile>Profile::window_64m) return Code::unsupported;
     if (const auto e=validate_position_adaptive_huffman_stream(stream,limits);e!=PositionAdaptiveHuffmanFormatError::none) return mapped(e);
     const auto* spec=entropy::internal::position_adaptive_huffman_spec(stream.profile);
     PositionAdaptiveHuffmanWorkspace r{};r.raw_bytes=stream.frame_size;r.token_count=stream.frame_size;

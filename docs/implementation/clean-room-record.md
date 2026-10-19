@@ -43612,3 +43612,14 @@ insufficient-quota rejection accompanies the finite larger fixture grant;
 ordinary failure invariance is retained. Both first-party frame paths are
 compared with complete independent bytes. No external source, public factory
 admission, fuzz, push or fixed-runtime replacement is involved.
+
+### CR-1993: 2026-10-20 — native64MiB private ownership
+
+Author/reviewer: Codex. TVG-1616 completes the first-party immutable backend
+mapping and preserves exact admission and failed-frame withholding. Measured
+unit-process retention motivates only test ordering; codec requirements and
+representation remain unchanged. Missing observer status is retained as failed
+evidence and replaced by explicit test-runner/fresh-process qualification,
+without reclassifying the original receipt. No external source, fuzz, push or
+fixed-runtime replacement is involved. Public/corpus/exchange gates remain
+unfinished.

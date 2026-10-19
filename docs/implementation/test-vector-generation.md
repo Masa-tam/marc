@@ -26721,3 +26721,32 @@ and successful192MiB reference/scratch decoding. Its slowest new registration
 is10.88 seconds, within the retained60-second limit. Initial test compilation
 caught a const-reference assignment; a separate limits object fixes it, with
 original and corrected build logs retained.
+
+### TVG-1616: native64MiB private owner and measured test retention
+
+Extend the immutable tables with the existing64MiB five-prefix finder, keeping
+eligibility5, native FGK and single private encoded-frame staging. All seven
+private owners are admitted; unknown identities still fail before indexing.
+Full-window logical charges are3918689184 encode,3112481824 decode and
+806092800 finder bytes. Exact/one-short allocation, full-window boundaries,
+chunking, stable errors and zero failed-frame publication remain required.
+
+The first build passes30 owner/core/vector/document registrations. The second
+passes29 such registrations plus the separately executed64MiB owner with an
+explicit successful exit. An initial peak observer lacked a child exit status;
+its failed receipt is retained and is never treated as qualification. The test
+runner and corrected fresh-process observer provide explicit successful exits.
+
+Peak observation identified a test-only decoder retained while a temporary
+encoder generated its input. Generate that input first, retaining every quota
+and round-trip assertion. Fresh test-process peaks change from2556997632 to
+1752195072 bytes on the first build and2556350464 to1751171072 on the second.
+These are whole test-process observations, not codec corpus benchmarks. Fresh
+corrected runs take30.11 and36.91 seconds, supporting a180-second owner test
+limit and the inherited large-window lock. Rerun the other five large-owner
+cases after this test-only ordering change. Physical availability evidence is
+kept locally and does not appear in public documentation.
+
+Public integration, full corpus/peak measurements,102-profile exchange,
+deferred fuzz and final family/remote gates remain pending. No fuzz is executed
+and earlier SDK/fixed products remain preserved.

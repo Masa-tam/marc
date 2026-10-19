@@ -91,8 +91,11 @@ void admission(std::uint32_t frame) {
     check(!PositionAdaptiveHuffmanOwnedEncoder::create(h,l,error) && error==Code::limit_exceeded);
     l.max_internal_buffered_bytes=d.aggregate_bytes;
     {
+        // The encoder is complete before the decoder is admitted; simultaneous
+        // retention is not part of the per-instance exact-quota assertion.
+        const auto wire=encode(raw,frame);
         auto decoder=PositionAdaptiveHuffmanOwnedDecoder::create(profile,frame,l,error);check(decoder && error==Code::none);
-        check(drive(*decoder,encode(raw,frame),65536,65536)==raw);
+        check(drive(*decoder,wire,65536,65536)==raw);
     }
     --l.max_internal_buffered_bytes;sentinel=d;sentinel.aggregate_bytes=17;
     check(PositionAdaptiveHuffmanOwnedDecoder::requirements(profile,frame,l,sentinel)==Code::limit_exceeded && sentinel.aggregate_bytes==17);
@@ -168,7 +171,8 @@ int main(int argc,char** argv) {
             if (selected=="4m") {profile=Profile::window_4m;extent=4194304;decisions_per_byte=9;}
             else if (selected=="8m") {profile=Profile::window_8m;extent=8388608;decisions_per_byte=9;}
             else if (selected=="16m") {profile=Profile::window_16m;extent=16777216;decisions_per_byte=9;}
-            else {check(selected=="32m");profile=Profile::window_32m;extent=33554432;decisions_per_byte=10;}
+            else if (selected=="32m") {profile=Profile::window_32m;extent=33554432;decisions_per_byte=10;}
+            else {check(selected=="64m");profile=Profile::window_64m;extent=67108864;decisions_per_byte=11;}
         }
         else check(argc==1);
         roundtrip({},5,true);roundtrip({std::byte{0}},5,true);roundtrip({std::byte{255}},5,true);

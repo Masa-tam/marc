@@ -331,3 +331,11 @@ distance67108861. Two full raw spans alone require128MiB in the ordinary frame
 test; it explicitly checks rejection under that insufficient grant and uses a
 finite192MiB fixture grant for the complete reference/scratch comparison.
 This test-only grant does not admit a public owner or set a public default.
+
+All seven private owners now use their existing ordered first-party backends.
+Full64MiB logical requirements are3918689184 encode and3112481824 decode
+bytes, with an806092800-byte encode finder. Unknown identities are rejected
+before table access. The admission test prepares its encoded input before
+constructing the decoder, removing unnecessary simultaneous encoder/decoder
+retention without changing any per-instance quota or publication assertion.
+This test-process reduction is separate from codec/corpus resident peaks.
