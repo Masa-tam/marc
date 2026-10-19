@@ -26229,3 +26229,19 @@ headroom based on that observation. This is preparatory1MiB format/reference
 evidence. Its owned encoder/decoder, public admission, CLI, measurements and
 bundle addition remain pending, as do the remaining larger-window completion gates.
 Fuzz is not executed.
+
+### TVG-1593: native64KiB exchange admission and compatibility
+
+IX-0111 records schema86 with96 profiles. Compare the saved starting producer's
+95-entry prefix against each newly generated bundle without rewriting either
+manifest. Check property order, input descriptor and exact retained bytes;
+then compare all96 bodies across independently built implementations. Verify
+static/shared self/cross execution and both directions between builds with the
+strict decoder/re-encoder. Restore all95 historical bodies separately.
+
+Run the complete schema1-through86 suite and its existing negative coverage.
+The new schema86 launch guard rejects125 directed manifest/header cases before
+any codec invocation or output publication. Each retained evidence directory is
+new; earlier generated bundles and qualified runtime products are preserved.
+Full public performance measurements, larger profiles, deferred fuzz and remote
+qualification remain distinct unfinished gates.

@@ -12,6 +12,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
+. (Join-Path $PSScriptRoot 'position_adaptive_huffman_bundle_header.ps1')
 
 
 function Assert-PositionRans64kHeader([byte[]]$Bytes, [uint64]$OriginalBytes) {
@@ -601,6 +602,7 @@ $schema82Profiles = $schema81Profiles + @('lzss-position-distance-blocked-huffma
 $schema83Profiles = $schema82Profiles + @('lzss-position-distance-blocked-huffman-16m')
 $schema84Profiles = $schema83Profiles + @('lzss-position-distance-blocked-huffman-32m')
 $schema85Profiles = $schema84Profiles + @('lzss-position-distance-blocked-huffman-64m')
+$schema86Profiles = $schema85Profiles + @('lzss-position-distance-adaptive-huffman')
 if ($manifest.schema_version -eq 1) {
     if ($null -ne $manifest.PSObject.Properties['codec_set']) {
         throw 'Schema 1 interoperability manifests must not declare a codec set'
@@ -1026,6 +1028,11 @@ if ($manifest.schema_version -eq 1) {
         throw "Unsupported interoperability codec set: $($manifest.codec_set)"
     }
     $expectedProfiles = $schema85Profiles
+} elseif ($manifest.schema_version -eq 86) {
+    if ([string]$manifest.codec_set -ne 'marc-cli-v86') {
+        throw "Unsupported interoperability codec set: $($manifest.codec_set)"
+    }
+    $expectedProfiles = $schema86Profiles
 } else {
     throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
 }
@@ -1065,6 +1072,19 @@ foreach ($entry in $manifest.archives) {
     if ($archive.Length -ne $entry.bytes -or
             (Get-Sha256 $archivePath) -ne $entry.sha256) {
         throw "Archive size or SHA-256 does not match: $codec"
+    }
+    if ($codec -eq 'lzss-position-distance-adaptive-huffman') {
+        $header = [byte[]]::new(112)
+        $stream = [System.IO.File]::OpenRead($archivePath)
+        try {
+            $offset = 0
+            while ($offset -lt 112) {
+                $read = $stream.Read($header, $offset, 112 - $offset)
+                if ($read -eq 0) { throw '64 KiB position Adaptive Huffman archive header is truncated' }
+                $offset += $read
+            }
+        } finally { $stream.Dispose() }
+        Assert-PositionAdaptiveHuffmanHeader $header ([uint64]$manifest.input.bytes) $codec
     }
 
     if ($codec -eq 'lzss-position-distance-dynamic-range-4m') {

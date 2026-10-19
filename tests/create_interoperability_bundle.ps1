@@ -18,6 +18,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
+. (Join-Path $PSScriptRoot 'position_adaptive_huffman_bundle_header.ps1')
 
 
 function Assert-PositionRans64kHeader([byte[]]$Bytes, [uint64]$OriginalBytes) {
@@ -573,7 +574,8 @@ $profiles = @(
     'lzss-position-distance-blocked-huffman-8m',
     'lzss-position-distance-blocked-huffman-16m',
     'lzss-position-distance-blocked-huffman-32m',
-    'lzss-position-distance-blocked-huffman-64m'
+    'lzss-position-distance-blocked-huffman-64m',
+    'lzss-position-distance-adaptive-huffman'
 )
 $entries = @()
 foreach ($profile in $profiles) {
@@ -581,6 +583,9 @@ foreach ($profile in $profiles) {
     $archivePath = Join-Path $resolvedOutput $archiveName
     $decodedPath = Join-Path $resolvedOutput "$profile.decoded"
     Invoke-Marc @('encode', '--codec', $profile, $inputPath, $archivePath)
+    if ($profile -eq 'lzss-position-distance-adaptive-huffman') {
+        Assert-PositionAdaptiveHuffmanHeader ([System.IO.File]::ReadAllBytes($archivePath)) ([uint64]$fixture.Length) $profile
+    }
     if ($profile -eq 'lzss-position-distance-dynamic-range') {
         $archiveBytes = [System.IO.File]::ReadAllBytes($archivePath)
         if ($archiveBytes.Length -lt 112) {
@@ -1007,8 +1012,8 @@ foreach ($profile in $profiles) {
 }
 
 $manifest = [ordered]@{
-    schema_version = 85
-    codec_set = 'marc-cli-v85'
+    schema_version = 86
+    codec_set = 'marc-cli-v86'
     source_revision = $SourceRevision
     platform = $Platform
     compiler = $Compiler

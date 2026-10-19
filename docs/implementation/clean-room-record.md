@@ -43400,3 +43400,12 @@ Compact repeated-token recipes and bounded test files replace oversized command
 arguments. The C++ reference comparison retains existing64KiB truncation and
 failure assertions. No external implementation is consulted. Public1MiB
 admission is not enabled by this fixture milestone, and fuzz remains deferred.
+
+### CR-1970: 2026-10-20 — first native Adaptive Huffman exchange addition
+
+Author/reviewer: Codex. TVG-1593 and IX-0111 extend the existing first-party
+schema chain by one profile without changing historical entry expressions.
+Exact-prefix auditing and the launch guard retain strict comparison and rejection
+requirements. Historical restoration is recorded separately where earlier
+encoder-policy changes already altered bytes. No external implementation is
+consulted, no fuzz is executed and no push or fixed-runtime promotion occurs.

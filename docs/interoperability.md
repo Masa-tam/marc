@@ -2662,3 +2662,29 @@ the saved starting producer supplies the exact prefix baseline for the extension
 All273 saved starting products and their fixed Release counterparts retain their
 hashes at the complete-frame milestone. This is baseline preservation evidence,
 not qualification of a new public profile,102-profile exchange or hosted CI.
+
+### IX-0111: native64KiB Adaptive Huffman local96-profile exchange
+
+Schema86 appends exactly `lzss-position-distance-adaptive-huffman` after the
+unchanged95-entry schema85 prefix. Independent retained-producer comparisons
+verify entry and property order, source descriptors, sizes, SHA-256 and every
+existing body for each candidate bundle. All96 bodies also agree byte-for-byte
+between two independently built implementations. Static/shared self and cross
+execution, and both directions between the two builds, restore and strictly
+re-encode all96 archives. Execution-adapter hashes are distinguished from the
+underlying executable in retained local evidence.
+
+The complete schema1-through86 compatibility suite passes, including the
+schema86 launch guard's125 directed manifest/header cases. No codec is launched
+and no output file is published for those rejected cases. Independent header
+tests additionally check19 frozen headers and2147 directed alterations.
+These are deterministic negative cases, not a fuzz campaign.
+
+Both builds separately restore the retained historical95-body bundle. That is
+restore-only compatibility evidence: the seven earlier Blocked Huffman output
+changes recorded in IX-0110 are not hidden by relaxing strict re-encoding.
+The original95-body bundle and all starting executable products remain intact.
+
+These results qualify the first addition locally. The six remaining additions,
+final102-profile audit, deferred fuzz, hosted CI and external four-route results
+remain pending. The fixed Release runtime has not been replaced or pushed.
