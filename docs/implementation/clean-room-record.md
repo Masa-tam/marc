@@ -43511,3 +43511,13 @@ matching window/frame rather than assigning an unpublished profile name.
 Quota, allocation and publication tests retain earlier assertions. No external
 source, fuzz, push or fixed-runtime replacement is involved. Corpus and exchange
 qualification remain independent subsequent gates.
+
+### CR-1982: 2026-10-20 — public64KiB full-corpus artifact audit
+
+Author/reviewer: Codex. TVG-1605 and BM-0266 use first-party public APIs and
+measurement infrastructure with manifest-verified corpus inputs. A separate
+auditor re-reads all saved bodies, raw results, serialized parameters and
+receipts before publication. Larger output sizes and distinct logical/resident
+memory scopes are retained explicitly. No external implementation source,
+fuzz, push or fixed-runtime replacement is involved. Later windows and final
+remote qualification remain separate unfinished work.

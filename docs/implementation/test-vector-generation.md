@@ -26483,3 +26483,28 @@ The final related runs pass52 registrations on the first build and49 on the
 second, including all preceding native windows. Their total durations are
 156.31 and191.25 seconds respectively. Earlier SDK products and fixed Release
 files remain retained with hashes; this is a local public-integration milestone.
+
+### TVG-1605: full12 public64KiB measurement artifact audit
+
+BM-0266 records both public APIs with matching65536-byte window/frame, actual
+dictionary/entropy/context identities and serialized parameter fields. For each
+of12 manifest-verified Silesia members, run three fresh processes per profile
+and direction, retaining every archive, restoration and receipt. Use the saved
+qualified static measurement executable so later builds cannot replace the
+implementation during measurement. Cooperative pauses occur between processes
+and outside every measured codec lifetime.
+
+The independent result auditor rehashes72 archive and72 raw files, rechecks144
+receipts and19434 frame headers, recalculates all member/total rates and peak
+statistics, and confirms all24 member/profile outputs against the saved
+precursor campaign. Full restoration and deterministic bytes pass. Sizes are
+86848574 versus79262639, position-distance larger on12/12 members by9.571% in
+total. Lifecycle aggregate rates are0.724875/0.564597 encode and1.472601/0.870876
+decode MiB/s. Maximum fresh resident bytes are6795264/6914048 encode and
+6094848/6107136 decode. Small resident differences are observations only.
+
+The measurement runner and auditor now have full-corpus execution evidence;
+pilot runs alone were not used to publish these totals. Public ownership/caller
+workspace scopes remain explicit. Source and executable hashes are retained.
+Larger-window measurements, final exchange/family audit, deferred fuzz and
+hosted/external results remain pending. No fuzz or push is performed.

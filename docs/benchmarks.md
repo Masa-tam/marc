@@ -13027,3 +13027,65 @@ by the audit tool. Small resident differences are observations, not guaranteed
 savings; they do not replace conservative logical resource admission. DD-1627
 records the binary residual component's one-bit lower bound separately from
 the measured total differences. No change to an existing codec is made here.
+
+### BM-0266: public position-distance Adaptive Huffman64KiB
+
+DD-1627 compares both public APIs on all12 manifest-verified Silesia members.
+Window and frame are65536 bytes. Actual identities are dictionary2/8,
+context1/35, entropy1/3 and dictionary2/2,
+context1/1, entropy1/2 for contextual Adaptive Huffman.
+Each member/profile/direction has three fresh-process observations. All72
+archive bodies are deterministic and all72 restorations are rehashed.
+Serialized dictionary/entropy/context parameters are retained and checked.
+Both encoders use minimum eligible match5; native decoding also accepts3/4.
+
+P/C means position-distance/contextual. Rates use median codec lifecycle
+call durations, excluding file I/O. Totals divide total raw bytes by summed
+member medians; resident peaks are maxima of complete-process observations.
+Both drivers retain131072 I/O bytes and65536 control bytes. Native logical
+queries include owner/call/control charges; contextual queries describe
+caller workspaces. Allocated versus nominal workspace extents are recorded
+separately. These scopes are not resident peaks or universal memory bounds.
+Cooperative intermissions, if requested, occur between child processes
+and outside every measured codec lifetime.
+
+All24 member/profile outputs also match the retained reference campaign
+byte-for-byte by size and SHA-256; the public boundaries preserve output.
+
+|Member|Raw bytes|P bytes|C bytes|P change vs C|
+|---|---:|---:|---:|---:|
+|dickens|10,192,446|5,107,021|4,263,725|+19.778%|
+|mozilla|51,220,480|24,204,448|23,145,686|+4.574%|
+|mr|9,970,564|4,353,315|3,827,731|+13.731%|
+|nci|33,553,445|4,278,208|3,674,294|+16.436%|
+|ooffice|6,152,192|3,918,909|3,694,635|+6.070%|
+|osdb|10,085,684|5,062,298|4,719,173|+7.271%|
+|reymont|6,627,202|2,548,120|2,106,390|+20.971%|
+|samba|21,606,400|6,922,527|6,248,878|+10.780%|
+|sao|7,251,944|6,779,092|6,526,356|+3.873%|
+|webster|41,458,703|15,756,479|13,546,965|+16.310%|
+|xml|5,345,280|929,912|799,208|+16.354%|
+|x-ray|8,474,240|6,988,245|6,709,598|+4.153%|
+|Total|211,938,580|86,848,574|79,262,639|+9.571%|
+
+|Member|Encode P/C MiB/s|Decode P/C MiB/s|Encode peak P/C bytes|Decode peak P/C bytes|
+|---|---:|---:|---:|---:|
+|dickens|2.068/2.061|4.537/3.408|6,606,848/6,815,744|6,008,832/6,008,832|
+|mozilla|0.399/0.366|0.791/0.565|6,795,264/6,864,896|6,041,600/6,107,136|
+|mr|0.810/0.441|1.736/0.655|6,606,848/6,819,840|6,008,832/6,012,928|
+|nci|11.034/10.377|26.206/21.353|6,533,120/6,795,264|5,984,256/5,988,352|
+|ooffice|0.412/0.283|0.841/0.433|6,656,000/6,836,224|6,012,928/6,021,120|
+|osdb|0.632/0.436|1.295/0.673|6,606,848/6,815,744|6,008,832/6,008,832|
+|reymont|2.860/2.657|6.396/4.548|6,668,288/6,840,320|6,029,312/6,033,408|
+|samba|1.160/0.819|2.391/1.274|6,782,976/6,914,048|6,094,848/6,098,944|
+|sao|0.175/0.118|0.355/0.180|6,692,864/6,848,512|6,037,504/6,041,600|
+|webster|2.526/2.062|5.429/3.449|6,594,560/6,811,648|6,004,736/6,004,736|
+|xml|6.303/5.382|13.698/9.273|6,582,272/6,807,552|5,988,352/5,992,448|
+|x-ray|0.257/0.174|0.521/0.262|6,668,288/6,840,320|6,029,312/6,033,408|
+|Total / maximum|0.725/0.565|1.473/0.871|6,795,264/6,914,048|6,094,848/6,107,136|
+
+Position produces fewer bytes on0/12 members. Larger outputs remain
+recorded. No Dynamic Range ratio is an adoption condition. Small resident
+differences are observations rather than guaranteed savings. This records
+local public API measurements, not hosted CI or external verification.
+Measured source: aff5903df988bc7d1d1a4fcd636ac3bae6d3705d.
