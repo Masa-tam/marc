@@ -146,6 +146,20 @@ void failed_frame() {
     }
     check(failed);
 }
+void failed_encode() {
+    auto l=limits(5);l.max_compressed_payload_size=1;auto h=header(5,5);Code error{};
+    auto encoder=PositionAdaptiveHuffmanOwnedEncoder::create(h,l,error);check(encoder && error==Code::none);
+    std::vector<std::byte> raw(5,std::byte{'A'}),out(128,std::byte{0x61});
+    const auto first=encoder->process(raw,out,end);
+    check(first.status==Status::progress && first.output_produced==112 && !first.input_consumed);
+    std::fill(out.begin(),out.end(),std::byte{0x61});
+    const auto rejected=encoder->process(raw,out,end);
+    check(rejected.status==Status::error && !rejected.output_produced && rejected.input_consumed==raw.size());
+    check(std::all_of(out.begin(),out.end(),[](auto b){return b==std::byte{0x61};}));
+    const auto stable=encoder->process({},out,0);
+    check(stable.status==Status::error && stable.error.code==rejected.error.code && !stable.input_consumed && !stable.output_produced);
+    check(std::all_of(out.begin(),out.end(),[](auto b){return b==std::byte{0x61};}));
+}
 }
 int main(int argc,char** argv) {
     try {
@@ -157,7 +171,7 @@ int main(int argc,char** argv) {
         for (auto n:{extent-1,extent,extent+1}) roundtrip(std::vector<std::byte>(n,std::byte{'A'}),extent,false);
         std::vector<std::byte> mixed(1025);std::uint32_t state=17;
         for (auto& b:mixed) {state=state*1664525u+1013904223u;b=static_cast<std::byte>(state>>24);}
-        roundtrip(mixed,257,true);admission(257);admission(extent);failed_frame();
+        roundtrip(mixed,257,true);admission(257);admission(extent);failed_frame();failed_encode();
         std::cout<<"native FGK owned checks passed\n";
     } catch (const std::exception& error) {std::cerr<<error.what()<<'\n';return 1;}
 }

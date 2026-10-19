@@ -26,6 +26,12 @@ struct PositionAdaptiveHuffmanFrameResult {
     std::span<entropy::internal::AdaptiveHuffmanNode>,std::span<std::uint16_t>,
     std::span<std::byte> private_payload,std::span<std::byte> private_serialized,
     std::span<std::byte> serialized_output) noexcept;
+// Owned encoder entry: the entire serialized span is private/discard-on-error.
+// Write directly into its payload region; do not drain any byte before success.
+[[nodiscard]] PositionAdaptiveHuffmanFrameResult encode_position_adaptive_huffman_frame_scratch(
+    std::span<const dictionary::internal::LzssTypedToken>,const PositionAdaptiveHuffmanFrameContext&,
+    std::span<entropy::internal::AdaptiveHuffmanNode>,std::span<std::uint16_t>,
+    std::span<std::byte> private_serialized) noexcept;
 // Decode once to private tokens; validate and restore private raw before any
 // ordinary raw output is copied. A failed frame publishes no raw bytes.
 [[nodiscard]] PositionAdaptiveHuffmanFrameResult decode_position_adaptive_huffman_frame(

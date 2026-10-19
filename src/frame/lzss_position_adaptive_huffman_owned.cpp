@@ -35,7 +35,9 @@ Code workspace(const PositionAdaptiveHuffmanStreamHeader& stream,const core::Dec
         || !core::checked_multiply(r.node_count,sizeof(entropy::internal::AdaptiveHuffmanNode),r.node_bytes)
         || !core::checked_multiply(r.symbol_count,sizeof(std::uint16_t),r.symbol_bytes)) return Code::limit_exceeded;
     if (encode) {
-        r.payload_bytes=bits/8;r.private_serialized_bytes=r.serialized_bytes;
+        if (stream.profile<Profile::window_4m) {
+            r.payload_bytes=bits/8;r.private_serialized_bytes=r.serialized_bytes;
+        }
         const auto f=stream.profile==Profile::window_64k
             ? dictionary::internal::calculate_lzss_short_prefix_workspace(r.raw_bytes,stream.dictionary,limits,
                 dictionary::internal::LzssTypedTokenVariant::field_context_64k_short_length_escape)
@@ -66,7 +68,8 @@ std::unique_ptr<PositionAdaptiveHuffmanOwnedEncoder> PositionAdaptiveHuffmanOwne
     if (!p) {error=Code::out_of_memory;return {};}
     p->stream_=s;p->limits_=l;p->workspace_=w;
     if (!allocate(p->raw_,w.raw_bytes) || !allocate(p->serialized_,w.serialized_bytes)
-        || !allocate(p->payload_,w.payload_bytes) || !allocate(p->staged_,w.private_serialized_bytes)
+        || (w.payload_bytes!=0 && !allocate(p->payload_,w.payload_bytes))
+        || (w.private_serialized_bytes!=0 && !allocate(p->staged_,w.private_serialized_bytes))
         || !allocate(p->finder_,w.finder_bytes) || !allocate(p->tokens_,w.token_count)
         || !allocate(p->nodes_,w.node_count) || !allocate(p->symbols_,w.symbol_count)) {
         error=Code::out_of_memory;return {};
@@ -132,9 +135,13 @@ core::ProcessResult PositionAdaptiveHuffmanOwnedEncoder::process(std::span<const
                 : dictionary::internal::tokenize_lzss_position_distance_4m_five_prefix_candidate(
                     {raw_.get(),target},stream_.dictionary,limits_,5,{tokens_.get(),w.token_count},{finder_.get(),w.finder_bytes});
         if (parsed.error!=dictionary::internal::LzssShortMatchCandidateError::none) return fail(Code::internal_error,consumed);
-        const auto r=encode_position_adaptive_huffman_frame({tokens_.get(),parsed.token_count},
-            {stream_,limits_,sequence_,committed_},{nodes_.get(),w.node_count},{symbols_.get(),w.symbol_count},
-            {payload_.get(),w.payload_bytes},{staged_.get(),w.private_serialized_bytes},{serialized_.get(),w.serialized_bytes});
+        const auto r=stream_.profile<Profile::window_4m
+            ? encode_position_adaptive_huffman_frame({tokens_.get(),parsed.token_count},
+                {stream_,limits_,sequence_,committed_},{nodes_.get(),w.node_count},{symbols_.get(),w.symbol_count},
+                {payload_.get(),w.payload_bytes},{staged_.get(),w.private_serialized_bytes},{serialized_.get(),w.serialized_bytes})
+            : encode_position_adaptive_huffman_frame_scratch({tokens_.get(),parsed.token_count},
+                {stream_,limits_,sequence_,committed_},{nodes_.get(),w.node_count},{symbols_.get(),w.symbol_count},
+                {serialized_.get(),w.serialized_bytes});
         if (r.error!=PositionAdaptiveHuffmanFrameError::none) return fail(
             r.error==PositionAdaptiveHuffmanFrameError::limit_exceeded || r.error==PositionAdaptiveHuffmanFrameError::arithmetic_overflow
                 ? Code::limit_exceeded : Code::internal_error,consumed);

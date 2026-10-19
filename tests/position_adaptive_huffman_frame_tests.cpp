@@ -76,6 +76,18 @@ void fixture(const std::vector<std::byte>& stream_bytes,const std::vector<std::b
     check(encoded.error==Error::none && encoded.serialized_size==frame.size() && encoded.raw_size==raw.size());
     check(std::equal(frame.begin(),frame.end(),output.begin()));
     check(std::all_of(output.begin()+frame.size(),output.end(),[](auto b){return b==std::byte{0x76};}));
+    std::vector<std::byte> owned_frame(frame.size()+3,std::byte{0x2d});
+    const auto owned=encode_position_adaptive_huffman_frame_scratch(tokens,context,work.nodes,work.symbols,owned_frame);
+    check(owned.error==Error::none && owned.serialized_size==frame.size() && owned.raw_size==raw.size());
+    check(std::equal(frame.begin(),frame.end(),owned_frame.begin()));
+    check(std::all_of(owned_frame.begin()+frame.size(),owned_frame.end(),[](auto b){return b==std::byte{0x2d};}));
+    std::fill(owned_frame.begin(),owned_frame.end(),std::byte{0x2d});
+    failed(encode_position_adaptive_huffman_frame_scratch(tokens,context,work.nodes,work.symbols,
+        std::span(owned_frame).first(frame.size()-1)));
+    check(std::all_of(owned_frame.begin(),owned_frame.end(),[](auto b){return b==std::byte{0x2d};}));
+    const auto alias=encode_position_adaptive_huffman_frame_scratch(tokens,context,work.nodes,work.symbols,
+        std::as_writable_bytes(std::span(work.nodes)));
+    failed(alias);check(alias.error==Error::overlapping_buffers);
     std::vector<LzssTypedToken> scratch(tokens.size());
     std::vector<std::byte> private_raw(raw.size()+1,std::byte{0x39}),ordinary(raw.size()+3,std::byte{0x64});
     const auto decoded=decode_position_adaptive_huffman_frame(frame,context,work.nodes,work.symbols,scratch,private_raw,ordinary);

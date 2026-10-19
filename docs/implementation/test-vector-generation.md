@@ -26355,3 +26355,26 @@ three-buffer encode baseline, not a resident peak or public default grant.
 Larger private owners and public4MiB admission remain unsupported/pending.
 Private-buffer reuse, corpus measurements, exchange, deferred fuzz and remote
 qualification are separate remaining gates. No fuzz is executed.
+
+### TVG-1599: one private serialized allocation for4MiB encoding
+
+Retain the original ordinary token/frame encoders as protected reference paths.
+Add explicitly private scratch writers that repeat typed/descriptor/admission
+checks, emit the same forward FGK sequence directly into the private frame
+payload, then serialize its descriptor and header. The owner transitions to
+drain only on complete success. Committed result sizes/counts remain zero on
+failure.64KiB/1MiB owned encoding keeps its preceding buffer path.
+
+For each independent nonempty64KiB/1MiB/4MiB fixture, compare every scratch
+frame byte with the frozen frame and reference result, check unused tails,
+reject one-byte-short storage before mutation and reject aliasing model storage.
+Owner tests additionally force encode failure after a valid stream header and
+require zero frame output, unchanged output bytes and a stable error state.
+Existing decode, quota, chunking and failed-frame assertions remain active.
+
+Both builds pass36/34 related registrations respectively. Full4MiB private
+encode admission is246050184 bytes, down279969872 from the saved three-buffer
+baseline; decode remains194817544 and finder51118080. No bytes or prior vectors
+change. Baseline diagnostic executables are retained with hashes. Public4MiB
+admission, corpus/peak measurements, exchange, deferred fuzz and remote gates
+remain pending. Fuzz is not executed.

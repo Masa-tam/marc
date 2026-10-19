@@ -122,4 +122,37 @@ PositionAdaptiveHuffmanFrameResult encode_position_adaptive_huffman_frame(std::s
     Result result{};result.serialized_size=req.serialized_size;result.raw_size=raw;
     result.token_result=written;result.requirements=req;return result;
 }
+PositionAdaptiveHuffmanFrameResult encode_position_adaptive_huffman_frame_scratch(std::span<const Token> tokens,
+    const PositionAdaptiveHuffmanFrameContext& context,std::span<AdaptiveHuffmanNode> nodes,
+    std::span<std::uint16_t> symbols,std::span<std::byte> scratch) noexcept {
+    Region input{},node{},symbol{};
+    if (!region(tokens,input) || !region(nodes,node) || !region(symbols,symbol)) return failure(Error::arithmetic_overflow);
+    if (const auto e=prepare({input,node,symbol,Region{scratch.data(),scratch.size()},
+            Region{&context,sizeof(context)},Region{&context.stream,sizeof(context.stream)},
+            Region{&context.limits,sizeof(context.limits)}},context.limits);e!=Error::none) return failure(e);
+    if (const auto e=validate_position_adaptive_huffman_stream(context.stream,context.limits);e!=Format::none)
+        return format_failure(e);
+    if (context.raw_committed>=context.stream.original_size || context.raw_committed%context.stream.frame_size
+        || context.sequence!=context.raw_committed/context.stream.frame_size) return failure(Error::format_error,Format::invalid_sequence);
+    if (tokens.size()>UINT32_MAX) return failure(Error::arithmetic_overflow);
+    const auto raw=static_cast<std::uint32_t>(std::min<std::uint64_t>(context.stream.frame_size,context.stream.original_size-context.raw_committed));
+    const dictionary::internal::LzssTypedFrameValidationContext tc{static_cast<std::uint32_t>(tokens.size()),raw,context.raw_committed};
+    PositionAdaptiveHuffmanDescriptor model{};
+    const auto planned=context::internal::plan_position_adaptive_huffman_tokens(context.stream.profile,tokens,tc,context.limits,nodes,symbols,model);
+    if (planned.error!=TokenError::none) return token_failure(planned);
+    PositionAdaptiveHuffmanFrameHeader h{};h.sequence=context.sequence;h.raw_size=raw;h.token_count=planned.token_count;
+    h.event_count=h.decision_count=planned.decision_count;h.payload_size=model.payload_size;
+    PositionAdaptiveHuffmanFrameRequirements req{};
+    if (const auto e=validate_position_adaptive_huffman_frame_header(h,context,req);e!=Format::none) return format_failure(e);
+    if (scratch.size()<req.serialized_size) return failure(Error::output_too_small);
+    const auto written=context::internal::write_position_adaptive_huffman_token_scratch(context.stream.profile,tokens,tc,model,
+        context.limits,nodes,symbols,scratch.subspan(80,model.payload_size));
+    if (written.error!=TokenError::none) return token_failure(written);
+    if (const auto e=serialize_position_adaptive_huffman_descriptor(context.stream.profile,model,context.limits,scratch.subspan(64,16));e!=PositionAdaptiveHuffmanError::none)
+        return token_failure(TokenResult{.entropy_error=e,.error=TokenError::entropy_error});
+    if (const auto e=serialize_position_adaptive_huffman_frame_header(h,context,scratch.first(64));e!=Format::none)
+        return format_failure(e);
+    Result result{};result.serialized_size=req.serialized_size;result.raw_size=raw;
+    result.token_result=written;result.requirements=req;return result;
+}
 } // namespace marc::frame::internal

@@ -43455,3 +43455,13 @@ the earlier1MiB default and add explicit4MiB selection, including full-size quot
 and publication checks. The measured reference allocation is recorded before
 any buffer-reuse change. No external source, fuzz, push or fixed-runtime update
 is involved.
+
+### CR-1976: 2026-10-20 — private4MiB staging reuse
+
+Author/reviewer: Codex. TVG-1599 applies the existing first-party forward FGK
+writer to explicitly private frame storage. The ordinary success-only writers
+remain intact for reference and differential checks. Frozen vectors and quota/
+publication tests prove the unchanged representation and error boundary. The
+observed allocation reduction comes from removing two staging allocations,
+without a new entropy bound or format rule. Earlier executables remain saved.
+No external source, fuzz, push or fixed-runtime replacement is involved.

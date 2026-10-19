@@ -262,3 +262,17 @@ retaining eligible length5, per-frame resets and the success-only drain contract
 Its first resource qualification uses the same three-buffer reference encode
 staging as64KiB/1MiB. This baseline is measured separately before considering
 private-buffer reuse; no public4MiB admission is implied by the private owner.
+
+The4MiB owned encoder now writes into one private serialized allocation. A
+scratch-only token writer checks the validated plan and exact final decisions/
+bits directly in its payload region; descriptor and frame bytes are completed
+before the owner enters drain. Failure may change this private allocation,
+but it cannot publish a byte. The ordinary token/frame entry points retain
+their original success-only copy contract and three-buffer reference path.
+The64KiB and1MiB owners also retain that preceding path and resource behavior.
+
+Full4MiB logical encode admission falls from526020056 to246050184 bytes by
+removing the duplicate payload and serialized staging allocations. Decode stays
+194817544 bytes and the finder stays51118080. No format ceiling, model rule,
+descriptor, token parse or decoder representation changes. These observations
+are private logical charges, separate from forthcoming public resident peaks.
