@@ -2688,3 +2688,31 @@ The original95-body bundle and all starting executable products remain intact.
 These results qualify the first addition locally. The six remaining additions,
 final102-profile audit, deferred fuzz, hosted CI and external four-route results
 remain pending. The fixed Release runtime has not been replaced or pushed.
+
+### IX-0112: native1MiB Adaptive Huffman local97-profile exchange
+
+Schema87 appends exactly `lzss-position-distance-adaptive-huffman-1m` after the
+unchanged96-entry schema86 prefix. All three producer bundles retain the prior
+entry/property order, source descriptor and96 bodies exactly. All97 bodies also
+agree between the two builds. Static/shared self/cross execution and the second
+build's self and two-direction exchange pass strict restoration and re-encoding.
+
+The preceding96-profile static consumers from both builds additionally verify
+the derived schema86 prefix produced by the new implementation. The retained
+second-build consumer has no dynamic dependency on the current codec library;
+this checks the preceding decoder rather than accidentally loading its successor.
+Old bundles and both generations of SDK products remain available.
+
+Two independent header sets each validate19 frozen headers and2147 directed
+alterations. The schema87 guard rejects127 directed manifest/header cases with
+zero codec launches and zero output files, including noncanonical case in both
+native profile names. The existing125-case schema86 guard also passes against
+the derived prefix. New native names require exact case; legacy profile branches
+are retained. The scripts execute in a native shell, with the second build's
+actual codec execution verified separately through its adapter.
+
+This incremental step covers schemas87 and86 and prior-consumer compatibility.
+The complete1-through86 suite passed at IX-0111; the final complete schema-chain
+rerun remains a required final audit after all seven additions. Full corpus
+measurements, the five remaining additions, final102-body audit, deferred fuzz,
+hosted CI and external four-route results remain separate unfinished gates.

@@ -43428,3 +43428,13 @@ allocation-failure and independent vector assertions remain active on both
 builds. Compiler diagnostics motivate only an explicit bounded assignment.
 No external source is consulted, no fuzz or push is performed and prior SDK
 products remain available. Corpus and exchange qualification are separate gates.
+
+### CR-1973: 2026-10-20 — second native Adaptive Huffman exchange addition
+
+Author/reviewer: Codex. TVG-1596 and IX-0112 extend the first-party schema chain
+by one entry. Independent header constants are checked against frozen fixtures,
+and exact native names are rejected before codec invocation when their case is
+altered. Preceding-consumer tests use retained static implementations, avoiding
+an accidental dependency on the current shared implementation. Existing prefix
+bytes and old schema branches remain intact. No external source, fuzz or push
+is involved; the final full-chain audit remains explicitly pending.

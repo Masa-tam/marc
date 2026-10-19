@@ -26303,3 +26303,22 @@ have30-second limits after sub-second pilots; CLI limits are120 seconds after
 pilots below36 seconds. Previous candidate products are saved with hashes
 before rebuilding. Full corpus measurements,97-profile exchange addition,
 five larger profiles, deferred fuzz and remote qualification remain pending.
+
+### TVG-1596: native1MiB exchange increment and preceding consumers
+
+IX-0112 qualifies schema87/97 with exact preservation of the96-entry prefix
+for each of three producers, cross-build body equality and seven local
+self/cross routes. Two preceding static consumers verify the derived schema86
+prefix; retained dependency output confirms that the preceding second-build
+consumer cannot load the current codec shared library.
+
+Both profile header scripts compare19 independent frozen headers and reject
+2147 directed alterations apiece. The new127-case launch guard includes both
+native-name case alterations, with no codec invocation or output publication.
+The old125-case schema86 guard remains successful. Exact native-name checks
+avoid deferring a case mismatch until the CLI has already launched.
+
+The related native-shell header and documentation registrations pass.
+The complete historical chain remains scheduled for the final audit rather than
+being claimed from these incremental87/86 checks. No fuzz is executed; corpus,
+remaining profile additions and remote gates remain pending.
