@@ -26455,3 +26455,31 @@ private encode/decode admissions are490893070/389328782 bytes; the finder is
 30-second test limit. Public admission, full corpus/peak comparisons,
 99-profile exchange and later family/remote gates remain pending. No fuzz is
 executed and the fixed Release products remain preserved.
+
+### TVG-1604: native8MiB public boundary and configured contextual control
+
+Admit8MiB through the common public factory and exact CLI selector. Derive the
+512MiB logical default from the qualified private admissions plus public
+I/O/control charges. With65536 retained control bytes and two65536-byte I/O
+declarations, the observed minimum public grants are491093886 encode and
+389529598 decode bytes. Preserve earlier profile defaults and ABI layouts.
+
+Extend exact/one-short full-frame quotas, every factory allocation failure,
+allocation-free processing, both C linkages, chunking, stable terminal states,
+independent vectors, reciprocal profile rejection and late failed-frame/target/
+tmp withholding. The configured same-window contextual API control succeeds
+with actual window/frame8388608 and identity dictionary2/5, entropy1/2,
+context1/4; all8388864 pilot bytes restore exactly. This pilot is separate from
+the required full12 corpus size/rate/resident-peak comparison.
+
+Initial API/resource/C runs pass four registrations on each build below6 seconds.
+Both CLI linkages pass on each build, with the slowest initial pilot47.68
+seconds. Set API/resource/C limits30 seconds and CLI limits180 seconds based on
+these observations. The complete related regression includes preceding windows;
+99-profile exchange, full measurements, three larger profiles, deferred fuzz and
+remote results remain unfinished. No fuzz is run.
+
+The final related runs pass52 registrations on the first build and49 on the
+second, including all preceding native windows. Their total durations are
+156.31 and191.25 seconds respectively. Earlier SDK products and fixed Release
+files remain retained with hashes; this is a local public-integration milestone.

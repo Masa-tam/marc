@@ -1618,7 +1618,7 @@ The family uses a common configuration with an explicit profile field and
 `marc_lzss_position_distance_adaptive_huffman_config_apply_profile`. Initialization
 selects64KiB. Applying a profile resets its window-dependent defaults while
 preserving direction, original size, caller retention and I/O declarations.
-Profile values8MiB and larger are reserved and return Unsupported until individually
+Profile values16MiB and larger are reserved and return Unsupported until individually
 qualified; unknown values return InvalidArgument. Failed application preserves
 the configuration. Existing codec configurations and ABI layouts are unchanged.
 
@@ -1690,3 +1690,24 @@ no allocation during processing and both C linkage modes. With65536 retained
 control bytes and two65536-byte I/O declarations, observed minimum grants are
 246251000 encode and195018360 decode. Actual ABI/configuration queries remain
 required; these logical amounts do not replace fresh resident peak measurements.
+
+### Native8MiB position-distance Adaptive Huffman
+
+Apply `MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_8M` to select
+dictionary2/11, context1/38 and Adaptive Huffman1/6. The dictionary window is
+8388608 bytes and frame size may be1..8388608. Defaults are frame/max-frame
+8388608, maximum block75497472 decisions, maximum payload279969792 bytes,
+13996 model entries and512MiB logical admission. I/O defaults remain65536 bytes
+each. Earlier profile defaults and decoder representations are unchanged.
+
+With65536 retained control bytes and two65536-byte I/O declarations, measured
+minimum grants are491093886 encode and389529598 decode bytes. Query the actual
+ABI/configuration before allocation. Private staging and ordinary API failure
+contracts follow the preceding4MiB path. These logical grants are distinct
+from measured resident peaks and the required full-corpus comparison.
+
+For the same-window contextual control, applying its16MiB public identity and
+then setting both window and frame to8388608 succeeds through the existing API.
+The resource pilot verifies dictionary2/5, entropy1/2, context1/4, actual window/
+frame8388608 and complete restoration. This is a configured existing-API control,
+not an additional public contextual8MiB profile.

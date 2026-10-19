@@ -43501,3 +43501,13 @@ retains single private frame staging, exact-quota admission and failed-frame
 withholding. Existing ordinary writers and earlier window representations
 remain intact. No external source, fuzz, push or fixed-runtime replacement is
 involved; public and measurement/exchange gates are still separate.
+
+### CR-1981: 2026-10-20 — native8MiB public integration
+
+Author/reviewer: Codex. TVG-1604 connects the next independently defined FGK
+identity through the common first-party API and CLI. Resource defaults follow
+actual owner requirements, and the existing contextual API is exercised with
+matching window/frame rather than assigning an unpublished profile name.
+Quota, allocation and publication tests retain earlier assertions. No external
+source, fuzz, push or fixed-runtime replacement is involved. Corpus and exchange
+qualification remain independent subsequent gates.

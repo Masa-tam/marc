@@ -1258,3 +1258,14 @@ accepts lengths3/4. The CLI requests256MiB logical admission and retains two
 bytes. Private encoded bytes cannot drain until the complete frame succeeds;
 whole-file publication and existing target/tmp preservation follow the same
 transactional path. Other native selectors retain their meanings.
+
+### Native8MiB position-distance Adaptive Huffman
+
+Select `lzss-position-distance-adaptive-huffman-8m` for encode and decode. The
+exact identities are dictionary2/11, context1/38 and entropy1/6, with window/frame
+8388608 bytes and eligible match length5. The decoder also accepts lengths3/4.
+The CLI requests512MiB logical admission and retains two65536-byte I/O arrays.
+Its payload ceiling is279969792 bytes plus80 metadata bytes. Complete-frame
+validation precedes draining, and whole-file publication retains the existing
+transactional target/tmp contract. Corpus and exchange qualification remain
+separate from API/CLI correctness.
