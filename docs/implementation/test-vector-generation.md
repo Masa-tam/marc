@@ -26074,3 +26074,17 @@ retained entropy and frame vectors. Directed capacity, alias, truncation and
 padding checks pass with twelve related registrations, including documentation.
 Streaming controllers, public API/CLI, measurements, exchange and larger-window
 qualification remain pending. Fuzz execution remains deferred by instruction.
+
+### TVG-1585: native Adaptive Huffman64KiB streaming decoder
+
+Directed tests cover empty, one-frame and two-frame streams with input chunks
+1/2/17/112/4096 and output capacities1/2/7/64, both final-input conventions and
+every split of the small single-frame stream. Every premature end fails before
+publishing that frame. A malformed second frame preserves the first frame's
+five validated bytes; its Error call leaves the entire ordinary output unchanged.
+Strict trailing rejection, zero output capacity, stable ended/error states,
+unsupported ResetBlock, aliased output and short private capacities are checked.
+Valid exact/one-short admission includes all supplied capacities and controls.
+Thirteen related registrations pass. The controller allocates nothing during
+process. Owned encoding, public connection, measurements and exchange remain
+pending, as do larger profiles and deferred fuzz execution.

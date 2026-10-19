@@ -10937,6 +10937,21 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
                 ${CMAKE_CURRENT_BINARY_DIR}/cli-position-blocked-huffman-1m)
         set_tests_properties(marc_cli_position_blocked_huffman_1m PROPERTIES TIMEOUT 180)
     endif()
+    add_executable(marc_position_adaptive_huffman_stream_decoder_tests
+        tests/position_adaptive_huffman_stream_decoder_tests.cpp
+        src/frame/lzss_position_adaptive_huffman_stream_decoder.cpp
+        src/frame/lzss_position_adaptive_huffman_frame.cpp src/frame/lzss_position_adaptive_huffman_format.cpp
+        src/context/lzss_position_adaptive_huffman_tokens.cpp
+        src/entropy/position_adaptive_huffman.cpp src/entropy/position_adaptive_huffman_format.cpp
+        src/entropy/contextual_adaptive_huffman_tree.cpp src/core/limits.cpp src/core/status.cpp
+        src/context/lzss_short_length_escape.cpp src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_typed_reconstructor.cpp src/dictionary/lzss_format.cpp)
+    target_compile_features(marc_position_adaptive_huffman_stream_decoder_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_adaptive_huffman_stream_decoder_tests PRIVATE src)
+    set_target_properties(marc_position_adaptive_huffman_stream_decoder_tests PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
+    add_test(NAME marc_position_adaptive_huffman_64k_stream_decoder COMMAND marc_position_adaptive_huffman_stream_decoder_tests)
+
     add_executable(marc_position_adaptive_huffman_frame_tests
         tests/position_adaptive_huffman_frame_tests.cpp
         src/frame/lzss_position_adaptive_huffman_frame.cpp src/frame/lzss_position_adaptive_huffman_format.cpp

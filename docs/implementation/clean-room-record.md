@@ -43321,3 +43321,12 @@ Independent boundary fixtures cover nontrivial distance residuals and the full
 64KiB frame. Twelve related tests pass; streaming/public integration and resource
 measurements remain open. Existing products and formats are preserved. No
 external implementation is consulted and no fuzz execution is performed.
+
+### CR-1962: 2026-10-19 — native64KiB streaming decoder qualification
+
+Author/reviewer: Codex. TVG-1585 builds a bounded controller around the first-party
+private frame reference. Metadata collection, validation and draining are explicit
+states; publication returns before subsequent frame parsing. Directed chunk,
+late-error and exact-admission tests qualify this internal milestone. Thirteen
+related registrations pass. Existing runtime products and stream formats remain
+unchanged. No external source is consulted and fuzz remains deferred.

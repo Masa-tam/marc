@@ -161,3 +161,22 @@ output limit. Prefix preflight validates80 bytes before payload buffering;
 full preflight checks the complete extent but does not replace entropy/history
 validation or authorize raw publication. All other per-window completion gates
 remain open at this metadata-only milestone.
+
+### Private streaming decoder admission and publication
+
+The initial64KiB decoder controller admits all supplied serialized/token/raw/
+node/symbol capacities, its own object, any additional owner's bytes and147456
+conservative nested-control bytes before processing input. This is a logical
+bound, not a measured peak or public default. Common limits remain mandatory.
+It validates the112-byte stream header,64-byte frame header and16-byte descriptor
+before collecting the admitted payload. Entropy, history and complete raw
+reconstruction must succeed before the frame enters the draining state.
+
+Input and output may split at any byte; zero output capacity returns NeedOutput
+only when validated raw bytes await draining. Flush is a no-op and ResetBlock
+is unsupported on decode. Known-size completion waits for EndInput, rejects
+trailing bytes and treats premature EndInput as malformed. Ended and failed
+states are stable on repeated calls. Every Error call produces zero output and
+leaves its ordinary output span unchanged: a call that finishes draining one
+frame returns before inspecting another frame or trailing bytes. Earlier valid
+frames may therefore be published before a later error is reported.
