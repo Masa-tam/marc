@@ -43652,3 +43652,13 @@ and publication contracts. No external source or implementation is consulted.
 Failed execution-service evidence is preserved separately from successful
 qualification. No fuzz, push or fixed-runtime replacement is involved. Final
 local and remote gates remain explicitly unfinished.
+
+### CR-1997: 2026-10-20 — native Adaptive Huffman runtime preservation audit
+
+Author/reviewer: Codex. TVG-1620 preserves every original product and promotes
+only the five byte-identified qualified SDK products. Direct fixed-runtime
+exchange, related C API/HashTap tests and historical restoration pass. Existing
+codec implementation sources remain unchanged; rebuilding unrelated targets
+is not represented as a required or completed regression gate. No external
+implementation, fuzz or push is involved. Remaining corpus, complete schema
+history and remote results remain explicitly pending.

@@ -26813,3 +26813,28 @@ Retain failed service-start evidence and use a new output directory for its
 successful retry. Existing95 historical bodies, manifest,273 fixed products
 and saved copies remain unchanged. Full schema history, repository audit,
 remaining corpus measurements, deferred fuzz and remote gates remain pending.
+
+### TVG-1620: native Adaptive Huffman qualified runtime preservation
+
+Rebuild the changed public/compatibility CLI targets, existing C API tests and
+HashTap target on both builds. Related C API, documentation, header and HashTap
+registrations pass11 on the first build and4 on the second. The first build's
+qualified executable, shared library and three matching SDK library products
+are then copied byte-for-byte from their preserved generation into the existing
+Release destination. All273 original products remain intact in the saved
+baseline;268 products at the fixed destination remain unchanged. Hashes identify
+the five intentional updates. Restore the ordinary build output configuration
+and confirm its generated Release output destination as well as the current
+files; no future build requires the temporary staging destination.
+
+The actual fixed executable passes all102 strict exchange entries. Its C API,
+HashTap and documentation subset passes18 registrations. Both current builds
+also restore all95 retained historical archives; this is restore-only evidence,
+not a claim that seven previously changed Blocked Huffman outputs re-encode
+identically. Initial overbroad all-target builds are stopped after scope review;
+their partial objects and logs are retained and are not counted as successful
+repository-wide qualification. The changed-target builds finish successfully.
+
+Complete schema history and six remaining full-corpus/peak comparisons remain
+pending. This runtime qualification does not complete the goal. Fuzz remains
+deferred; hosted CI/external102-profile results are not yet available.
