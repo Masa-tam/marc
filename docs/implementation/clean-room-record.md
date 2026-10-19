@@ -43330,3 +43330,13 @@ states; publication returns before subsequent frame parsing. Directed chunk,
 late-error and exact-admission tests qualify this internal milestone. Thirteen
 related registrations pass. Existing runtime products and stream formats remain
 unchanged. No external source is consulted and fuzz remains deferred.
+
+### CR-1963: 2026-10-19 — native64KiB owned-transform qualification
+
+Author/reviewer: Codex. TVG-1586 composes the existing first-party exact prefix
+finder with the new private frame reference and decoder controller. It retains
+the eligibility5 parsing choice, explicit bounded allocations and immutable
+direction. Exhaustive/reference parsing and chunk-invariant complete streams
+are checked alongside resource and failure guarantees. Fourteen related tests
+pass. Production runtime promotion, public integration and measured resources
+remain pending. No external implementation is consulted and fuzz is not run.

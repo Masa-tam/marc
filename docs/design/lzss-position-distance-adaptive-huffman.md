@@ -180,3 +180,21 @@ states are stable on repeated calls. Every Error call produces zero output and
 leaves its ordinary output span unchanged: a call that finishes draining one
 frame returns before inspecting another frame or trailing bytes. Earlier valid
 frames may therefore be published before a later error is reported.
+
+The initial owned64KiB encoder admits and allocates raw, worst-case token,
+model, exact-prefix finder, payload and two serialized staging buffers at
+construction. Its conservative control allowance is262144 bytes. The payload
+capacity is the format ceiling ceil(267F/8), with80-byte frame prefixes. The
+owned decoder uses one serialized buffer and the streaming controller's147456
+control allowance. Checked requirements include owners and every allocation;
+requirements and allocation fail before processing when the configured grant
+is insufficient. No allocation occurs in process calls. These are reference
+storage choices for64KiB; larger windows must receive their own resource audit.
+
+The encoder retains the existing exact64KiB length-escape parser and its minimum
+eligible match length5. Length3/4 matches remain valid decoder inputs. This
+parsing policy is deterministic and is not encoded as a stream parameter.
+Flush leaves the frame intact; explicit ResetBlock is unsupported. Known source
+size is required, and premature final input fails without publishing a frame.
+Header/frame draining returns before collecting or encoding the next frame,
+so every encoding Error call also leaves ordinary output unchanged.

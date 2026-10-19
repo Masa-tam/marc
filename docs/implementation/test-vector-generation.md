@@ -26088,3 +26088,19 @@ Valid exact/one-short admission includes all supplied capacities and controls.
 Thirteen related registrations pass. The controller allocates nothing during
 process. Owned encoding, public connection, measurements and exchange remain
 pending, as do larger profiles and deferred fuzz execution.
+
+### TVG-1586: native Adaptive Huffman64KiB owned transforms
+
+The reference owner pre-admits every allocation and performs no process-time
+allocation. Encoder bytes are invariant across input chunks1/7/131072 and output
+capacities1/19/131072. Empty input, single zero/255, all256 byte values,
+deterministic mixed input, partial/multiple frames and lengths65535/65536/65537
+round-trip. A small independent exhaustive first-party dictionary parse reproduces
+the indexed owner's complete stream. Exact/one-short owner grants use valid
+common limits; rejected queries preserve ordinary requirements.
+
+A payload limit failure after header publication emits no frame bytes and
+leaves its Error call's output unchanged. Stable terminal calls and premature
+final input are checked. Fourteen related registrations pass. Public API/CLI,
+full-corpus measurements, exchange and all larger-window qualifications remain
+pending. Fuzz remains deferred rather than treated as a passed gate.

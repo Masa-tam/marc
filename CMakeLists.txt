@@ -10952,6 +10952,19 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
     add_test(NAME marc_position_adaptive_huffman_64k_stream_decoder COMMAND marc_position_adaptive_huffman_stream_decoder_tests)
 
+    get_target_property(position_adaptive_private_sources marc_position_adaptive_huffman_stream_decoder_tests SOURCES)
+    list(FILTER position_adaptive_private_sources EXCLUDE REGEX "^tests/")
+    add_executable(marc_position_adaptive_huffman_owned_tests
+        tests/position_adaptive_huffman_owned_tests.cpp src/frame/lzss_position_adaptive_huffman_owned.cpp
+        src/dictionary/lzss_short_match_candidate.cpp src/dictionary/lzss_short_prefix_match_finder.cpp
+        src/dictionary/lzss_match_finder.cpp src/dictionary/lzss_hash_chain_match_finder.cpp
+        src/dictionary/lzss_binary_tree_match_finder.cpp ${position_adaptive_private_sources})
+    target_compile_features(marc_position_adaptive_huffman_owned_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_adaptive_huffman_owned_tests PRIVATE src)
+    set_target_properties(marc_position_adaptive_huffman_owned_tests PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
+    add_test(NAME marc_position_adaptive_huffman_64k_owned COMMAND marc_position_adaptive_huffman_owned_tests)
+
     add_executable(marc_position_adaptive_huffman_frame_tests
         tests/position_adaptive_huffman_frame_tests.cpp
         src/frame/lzss_position_adaptive_huffman_frame.cpp src/frame/lzss_position_adaptive_huffman_format.cpp
