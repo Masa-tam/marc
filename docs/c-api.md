@@ -1618,7 +1618,7 @@ The family uses a common configuration with an explicit profile field and
 `marc_lzss_position_distance_adaptive_huffman_config_apply_profile`. Initialization
 selects64KiB. Applying a profile resets its window-dependent defaults while
 preserving direction, original size, caller retention and I/O declarations.
-Profile values4MiB and larger are reserved and return Unsupported until individually
+Profile values8MiB and larger are reserved and return Unsupported until individually
 qualified; unknown values return InvalidArgument. Failed application preserves
 the configuration. Existing codec configurations and ABI layouts are unchanged.
 
@@ -1668,3 +1668,25 @@ withholding. With65536 retained control bytes and two65536-byte I/O declarations
 the observed minimum grants are132610876 encode and49134444 decode; callers
 must query their actual ABI/configuration. Full corpus measurements and exchange
 qualification remain separate from this public API milestone.
+
+### Native4MiB position-distance Adaptive Huffman
+
+Apply `MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_4M` to select
+dictionary2/10, context1/37 and Adaptive Huffman1/5. The dictionary window is
+4194304 bytes; frame size may be1..4194304. Defaults are frame/max-frame4194304,
+maximum block37748736 decisions, maximum payload139984896 bytes,13962 model
+entries and256MiB logical admission. I/O defaults remain65536 bytes each.
+
+The owned encoder uses one private serialized allocation and publishes it only
+after the exact FGK write, descriptor and header all succeed. The ordinary
+frame/token APIs retain their protected copy contract. TVG-1599 records the
+private logical requirements246050184 encode and194817544 decode; public callers
+must add their declared I/O/retention and control charges through the query.
+The64KiB/1MiB defaults and representations remain unchanged. Resident peaks,
+full corpus comparison and exchange qualification are separate evidence.
+
+TVG-1600 qualifies full-capacity exact/one-short grants, all allocation failures,
+no allocation during processing and both C linkage modes. With65536 retained
+control bytes and two65536-byte I/O declarations, observed minimum grants are
+246251000 encode and195018360 decode. Actual ABI/configuration queries remain
+required; these logical amounts do not replace fresh resident peak measurements.

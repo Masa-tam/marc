@@ -56,7 +56,7 @@ marc_status prepare(const Config* c,marc::core::DecoderLimits& limits,PositionAd
         || c->profile>MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64M
         || (c->direction!=MARC_DIRECTION_ENCODE && c->direction!=MARC_DIRECTION_DECODE)
         || !c->frame_size) return MARC_STATUS_INVALID_ARGUMENT;
-    if (c->profile>MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_1M) return MARC_STATUS_UNSUPPORTED;
+    if (c->profile>MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_4M) return MARC_STATUS_UNSUPPORTED;
     const auto selected=static_cast<marc::entropy::internal::PositionAdaptiveHuffmanProfile>(c->profile);
     const auto& spec=*marc::entropy::internal::position_adaptive_huffman_spec(selected);
     if (c->frame_size>spec.window_size) return MARC_STATUS_INVALID_ARGUMENT;
@@ -95,17 +95,22 @@ marc_status marc_lzss_position_distance_adaptive_huffman_config_apply_profile(Co
     if (!out || out->struct_size!=sizeof(*out) || out->abi_version!=MARC_ABI_VERSION || out->reserved2
         || (out->direction!=MARC_DIRECTION_ENCODE && out->direction!=MARC_DIRECTION_DECODE)
         || profile>MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64M) return MARC_STATUS_INVALID_ARGUMENT;
-    if (profile>MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_1M) return MARC_STATUS_UNSUPPORTED;
+    if (profile>MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_4M) return MARC_STATUS_UNSUPPORTED;
     Config next{};
     const auto error=marc_lzss_position_distance_adaptive_huffman_config_init(out->direction,&next);
     if (error!=MARC_STATUS_OK) return error;
-    if (profile==MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_1M) {
-        next.profile=profile;next.frame_size=1048576;next.max_frame_size=1048576;
-        next.max_lz_distance=1048576;next.max_block_size=UINT64_C(8)*1048576;
-        next.max_compressed_payload_size=UINT64_C(34996224);
-        // Full-capacity private admission measured132410060 bytes; retain
-        // room for ordinary public IO/control charges in the128MiB grant.
-        next.max_internal_buffered_bytes=UINT64_C(128)<<20;next.max_entropy_table_entries=13894;
+    if (profile!=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64K) {
+        const auto selected=static_cast<marc::entropy::internal::PositionAdaptiveHuffmanProfile>(profile);
+        const auto& spec=*marc::entropy::internal::position_adaptive_huffman_spec(selected);
+        next.profile=profile;next.frame_size=spec.window_size;next.max_frame_size=spec.window_size;
+        next.max_lz_distance=spec.window_size;
+        next.max_block_size=static_cast<std::uint64_t>(spec.decisions_per_byte)*spec.window_size;
+        next.max_compressed_payload_size=(UINT64_C(267)*spec.window_size+7)/8;
+        // Qualified private admissions are132410060 (1MiB) and246050184
+        // (4MiB), before the ordinary public IO/control charges.
+        next.max_internal_buffered_bytes=(profile==MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_1M
+            ? UINT64_C(128) : UINT64_C(256))<<20;
+        next.max_entropy_table_entries=spec.node_entries()+spec.alphabet_entries;
     }
     next.original_size=out->original_size;next.external_retained_bytes=out->external_retained_bytes;
     next.input_capacity_bytes=out->input_capacity_bytes;next.output_capacity_bytes=out->output_capacity_bytes;

@@ -43465,3 +43465,13 @@ publication tests prove the unchanged representation and error boundary. The
 observed allocation reduction comes from removing two staging allocations,
 without a new entropy bound or format rule. Earlier executables remain saved.
 No external source, fuzz, push or fixed-runtime replacement is involved.
+
+### CR-1977: 2026-10-20 — native4MiB public boundary integration
+
+Author/reviewer: Codex. TVG-1600 extends the common first-party profile factory
+and exact CLI selector with the independently defined4MiB identity. Public
+memory defaults follow the qualified private storage reduction; caller-retention
+tests explicitly cover their vectors. Golden foreign-profile packets avoid
+depending on a second encoder while checking strict selection. No external
+implementation, fuzz, push or fixed-runtime replacement is involved. Full corpus
+and exchange evidence remain separate unfinished gates.

@@ -1247,3 +1247,14 @@ admission precedes construction, and the same private frame validation and
 transactional file publication contract applies. The64KiB selector retains its
 existing meaning and encoded representation. Corpus comparisons, exchange
 addition and final remote evidence are tracked separately from API/CLI tests.
+
+### Native4MiB position-distance Adaptive Huffman
+
+Select `lzss-position-distance-adaptive-huffman-4m` explicitly for encode and
+decode. The exact identities are dictionary2/10, context1/37 and entropy1/5,
+with window/frame4194304 bytes and eligible match length5. The decoder also
+accepts lengths3/4. The CLI requests256MiB logical admission and retains two
+65536-byte I/O arrays. Its payload ceiling is139984896 bytes plus80 metadata
+bytes. Private encoded bytes cannot drain until the complete frame succeeds;
+whole-file publication and existing target/tmp preservation follow the same
+transactional path. Other native selectors retain their meanings.

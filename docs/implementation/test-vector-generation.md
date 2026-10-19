@@ -26378,3 +26378,31 @@ baseline; decode remains194817544 and finder51118080. No bytes or prior vectors
 change. Baseline diagnostic executables are retained with hashes. Public4MiB
 admission, corpus/peak measurements, exchange, deferred fuzz and remote gates
 remain pending. Fuzz is not executed.
+
+### TVG-1600: native4MiB public API and CLI qualification
+
+Admit profile4MiB through the common factory without adding an initializer or
+changing ABI layouts. Use the measured one-private-frame encoder admission and
+the existing decoder admission to select256MiB default logical capacity. With
+65536 retained control bytes and two65536-byte I/O declarations, observed
+minimum public grants are246251000 encode and195018360 decode. The public
+resource smoke restores4194560 bytes with both requested APIs and verifies their
+actual window/frame, identities, byte counts and nonzero fresh resident peaks.
+This smoke is not the required full-corpus comparison.
+
+Extend allocation/quota tests through the full4MiB frame. Their declared caller
+retention now conservatively scales with the retained test vectors; initial
+grants include that declaration before exact/one-short admission checks. Every
+factory allocation failure leaves no handle or live allocation, and processing
+makes no allocations. Existing64KiB/1MiB cases retain all their assertions.
+Both C linkages and both CLI linkages pass. Independent golden files check
+reciprocal rejection among the three native profiles, alongside19 selected
+profile vectors, seven boundary round trips, truncation, padding, trailing data,
+late failed-frame withholding and target/tmp preservation.
+
+Final related runs pass42 registrations on the first stack and40 on the second.
+API/resource/C limits are30 seconds after2.5-second API pilots; CLI limits are
+120 seconds after initial pilots below41 seconds. The full related run's slowest
+4MiB CLI registration takes51.70 seconds. Earlier SDK products are saved with
+hashes. Corpus/peak comparisons,98-profile exchange, four larger profiles,
+deferred fuzz and remote qualification remain pending. Fuzz is not executed.

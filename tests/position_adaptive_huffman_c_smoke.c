@@ -48,6 +48,7 @@ static int run(marc_direction direction,const unsigned char* input,size_t size,
 int main(int argc,char** argv) {
     unsigned char raw[256],wire[4096],restored[256];size_t encoded=0,decoded=0,i;
     if (argc==2 && strcmp(argv[1],"1m")==0) selected_profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_1M;
+    else if (argc==2 && strcmp(argv[1],"4m")==0) selected_profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_4M;
     else if (argc!=1) return 11;
     if (run(MARC_DIRECTION_ENCODE,NULL,0,wire,sizeof(wire),&encoded,0) || encoded!=112) return 1;
     if (memcmp(wire,"MARC",4) || wire[12]!=2 || wire[14]!=8+selected_profile || wire[16]!=1

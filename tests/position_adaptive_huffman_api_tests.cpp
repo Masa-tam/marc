@@ -30,14 +30,16 @@ using Config=marc_lzss_position_distance_adaptive_huffman_config;
 using Resources=marc_lzss_position_distance_adaptive_huffman_resources;
 marc_lzss_position_distance_adaptive_huffman_profile selected_profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64K;
 std::uint32_t window=65536;
+std::uint32_t decisions_per_byte=7,model_entries=13758;
 void check(bool b,const std::source_location p=std::source_location::current()) {
     if (!b) throw std::runtime_error("native FGK public check failed at line "+std::to_string(p.line()));
 }
 Config config(marc_direction direction,std::uint32_t frame=257) {
     Config c{};check(marc_lzss_position_distance_adaptive_huffman_config_init(direction,&c)==MARC_STATUS_OK);
     check(marc_lzss_position_distance_adaptive_huffman_config_apply_profile(&c,selected_profile)==MARC_STATUS_OK);
-    c.frame_size=frame;c.max_frame_size=frame;c.max_block_size=(selected_profile ? 8u : 7u)*frame;
-    c.input_capacity_bytes=c.output_capacity_bytes=7;c.external_retained_bytes=UINT64_C(2)<<20;
+    c.frame_size=frame;c.max_frame_size=frame;c.max_block_size=static_cast<std::uint64_t>(decisions_per_byte)*frame;
+    c.input_capacity_bytes=c.output_capacity_bytes=7;
+    c.external_retained_bytes=UINT64_C(4)*window+(UINT64_C(2)<<20);
     // The test retains additional source/result vectors outside the transform.
     if (selected_profile) c.max_internal_buffered_bytes+=c.external_retained_bytes;
     return c;
@@ -118,7 +120,7 @@ void invalid_configurations() {
         case 5:c.frame_size=0;break;
         case 6:c.frame_size=window+1;break;
         case 7:c.max_lz_distance=window-1;expected=MARC_STATUS_LIMIT_EXCEEDED;break;
-        case 8:c.max_entropy_table_entries=(selected_profile ? 13894u : 13758u)-1;expected=MARC_STATUS_LIMIT_EXCEEDED;break;
+        case 8:c.max_entropy_table_entries=model_entries-1;expected=MARC_STATUS_LIMIT_EXCEEDED;break;
         case 9:c.max_compressed_payload_size=0;break;
         case 10:c.original_size=UINT64_MAX;break;
         default:c.original_size=c.max_total_output_size+1;expected=MARC_STATUS_LIMIT_EXCEEDED;break;
@@ -129,7 +131,7 @@ void invalid_configurations() {
         const auto refused=marc_lzss_position_distance_adaptive_huffman_create(&c,&p);tracked=false;
         check(refused==expected && !p && !allocations);
     }
-    auto c=initial;c.profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_4M;const auto saved=c;
+    auto c=initial;c.profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_8M;const auto saved=c;
     check(marc_lzss_position_distance_adaptive_huffman_config_apply_profile(&c,c.profile)==MARC_STATUS_UNSUPPORTED
         && !std::memcmp(&saved,&c,sizeof(c)));
     check(marc_lzss_position_distance_adaptive_huffman_resource_requirements(&c,&r)==MARC_STATUS_UNSUPPORTED);
@@ -163,7 +165,10 @@ void directed() {
 }
 }
 int main(int argc,char** argv) {try {
-    if (argc==2) {check(std::string(argv[1])=="1m");selected_profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_1M;window=1048576;}
+    if (argc==2) {
+        if (std::string(argv[1])=="1m") {selected_profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_1M;window=1048576;decisions_per_byte=8;model_entries=13894;}
+        else {check(std::string(argv[1])=="4m");selected_profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_4M;window=4194304;decisions_per_byte=9;model_entries=13962;}
+    }
     else check(argc==1);
     directed();std::cout<<"native FGK public checks passed\n";return 0;}
     catch(const std::exception& e) {std::cerr<<e.what()<<'\n';return 1;}}

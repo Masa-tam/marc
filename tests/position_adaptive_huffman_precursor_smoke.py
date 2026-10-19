@@ -8,10 +8,11 @@ import tempfile
 
 driver=Path(sys.argv[1]).resolve()
 public='--public' in sys.argv[3:]
-assert all(option in ('--public','--window=1m') for option in sys.argv[3:])
-window='1m' if '--window=1m' in sys.argv[3:] else '64k'
+assert all(option in ('--public','--window=1m','--window=4m') for option in sys.argv[3:])
+windows=[option.split('=',1)[1] for option in sys.argv[3:] if option.startswith('--window=')];assert len(windows)<=1
+window=windows[0] if windows else '64k'
 assert public or window=='64k'
-extent=1048576 if window=='1m' else 65536;index=int(window=='1m')
+extent,index={'64k':(65536,0),'1m':(1048576,1),'4m':(4194304,2)}[window]
 base=Path(sys.argv[2]).resolve();base.mkdir(parents=True,exist_ok=True)
 root=Path(tempfile.mkdtemp(prefix='run-',dir=base))
 raw=bytes(range(256))*(extent//256+1)
