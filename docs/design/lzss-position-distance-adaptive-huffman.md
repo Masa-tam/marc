@@ -315,3 +315,10 @@ entries and9395 nodes. Its full-window late-reference vector represents
 and seven valid final bits, ending at distance33554429. Fixture admission
 explicitly raises its frame/distance ceilings to the selected window; it does
 not change public defaults or ownership admission.
+
+The private32MiB owner adds its existing same-window five-prefix backend to
+immutable query/variant/tokenizer tables. Eligibility5 and single private
+serialized-frame staging remain unchanged. Observed full-window logical
+requirements are1959948826 encode and1556394650 decode bytes, with a
+403439616-byte encode finder. Earlier pairings remain covered by regression
+checks; these figures are not resident peaks or a public memory grant.

@@ -43575,3 +43575,12 @@ frame/distance admission follows the selected window and does not alter public
 defaults. Both first-party frame writers are compared with complete independent
 bytes. No external source, public factory admission, fuzz, push or fixed-runtime
 replacement is involved.
+
+### CR-1989: 2026-10-20 — native32MiB private owner
+
+Author/reviewer: Codex. TVG-1612 extends the first-party immutable backend tables
+with the same-window32MiB candidate and existing FGK private frame path. Earlier
+profile/variant pairings, exact admission and ordinary failure/failed-frame
+publication contracts remain intact. No external source, fuzz, push or fixed
+runtime replacement is involved. Public, corpus and exchange evidence remain
+subsequent independent gates.

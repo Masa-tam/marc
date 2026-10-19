@@ -26631,3 +26631,20 @@ public identities/products remain preserved.
 Both builds pass18 related vector/document registrations, taking21.46 and
 27.94 seconds. The slowest new fixture registration is6.67 seconds, within
 the retained60-second vector limit. No ownership or public admission is implied.
+
+### TVG-1612: native32MiB private ownership and failure boundaries
+
+Extend the immutable backend tables with the existing first-party32MiB finder,
+keeping eligibility5, native FGK and single private frame staging. Rerun all
+preceding owner/core/vector cases. Exercise full-window minus/equal/plus-one
+inputs, exact/one-short admitted allocation, small split buffers, empty and
+all-byte inputs, stable terminal states, late decode failure and forced encode
+failure after the stream header. Failed frames publish no bytes; ordinary
+output remains unchanged on failing calls.
+
+Both builds pass27 related registrations. Full-window logical charges are
+1959948826 encode,1556394650 decode and403439616 finder bytes. The32MiB owner
+pilots take6.69 and9.95 seconds respectively, supporting a60-second test limit.
+No public admission is implied. Full corpus/peak comparisons,101-profile
+exchange, the last larger profile, deferred fuzz and remote results remain
+pending. No fuzz or fixed-runtime replacement is performed.
