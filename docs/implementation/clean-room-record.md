@@ -43566,3 +43566,12 @@ and body equality, launch guards, reciprocal execution and preceding static
 decoders provide incremental local evidence. No external source, fuzz, push
 or fixed-runtime replacement is involved. Full family and remote gates remain
 pending.
+
+### CR-1988: 2026-10-20 — independent32MiB native FGK fixtures
+
+Author/reviewer: Codex. TVG-1611 freezes the next reserved identity through the
+existing independently authored FGK generator and file transport. Test-only
+frame/distance admission follows the selected window and does not alter public
+defaults. Both first-party frame writers are compared with complete independent
+bytes. No external source, public factory admission, fuzz, push or fixed-runtime
+replacement is involved.

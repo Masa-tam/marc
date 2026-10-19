@@ -26610,3 +26610,24 @@ both build configurations and pass the five native header registrations plus
 document layout. The fixed273 products and historical95-body bundle remain
 unchanged. Final schema/102 audit, larger-window measurements, deferred fuzz
 and remote qualification remain separate unfinished gates. No fuzz is run.
+
+### TVG-1611: independently generated32MiB native FGK vectors
+
+Freeze14 stream/frame fixtures and five boundaries from the independent
+mathematical generator. The full-window late-reference vector has33554432 raw
+bytes,130058 tokens,1300590 decisions,162577 payload bytes and seven valid
+final bits, with final distance33554429. Retain complete wire bytes and bounded
+little-endian token/raw files. Extend the fixture profile/raw bounds through
+32MiB and explicitly admit its frame and distance under test limits; earlier
+selected windows keep their preceding limits.
+
+Compare both ordinary reference and private scratch frame paths with the
+independent bytes, including failure invariance, unused tails, one-short
+storage and alias rejection. Rerun earlier frozen vector sets. Internal owner,
+public API/CLI, full-corpus and resident-peak measurements,101-profile exchange
+and later family/remote gates remain pending. No fuzz is executed and existing
+public identities/products remain preserved.
+
+Both builds pass18 related vector/document registrations, taking21.46 and
+27.94 seconds. The slowest new fixture registration is6.67 seconds, within
+the retained60-second vector limit. No ownership or public admission is implied.

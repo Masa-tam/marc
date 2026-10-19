@@ -307,3 +307,11 @@ admission still limited to qualified profiles. Full-window logical requirements
 are980578452 encode and778350868 decode bytes, with a202113024-byte encode
 finder. These are actual queried private charges, not resident peaks or a
 public memory grant.
+
+The32MiB format step freezes the existing reserved dictionary2/13,
+context1/40 and Adaptive Huffman1/8 identity with57 contexts,4669 alphabet
+entries and9395 nodes. Its full-window late-reference vector represents
+33554432 raw bytes with130058 tokens,1300590 decisions,162577 payload bytes
+and seven valid final bits, ending at distance33554429. Fixture admission
+explicitly raises its frame/distance ceilings to the selected window; it does
+not change public defaults or ownership admission.

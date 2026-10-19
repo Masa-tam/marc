@@ -11228,7 +11228,7 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             --check ${CMAKE_CURRENT_SOURCE_DIR}/tests/data/position_adaptive_huffman_64k_boundary_vectors.json
             --file-codec-tool $<TARGET_FILE:marc_position_adaptive_huffman_frame_tests>
             --fixture-directory ${CMAKE_CURRENT_BINARY_DIR}/adaptive-huffman-file-fixtures)
-    foreach(native_fgk_window IN ITEMS 1m 4m 8m 16m)
+    foreach(native_fgk_window IN ITEMS 1m 4m 8m 16m 32m)
         foreach(fixture IN ITEMS frame boundary)
             if(fixture STREQUAL "boundary")
                 set(native_fgk_boundary_option --boundaries)
@@ -11254,7 +11254,9 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
         marc_position_adaptive_huffman_8m_frame_vectors
         marc_position_adaptive_huffman_8m_boundary_vectors
         marc_position_adaptive_huffman_16m_frame_vectors
-        marc_position_adaptive_huffman_16m_boundary_vectors PROPERTIES TIMEOUT 60)
+        marc_position_adaptive_huffman_16m_boundary_vectors
+        marc_position_adaptive_huffman_32m_frame_vectors
+        marc_position_adaptive_huffman_32m_boundary_vectors PROPERTIES TIMEOUT 60)
 
     add_executable(marc_position_adaptive_huffman_frame_format_tests
         tests/position_adaptive_huffman_frame_format_tests.cpp
