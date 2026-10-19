@@ -98,7 +98,7 @@ PositionAdaptiveHuffmanFormatError validate_position_adaptive_huffman_frame_head
     bounds.model_buffered_bytes=16;bounds.payload_buffered_bytes=h.payload_size;bounds.block_count=1;
     const auto checked=core::validate_frame_bounds(context.limits,bounds,context.raw_committed);
     if (checked!=core::LimitError::none) return checked==core::LimitError::arithmetic_overflow ? Error::arithmetic_overflow : Error::limit_exceeded;
-    PositionAdaptiveHuffmanFrameRequirements r{};r.token_count=h.token_count;r.raw_size=h.raw_size;
+    PositionAdaptiveHuffmanFrameRequirements r{};r.token_count=h.token_count;r.raw_size=h.raw_size;r.prefix_size=80;
     r.node_entries=spec.node_entries();r.symbol_entries=spec.alphabet_entries;
     std::size_t nodes{},symbols{},tokens_bytes{};
     if (!core::checked_multiply(r.node_entries,sizeof(AdaptiveHuffmanNode),nodes)

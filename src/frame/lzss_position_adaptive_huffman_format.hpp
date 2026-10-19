@@ -25,7 +25,7 @@ struct PositionAdaptiveHuffmanFrameContext {
 };
 struct PositionAdaptiveHuffmanFrameRequirements {
     std::size_t serialized_size{},token_count{},raw_size{},aggregate_bytes{};
-    std::size_t prefix_size{80},node_entries{},symbol_entries{},model_bytes{};
+    std::size_t prefix_size{},node_entries{},symbol_entries{},model_bytes{};
     bool operator==(const PositionAdaptiveHuffmanFrameRequirements&) const=default;
 };
 struct PositionAdaptiveHuffmanFrameLayout {

@@ -113,6 +113,26 @@ PositionAdaptiveHuffmanTokenResult encode_position_adaptive_huffman_tokens(
     PositionAdaptiveHuffmanDescriptor d{};
     const auto planned=plan_position_adaptive_huffman_tokens(profile,tokens,context,limits,nodes,symbols,d);
     if (planned.error!=Error::none) return planned;
+    return write_position_adaptive_huffman_tokens(profile,tokens,context,d,limits,nodes,symbols,scratch,descriptor_output,payload_output);
+}
+PositionAdaptiveHuffmanTokenResult write_position_adaptive_huffman_tokens(
+    PositionAdaptiveHuffmanProfile profile,std::span<const LzssTypedToken> tokens,
+    const LzssTypedFrameValidationContext& context,const PositionAdaptiveHuffmanDescriptor& d,
+    const core::DecoderLimits& limits,std::span<AdaptiveHuffmanNode> nodes,std::span<std::uint16_t> symbols,
+    std::span<std::byte> scratch,std::span<std::byte> descriptor_output,std::span<std::byte> payload_output) noexcept {
+    const auto* spec=position_adaptive_huffman_spec(profile);
+    if (!spec) return failure(Error::invalid_profile);
+    Region input{},node{},symbol{};
+    if (!region(tokens,input) || !region(nodes,node) || !region(symbols,symbol)) return failure(Error::arithmetic_overflow);
+    if (const auto e=admit({input,node,symbol,Region{scratch.data(),scratch.size()},
+            Region{descriptor_output.data(),descriptor_output.size()},Region{payload_output.data(),payload_output.size()},
+            Region{&context,sizeof(context)},Region{&d,sizeof(d)},Region{&limits,sizeof(limits)}},limits);e!=Error::none) return failure(e);
+    if (!counts(*spec,context.declared_token_count,context.declared_raw_size,d.decision_count)) return failure(Error::invalid_counts);
+    const auto checked=validate_lzss_typed_frame(tokens,parameters(*spec),context,limits,variant(*spec));
+    if (checked.error!=LzssTypedFrameValidationError::none)
+        return failure(checked.error==LzssTypedFrameValidationError::limit_exceeded ? Error::limit_exceeded
+            : checked.error==LzssTypedFrameValidationError::arithmetic_overflow ? Error::arithmetic_overflow : Error::invalid_token,E::none,checked.token_error);
+    if (const auto e=validate_position_adaptive_huffman_descriptor(profile,d,d.decision_count,d.payload_size,limits);e!=E::none) return entropy_failure(e);
     if (scratch.size()<d.payload_size || descriptor_output.size()<16 || payload_output.size()<d.payload_size) return failure(Error::output_too_small);
     PositionAdaptiveHuffmanEncoder encoder;
     if (const auto e=encoder.begin_write(profile,d,limits,nodes,symbols,scratch.first(d.payload_size));e!=E::none) return entropy_failure(e);
@@ -122,7 +142,8 @@ PositionAdaptiveHuffmanTokenResult encode_position_adaptive_huffman_tokens(
     if (const auto e=serialize_position_adaptive_huffman_descriptor(profile,d,limits,serialized);e!=E::none) return entropy_failure(e);
     std::copy(serialized.begin(),serialized.end(),descriptor_output.begin());
     std::copy_n(scratch.begin(),d.payload_size,payload_output.begin());
-    return planned;
+    Result written{};written.token_count=context.declared_token_count;written.raw_size=context.declared_raw_size;
+    written.decision_count=d.decision_count;written.descriptor_size=16;written.payload_size=d.payload_size;return written;
 }
 PositionAdaptiveHuffmanTokenResult decode_position_adaptive_huffman_token_scratch(
     PositionAdaptiveHuffmanProfile profile,std::span<const std::byte> descriptor,std::span<const std::byte> payload,

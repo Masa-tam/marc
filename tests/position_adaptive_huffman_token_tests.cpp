@@ -26,6 +26,11 @@ struct Workspace {
     std::vector<std::uint16_t> symbols=std::vector<std::uint16_t>(4570);
 };
 std::vector<std::byte> unhex(const std::string& text) {
+    if (text.starts_with("repeat:")) {
+        const auto colon=text.find(':',7);check(colon!=std::string::npos);
+        const auto value=std::stoul(text.substr(7,colon-7),nullptr,16),count=std::stoul(text.substr(colon+1));
+        check(value<256 && count<=65536);return std::vector<std::byte>(count,static_cast<std::byte>(value));
+    }
     check(text.size()%2==0);std::vector<std::byte> result;
     for (std::size_t i=0;i<text.size();i+=2) result.push_back(static_cast<std::byte>(std::stoul(text.substr(i,2),nullptr,16)));
     return result;
@@ -64,6 +69,11 @@ void exercise(const std::vector<LzssTypedToken>& tokens,const std::vector<std::b
     check(std::all_of(payload.begin()+d.payload_size,payload.end(),[](auto b){return b==std::byte{0x53};}));
     if (expected_descriptor) check(std::equal(expected_descriptor->begin(),expected_descriptor->end(),description.begin()));
     if (expected_payload) check(std::equal(expected_payload->begin(),expected_payload->end(),payload.begin()));
+    const auto first_description=description,first_payload=payload;
+    std::fill(description.begin(),description.end(),std::byte{0x49});
+    std::fill(payload.begin(),payload.end(),std::byte{0x53});
+    const auto reused=write_position_adaptive_huffman_tokens(profile,tokens,context,d,limits,work.nodes,work.symbols,staging,description,payload);
+    check(reused.error==Error::none && description==first_description && payload==first_payload);
     const LzssTypedToken sentinel{LzssTypedTokenKind::match,7,13,17};
     std::vector<LzssTypedToken> scratch(tokens.size()),output(tokens.size()+2,sentinel);
     const PositionAdaptiveHuffmanTokenContext expected{context.declared_token_count,context.declared_raw_size,d.decision_count,0};
@@ -107,6 +117,10 @@ void directed() {
     auto invalid=tokens;invalid[0].distance=1;
     std::vector<std::byte> scratch(128),descriptor(20,std::byte{0x37}),payload(128,std::byte{0x62});
     failed(encode_position_adaptive_huffman_tokens(profile,invalid,context,{},work.nodes,work.symbols,scratch,descriptor,payload));
+    check(std::all_of(descriptor.begin(),descriptor.end(),[](auto b){return b==std::byte{0x37};}));
+    check(std::all_of(payload.begin(),payload.end(),[](auto b){return b==std::byte{0x62};}));
+    auto wrong_plan=d;++wrong_plan.decision_count;
+    failed(write_position_adaptive_huffman_tokens(profile,tokens,context,wrong_plan,{},work.nodes,work.symbols,scratch,descriptor,payload));
     check(std::all_of(descriptor.begin(),descriptor.end(),[](auto b){return b==std::byte{0x37};}));
     check(std::all_of(payload.begin(),payload.end(),[](auto b){return b==std::byte{0x62};}));
     failed(encode_position_adaptive_huffman_tokens(profile,tokens,context,{},work.nodes,work.symbols,scratch,std::span(descriptor).first(15),payload));

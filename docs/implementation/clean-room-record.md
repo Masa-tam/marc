@@ -43311,3 +43311,13 @@ Truncation, corruption, quota and unchanged-output tests pass with prior frozen
 entropy vectors retained. Existing productions and the qualified fixed runtime
 remain untouched. Complete frame decoding/publication is a later gate.
 No external implementation is consulted and fuzz remains explicitly deferred.
+
+### CR-1961: 2026-10-19 — native64KiB complete-frame reference qualification
+
+Author/reviewer: Codex. TVG-1584 extends the independently specified FGK schedule
+with complete private frame staging and success-only ordinary publication.
+The first-party typed reconstructor is reused after entropy and history checks.
+Independent boundary fixtures cover nontrivial distance residuals and the full
+64KiB frame. Twelve related tests pass; streaming/public integration and resource
+measurements remain open. Existing products and formats are preserved. No
+external implementation is consulted and no fuzz execution is performed.

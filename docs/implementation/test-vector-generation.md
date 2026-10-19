@@ -26058,3 +26058,19 @@ payload extent. Neither preflight claims entropy or history validation.
 Nine format/core/token/vector/documentation registrations pass. Whole-frame
 encoding/restoration and publication controllers, API/CLI, comparisons, exchange
 and larger-profile qualifications remain pending. No fuzz is executed.
+
+### TVG-1584: native Adaptive Huffman64KiB complete-frame reference
+
+The frame reference plans the FGK payload once and writes it once into private
+staging, then commits the serialized frame only after all checks succeed.
+Decoding validates private tokens and reconstructs private raw bytes before
+publication. Four partially decoded tokens in a late-truncated ABABA frame do
+not change ordinary raw output; an entropy-valid reference before history also
+fails without publication. Failure sizes and nested committed counts are zero.
+
+Five additional independent vectors exercise distances5/9/15/17 and a complete
+65536-byte frame ending in a distance65533 match. These supplement the fourteen
+retained entropy and frame vectors. Directed capacity, alias, truncation and
+padding checks pass with twelve related registrations, including documentation.
+Streaming controllers, public API/CLI, measurements, exchange and larger-window
+qualification remain pending. Fuzz execution remains deferred by instruction.

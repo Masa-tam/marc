@@ -128,6 +128,30 @@ def restored(tokens):
                 raw.append(raw[-token['distance']])
     return raw.hex()
 
+def rows_for(cases):
+    result=[]
+    for name,tokens in cases.items():
+        decisions=schedule(tokens)
+        descriptor,payload,valid=encode(decisions)
+        row={'name':name,'tokens':tokens,'decisions':decisions,
+             'raw_hex':restored(tokens),'descriptor_hex':descriptor,'payload_hex':payload,'valid_bits':valid}
+        if len(row['raw_hex'])>8192:
+            raw=bytes.fromhex(row['raw_hex'])
+            assert len(set(raw))==1
+            del row['raw_hex']
+            row['raw_repeat']={'byte':raw[0],'count':len(raw)}
+        result.append(row)
+    return result
+
+def raw_argument(row):
+    if 'raw_hex' in row:
+        return row['raw_hex']
+    repeated=row['raw_repeat']
+    return f'repeat:{repeated["byte"]:02x}:{repeated["count"]}'
+
+def raw_size(row):
+    return len(bytes.fromhex(row['raw_hex'])) if 'raw_hex' in row else row['raw_repeat']['count']
+
 def vectors():
     cases={
         'empty':[], 'one-zero':[{'literal':0}], 'one-ff':[{'literal':255}],
@@ -142,13 +166,7 @@ def vectors():
         'literal-after-match':[{'literal':65},{'length':3,'distance':1},{'literal':66},{'literal':65}],
         'consecutive-matches':[{'literal':65},{'length':3,'distance':1},{'length':4,'distance':2}],
     }
-    result=[]
-    for name,tokens in cases.items():
-        decisions=schedule(tokens)
-        descriptor,payload,valid=encode(decisions)
-        result.append({'name':name,'tokens':tokens,'decisions':decisions,
-                       'raw_hex':restored(tokens),'descriptor_hex':descriptor,
-                       'payload_hex':payload,'valid_bits':valid})
+    result=rows_for(cases)
     by_name={row['name']:row for row in result}
     # Directly hand-packable first symbol: one type bit, then eight byte bits.
     assert by_name['one-zero']['payload_hex']=='0000'
@@ -157,11 +175,24 @@ def vectors():
     assert by_name['one-A']['valid_bits']==1
     return {'format':'DD-1627 position-distance Adaptive Huffman64KiB','vectors':result}
 
-def frame_vectors():
-    result=vectors()
-    result['format']='DD-1627 position-distance Adaptive Huffman64KiB stream/frame'
+def boundaries():
+    cases={f'distance-{distance}':[{'literal':i} for i in range(1,distance+1)]+
+           [{'length':7 if distance!=17 else 258,'distance':distance}] for distance in (5,9,15,17)}
+    tokens=[{'literal':65}]
+    left=65532
+    while left:
+        if left<3:
+            tokens.append({'literal':65});left-=1
+        else:
+            length=min(left,258);tokens.append({'length':length,'distance':1});left-=length
+    tokens.append({'length':3,'distance':65533})
+    cases['full-64k-late-distance']=tokens
+    return {'format':'DD-1627 position-distance Adaptive Huffman64KiB boundaries','vectors':rows_for(cases)}
+
+def frame_vectors(result):
+    result['format']+=' stream/frame'
     for row in result['vectors']:
-        raw_size=len(bytes.fromhex(row['raw_hex']))
+        size=raw_size(row)
         header=bytearray(112)
         header[:4]=b'MARC'
         for at,value in [(4,2),(6,0),(8,64),(10,1),(12,2),(14,8),(16,1),(18,3),(96,1),(98,35)]:
@@ -169,15 +200,15 @@ def frame_vectors():
         for at,value in [(20,65536),(28,16),(32,16),(48,16),(64,65536),(68,3),(72,258),
                          (84,4570),(88,9188)]:
             struct.pack_into('<I',header,at,value)
-        struct.pack_into('<Q',header,40,raw_size)
+        struct.pack_into('<Q',header,40,size)
         header[80:84]=bytes([1,1,48,0])
         row['stream_hex']=header.hex()
         row['frame_hex']=''
-        if raw_size:
+        if size:
             payload=bytes.fromhex(row['payload_hex'])
             descriptor=bytes.fromhex(row['descriptor_hex'])
             decisions=len(row['decisions'])
-            frame=struct.pack('<4sHHQIIIIIIII16s',b'MRF2',64,0,0,raw_size,len(row['tokens']),
+            frame=struct.pack('<4sHHQIIIIIIII16s',b'MRF2',64,0,0,size,len(row['tokens']),
                               decisions,decisions,len(payload),16,0,0,bytes(16))
             assert len(frame)==64
             row['frame_hex']=(frame+descriptor+payload).hex()
@@ -192,12 +223,22 @@ def main():
     parser.add_argument('--token-tool',type=Path)
     parser.add_argument('--frames',action='store_true')
     parser.add_argument('--frame-tool',type=Path)
+    parser.add_argument('--frame-codec-tool',type=Path)
+    parser.add_argument('--boundaries',action='store_true')
     args=parser.parse_args()
-    result=frame_vectors() if args.frames else vectors()
+    result=boundaries() if args.boundaries else vectors()
+    if args.frames:
+        result=frame_vectors(result)
     if args.frame_tool:
         assert args.frames
         for row in result['vectors']:
             subprocess.run([str(args.frame_tool),row['stream_hex'],row['frame_hex']],check=True,timeout=30)
+    if args.frame_codec_tool:
+        assert args.frames
+        for row in result['vectors']:
+            tokens=','.join(f'L:{t["literal"]}' if 'literal' in t else f'M:{t["length"]}:{t["distance"]}'
+                            for t in row['tokens'])
+            subprocess.run([str(args.frame_codec_tool),row['stream_hex'],row['frame_hex'],raw_argument(row),tokens],check=True,timeout=30)
     if args.format_tool:
         for row in result['vectors']:
             subprocess.run([str(args.format_tool),row['descriptor_hex'],str(len(row['decisions'])),
@@ -211,7 +252,7 @@ def main():
         for row in result['vectors']:
             tokens=','.join(f'L:{t["literal"]}' if 'literal' in t else f'M:{t["length"]}:{t["distance"]}'
                             for t in row['tokens'])
-            subprocess.run([str(args.token_tool),row['descriptor_hex'],row['payload_hex'],row['raw_hex'],tokens],
+            subprocess.run([str(args.token_tool),row['descriptor_hex'],row['payload_hex'],raw_argument(row),tokens],
                            check=True,timeout=30)
     if args.check:
         assert json.loads(args.check.read_text(encoding='utf-8'))==result
@@ -222,7 +263,7 @@ def main():
             output.write('\n')
     else:
         print(json.dumps(result,indent=2))
-    print('Verified14 independently generated position-distance Adaptive Huffman vectors')
+    print(f'Verified{len(result["vectors"])} independently generated position-distance Adaptive Huffman vectors')
 
 if __name__=='__main__':
     main()
