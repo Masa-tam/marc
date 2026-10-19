@@ -43288,3 +43288,15 @@ stream identity is changed. Correct the unit configuration invariant without
 changing boundary expectations. Related tests pass before committing this
 entropy-only milestone; token/frame/public/comparison gates remain pending.
 No external implementation is consulted and no fuzz execution is performed.
+
+### CR-1959: 2026-10-19 — native64KiB token validation milestone
+
+Author/reviewer: Codex. TVG-1582 reuses first-party typed-token validation,
+short-length escape semantics and raw reconstruction around the new FGK core.
+The independent frozen token/raw vectors verify scheduling and actual bytes.
+Single-pass decoding targets private tokens; ordinary tokens copy only after
+all entropy and dictionary checks. Directed late-error tests prove unchanged
+ordinary outputs and zero failure counts despite partial private progress.
+Exact/one-short accounting and a full64KiB late-distance case pass. Existing
+formats and generated products are retained. No external implementation is
+consulted, no fuzz is run, and full frame/public/measurement gates remain open.

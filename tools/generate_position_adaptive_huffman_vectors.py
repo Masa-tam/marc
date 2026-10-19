@@ -163,6 +163,7 @@ def main():
     parser.add_argument('--check',type=Path)
     parser.add_argument('--format-tool',type=Path)
     parser.add_argument('--entropy-tool',type=Path)
+    parser.add_argument('--token-tool',type=Path)
     args=parser.parse_args()
     result=vectors()
     if args.format_tool:
@@ -173,6 +174,12 @@ def main():
         for row in result['vectors']:
             operations=','.join(f'{context}:{symbol}' for context,symbol in row['decisions'])
             subprocess.run([str(args.entropy_tool),row['descriptor_hex'],row['payload_hex'],operations],
+                           check=True,timeout=30)
+    if args.token_tool:
+        for row in result['vectors']:
+            tokens=','.join(f'L:{t["literal"]}' if 'literal' in t else f'M:{t["length"]}:{t["distance"]}'
+                            for t in row['tokens'])
+            subprocess.run([str(args.token_tool),row['descriptor_hex'],row['payload_hex'],row['raw_hex'],tokens],
                            check=True,timeout=30)
     if args.check:
         assert json.loads(args.check.read_text(encoding='utf-8'))==result

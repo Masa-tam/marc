@@ -145,3 +145,11 @@ extent. The decoder checks padding before traversing payload, stages each
 symbol and validates exact finish; tokens/raw frames still need their own
 later all-or-nothing validation. Bit extents use wide intermediate arithmetic
 and reject unrepresentable host offsets before traversal.
+
+The reference token adapter additionally admits131072 conservative control
+bytes plus every supplied input, model, private staging and ordinary destination
+span and context/limit control extent. Planning also accounts for its exact
+planned payload before committing metadata. Checked products precede range
+checks. These private accounting rules are conservative operation limits, not
+yet public default grants. All token-result counts/sizes are zero on failure,
+even when private scratch already contains a validated prefix of tokens.

@@ -26019,3 +26019,22 @@ The oracle, old vectors, limits and failure assertions are not weakened.
 No allocation occurs inside this entropy core. Token traversal, reconstruction,
 complete-frame withholding, public integration, measurements, exchange and
 all larger-window qualifications remain pending. Fuzz is still deferred.
+
+### TVG-1582: native Adaptive Huffman64KiB typed-token integration
+
+The generic private token adapter first qualifies64KiB. All fourteen frozen
+token vectors reproduce exact descriptors/payloads, decode to the expected
+typed tokens and reconstruct independently expected raw bytes. It retains
+literal context across matches and the full short-length/distance-bit schedule.
+Complete64KiB raw restoration exercises a late distance65533/length3 match;
+exact window distance is not claimed inside a reset frame.
+
+Valid exact/one-short planning quotas are located and checked. Invalid unused
+token fields, short descriptor/payload outputs, contradictory counts and aliasing
+leave ordinary destinations unchanged and failure-result sizes/counts zero.
+Entropy-valid streams containing a reference before history or forbidden
+length259 fail typed validation without publication. Truncating frozen ABABA
+from33 to32 valid bits fails after private prefix tokens exist; every ordinary
+token remains unchanged. Seven format/core/token/vector/documentation
+registrations pass. Full frame/raw publication, API/CLI, measurements, exchange
+and larger-window qualifications remain pending; fuzz is not executed.
