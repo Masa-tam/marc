@@ -43492,3 +43492,12 @@ generator's frozen output to the next reserved window. File transport retains
 complete decoder-visible bytes and explicit token fields. Both reference and
 private scratch paths are checked against those independent bytes. No external
 source, public factory admission, fuzz, push or fixed-runtime update is involved.
+
+### CR-1980: 2026-10-20 — native8MiB private owner
+
+Author/reviewer: Codex. TVG-1603 combines the existing first-party8MiB
+five-prefix candidate with the independently specified native FGK frame. It
+retains single private frame staging, exact-quota admission and failed-frame
+withholding. Existing ordinary writers and earlier window representations
+remain intact. No external source, fuzz, push or fixed-runtime replacement is
+involved; public and measurement/exchange gates are still separate.

@@ -26438,3 +26438,20 @@ Check the new and all preceding frozen vector sets on both builds, including
 reference/scratch equality, ordinary failure invariance, private admission and
 model alias checks. Internal ownership, API/CLI, corpus measurements,99-profile
 exchange and all later family/remote gates remain pending. Fuzz is not run.
+
+### TVG-1603: native8MiB private ownership and failure boundaries
+
+Select the first-party8MiB five-prefix tokenizer with eligibility5 and existing
+forward FGK model/scratch frame writer. Extend reusable owner tests without
+changing their1MiB default or earlier4MiB case. Check full-window minus/equal/
+plus-one inputs, exact/one-short allocation admission, empty/all-byte/pattern
+inputs, one-byte chunking, late final input, padding/truncation/trailing data,
+stable errors and zero failed-frame publication. Force an encoder failure
+after the stream header and require unchanged ordinary output.
+
+Both builds pass21 related owner/core/vector/document registrations. Full8MiB
+private encode/decode admissions are490893070/389328782 bytes; the finder is
+101449728 bytes. The owner pilot completes below2 seconds, supporting a
+30-second test limit. Public admission, full corpus/peak comparisons,
+99-profile exchange and later family/remote gates remain pending. No fuzz is
+executed and the fixed Release products remain preserved.

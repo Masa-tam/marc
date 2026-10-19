@@ -284,3 +284,10 @@ The full-window late-reference fixture represents8388608 repeated bytes with
 32516 tokens,325168 decisions and40650 payload bytes, one valid final bit and
 final distance8388605. This format/vector step does not admit a new public
 profile or assume a memory grant.
+
+The private8MiB owner uses the existing same-window five-prefix finder with
+eligibility5 and the one-private-serialized-frame path qualified at4MiB.
+Full-window observed logical requirements are490893070 encode and389328782
+decode bytes, including a101449728-byte finder for encoding. These amounts
+admit actual private allocations at the exact queried quota; one byte less
+fails before ownership. They are not measured resident peaks or public grants.

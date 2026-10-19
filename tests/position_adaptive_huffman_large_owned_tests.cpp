@@ -163,7 +163,11 @@ void failed_encode() {
 }
 int main(int argc,char** argv) {
     try {
-        if (argc==2) {check(std::string(argv[1])=="4m");profile=Profile::window_4m;extent=4194304;decisions_per_byte=9;}
+        if (argc==2) {
+            const std::string selected=argv[1];
+            if (selected=="4m") {profile=Profile::window_4m;extent=4194304;decisions_per_byte=9;}
+            else {check(selected=="8m");profile=Profile::window_8m;extent=8388608;decisions_per_byte=9;}
+        }
         else check(argc==1);
         roundtrip({},5,true);roundtrip({std::byte{0}},5,true);roundtrip({std::byte{255}},5,true);
         std::vector<std::byte> values;for (unsigned i=0;i<256;++i) values.push_back(static_cast<std::byte>(i));
