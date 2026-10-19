@@ -26167,3 +26167,17 @@ pass. The initializer inventory explicitly retains all79 earlier initializers
 and adds one common Adaptive Huffman initializer. BM-0265 is a reference-owner
 precursor, not final public performance. Public corpus reproduction,96-profile
 exchange, six larger windows, deferred fuzz and remote gates remain pending.
+
+### TVG-1590: native64KiB portability qualification
+
+The native family is built independently with two compiler stacks.
+Each passes22 related API/CLI, vector, boundary, resource and documentation
+registrations. An observed signed/unsigned comparison warning in two NYT bit
+loops is removed by explicitly converting the validated nonnegative bit width
+to unsigned. Alphabet bounds and emitted bit counts are unchanged. Both stacks
+are rebuilt and their22 registrations pass again without those warnings.
+
+The preceding candidate executables/libraries and hashes are retained before
+rebuilding. Independent vectors remain unchanged; this is not a stream revision
+or a completed cross-platform exchange/corpus campaign. Those gates and the
+six larger windows remain pending. No fuzz is executed.

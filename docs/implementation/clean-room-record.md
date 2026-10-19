@@ -43373,3 +43373,12 @@ withholding pass. Documentation inventory adds precisely one initializer while
 retaining all earlier ones. Resource measurements distinguish public admission,
 caller buffers and resident peaks. Reserved larger windows remain unadmitted.
 No external source is consulted, no fuzz is run and no push is performed.
+
+### CR-1967: 2026-10-19 — native64KiB bounded bit-width portability
+
+Author/reviewer: Codex. TVG-1590 confirms the same independently frozen vectors
+with two compiler stacks. Explicit unsigned NYT loop widths preserve
+the mathematical result for validated alphabets2..256 and remove signedness
+warnings. Each stack passes22 related registrations after rebuilding. Earlier
+candidates are saved with hashes. No external implementation is consulted,
+no format or existing vector is changed, and fuzz remains deferred.

@@ -128,7 +128,7 @@ PositionAdaptiveHuffmanError PositionAdaptiveHuffmanEncoder::emit(int context,st
         const auto e=known ? tree->path_for_symbol(static_cast<std::uint16_t>(symbol),path,length)
                            : tree->path_for_nyt(path,length);
         if (e!=ContextualAdaptiveHuffmanTreeError::none) return error_=Error::invalid_tree;
-        if (!known) for (unsigned b=0;b<std::bit_width(static_cast<unsigned>(alphabet-1));++b)
+        if (!known) for (unsigned b=0;b<static_cast<unsigned>(std::bit_width(static_cast<unsigned>(alphabet-1)));++b)
             path[length++]=static_cast<std::uint8_t>((symbol>>b)&1U);
     }
     std::size_t next{};
@@ -212,7 +212,7 @@ PositionAdaptiveHuffmanError PositionAdaptiveHuffmanDecoder::read(int context,st
             const auto alphabet=position_adaptive_huffman_alphabet(*spec_,static_cast<std::size_t>(context));
             const bool fresh=node.kind==AdaptiveHuffmanNodeKind::nyt;
             if (fresh) {
-                for (unsigned b=0;b<std::bit_width(static_cast<unsigned>(alphabet-1));++b) {
+                for (unsigned b=0;b<static_cast<unsigned>(std::bit_width(static_cast<unsigned>(alphabet-1)));++b) {
                     std::uint32_t raw{};if (!bit(raw)) return error_=Error::truncated;value|=raw<<b;
                 }
                 if (value>=alphabet || tree->contains(static_cast<std::uint16_t>(value))) return error_=Error::invalid_nyt_symbol;
