@@ -43391,3 +43391,12 @@ the actual script output. Native-shell detection and required completion message
 prevent a missing script from being credited as a pass. The original logs remain
 available. The timeout and serial execution contract are retained. No external
 implementation is consulted, no wire representation changes and no fuzz is run.
+
+### CR-1969: 2026-10-20 — independent1MiB fixture preparation
+
+Author/reviewer: Codex. TVG-1592 extends the existing independently authored
+object-tree FGK oracle using the already documented DD-1627 parameter table.
+Compact repeated-token recipes and bounded test files replace oversized command
+arguments. The C++ reference comparison retains existing64KiB truncation and
+failure assertions. No external implementation is consulted. Public1MiB
+admission is not enabled by this fixture milestone, and fuzz remains deferred.

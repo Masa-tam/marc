@@ -217,3 +217,20 @@ field alphabets must be checked separately. Report actual total sizes and speed/
 memory tradeoffs without assuming that position models improve every entropy
 coder. The requested family remains an independently identified representation;
 do not silently alter the residual grammar while measuring it.
+
+### Ordered1MiB format preparation
+
+The reserved1MiB identity uses dictionary2/9, entropy1/4 and context1/36.
+Its52 contexts contain4614 alphabet entries and9280 node slots. The distance
+class alphabet has21 symbols and20 residual positions. The112/64/16-byte
+stream/frame/descriptor layout and FGK rules remain those defined above;
+the window and maximum frame are1048576 bytes. This defines no public API
+admission before the owned implementation and resource qualification pass.
+
+Independent fixtures use files for stream, frame, expected raw bytes and tokens
+to avoid command-line length limits. The test-only token file consists of three
+explicit little-endian u32 fields per token: kind0/literal/zero or
+kind1/length/distance. Readers bound file sizes before allocation. Large repeated
+fixtures retain a compact token recipe, the complete expected encoded bytes,
+raw SHA-256 and exact operation counts. This test transport is not a stream
+representation or public codec parameter. Existing64KiB fixtures stay unchanged.

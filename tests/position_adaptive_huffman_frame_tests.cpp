@@ -1,5 +1,6 @@
 #include "frame/lzss_position_adaptive_huffman_frame.hpp"
 #include <algorithm>
+#include <fstream>
 #include <iostream>
 #include <source_location>
 #include <stdexcept>
@@ -16,8 +17,11 @@ void check(bool condition,const std::source_location where=std::source_location:
     if (!condition) throw std::runtime_error("native FGK frame check failed at line "+std::to_string(where.line()));
 }
 struct Workspace {
-    std::vector<AdaptiveHuffmanNode> nodes{position_adaptive_huffman_spec(profile)->node_entries()};
-    std::vector<std::uint16_t> symbols=std::vector<std::uint16_t>(4570);
+    std::vector<AdaptiveHuffmanNode> nodes;
+    std::vector<std::uint16_t> symbols;
+    explicit Workspace(PositionAdaptiveHuffmanProfile selected=profile)
+        :nodes(position_adaptive_huffman_spec(selected)->node_entries()),
+         symbols(position_adaptive_huffman_spec(selected)->alphabet_entries) {}
 };
 std::vector<std::byte> unhex(const std::string& text) {
     if (text.starts_with("repeat:")) {
@@ -52,11 +56,16 @@ void failed(const PositionAdaptiveHuffmanFrameResult& r) {
 }
 void fixture(const std::vector<std::byte>& stream_bytes,const std::vector<std::byte>& frame,
              const std::vector<std::byte>& raw,const std::vector<LzssTypedToken>& tokens) {
+    check(stream_bytes.size()==112);
+    const auto variant=std::to_integer<unsigned>(stream_bytes[14])
+        | (std::to_integer<unsigned>(stream_bytes[15])<<8);
+    check(variant==8 || variant==9);
+    const auto selected=variant==8 ? profile : PositionAdaptiveHuffmanProfile::window_1m;
     const auto limits=marc::core::DecoderLimits{};PositionAdaptiveHuffmanStreamHeader stream{};std::size_t used{};
-    check(parse_position_adaptive_huffman_stream(profile,stream_bytes,limits,stream,used)==PositionAdaptiveHuffmanFormatError::none);
+    check(parse_position_adaptive_huffman_stream(selected,stream_bytes,limits,stream,used)==PositionAdaptiveHuffmanFormatError::none);
     check(stream.original_size==raw.size());
     if (raw.empty()) { check(frame.empty() && tokens.empty());return; }
-    const PositionAdaptiveHuffmanFrameContext context{stream,limits,0,0};Workspace work;
+    const PositionAdaptiveHuffmanFrameContext context{stream,limits,0,0};Workspace work(selected);
     PositionAdaptiveHuffmanFrameLayout layout{};
     check(preflight_position_adaptive_huffman_frame(frame,context,layout)==PositionAdaptiveHuffmanFormatError::none);
     std::vector<std::byte> payload(layout.header.payload_size),staged(frame.size()),output(frame.size()+3,std::byte{0x76});
@@ -74,7 +83,15 @@ void fixture(const std::vector<std::byte>& stream_bytes,const std::vector<std::b
     std::fill(private_raw.begin(),private_raw.end(),std::byte{0x39});
     const auto controller=decode_position_adaptive_huffman_frame_scratch(frame,context,work.nodes,work.symbols,scratch,private_raw);
     check(controller.error==Error::none && std::equal(raw.begin(),raw.end(),private_raw.begin()) && private_raw.back()==std::byte{0x39});
-    for (std::size_t n=0;n<frame.size();++n) {
+    std::vector<std::size_t> truncations;
+    if (selected==profile || frame.size()<=4096) {
+        for (std::size_t n=0;n<frame.size();++n) truncations.push_back(n);
+    } else {
+        for (std::size_t n=0;n<80;++n) truncations.push_back(n);
+        for (std::size_t n=80;n<frame.size();n+=frame.size()/32) truncations.push_back(n);
+        truncations.push_back(frame.size()-1);
+    }
+    for (auto n:truncations) {
         std::fill(ordinary.begin(),ordinary.end(),std::byte{0x64});
         failed(decode_position_adaptive_huffman_frame(std::span(frame).first(n),context,work.nodes,work.symbols,scratch,private_raw,ordinary));
         check(std::all_of(ordinary.begin(),ordinary.end(),[](auto b){return b==std::byte{0x64};}));
@@ -96,6 +113,36 @@ void fixture(const std::vector<std::byte>& stream_bytes,const std::vector<std::b
         failed(decode_position_adaptive_huffman_frame(padding,context,work.nodes,work.symbols,scratch,private_raw,ordinary));
         check(std::all_of(ordinary.begin(),ordinary.end(),[](auto b){return b==std::byte{0x64};}));
     }
+}
+std::vector<std::byte> fixture_file(const char* path,std::size_t maximum) {
+    std::ifstream source(path,std::ios::binary|std::ios::ate);check(static_cast<bool>(source));
+    const auto extent=source.tellg();check(extent>=0 && static_cast<std::uint64_t>(extent)<=maximum);
+    std::vector<std::byte> bytes(static_cast<std::size_t>(extent));source.seekg(0);
+    source.read(reinterpret_cast<char*>(bytes.data()),static_cast<std::streamsize>(bytes.size()));
+    check(static_cast<bool>(source));return bytes;
+}
+void files(char** paths) {
+    constexpr std::size_t maximum_raw=1048576;
+    auto stream=fixture_file(paths[0],112);
+    auto frame=fixture_file(paths[1],80+(267*maximum_raw+7)/8);
+    auto raw=fixture_file(paths[2],maximum_raw);
+    const auto encoded=fixture_file(paths[3],12*maximum_raw);
+    check(encoded.size()%12==0 && encoded.size()/12<=raw.size());
+    std::vector<LzssTypedToken> tokens;
+    auto u32=[&](std::size_t offset) {
+        std::uint32_t value{};
+        for (unsigned byte=0;byte<4;++byte)
+            value|=std::to_integer<std::uint32_t>(encoded[offset+byte])<<(8*byte);
+        return value;
+    };
+    for (std::size_t at=0;at<encoded.size();at+=12) {
+        const auto kind=u32(at),a=u32(at+4),b=u32(at+8);check(kind<=1);
+        LzssTypedToken token{};
+        if (kind==0) {check(a<=255 && b==0);token.literal=static_cast<std::uint8_t>(a);}
+        else {token.kind=LzssTypedTokenKind::match;token.length=a;token.distance=b;}
+        tokens.push_back(token);
+    }
+    fixture(stream,frame,raw,tokens);
 }
 void directed() {
     Workspace work;const auto limits=marc::core::DecoderLimits{};
@@ -134,6 +181,7 @@ void directed() {
 }
 int main(int argc,char** argv) {
     try {
+        if (argc==6 && std::string(argv[1])=="--files") {files(argv+2);return 0;}
         if (argc==5) { fixture(unhex(argv[1]),unhex(argv[2]),unhex(argv[3]),parse_tokens(argv[4]));return 0; }
         check(argc==1);directed();std::cout<<"native FGK64KiB complete frame checks passed\n";
     } catch (const std::exception& error) { std::cerr<<error.what()<<'\n';return 1; }

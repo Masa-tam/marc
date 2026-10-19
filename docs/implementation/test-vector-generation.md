@@ -26202,3 +26202,30 @@ Requalification covers22 registrations on the first stack and21 on the second;
 the missing native script shell is recorded rather than counted as a pass.
 No codec bytes or frozen vectors change. Fuzz remains deferred, and exchange
 and full public measurements are separate pending gates.
+
+### TVG-1592: independent1MiB format fixtures and bounded file transport
+
+Extend the independent object-tree FGK oracle with explicit DD-1627 profile
+parameters, retaining the existing64KiB fixture objects byte-for-byte.
+Fourteen small1MiB vectors and five boundary vectors carry complete expected
+stream/frame/descriptor bytes. The full-window case restores1048576 copies of
+byte65 using4067 tokens,40673 decisions and5089 payload bytes with3 valid final
+bits. Its last token has length3 and distance1048573. A compact token recipe
+replaces redundant expanded lists; raw SHA-256 remains frozen in the fixture.
+
+The C++ bridge bounds four input files, reads token integers explicitly in
+little-endian order and compares reference frame encoding and restored bytes.
+File fixtures are retained under the requested evidence directory. Small-input
+and existing64KiB truncation coverage is unchanged. The larger boundary checks
+all prefix truncations plus spaced payload truncations and the final-byte cut,
+with ordinary output unchanged after failure; this avoids quadratic work as
+frame sizes grow. Each bridge invocation verifies encode/decode tails and alias
+failure as well as the golden bytes.
+
+Qualification includes the three new file-vector registrations and the existing
+64KiB registrations:25 pass on the first stack and24 on the second. The slowest
+new file registration takes5.33 seconds in this run; its60-second limit provides
+headroom based on that observation. This is preparatory1MiB format/reference
+evidence. Its owned encoder/decoder, public admission, CLI, measurements and
+bundle addition remain pending, as do the remaining larger-window completion gates.
+Fuzz is not executed.
