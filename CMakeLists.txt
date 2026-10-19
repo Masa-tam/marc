@@ -11406,3 +11406,18 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
         set_tests_properties(marc_cli_position_blocked_huffman_64k PROPERTIES TIMEOUT 120)
     endif()
 endif()
+
+if(MARC_BUILD_TESTS AND TARGET marc_static)
+    add_executable(marc_position_adaptive_huffman_hash_tap_tests
+        tests/position_adaptive_huffman_hash_tap_tests.cpp)
+    target_compile_features(marc_position_adaptive_huffman_hash_tap_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_adaptive_huffman_hash_tap_tests PRIVATE src)
+    target_link_libraries(marc_position_adaptive_huffman_hash_tap_tests PRIVATE marc::static)
+    set_target_properties(marc_position_adaptive_huffman_hash_tap_tests PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
+    add_test(NAME marc_position_adaptive_huffman_hash_tap
+        COMMAND marc_position_adaptive_huffman_hash_tap_tests)
+    set_tests_properties(marc_position_adaptive_huffman_hash_tap PROPERTIES
+        TIMEOUT 30
+        PASS_REGULAR_EXPRESSION "Verified seven native Adaptive Huffman HashTap profiles and failed-frame withholding")
+endif()

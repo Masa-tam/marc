@@ -26781,3 +26781,19 @@ Related qualification completes with82 passing registrations on the first
 build and76 on the second, taking649.62 and844.57 seconds respectively.
 No failing registration remains in these runs. These counts cover the native
 family integration subset, not the final repository-wide audit.
+
+### TVG-1618: native Adaptive Huffman committed-byte HashTap composition
+
+Exercise all seven public profiles with bounded257-byte frames and exact
+queried admission. Compose the first-party SHA-256 HashTap at both byte-stream
+boundaries; empty input, all-byte data and repeated bytes agree with one-shot
+hashes across input/output chunks1,7 and64, zero output capacity and Flush.
+Compare deterministic encoded bytes and restored bytes, guarding output tails
+and stable terminal states. A second five-byte frame with a truncated entropy
+bit must contribute neither output nor output hash; the earlier complete frame
+remains committed even when the output buffer exceeds the frame capacity.
+
+The dedicated registration passes on both builds. An initial compilation exposed
+an omitted explicit string header; add that standard header and retain the failed
+build evidence. This test changes no codec representation or production path.
+Corpus, exchange, deferred fuzz and final remote gates remain pending.

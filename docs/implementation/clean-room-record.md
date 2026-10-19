@@ -43633,3 +43633,12 @@ retains previous profile defaults. Unknown-value invariance, allocation failure
 and failed-frame/transactional publication assertions remain intact. No external
 source, fuzz, push or fixed-runtime replacement is involved. Corpus, exchange
 and final remote gates remain separate unfinished work.
+
+### CR-1995: 2026-10-20 — native Adaptive Huffman HashTap composition
+
+Author/reviewer: Codex. TVG-1618 independently composes existing first-party
+HashTap and SHA-256 primitives with all seven public native profiles. Assertions
+cover committed byte counts, chunk invariance and withholding a failed frame
+from both output and its digest. Both build registrations pass. No external
+source, fuzz, push or fixed-runtime replacement is involved; remaining goal
+gates are not reclassified as complete.
