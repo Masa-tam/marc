@@ -12964,3 +12964,66 @@ exact14-profile fixture encodings/restorations and malformed-output withholding.
 Existing benchmark results are not relabeled as a revised-encoder campaign.
 This closes the requested applicability investigation without introducing a
 new producer policy; hosted CI is not run and pushing remains the maintainer's.
+
+### BM-0265: native64KiB Adaptive Huffman reference precursor
+
+DD-1627 compares the private reference owner with the existing same-window
+contextual Adaptive Huffman public API on all12 manifest-verified Silesia
+members, including mozilla and webster. Each direction/profile/member runs
+in three fresh processes. All72 streams are deterministic and all72 raw
+restorations are rehashed. Actual identities are2/8+1/35+1/3 and
+2/2+1/1+1/2, both with window/frame65536. Encoder eligibility is5 for both;
+the native decoder additionally accepts lengths3/4. No Dynamic Range
+ratio is used as an adoption condition.
+
+P/C below means private position-distance owner/contextual public API.
+Rates use median creation/process/destruction call durations; file I/O
+is excluded. Totals divide total raw bytes by summed member medians.
+Resident peaks are maximum complete-process observations, including the
+driver and its131072 I/O bytes. Logical query scopes differ and are not
+resident peaks. The private owner excludes the later public API boundary;
+these measurements require public-candidate reproduction before final
+public qualification. They are not a hosted or external verification.
+
+|Member|Raw bytes|P bytes|C bytes|P change vs C|
+|---|---:|---:|---:|---:|
+|dickens|10,192,446|5,107,021|4,263,725|+19.778%|
+|mozilla|51,220,480|24,204,448|23,145,686|+4.574%|
+|mr|9,970,564|4,353,315|3,827,731|+13.731%|
+|nci|33,553,445|4,278,208|3,674,294|+16.436%|
+|ooffice|6,152,192|3,918,909|3,694,635|+6.070%|
+|osdb|10,085,684|5,062,298|4,719,173|+7.271%|
+|reymont|6,627,202|2,548,120|2,106,390|+20.971%|
+|samba|21,606,400|6,922,527|6,248,878|+10.780%|
+|sao|7,251,944|6,779,092|6,526,356|+3.873%|
+|webster|41,458,703|15,756,479|13,546,965|+16.310%|
+|xml|5,345,280|929,912|799,208|+16.354%|
+|x-ray|8,474,240|6,988,245|6,709,598|+4.153%|
+|Total|211,938,580|86,848,574|79,262,639|+9.571%|
+
+|Member|Encode P/C MiB/s|Decode P/C MiB/s|Encode peak P/C bytes|Decode peak P/C bytes|
+|---|---:|---:|---:|---:|
+|dickens|2.683/2.614|5.863/4.366|7,098,368/6,807,552|5,976,064/5,984,256|
+|mozilla|0.645/0.417|1.310/0.689|6,811,648/6,914,048|6,017,024/6,086,656|
+|mr|0.986/0.681|2.116/1.117|6,574,080/6,807,552|5,980,160/5,984,256|
+|nci|12.302/11.526|28.957/24.299|6,500,352/6,782,976|5,955,584/5,963,776|
+|ooffice|0.494/0.335|1.009/0.520|6,623,232/6,828,032|5,988,352/5,996,544|
+|osdb|0.745/0.514|1.532/0.805|6,578,176/6,807,552|5,980,160/5,984,256|
+|reymont|3.170/3.039|7.170/5.275|6,635,520/6,832,128|5,996,544/6,008,832|
+|samba|1.366/0.962|2.834/1.526|6,758,400/6,909,952|6,070,272/6,074,368|
+|sao|0.190/0.141|0.425/0.214|6,660,096/6,893,568|6,008,832/6,017,024|
+|webster|2.904/2.441|6.330/4.032|6,561,792/6,803,456|5,971,968/5,980,160|
+|xml|7.076/6.134|15.238/10.472|6,549,504/6,795,264|5,959,680/5,967,872|
+|x-ray|0.321/0.218|0.659/0.284|6,639,616/6,832,128|5,996,544/6,004,736|
+|Total / maximum|0.966/0.672|2.023/1.053|7,098,368/6,914,048|6,070,272/6,086,656|
+
+Position produces fewer bytes on0/12 members.
+Larger outputs remain recorded rather than being hidden or called improvements.
+Public admission, complete exchange and larger-window results remain pending.
+
+The measured reference source is d93695cf5fce4adf6c9d1acce8360013b96fa0e1.
+All144 timing/peak receipts and72 archive/raw pairs are independently rechecked
+by the audit tool. Small resident differences are observations, not guaranteed
+savings; they do not replace conservative logical resource admission. DD-1627
+records the binary residual component's one-bit lower bound separately from
+the measured total differences. No change to an existing codec is made here.

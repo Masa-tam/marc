@@ -26120,3 +26120,21 @@ headers are checked as2/8+1/35+1/3 and2/2+1/1+1/2, each with window/frame65536.
 These short smoke timings establish driver operation, not comparative speed or
 peak conclusions. Fifteen related registrations pass. Full-corpus measurements
 and public-candidate reproduction remain required; fuzz is not executed.
+
+### TVG-1588: native64KiB precursor corpus measurement audit
+
+The retained DD-1627 reference driver measures all12 manifest-verified Silesia
+members in three fresh processes per profile/direction. The runner checks all
+actual headers, deterministic encoder bodies and raw restoration hashes. The
+separate auditor rereads72 archives,72 restorations and144 timing/peak receipts,
+recomputes member/total statistics and emits the environment-neutral BM-0265
+tables. Every source matches its independent corpus manifest.
+
+Position output is larger on12/12 members:86,848,574 versus79,262,639 bytes in
+total. Both encode and decode are faster in this private-owner precursor, with
+resident observations and logical query scopes recorded separately. These are
+reference measurements, not final public API performance or exchange evidence.
+Two additional hand-packed core cases establish binary residual0000 costing
+four bits and0001 costing five versus four uniform bypass bits. The updated
+core test and documentation inspection pass. Public reproduction, larger windows,
+exchange and deferred fuzz remain pending.

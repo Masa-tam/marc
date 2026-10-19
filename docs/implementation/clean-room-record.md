@@ -43350,3 +43350,14 @@ checked before resource comparisons. The driver distinguishes wall time, codec
 lifecycle calls, logical queries and process resident peaks. Fifteen related
 tests pass; this infrastructure milestone does not qualify corpus measurements
 or public integration. No external implementation is consulted and no fuzz is run.
+
+### CR-1965: 2026-10-19 — native64KiB precursor corpus audit
+
+Author/reviewer: Codex. TVG-1588 uses the repository's corpus manifest and own
+streaming measurement pattern around the retained reference driver. A separate
+auditor rehashes all72 archive/raw pairs and checks144 original receipts before
+publishing BM-0265. DD-1627's binary residual lower bound follows the existing
+first-party FGK/NYT and bypass definitions; hand-packed four/five-bit examples
+pass the core test. Larger outputs and differing query scopes are retained
+explicitly. Public API performance, exchange and later windows are not inferred.
+No external implementation is consulted; no fuzz is executed and no push occurs.

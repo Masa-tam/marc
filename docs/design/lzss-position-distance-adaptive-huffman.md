@@ -198,3 +198,22 @@ Flush leaves the frame intact; explicit ResetBlock is unsupported. Known source
 size is required, and premature final input fails without publishing a frame.
 Header/frame draining returns before collecting or encoding the next frame,
 so every encoding Error call also leaves ordinary output unchanged.
+
+### Binary residual model tradeoff
+
+The existing contextual Adaptive Huffman encoder writes each distance residual
+bit through its uniform bypass. This native schedule instead observes the bit
+in its position-specific alphabet2 FGK tree. The initially empty NYT requires
+one raw symbol bit; after insertion the tree retains a distinct NYT node and
+every known-symbol path has at least one bit. An unseen second symbol also
+requires its NYT path and one raw symbol bit. Therefore every modeled residual
+costs at least the one bit already used by the contextual bypass. Biased binary
+frequencies cannot yield fractional-bit FGK codewords in this representation.
+
+For identical token fields, this distance residual component cannot improve
+the bypass bit count and can add bits. This is a component-level statement,
+not an attribution of every measured stream-size difference: parsing and other
+field alphabets must be checked separately. Report actual total sizes and speed/
+memory tradeoffs without assuming that position models improve every entropy
+coder. The requested family remains an independently identified representation;
+do not silently alter the residual grammar while measuring it.

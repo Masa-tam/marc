@@ -62,6 +62,14 @@ void vector_case(const std::vector<std::byte>& descriptor,const std::vector<std:
 }
 void directed() {
     Workspace work;PositionAdaptiveHuffmanEncoder encoder;PositionAdaptiveHuffmanDecoder decoder;
+    // Hand-packed position32 binary model: 0000 -> 0,1,1,1 (four bits);
+    // 0001 -> 0,1,1,0,1 (five bits), compared with four uniform bypass bits.
+    for (const auto last:{0u,1u}) {
+        const PositionAdaptiveHuffmanDescriptor hand{4,1,48,static_cast<std::uint8_t>(last ? 5 : 4),0};
+        std::array<std::byte,16> description{};ok(serialize_position_adaptive_huffman_descriptor(profile,hand,{},description));
+        vector_case({description.begin(),description.end()},{last ? std::byte{0x16} : std::byte{0x0e}},
+            {{32,0},{32,0},{32,0},{32,last}});
+    }
     std::uint32_t symbol=717;check(decoder.read(0,symbol)==Error::not_started);check(symbol==717);
     check(encoder.emit(0,0)==Error::not_started);
     for (unsigned value=0;value<256;++value) {
