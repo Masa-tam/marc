@@ -26882,3 +26882,18 @@ Record every member and the aggregate trade-offs, including larger native output
 No encoder/decoder or existing artifact changes. This milestone leaves4
 larger-window full-corpus campaigns pending. Final family result review, deferred
 fuzz and hosted/external102-profile qualification remain separate unfinished work.
+
+### TVG-1624: public native Adaptive Huffman8m full-corpus audit
+
+BM-0269 records all12 manifest-verified Silesia members, actual same-window/
+same-frame identities and three fresh-process observations per profile/direction.
+The independent artifact audit rehashes72 deterministic archives and72 exact
+restorations, rechecks144 timing/resource receipts and186
+frame headers, and recalculates sizes, member medians, aggregate rates and maximum
+process-resident peaks. Actual serialized settings qualify the contextual control;
+logical admission/workspace queries remain distinct from resident measurements.
+
+Record every member and the aggregate trade-offs, including larger native outputs.
+No encoder/decoder or existing artifact changes. This milestone leaves3
+larger-window full-corpus campaigns pending. Final family result review, deferred
+fuzz and hosted/external102-profile qualification remain separate unfinished work.
