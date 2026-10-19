@@ -43379,6 +43379,15 @@ No external source is consulted, no fuzz is run and no push is performed.
 Author/reviewer: Codex. TVG-1590 confirms the same independently frozen vectors
 with two compiler stacks. Explicit unsigned NYT loop widths preserve
 the mathematical result for validated alphabets2..256 and remove signedness
-warnings. Each stack passes22 related registrations after rebuilding. Earlier
-candidates are saved with hashes. No external implementation is consulted,
+warnings. Initial summaries report22 registrations after rebuilding; TVG-1591
+corrects one host's non-executed script registration to21 actual C++/Python
+checks. Earlier candidates are saved with hashes. No external implementation is consulted,
 no format or existing vector is changed, and fuzz remains deferred.
+
+### CR-1968: 2026-10-20 — verify script execution before counting success
+
+Author/reviewer: Codex. TVG-1591 corrects an earlier test summary after inspecting
+the actual script output. Native-shell detection and required completion messages
+prevent a missing script from being credited as a pass. The original logs remain
+available. The timeout and serial execution contract are retained. No external
+implementation is consulted, no wire representation changes and no fuzz is run.

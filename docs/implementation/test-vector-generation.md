@@ -26171,13 +26171,34 @@ exchange, six larger windows, deferred fuzz and remote gates remain pending.
 ### TVG-1590: native64KiB portability qualification
 
 The native family is built independently with two compiler stacks.
-Each passes22 related API/CLI, vector, boundary, resource and documentation
-registrations. An observed signed/unsigned comparison warning in two NYT bit
+Initial CTest summaries report22 related API/CLI, vector, boundary, resource and
+documentation registrations. A later output audit (TVG-1591) identifies one
+script registration that did not actually execute on the second host; its real
+C++/Python qualification is21 registrations. The first host's header script does
+execute and checks19 independent headers. An observed signedness warning in two NYT bit
 loops is removed by explicitly converting the validated nonnegative bit width
 to unsigned. Alphabet bounds and emitted bit counts are unchanged. Both stacks
-are rebuilt and their22 registrations pass again without those warnings.
+are rebuilt without those warnings; the script-execution scope is corrected by
+TVG-1591 rather than counting a missing script as successful execution.
 
 The preceding candidate executables/libraries and hashes are retained before
 rebuilding. Independent vectors remain unchanged; this is not a stream revision
 or a completed cross-platform exchange/corpus campaign. Those gates and the
 six larger windows remain pending. No fuzz is executed.
+
+### TVG-1591: require actual script execution in test qualification
+
+The output audit of TVG-1590 finds a shell returning success after failing to
+locate a script. That registration is not an executed test. Preserve the original
+log and correct the qualification counts:21 C++/Python registrations execute on
+both stacks, and the independent header script executes on the first stack only.
+Configuration now rejects a non-native shell on Unix. Script registrations also
+require their completion messages, including19 independent headers and2147
+directed alterations for the native64KiB header guard. The schema compatibility
+registration retains its serial1800-second limit and requires its completion
+message. The documentation check validates the extended registration contract.
+
+Requalification covers22 registrations on the first stack and21 on the second;
+the missing native script shell is recorded rather than counted as a pass.
+No codec bytes or frozen vectors change. Fuzz remains deferred, and exchange
+and full public measurements are separate pending gates.

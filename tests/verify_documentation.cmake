@@ -2089,7 +2089,7 @@ foreach(required_gtest_discovery_contract IN ITEMS
     endif()
 endforeach()
 string(FIND "${root_cmake_content}"
-    "set_tests_properties(marc_interoperability_schema_compatibility\n                PROPERTIES TIMEOUT 1800 RUN_SERIAL TRUE)"
+    "set_tests_properties(marc_interoperability_schema_compatibility\n                PROPERTIES TIMEOUT 1800 RUN_SERIAL TRUE\n                    PASS_REGULAR_EXPRESSION \"Verified interoperability schemas 1 through\")"
     interoperability_timeout_offset)
 if(interoperability_timeout_offset EQUAL -1)
     message(FATAL_ERROR

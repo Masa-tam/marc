@@ -2,6 +2,7 @@ $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 . (Join-Path $PSScriptRoot 'position_adaptive_huffman_bundle_header.ps1')
 $count = 0
+$headers = 0
 foreach ($fixture in @('position_adaptive_huffman_64k_frame_vectors.json','position_adaptive_huffman_64k_boundary_vectors.json')) {
     $vectors = (Get-Content -LiteralPath (Join-Path $PSScriptRoot "data/$fixture") -Raw | ConvertFrom-Json).vectors
     foreach ($row in $vectors) {
@@ -9,6 +10,7 @@ foreach ($fixture in @('position_adaptive_huffman_64k_frame_vectors.json','posit
         for ($i = 0; $i -lt 112; ++$i) { $header[$i] = [Convert]::ToByte($row.stream_hex.Substring(2*$i,2),16) }
         $original = if ($row.PSObject.Properties.Name -contains 'raw_repeat') { [uint64]$row.raw_repeat.count } else { [uint64]($row.raw_hex.Length/2) }
         Assert-PositionAdaptiveHuffmanHeader $header $original 'lzss-position-distance-adaptive-huffman'
+        ++$headers
         foreach ($offset in 0..111) {
             $damaged = [byte[]]$header.Clone(); $damaged[$offset] = $damaged[$offset] -bxor 1
             $rejected = $false
@@ -24,4 +26,5 @@ foreach ($fixture in @('position_adaptive_huffman_64k_frame_vectors.json','posit
         ++$count
     }
 }
-Write-Host "Verified19 independent headers and rejected$count directed header alterations"
+if ($headers -ne 19 -or $count -ne 2147) { throw 'Unexpected independent header test coverage' }
+Write-Host "Verified$headers independent headers and rejected$count directed header alterations"

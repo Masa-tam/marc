@@ -7006,6 +7006,19 @@ if(MARC_BUILD_TESTS)
 
         find_program(MARC_POWERSHELL_EXECUTABLE
             NAMES pwsh powershell.exe powershell)
+        if(MARC_POWERSHELL_EXECUTABLE AND NOT CMAKE_HOST_WIN32)
+            # WSL can discover powershell.exe through interop. It cannot run
+            # these native Unix paths; some versions return zero for -File errors.
+            execute_process(COMMAND ${MARC_POWERSHELL_EXECUTABLE} -NoProfile -Command
+                    "[System.Environment]::OSVersion.Platform.ToString()"
+                RESULT_VARIABLE marc_powershell_platform_status
+                OUTPUT_VARIABLE marc_powershell_platform
+                ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE TIMEOUT 15)
+            if(NOT marc_powershell_platform_status EQUAL 0 OR NOT marc_powershell_platform STREQUAL "Unix")
+                message(STATUS "PowerShell tests require a native Unix shell; ignoring non-native executable")
+                set(MARC_POWERSHELL_EXECUTABLE "")
+            endif()
+        endif()
         if(MARC_POWERSHELL_EXECUTABLE)
             add_test(NAME marc_interoperability_schema_compatibility
                 COMMAND ${MARC_POWERSHELL_EXECUTABLE}
@@ -7013,7 +7026,8 @@ if(MARC_BUILD_TESTS)
                     -File ${CMAKE_CURRENT_SOURCE_DIR}/tests/interoperability_schema_compatibility.ps1
                     -MarcCli $<TARGET_FILE:marc_position_blocked_huffman_64m_cli_candidate>)
             set_tests_properties(marc_interoperability_schema_compatibility
-                PROPERTIES TIMEOUT 1800 RUN_SERIAL TRUE)
+                PROPERTIES TIMEOUT 1800 RUN_SERIAL TRUE
+                    PASS_REGULAR_EXPRESSION "Verified interoperability schemas 1 through")
         endif()
     endif()
 endif()
@@ -11006,6 +11020,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
         add_test(NAME marc_position_adaptive_huffman_64k_bundle_headers
             COMMAND ${MARC_POWERSHELL_EXECUTABLE} -NoProfile -ExecutionPolicy Bypass
                 -File ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_bundle_header_tests.ps1)
+        set_tests_properties(marc_position_adaptive_huffman_64k_bundle_headers PROPERTIES
+            PASS_REGULAR_EXPRESSION "Verified19 independent headers and rejected2147 directed header alterations")
     endif()
 
     add_executable(marc_position_adaptive_huffman_api_tests tests/position_adaptive_huffman_api_tests.cpp)
