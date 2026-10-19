@@ -43594,3 +43594,12 @@ window/frame with emitted identities and restoration checked. Earlier profile
 representations, allocation-failure and publication assertions remain intact.
 No external source, fuzz, push or fixed-runtime replacement is involved.
 Full corpus and exchange evidence remain independent subsequent gates.
+
+### CR-1991: 2026-10-20 — native32MiB exchange extension
+
+Author/reviewer: Codex. TVG-1614 and IX-0116 extend the first-party schema chain
+and independent header validator to the defined32MiB identity. Prefix/body
+equality, launch guards, reciprocal execution and preceding static decoders
+provide incremental local evidence. No external source, fuzz, push or fixed
+runtime replacement is involved. Complete family and remote gates remain
+pending.

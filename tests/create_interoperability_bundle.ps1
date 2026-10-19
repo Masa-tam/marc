@@ -579,7 +579,8 @@ $profiles = @(
     'lzss-position-distance-adaptive-huffman-1m',
     'lzss-position-distance-adaptive-huffman-4m',
     'lzss-position-distance-adaptive-huffman-8m',
-    'lzss-position-distance-adaptive-huffman-16m'
+    'lzss-position-distance-adaptive-huffman-16m',
+    'lzss-position-distance-adaptive-huffman-32m'
 )
 $entries = @()
 foreach ($profile in $profiles) {
@@ -1016,8 +1017,8 @@ foreach ($profile in $profiles) {
 }
 
 $manifest = [ordered]@{
-    schema_version = 90
-    codec_set = 'marc-cli-v90'
+    schema_version = 91
+    codec_set = 'marc-cli-v91'
     source_revision = $SourceRevision
     platform = $Platform
     compiler = $Compiler

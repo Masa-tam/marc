@@ -26680,3 +26680,19 @@ Final related runs pass72 registrations on the first build and67 on the
 second, taking329.97 and411.61 seconds. Earlier SDK generations and fixed
 Release products remain preserved. Full measurements and exchange remain
 separate unfinished gates.
+
+### TVG-1614: native32MiB incremental exchange qualification
+
+IX-0116 appends32MiB as the101st archive. Three producer prefixes retain all100
+earlier entries/properties and bodies, and all101 bodies agree between builds.
+Seven strict self/cross routes and both preceding100-profile static consumers
+pass against their complete/derived bundles. Verify that the preceding second-
+build consumer cannot load the current codec library.
+
+Six independent header sets each check19 headers and2147 directed alterations.
+The schema91 guard rejects131 cases with zero codec launches and output files;
+the preceding schema90 guard rejects130 against the derived prefix. Both build
+configurations are regenerated. The six native header registrations and
+document layout pass. Starting273 products and historical95 bodies remain
+unchanged. Full schema/102 audit, larger-window measurements, the final profile,
+deferred fuzz and remote results remain unfinished. No fuzz is run.
