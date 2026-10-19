@@ -241,3 +241,18 @@ error/drain state machine and success-only publication rules match the64KiB
 owner. Resource queries select the profile's actual dictionary window for both
 directions; retaining the64KiB default in a decoder query is invalid. Larger
 reserved owners remain unsupported. Public1MiB admission is a separate milestone.
+
+### Ordered4MiB format preparation
+
+The4MiB identity is dictionary2/10, entropy1/5 and context1/37, with54 contexts,
+4636 alphabet entries and9326 node slots. Its distance class alphabet has23
+symbols and22 residual positions. The exact112/64/16-byte layouts and FGK rules
+remain unchanged. The window and maximum frame are4194304 bytes, with at most
+37748736 decisions and139984896 payload bytes. These format ceilings do not
+grant allocations or imply public admission before resource qualification.
+
+The independent file fixtures cover a full4194304-byte frame ending with a
+length3/distance4194301 reference. Existing64KiB and1MiB fixture objects remain
+unchanged. File input bounds are extended to this profile; per-fixture decision
+admission includes the declared frame while retaining an independent finite
+internal-buffer limit.

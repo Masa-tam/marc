@@ -59,9 +59,12 @@ void fixture(const std::vector<std::byte>& stream_bytes,const std::vector<std::b
     check(stream_bytes.size()==112);
     const auto variant=std::to_integer<unsigned>(stream_bytes[14])
         | (std::to_integer<unsigned>(stream_bytes[15])<<8);
-    check(variant==8 || variant==9);
-    const auto selected=variant==8 ? profile : PositionAdaptiveHuffmanProfile::window_1m;
-    const auto limits=marc::core::DecoderLimits{};PositionAdaptiveHuffmanStreamHeader stream{};std::size_t used{};
+    check(variant>=8 && variant<=10);
+    const auto selected=static_cast<PositionAdaptiveHuffmanProfile>(variant-8);
+    auto limits=marc::core::DecoderLimits{};
+    limits.max_block_size=std::max(limits.max_block_size,
+        static_cast<std::uint64_t>(position_adaptive_huffman_spec(selected)->window_size));
+    PositionAdaptiveHuffmanStreamHeader stream{};std::size_t used{};
     check(parse_position_adaptive_huffman_stream(selected,stream_bytes,limits,stream,used)==PositionAdaptiveHuffmanFormatError::none);
     check(stream.original_size==raw.size());
     if (raw.empty()) { check(frame.empty() && tokens.empty());return; }
@@ -122,7 +125,7 @@ std::vector<std::byte> fixture_file(const char* path,std::size_t maximum) {
     check(static_cast<bool>(source));return bytes;
 }
 void files(char** paths) {
-    constexpr std::size_t maximum_raw=1048576;
+    constexpr std::size_t maximum_raw=4194304;
     auto stream=fixture_file(paths[0],112);
     auto frame=fixture_file(paths[1],80+(267*maximum_raw+7)/8);
     auto raw=fixture_file(paths[2],maximum_raw);

@@ -43438,3 +43438,11 @@ altered. Preceding-consumer tests use retained static implementations, avoiding
 an accidental dependency on the current shared implementation. Existing prefix
 bytes and old schema branches remain intact. No external source, fuzz or push
 is involved; the final full-chain audit remains explicitly pending.
+
+### CR-1974: 2026-10-20 — independent4MiB format qualification
+
+Author/reviewer: Codex. TVG-1597 applies the existing independently documented
+profile table to the object-tree oracle and bounded file transport. Complete
+frame bytes are compared with the generic first-party codec without admitting
+the public4MiB profile. Earlier fixture bytes are unchanged. No external source,
+fuzz, fixed-runtime replacement or push is involved.

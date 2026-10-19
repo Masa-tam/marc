@@ -26322,3 +26322,19 @@ The related native-shell header and documentation registrations pass.
 The complete historical chain remains scheduled for the final audit rather than
 being claimed from these incremental87/86 checks. No fuzz is executed; corpus,
 remaining profile additions and remote gates remain pending.
+
+### TVG-1597: independent4MiB format fixtures
+
+Freeze14 small and five boundary vectors using the independent DD-1627 object
+tree oracle. The full4MiB case contains16259 tokens and162597 decisions, with
+20328 payload bytes and6 valid final bits. Its last length3 reference has
+distance4194301 and restores4194304 copies of byte65. Encoded stream/frame and
+descriptor bytes remain frozen alongside a compact token recipe and raw SHA-256.
+
+Extend only the bounded file bridge's admitted fixture profile and input bounds.
+Both builds pass six related registrations: documentation, both1MiB fixture sets,
+both4MiB sets and the64KiB complete vectors. The slowest new4MiB registration
+takes5.00 seconds; its registered60-second limit retains measured headroom.
+No earlier vectors are regenerated differently. This is format/reference
+evidence; owned/public4MiB admission, measurements and exchange remain separate
+pending milestones. Fuzz is not executed.

@@ -11133,25 +11133,29 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             --check ${CMAKE_CURRENT_SOURCE_DIR}/tests/data/position_adaptive_huffman_64k_boundary_vectors.json
             --file-codec-tool $<TARGET_FILE:marc_position_adaptive_huffman_frame_tests>
             --fixture-directory ${CMAKE_CURRENT_BINARY_DIR}/adaptive-huffman-file-fixtures)
-    foreach(fixture IN ITEMS frame boundary)
-        if(fixture STREQUAL "boundary")
-            set(native_fgk_boundary_option --boundaries)
-        else()
-            set(native_fgk_boundary_option "")
-        endif()
-        add_test(NAME marc_position_adaptive_huffman_1m_${fixture}_vectors
-            COMMAND ${Python3_EXECUTABLE} -B -X utf8
-                ${CMAKE_CURRENT_SOURCE_DIR}/tools/generate_position_adaptive_huffman_vectors.py
-                --window 1m --frames ${native_fgk_boundary_option}
-                --check ${CMAKE_CURRENT_SOURCE_DIR}/tests/data/position_adaptive_huffman_1m_${fixture}_vectors.json
-                --file-codec-tool $<TARGET_FILE:marc_position_adaptive_huffman_frame_tests>
-                --fixture-directory ${CMAKE_CURRENT_BINARY_DIR}/adaptive-huffman-file-fixtures)
+    foreach(native_fgk_window IN ITEMS 1m 4m)
+        foreach(fixture IN ITEMS frame boundary)
+            if(fixture STREQUAL "boundary")
+                set(native_fgk_boundary_option --boundaries)
+            else()
+                set(native_fgk_boundary_option "")
+            endif()
+            add_test(NAME marc_position_adaptive_huffman_${native_fgk_window}_${fixture}_vectors
+                COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                    ${CMAKE_CURRENT_SOURCE_DIR}/tools/generate_position_adaptive_huffman_vectors.py
+                    --window ${native_fgk_window} --frames ${native_fgk_boundary_option}
+                    --check ${CMAKE_CURRENT_SOURCE_DIR}/tests/data/position_adaptive_huffman_${native_fgk_window}_${fixture}_vectors.json
+                    --file-codec-tool $<TARGET_FILE:marc_position_adaptive_huffman_frame_tests>
+                    --fixture-directory ${CMAKE_CURRENT_BINARY_DIR}/adaptive-huffman-file-fixtures)
+        endforeach()
     endforeach()
 
     # File-fixture qualification observed at most5.33 seconds across both stacks.
     set_tests_properties(marc_position_adaptive_huffman_64k_file_boundaries
         marc_position_adaptive_huffman_1m_frame_vectors
-        marc_position_adaptive_huffman_1m_boundary_vectors PROPERTIES TIMEOUT 60)
+        marc_position_adaptive_huffman_1m_boundary_vectors
+        marc_position_adaptive_huffman_4m_frame_vectors
+        marc_position_adaptive_huffman_4m_boundary_vectors PROPERTIES TIMEOUT 60)
 
     add_executable(marc_position_adaptive_huffman_frame_format_tests
         tests/position_adaptive_huffman_frame_format_tests.cpp
