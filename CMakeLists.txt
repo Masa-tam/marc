@@ -10965,6 +10965,24 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
     add_test(NAME marc_position_adaptive_huffman_64k_owned COMMAND marc_position_adaptive_huffman_owned_tests)
 
+    get_target_property(position_adaptive_owned_sources marc_position_adaptive_huffman_owned_tests SOURCES)
+    list(FILTER position_adaptive_owned_sources EXCLUDE REGEX "^tests/")
+    add_executable(marc_position_adaptive_huffman_64k_precursor
+        benchmarks/position_adaptive_huffman_64k_precursor.cpp ${position_adaptive_owned_sources})
+    target_compile_features(marc_position_adaptive_huffman_64k_precursor PRIVATE cxx_std_20)
+    target_include_directories(marc_position_adaptive_huffman_64k_precursor PRIVATE src)
+    target_link_libraries(marc_position_adaptive_huffman_64k_precursor PRIVATE marc::static)
+    if(WIN32)
+        target_link_libraries(marc_position_adaptive_huffman_64k_precursor PRIVATE psapi)
+    endif()
+    set_target_properties(marc_position_adaptive_huffman_64k_precursor PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
+    add_test(NAME marc_position_adaptive_huffman_64k_resource_smoke
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_precursor_smoke.py
+            $<TARGET_FILE:marc_position_adaptive_huffman_64k_precursor>
+            ${CMAKE_CURRENT_BINARY_DIR}/position-adaptive-huffman-resource-smoke)
+
     add_executable(marc_position_adaptive_huffman_frame_tests
         tests/position_adaptive_huffman_frame_tests.cpp
         src/frame/lzss_position_adaptive_huffman_frame.cpp src/frame/lzss_position_adaptive_huffman_format.cpp

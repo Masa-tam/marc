@@ -43340,3 +43340,13 @@ direction. Exhaustive/reference parsing and chunk-invariant complete streams
 are checked alongside resource and failure guarantees. Fourteen related tests
 pass. Production runtime promotion, public integration and measured resources
 remain pending. No external implementation is consulted and fuzz is not run.
+
+### CR-1964: 2026-10-19 — native64KiB resource precursor
+
+Author/reviewer: Codex. TVG-1587 adapts the repository's first-party streaming
+resource-driver pattern to the private Adaptive Huffman owner and existing
+contextual API. Directed restoration and actual serialized identities are
+checked before resource comparisons. The driver distinguishes wall time, codec
+lifecycle calls, logical queries and process resident peaks. Fifteen related
+tests pass; this infrastructure milestone does not qualify corpus measurements
+or public integration. No external implementation is consulted and no fuzz is run.

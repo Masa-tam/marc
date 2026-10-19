@@ -26104,3 +26104,19 @@ leaves its Error call's output unchanged. Stable terminal calls and premature
 final input are checked. Fourteen related registrations pass. Public API/CLI,
 full-corpus measurements, exchange and all larger-window qualifications remain
 pending. Fuzz remains deferred rather than treated as a passed gate.
+
+### TVG-1587: native64KiB resource precursor infrastructure
+
+A streaming precursor measures the private owned transforms and the existing
+same-window contextual Adaptive Huffman API in separate processes. It reports
+creation/process/destruction time separately from wall time and complete-process
+resident peaks; file I/O is outside the timed codec calls. Logical query scopes
+are explicit because private owner/control accounting and contextual caller
+workspace queries differ. The driver has two65536-byte I/O arrays, retains
+temporary outputs and publishes the requested output only after completion.
+
+A65792-byte directed source restores exactly through both profiles. Actual
+headers are checked as2/8+1/35+1/3 and2/2+1/1+1/2, each with window/frame65536.
+These short smoke timings establish driver operation, not comparative speed or
+peak conclusions. Fifteen related registrations pass. Full-corpus measurements
+and public-candidate reproduction remain required; fuzz is not executed.
