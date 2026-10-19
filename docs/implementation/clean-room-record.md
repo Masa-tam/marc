@@ -43530,3 +43530,11 @@ equality, launch guards, reciprocal execution and preceding static decoders
 provide incremental local evidence. No external source, fuzz, push or fixed
 runtime replacement is involved. Complete family and remote qualification
 remain pending.
+
+### CR-1984: 2026-10-20 — independent16MiB native FGK fixtures
+
+Author/reviewer: Codex. TVG-1607 freezes the next reserved window through the
+existing independent mathematical generator and bounded file transport. Full
+decoder-visible bytes and explicit token fields are compared with both
+first-party frame paths. No external implementation source, public factory
+admission, fuzz, push or fixed-runtime update is involved.

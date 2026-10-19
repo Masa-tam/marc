@@ -26524,3 +26524,24 @@ prefix. Regenerate both build configurations and run native header/document
 checks. Preserve the original fixed273 products and historical95-body bundle.
 Complete schema history/final102 audit, larger-window measurements, deferred
 fuzz and hosted/external results remain separate pending gates. No fuzz is run.
+
+### TVG-1607: independently generated16MiB native FGK vectors
+
+Freeze14 stream/frame fixtures and five boundaries under the already defined
+16MiB identity. The full-window late-reference case contains16777216 raw bytes,
+65030 tokens,650309 decisions,81292 payload bytes and six valid final bits,
+ending at distance16777213. Retain complete stream/frame bytes and explicit
+little-endian token files. Extend only the fixture bridge's admitted profile
+and raw-file bounds through16MiB; existing decode limits already cover this
+window.
+
+Compare reference and private scratch results with the independent bytes,
+including unused tails, one-short admission and alias rejection. Rerun all
+preceding frozen vector sets. Internal ownership, public API/CLI, full corpus
+and resident peaks,100-profile exchange and later family/remote gates remain
+pending. No fuzz is run and no existing public identity or product is replaced.
+
+Both builds pass all15 vector registrations and document inspection. The
+second build initially caught a misplaced newly added provenance heading;
+its order is corrected and the document-only recheck passes. Original failure
+and recheck evidence are retained; successful vector tests are not repeated.

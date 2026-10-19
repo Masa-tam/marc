@@ -291,3 +291,11 @@ Full-window observed logical requirements are490893070 encode and389328782
 decode bytes, including a101449728-byte finder for encoding. These amounts
 admit actual private allocations at the exact queried quota; one byte less
 fails before ownership. They are not measured resident peaks or public grants.
+
+The16MiB format step freezes independent stream/frame and boundary vectors
+under dictionary2/12, context1/39 and Adaptive Huffman1/7, with56 contexts,
+4658 alphabet entries and9372 nodes. Its full-window late-reference fixture
+represents16777216 raw bytes with65030 tokens,650309 decisions,81292 payload
+bytes and six valid final bits; the final distance is16777213. Fixture transport
+and parsing bounds extend through16MiB. This step does not admit a public
+profile or select an ownership grant.
