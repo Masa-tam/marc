@@ -4264,3 +4264,21 @@ BM-0263 preserves the small size benefits and measured speed/memory costs.
 Earlier pending remote gates are superseded. Baseline membership, release
 state, decoder representations, schema85 and95-profile ordering remain
 unchanged. This recording commit does not claim another hosted or external run.
+
+## 2026-10-19: all-window ANS shared-model applicability investigation complete
+
+DD-1626/BM-0264 complete the investigation across all public rANS/tANS windows
+and retained compact4MiB rANS. Current ANS profiles store independent context
+models; the Huffman fallback-pool refit operation is inapplicable. Existing
+decoders accept the bounded repeated-model diagnostic, which grows rather
+than shrinks in the stated counterexample. This does not establish that other
+frequency or representation optimizations lack benefit.
+
+TVG-1578/1579 and IX-0109 record17 passing related registrations, exact public
+fixture outputs/restoration, malformed-output withholding and preserved
+sources/products/archives. No production candidate is adopted; full-corpus
+old/new timing and resident-peak comparisons are explicitly unperformed,
+without invented zero deltas. Format, quotas, baseline/release state, schema85
+and95-profile membership remain unchanged. All requested windows are processed
+locally; CI is not run and the maintainer controls pushing these diagnostic and
+documentation commits.

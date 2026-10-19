@@ -2623,3 +2623,22 @@ and external four-route gates for1/4/8/16/32/64MiB. Earlier pending statements
 describe their milestone state and are superseded by this receipt. This
 documentation-only recording commit does not claim another CI run or external
 execution. The agent does not push.
+
+### IX-0109: ANS pool investigation preserves existing profiles and artifacts
+
+DD-1626/TVG-1579 investigate all fourteen current public position-distance
+rANS/tANS profiles, plus retained compact4MiB rANS. There is no production
+encoder/decoder change. All265 saved starting products and their fixed Release
+counterparts retain their hashes. All95 historical archives retain their sizes
+and hashes; schema85, membership and profile ordering are unchanged.
+
+The fixed CLI reproduces historical fixture bytes for all14 public ANS profiles,
+restores each8193-byte input exactly and rejects each truncated archive without
+output publication. The diagnostic separately restores30 original/repeated-pool
+entropy streams with existing decoder code. It introduces no shared-model record
+or stream identity; repeated frequency slices remain ordinary existing models.
+
+This is a local applicability result, not a new compression policy or another
+hosted/external verification receipt. Earlier qualified producer evidence is
+retained for its own revisions. No bundle extension, fixed-runtime replacement,
+hosted CI run or push is performed for this investigation.

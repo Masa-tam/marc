@@ -45,3 +45,34 @@ experiment, preservation checks and documentation checks are recorded. Record
 inapplicability and measurement omissions explicitly instead of inventing an
 old/new corpus comparison when no production candidate exists. Local commits
 are permitted; the maintainer controls the eventual combined push.
+
+## Completed all-window finding
+
+TVG-1578/1579 and BM-0264 complete the investigation for all fourteen current
+public profiles plus retained compact4MiB rANS. All use independent per-context
+frequency slices, not Huffman's fallback pools and frozen overrides. Direct
+DD-1624/1625 residual-pool rebuilding is therefore inapplicable at every window.
+This is a structural finding, not a claim that ANS compression is optimal.
+
+The opposite-singleton experiment restores all thirty entropy streams with
+existing decoders. Repeating equal pooled frequencies in both context slots
+increases each complete descriptor/payload extent by27 bytes. This disproves
+an unconditional pooling benefit, not every possible corpus-specific benefit.
+Current descriptors permit repeated frequency values, but still store both
+models. Saving one copy requires a separately specified model-reference or
+fallback representation; do not silently reinterpret an existing format.
+
+BM-0264 records current bounded storage and speed/memory considerations. There
+is no production candidate to compare on the full corpus; no compression gain,
+throughput delta or resident-peak delta is measured or claimed. Existing raw
+corpus benchmarks remain evidence for their own producer policies only.
+Frequency search within independent contexts and identical-table deduplication
+remain separate possible studies, with unknown benefit until measured.
+
+IX-0109 qualifies preservation: production sources and all265 starting fixed
+products remain unchanged, all95 historical archive hashes pass, and all14
+current public ANS profiles reproduce historical fixture bytes, restore exactly
+and reject truncation without publication. Normal fixed Release routing is
+retained. The investigation is complete locally; no new format, production
+encoder policy, bundle member or CI execution is introduced. The maintainer
+controls pushing the documentation and diagnostic changes.

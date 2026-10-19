@@ -12888,3 +12888,79 @@ restorations with the final common runtime and qualifies retained95-body
 compatibility. IX-0107 records local schema/runtime completion; IX-0108
 separately records the maintainer's successful hosted CI and external routes.
 No additional timing campaign is implied by either completion record.
+
+### BM-0264: all-window ANS pool applicability and measurement disposition
+
+DD-1626/TVG-1578 inspect the actual independent-context ANS models. These are
+bounded entropy-only diagnostic observations, not a full-corpus benchmark.
+All frequencies normalize separately per context to4096. An active mask means
+a context model is present; it does not select a fallback pool. The uniform
+length-residual operation has an implicit fixed2048/2048 distribution. There
+is no histogram combining overridden and fallback contexts to rebuild.
+
+The following values come from the compiled model/descriptor definitions.
+Capacity means maximum serialized descriptor bytes, not actual usage or RSS.
+The last column is actual complete descriptor plus payload bytes for the
+independent opposite-singleton example versus repeated equal pooled models.
+
+| rANS window | Contexts | Frequency entries | Descriptor capacity bytes | Independent / repeated-pool bytes |
+| --- | ---: | ---: | ---: | ---: |
+| 64KiB | 40 | 2522 | 5026 | 34 / 61 |
+| 1MiB | 44 | 2566 | 5110 | 34 / 61 |
+| 4MiB current full-literal | 54 | 4636 | 9241 | 35 / 62 |
+| 8MiB | 55 | 4647 | 9262 | 35 / 62 |
+| 16MiB | 56 | 4658 | 9283 | 35 / 62 |
+| 32MiB | 57 | 4669 | 9305 | 36 / 63 |
+| 64MiB | 58 | 4680 | 9326 | 36 / 63 |
+| 4MiB retained compact | 46 | 2588 | 5152 | 34 / 61 |
+
+| tANS window | Contexts | Frequency entries | Descriptor capacity bytes | Table entries | Independent / repeated-pool bytes |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 64KiB | 48 | 4570 | 9122 | 200704 | 36 / 63 |
+| 1MiB | 52 | 4614 | 9207 | 217088 | 37 / 64 |
+| 4MiB | 54 | 4636 | 9249 | 225280 | 37 / 64 |
+| 8MiB | 55 | 4647 | 9270 | 229376 | 37 / 64 |
+| 16MiB | 56 | 4658 | 9291 | 233472 | 37 / 64 |
+| 32MiB | 57 | 4669 | 9313 | 237568 | 38 / 65 |
+| 64MiB | 58 | 4680 | 9334 | 241664 | 38 / 65 |
+
+Each example has200 alternating entropy decisions, context0 always0 and
+context1 always1. Independent models are singletons; the diagnostic merged
+distribution is2048/2048, copied into both required context slots. Actual
+canonical descriptions grow by2 bytes and actual payloads by25 bytes in every
+implementation. Existing decoders restore all30 original/diagnostic streams.
+These are not LZSS corpus frames, file compression ratios, an adoption candidate
+or evidence that pooling always loses. No synthetic timing is called throughput.
+
+**Compression disposition, all windows:** the Huffman residual-pool operation
+has no target in the current ANS representation. Repeating the deterministic
+normalizer over unchanged context counts produces the same models. True shared
+description storage needs an explicit new reference/fallback representation;
+merely duplicating pooled frequencies does not save description copies. Payload
+and metadata gains/losses of such a future representation remain unmeasured.
+Current normalization is not proven globally optimal for actual ANS wire size.
+
+**Speed and memory disposition, all windows:** no production candidate is
+adopted, so an old/new full-corpus encode/decode/peak comparison is not performed.
+Do not label the omitted comparison as a measured0% delta. Frequency storage is
+bounded by the entry counts above; rANS uses those slices for cumulative lookup.
+tANS currently reserves `(contexts+1)*4096` entries for each table direction,
+including the uniform model: encode storage is entries times `sizeof(uint16_t)`,
+decode storage entries times `sizeof(TansDecodeEntry)`. Builder histograms,
+descriptors, tokens and stream buffers are additional; these counts are not a
+whole-codec resource grant or resident peak.
+
+Repeating model construction adds encoder work without changing its result.
+A future bounded frequency-candidate search must include actual ANS state
+trajectory sizing and its extra passes in encode-time/peak measurements.
+Identical-table deduplication could target tANS memory/table-build work, but
+requires context-to-table dispatch and does not itself shrink existing stream
+descriptions. A new shared-model variant could trade smaller descriptions or
+fewer tables against modeling loss, selection cost and dispatch overhead.
+None of these unimplemented alternatives has a measured speed/peak benefit here.
+
+TVG-1579/IX-0109 verify unchanged production sources, preserved old products,
+exact14-profile fixture encodings/restorations and malformed-output withholding.
+Existing benchmark results are not relabeled as a revised-encoder campaign.
+This closes the requested applicability investigation without introducing a
+new producer policy; hosted CI is not run and pushing remains the maintainer's.

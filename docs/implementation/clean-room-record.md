@@ -43239,3 +43239,17 @@ no production codec expression is changed or copied from an external source.
 Existing rANS format and tANS core tests pass with their vectors intact.
 No external implementation is consulted. Final source/artifact preservation
 and the investigation conclusion remain separate local gates.
+
+### CR-1955: 2026-10-19 — all-window ANS applicability conclusion
+
+Author/reviewer: Codex. BM-0264/TVG-1579 complete DD-1626 with actual model
+counts, independent normalized slices and a decoder-checked counterexample.
+The Huffman residual-pool operation is inapplicable to all current ANS windows;
+do not infer that all possible ANS improvements are exhausted. Preserve the
+distinction between repeated equal frequencies and an actual model-reference
+format. Record no invented corpus rate, runtime or resident-peak delta for an
+absent candidate. Source/product/archive checks and public exact-output/failure
+checks pass. Production code and stream policy remain unchanged. Review uses
+only first-party source and independently specified diagnostic expressions;
+no external implementation is consulted. The investigation is locally complete
+without a new format, CI execution or push.

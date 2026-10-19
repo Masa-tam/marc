@@ -25948,3 +25948,27 @@ codec sources, public selectors, frame representation and quotas are unchanged.
 No speed or peak-memory claim is inferred from test wall time. Final retained
 product/source checks and the complete applicability conclusion remain pending
 at this milestone; no CI execution or push is performed.
+
+### TVG-1579: ANS applicability conclusion and preserved public behavior
+
+BM-0264 reconciles all fifteen diagnostic rows with the actual model definitions
+and exact byte extents. Every row restores original and repeated-pool entropy
+streams; the byte deltas are descriptor+2 and payload+25. This is a bounded
+counterexample and confirms independent context normalization, not a corpus
+improvement claim. All fourteen public profiles and retained compact4MiB rANS
+have no fallback/override pool for the Huffman refit operation.
+
+Compare production sources against the saved starting revision: no `src` or
+public-header change. Rehash all265 saved products and all265 corresponding
+fixed Release products successfully. Rehash all95 historical archive sizes and
+SHA256 values under the retained schema85 manifest. Using the unchanged fixed
+CLI, all14 public ANS profiles reproduce historical fixture bodies exactly,
+restore the8193-byte fixture and reject a truncated stream without publishing
+an output file. Existing artifacts and receipts remain intact.
+
+All17 related registrations pass. The final documentation/diff checks are
+required before the conclusion commit. No full-corpus old/new speed/peak
+campaign is performed because no residual-pool production candidate exists;
+no zero measurement delta or new fuzz result is claimed. This completes the
+local applicability investigation, with alternatives and their unmeasured
+costs explicit. No hosted CI run or agent push is performed.
