@@ -26594,3 +26594,19 @@ Final related runs pass62 registrations on the first build and58 on the
 second, taking205.77 and253.97 seconds. The slowest related16MiB CLI observation
 is71.36 seconds. Earlier SDK products and fixed Release files remain retained;
 full measurements and exchange are separate unfinished gates.
+
+### TVG-1610: native16MiB incremental exchange qualification
+
+IX-0115 appends the16MiB identity as the100th archive. Three producer prefixes
+preserve all99 earlier entries/properties and body bytes; all100 bodies agree
+between builds. Seven strict self/cross routes and two preceding99-profile
+static consumers pass against the appropriate complete/derived bundles. Verify
+that the preceding second-build consumer cannot load the current codec library.
+
+Five independent header sets each check19 headers and2147 directed alterations.
+The schema90 guard rejects130 cases with zero codec launches and output files;
+the preceding schema89 guard rejects129 against the derived prefix. Regenerate
+both build configurations and pass the five native header registrations plus
+document layout. The fixed273 products and historical95-body bundle remain
+unchanged. Final schema/102 audit, larger-window measurements, deferred fuzz
+and remote qualification remain separate unfinished gates. No fuzz is run.

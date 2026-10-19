@@ -2767,3 +2767,28 @@ This is incremental local schema89/88 and preceding-consumer qualification.
 The complete final schema-chain rerun, larger-window full corpus measurements,
 three larger profiles, final102-body audit, deferred fuzz and hosted/external
 results remain unfinished. The fixed Release runtime has not been replaced.
+
+### IX-0115: native16MiB Adaptive Huffman local100-profile exchange
+
+Schema90 appends exactly `lzss-position-distance-adaptive-huffman-16m` after
+the unchanged99-entry schema89 prefix. Three producer bundles preserve prior
+entry/property order, input metadata and all99 body bytes. All100 bodies agree
+across builds, and seven static/shared self/cross and second-build exchange
+routes pass strict restoration and re-encoding.
+
+Both saved preceding99-profile static consumers verify a derived schema89
+prefix. The second-build consumer has no dependency on the current codec
+library. Earlier bundles and executable generations remain preserved, with
+the historical restore-only distinction recorded in IX-0110 unchanged.
+
+Five independent header sets each check19 frozen headers and2147 directed
+alterations. The schema90 guard rejects130 manifest/header cases before any
+codec launch or output file, including exact case for all five native names.
+The existing schema89 guard also rejects129 cases against the derived prefix.
+Native-shell execution and second-build codec execution through its adapter
+remain distinguished. No fuzz is executed.
+
+These are incremental local schema90/89 and preceding-consumer results. Full
+schema history, larger-window corpus/peak measurements, two larger profiles,
+final102-body audit, deferred fuzz and hosted/external qualification remain
+pending. The fixed Release runtime has not been replaced.

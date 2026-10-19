@@ -43557,3 +43557,12 @@ representations, allocation-failure assertions and failed-frame/transactional
 publication contracts remain intact. No external implementation source, fuzz,
 push or fixed-runtime update is involved. Full corpus and exchange evidence
 remain subsequent independent gates.
+
+### CR-1987: 2026-10-20 — native16MiB exchange extension
+
+Author/reviewer: Codex. TVG-1610 and IX-0115 extend the first-party schema chain
+and independent header validator to the defined16MiB identity. Retained prefix
+and body equality, launch guards, reciprocal execution and preceding static
+decoders provide incremental local evidence. No external source, fuzz, push
+or fixed-runtime replacement is involved. Full family and remote gates remain
+pending.

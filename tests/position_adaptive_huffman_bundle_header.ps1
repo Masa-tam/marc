@@ -8,6 +8,8 @@ function Assert-PositionAdaptiveHuffmanHeader([byte[]]$Bytes, [uint64]$OriginalB
         $spec = @(4194304,10,37,5,54,4636,9326); $label = '4 MiB'
     } elseif ($Codec -ceq 'lzss-position-distance-adaptive-huffman-8m') {
         $spec = @(8388608,11,38,6,55,4647,9349); $label = '8 MiB'
+    } elseif ($Codec -ceq 'lzss-position-distance-adaptive-huffman-16m') {
+        $spec = @(16777216,12,39,7,56,4658,9372); $label = '16 MiB'
     } else { throw 'Unsupported native Adaptive Huffman exchange profile' }
     if ($Bytes.Length -lt 112) { throw "$label position Adaptive Huffman archive header is truncated" }
     $expected = [byte[]]::new(112)
