@@ -26406,3 +26406,20 @@ API/resource/C limits are30 seconds after2.5-second API pilots; CLI limits are
 4MiB CLI registration takes51.70 seconds. Earlier SDK products are saved with
 hashes. Corpus/peak comparisons,98-profile exchange, four larger profiles,
 deferred fuzz and remote qualification remain pending. Fuzz is not executed.
+
+### TVG-1601: native4MiB incremental exchange qualification
+
+IX-0113 adds the exact4MiB identity and appends one98th archive without changing
+the preceding97 entries, properties or bodies. Check three producer prefixes,
+all98 bodies across builds, seven strict local execution routes and both saved
+preceding static consumers against a derived schema87 prefix. Confirm that the
+preceding second-build consumer does not load the current codec library.
+
+Each of the three independent header sets admits19 frozen headers and rejects
+2147 directed alterations. The schema88 launch guard rejects128 cases with zero
+codec launches and zero output files; the existing schema87 guard rejects127
+against the derived prefix. Both build configurations are regenerated, with
+native-shell admission required. The first build passes the three header
+registrations and document layout. Keep full-chain/final102 audit, corpus
+measurements, four larger profiles, deferred fuzz and remote results pending.
+No fuzz is executed and no existing product is replaced.

@@ -2716,3 +2716,29 @@ The complete1-through86 suite passed at IX-0111; the final complete schema-chain
 rerun remains a required final audit after all seven additions. Full corpus
 measurements, the five remaining additions, final102-body audit, deferred fuzz,
 hosted CI and external four-route results remain separate unfinished gates.
+
+### IX-0113: native4MiB Adaptive Huffman local98-profile exchange
+
+Schema88 appends exactly `lzss-position-distance-adaptive-huffman-4m` after
+the unchanged97-entry schema87 prefix. Three producer bundles preserve that
+prefix's entry/property order, input descriptor and every body byte. All98
+bodies agree across the two builds. Seven static/shared self/cross and
+second-build exchange routes pass strict restoration and re-encoding.
+
+The preceding97-profile static consumers from both builds verify a derived
+schema87 prefix. The retained second-build executable has no dependency on the
+current codec library. Old bundles and executable generations remain preserved;
+the original95-body differences documented in IX-0110 remain distinguished.
+
+Three independent header sets each check19 frozen headers and2147 directed
+alterations. The schema88 guard rejects128 manifest/header cases before any
+codec launch or output file, including exact-case admission of all three native
+names. The preceding schema87 guard's127 cases also pass against the derived
+prefix. These directed checks do not run deferred fuzzing. The scripts use a
+native shell; the second build's actual executable is called through the
+recorded adapter rather than an unavailable native second-build shell.
+
+This step qualifies incremental schemas88/87 and preceding consumers locally.
+The complete final schema-chain rerun, full corpus measurements, four larger
+profiles, final102-body audit, deferred fuzz, hosted CI and external four-route
+qualification remain pending. The fixed Release runtime remains unchanged.

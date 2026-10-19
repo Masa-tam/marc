@@ -576,7 +576,8 @@ $profiles = @(
     'lzss-position-distance-blocked-huffman-32m',
     'lzss-position-distance-blocked-huffman-64m',
     'lzss-position-distance-adaptive-huffman',
-    'lzss-position-distance-adaptive-huffman-1m'
+    'lzss-position-distance-adaptive-huffman-1m',
+    'lzss-position-distance-adaptive-huffman-4m'
 )
 $entries = @()
 foreach ($profile in $profiles) {
@@ -584,7 +585,7 @@ foreach ($profile in $profiles) {
     $archivePath = Join-Path $resolvedOutput $archiveName
     $decodedPath = Join-Path $resolvedOutput "$profile.decoded"
     Invoke-Marc @('encode', '--codec', $profile, $inputPath, $archivePath)
-    if ($profile -eq 'lzss-position-distance-adaptive-huffman' -or $profile -eq 'lzss-position-distance-adaptive-huffman-1m') {
+    if ($profile -like 'lzss-position-distance-adaptive-huffman*') {
         Assert-PositionAdaptiveHuffmanHeader ([System.IO.File]::ReadAllBytes($archivePath)) ([uint64]$fixture.Length) $profile
     }
     if ($profile -eq 'lzss-position-distance-dynamic-range') {
@@ -1013,8 +1014,8 @@ foreach ($profile in $profiles) {
 }
 
 $manifest = [ordered]@{
-    schema_version = 87
-    codec_set = 'marc-cli-v87'
+    schema_version = 88
+    codec_set = 'marc-cli-v88'
     source_revision = $SourceRevision
     platform = $Platform
     compiler = $Compiler

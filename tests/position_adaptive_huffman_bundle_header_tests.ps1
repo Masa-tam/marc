@@ -1,13 +1,13 @@
-param([ValidateSet('64k','1m')][string]$Window = '64k')
+param([ValidateSet('64k','1m','4m')][string]$Window = '64k')
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 . (Join-Path $PSScriptRoot 'position_adaptive_huffman_bundle_header.ps1')
 $count = 0
 $headers = 0
 $Window = $Window.ToLowerInvariant()
-$suffix = if ($Window -eq '1m') { '-1m' } else { '' }
+$suffix = if ($Window -eq '64k') { '' } else { '-'+$Window }
 $codec = 'lzss-position-distance-adaptive-huffman' + $suffix
-$label = if ($Window -eq '1m') { '1 MiB' } else { '64 KiB' }
+$label = if ($Window -eq '64k') { '64 KiB' } else { $Window.Substring(0,$Window.Length-1)+' MiB' }
 foreach ($fixture in @("position_adaptive_huffman_${Window}_frame_vectors.json","position_adaptive_huffman_${Window}_boundary_vectors.json")) {
     $vectors = (Get-Content -LiteralPath (Join-Path $PSScriptRoot "data/$fixture") -Raw | ConvertFrom-Json).vectors
     foreach ($row in $vectors) {

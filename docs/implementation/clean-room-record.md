@@ -43475,3 +43475,12 @@ tests explicitly cover their vectors. Golden foreign-profile packets avoid
 depending on a second encoder while checking strict selection. No external
 implementation, fuzz, push or fixed-runtime replacement is involved. Full corpus
 and exchange evidence remain separate unfinished gates.
+
+### CR-1978: 2026-10-20 — native4MiB exchange extension
+
+Author/reviewer: Codex. TVG-1601 and IX-0113 extend the existing first-party
+schema chain and independent header validator to the defined4MiB identity.
+Prefix/body equality, launch-guard negatives, reciprocal execution and saved
+preceding static consumers provide incremental local evidence. No external
+source, fuzz, push or fixed-runtime replacement is involved. Complete schema
+history, corpus results and final family/remote gates remain pending.
