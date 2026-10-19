@@ -43538,3 +43538,12 @@ existing independent mathematical generator and bounded file transport. Full
 decoder-visible bytes and explicit token fields are compared with both
 first-party frame paths. No external implementation source, public factory
 admission, fuzz, push or fixed-runtime update is involved.
+
+### CR-1985: 2026-10-20 — native16MiB private owner
+
+Author/reviewer: Codex. TVG-1608 reuses the same-window first-party finder and
+existing native FGK scratch writer. Immutable backend tables retain previous
+profile/variant pairings and avoid further nested selection. Exact admission,
+ordinary failure invariance and failed-frame withholding remain mandatory.
+No external source, fuzz, push or fixed-runtime replacement is involved;
+public, corpus and exchange qualification remain separate unfinished gates.

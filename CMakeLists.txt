@@ -10983,6 +10983,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
         src/dictionary/lzss_position_distance_4m_five_prefix_finder.cpp
         src/dictionary/lzss_position_distance_8m_five_prefix_candidate.cpp
         src/dictionary/lzss_position_distance_8m_five_prefix_finder.cpp
+        src/dictionary/lzss_position_distance_16m_five_prefix_candidate.cpp
+        src/dictionary/lzss_position_distance_16m_five_prefix_finder.cpp
         src/dictionary/lzss_short_match_candidate.cpp src/dictionary/lzss_short_prefix_match_finder.cpp
         src/dictionary/lzss_match_finder.cpp src/dictionary/lzss_hash_chain_match_finder.cpp
         src/dictionary/lzss_binary_tree_match_finder.cpp ${position_adaptive_private_sources})
@@ -11008,6 +11010,9 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
     add_test(NAME marc_position_adaptive_huffman_8m_owned COMMAND marc_position_adaptive_huffman_1m_owned_tests 8m)
     # Full8MiB private ownership and boundary pilot observed below2 seconds.
     set_tests_properties(marc_position_adaptive_huffman_8m_owned PROPERTIES TIMEOUT 30)
+    add_test(NAME marc_position_adaptive_huffman_16m_owned COMMAND marc_position_adaptive_huffman_1m_owned_tests 16m)
+    # Full16MiB private owner pilot observed below3 seconds.
+    set_tests_properties(marc_position_adaptive_huffman_16m_owned PROPERTIES TIMEOUT 30)
 
     add_executable(marc_position_adaptive_huffman_64k_precursor
         benchmarks/position_adaptive_huffman_64k_precursor.cpp ${position_adaptive_owned_sources})

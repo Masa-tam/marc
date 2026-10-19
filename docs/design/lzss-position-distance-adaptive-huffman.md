@@ -299,3 +299,11 @@ represents16777216 raw bytes with65030 tokens,650309 decisions,81292 payload
 bytes and six valid final bits; the final distance is16777213. Fixture transport
 and parsing bounds extend through16MiB. This step does not admit a public
 profile or select an ownership grant.
+
+The private16MiB owner uses the existing same-window five-prefix finder and
+single private serialized frame. Immutable ordered function/variant tables
+replace nested backend selection, with compile-time extent agreement and
+admission still limited to qualified profiles. Full-window logical requirements
+are980578452 encode and778350868 decode bytes, with a202113024-byte encode
+finder. These are actual queried private charges, not resident peaks or a
+public memory grant.

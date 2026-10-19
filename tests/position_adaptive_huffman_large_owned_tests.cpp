@@ -166,7 +166,8 @@ int main(int argc,char** argv) {
         if (argc==2) {
             const std::string selected=argv[1];
             if (selected=="4m") {profile=Profile::window_4m;extent=4194304;decisions_per_byte=9;}
-            else {check(selected=="8m");profile=Profile::window_8m;extent=8388608;decisions_per_byte=9;}
+            else if (selected=="8m") {profile=Profile::window_8m;extent=8388608;decisions_per_byte=9;}
+            else {check(selected=="16m");profile=Profile::window_16m;extent=16777216;decisions_per_byte=9;}
         }
         else check(argc==1);
         roundtrip({},5,true);roundtrip({std::byte{0}},5,true);roundtrip({std::byte{255}},5,true);

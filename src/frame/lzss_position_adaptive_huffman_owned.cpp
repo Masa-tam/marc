@@ -3,8 +3,10 @@
 #include "dictionary/lzss_position_distance_1m_five_prefix_candidate.hpp"
 #include "dictionary/lzss_position_distance_4m_five_prefix_candidate.hpp"
 #include "dictionary/lzss_position_distance_8m_five_prefix_candidate.hpp"
+#include "dictionary/lzss_position_distance_16m_five_prefix_candidate.hpp"
 #include "core/buffer_overlap.hpp"
 #include <algorithm>
+#include <array>
 #include <cstring>
 #include <new>
 
@@ -13,6 +15,32 @@ namespace {
 using Code=core::ErrorCode;
 using Token=dictionary::internal::LzssTypedToken;
 using Profile=entropy::internal::PositionAdaptiveHuffmanProfile;
+namespace Dictionary=dictionary::internal;
+using Variant=Dictionary::LzssTypedTokenVariant;
+using FinderQuery=Dictionary::LzssShortPrefixWorkspaceRequirements(*)(std::size_t,
+    const Dictionary::LzssParameters&,const core::DecoderLimits&,Variant) noexcept;
+using Tokenizer=Dictionary::LzssShortMatchCandidateResult(*)(std::span<const std::byte>,
+    const Dictionary::LzssParameters&,const core::DecoderLimits&,std::uint32_t,
+    std::span<Token>,std::span<std::byte>) noexcept;
+// Immutable ordered dispatch; only qualified private owners are admitted.
+constexpr std::array<FinderQuery,5> finder_queries{
+    Dictionary::calculate_lzss_short_prefix_workspace,
+    Dictionary::calculate_lzss_position_distance_1m_five_prefix_workspace,
+    Dictionary::calculate_lzss_position_distance_4m_five_prefix_workspace,
+    Dictionary::calculate_lzss_position_distance_8m_five_prefix_workspace,
+    Dictionary::calculate_lzss_position_distance_16m_five_prefix_workspace};
+constexpr std::array variants{Variant::field_context_64k_short_length_escape,
+    Variant::field_context_1m_short_length_escape,Variant::field_context_4m_short_length_escape,
+    Variant::field_context_8m_short_length_escape,Variant::field_context_16m_short_length_escape};
+constexpr std::array<Tokenizer,5> tokenizers{
+    Dictionary::tokenize_lzss_short_length_escape_candidate_indexed_scratch,
+    Dictionary::tokenize_lzss_position_distance_1m_five_prefix_candidate,
+    Dictionary::tokenize_lzss_position_distance_4m_five_prefix_candidate,
+    Dictionary::tokenize_lzss_position_distance_8m_five_prefix_candidate,
+    Dictionary::tokenize_lzss_position_distance_16m_five_prefix_candidate};
+static_assert(finder_queries.size()==variants.size() && variants.size()==tokenizers.size()
+    && tokenizers.size()==static_cast<std::size_t>(Profile::window_16m)+1);
+
 template<class T> bool allocate(std::unique_ptr<T[]>& target,std::size_t count) noexcept {
     target.reset(new(std::nothrow) T[count]);return static_cast<bool>(target);
 }
@@ -23,7 +51,7 @@ Code mapped(PositionAdaptiveHuffmanFormatError e) noexcept {
 Code workspace(const PositionAdaptiveHuffmanStreamHeader& stream,const core::DecoderLimits& limits,
     bool encode,std::size_t owner,PositionAdaptiveHuffmanWorkspace& output) noexcept {
     // Other reserved identities are not admitted before their ordered qualification.
-    if (stream.profile>Profile::window_8m) return Code::unsupported;
+    if (stream.profile>Profile::window_16m) return Code::unsupported;
     if (const auto e=validate_position_adaptive_huffman_stream(stream,limits);e!=PositionAdaptiveHuffmanFormatError::none) return mapped(e);
     const auto* spec=entropy::internal::position_adaptive_huffman_spec(stream.profile);
     PositionAdaptiveHuffmanWorkspace r{};r.raw_bytes=stream.frame_size;r.token_count=stream.frame_size;
@@ -39,17 +67,8 @@ Code workspace(const PositionAdaptiveHuffmanStreamHeader& stream,const core::Dec
         if (stream.profile<Profile::window_4m) {
             r.payload_bytes=bits/8;r.private_serialized_bytes=r.serialized_bytes;
         }
-        const auto f=stream.profile==Profile::window_64k
-            ? dictionary::internal::calculate_lzss_short_prefix_workspace(r.raw_bytes,stream.dictionary,limits,
-                dictionary::internal::LzssTypedTokenVariant::field_context_64k_short_length_escape)
-            : stream.profile==Profile::window_1m
-                ? dictionary::internal::calculate_lzss_position_distance_1m_five_prefix_workspace(r.raw_bytes,stream.dictionary,limits,
-                    dictionary::internal::LzssTypedTokenVariant::field_context_1m_short_length_escape)
-                : stream.profile==Profile::window_4m
-                    ? dictionary::internal::calculate_lzss_position_distance_4m_five_prefix_workspace(r.raw_bytes,stream.dictionary,limits,
-                        dictionary::internal::LzssTypedTokenVariant::field_context_4m_short_length_escape)
-                    : dictionary::internal::calculate_lzss_position_distance_8m_five_prefix_workspace(r.raw_bytes,stream.dictionary,limits,
-                        dictionary::internal::LzssTypedTokenVariant::field_context_8m_short_length_escape);
+        const auto index=static_cast<std::size_t>(stream.profile);
+        const auto f=finder_queries[index](r.raw_bytes,stream.dictionary,limits,variants[index]);
         if (f.error!=dictionary::internal::LzssShortPrefixError::none) return Code::limit_exceeded;
         r.finder_bytes=f.workspace_size;
     }
@@ -130,17 +149,8 @@ core::ProcessResult PositionAdaptiveHuffmanOwnedEncoder::process(std::span<const
         consumed+=n;received_+=n;collected_+=n;
         if (collected_!=target) return {consumed,0,consumed ? S::progress : S::need_input,{}};
         const auto& w=workspace_;
-        const auto parsed=stream_.profile==Profile::window_64k
-            ? dictionary::internal::tokenize_lzss_short_length_escape_candidate_indexed_scratch(
-                {raw_.get(),target},stream_.dictionary,limits_,5,{tokens_.get(),w.token_count},{finder_.get(),w.finder_bytes})
-            : stream_.profile==Profile::window_1m
-                ? dictionary::internal::tokenize_lzss_position_distance_1m_five_prefix_candidate(
-                    {raw_.get(),target},stream_.dictionary,limits_,5,{tokens_.get(),w.token_count},{finder_.get(),w.finder_bytes})
-                : stream_.profile==Profile::window_4m
-                    ? dictionary::internal::tokenize_lzss_position_distance_4m_five_prefix_candidate(
-                        {raw_.get(),target},stream_.dictionary,limits_,5,{tokens_.get(),w.token_count},{finder_.get(),w.finder_bytes})
-                    : dictionary::internal::tokenize_lzss_position_distance_8m_five_prefix_candidate(
-                        {raw_.get(),target},stream_.dictionary,limits_,5,{tokens_.get(),w.token_count},{finder_.get(),w.finder_bytes});
+        const auto parsed=tokenizers[static_cast<std::size_t>(stream_.profile)](
+            {raw_.get(),target},stream_.dictionary,limits_,5,{tokens_.get(),w.token_count},{finder_.get(),w.finder_bytes});
         if (parsed.error!=dictionary::internal::LzssShortMatchCandidateError::none) return fail(Code::internal_error,consumed);
         const auto r=stream_.profile<Profile::window_4m
             ? encode_position_adaptive_huffman_frame({tokens_.get(),parsed.token_count},

@@ -26545,3 +26545,24 @@ Both builds pass all15 vector registrations and document inspection. The
 second build initially caught a misplaced newly added provenance heading;
 its order is corrected and the document-only recheck passes. Original failure
 and recheck evidence are retained; successful vector tests are not repeated.
+
+### TVG-1608: native16MiB private ownership and ordered backend dispatch
+
+Extend private ownership to the existing first-party16MiB five-prefix finder,
+keeping eligibility5, native FGK and one-private-frame staging. Replace nested
+backend selection with immutable ordered query/variant/tokenizer tables and
+compile-time size agreement. Preserve each earlier backend and variant pair.
+Rerun earlier window/vector cases as well as exact/one-short full16MiB grants,
+window-minus/equal/plus-one round trips, chunking and stable terminal behavior.
+Late decode failure and forced encode failure after the stream header must
+publish zero failed-frame bytes and leave ordinary output unchanged.
+
+The observed full-window private charges are980578452 encode,778350868 decode
+and202113024 finder bytes. The owner pilot completes below3 seconds, supporting
+a30-second test limit. Public admission, full corpus/peak measurements,
+100-profile exchange and later family/remote gates remain pending. No fuzz is
+executed and earlier executable products remain retained.
+
+Both builds pass24 related registrations. The full16MiB owner takes1.48 and
+2.75 seconds respectively. Full-corpus and resident-peak comparisons remain
+separate from these private correctness/resource-query results.
