@@ -26245,3 +26245,29 @@ any codec invocation or output publication. Each retained evidence directory is
 new; earlier generated bundles and qualified runtime products are preserved.
 Full public performance measurements, larger profiles, deferred fuzz and remote
 qualification remain distinct unfinished gates.
+
+### TVG-1594: private1MiB owned transforms and full-capacity quotas
+
+Connect the existing first-party exact1MiB five-prefix finder to the native
+frame encoder, retaining eligible length5 and the existing64KiB path. The
+decoder requirement query now selects the actual profile window instead of
+retaining its64KiB header default. The initial new test detects that invalid
+query; the expectation is retained and both builds pass after the correction.
+
+Check empty, one-byte, all-byte and deterministic mixed inputs; one-byte and
+varied chunk capacities; deferred EndInput; deterministic encoding; stable ended
+and failed states; and sizes1048575/1048576/1048577. Check exact and one-byte-short
+grants at frame capacities257 and1048576, leaving requirement destinations
+unchanged on failure. A late second-frame33-to32-bit truncation fails after four
+private tokens while only the earlier complete frame is published. Exhaustive
+small-stream truncation, nonzero padding and strict trailing-data checks retain
+the per-error-call zero-output guarantee.
+
+The qualified full-capacity private logical requirements are132410060 bytes
+for encode and48933628 for decode; the finder accounts for13369344 bytes.
+They include owned buffers and controls and are not resident peak measurements.
+Both builds pass the new owner test and the existing64KiB owner regression;
+the slowest new owner test is0.37 seconds, with a30-second registered limit.
+The preceding full related runs' only failure was the corrected new query test.
+Public1MiB API/CLI, corpus/peak measurements, exchange extension and larger
+owners remain unfinished. Fuzz is not executed.

@@ -234,3 +234,10 @@ kind1/length/distance. Readers bound file sizes before allocation. Large repeate
 fixtures retain a compact token recipe, the complete expected encoded bytes,
 raw SHA-256 and exact operation counts. This test transport is not a stream
 representation or public codec parameter. Existing64KiB fixtures stay unchanged.
+
+The1MiB private owner uses the existing first-party exact five-prefix dictionary
+finder with eligible length5. Its known-size buffering, per-frame model reset,
+error/drain state machine and success-only publication rules match the64KiB
+owner. Resource queries select the profile's actual dictionary window for both
+directions; retaining the64KiB default in a decoder query is invalid. Larger
+reserved owners remain unsupported. Public1MiB admission is a separate milestone.

@@ -1,5 +1,6 @@
 #include "frame/lzss_position_adaptive_huffman_owned.hpp"
 #include "dictionary/lzss_short_length_escape_candidate.hpp"
+#include "dictionary/lzss_position_distance_1m_five_prefix_candidate.hpp"
 #include "core/buffer_overlap.hpp"
 #include <algorithm>
 #include <cstring>
@@ -20,7 +21,7 @@ Code mapped(PositionAdaptiveHuffmanFormatError e) noexcept {
 Code workspace(const PositionAdaptiveHuffmanStreamHeader& stream,const core::DecoderLimits& limits,
     bool encode,std::size_t owner,PositionAdaptiveHuffmanWorkspace& output) noexcept {
     // Other reserved identities are not admitted before their ordered qualification.
-    if (stream.profile!=Profile::window_64k) return Code::unsupported;
+    if (stream.profile!=Profile::window_64k && stream.profile!=Profile::window_1m) return Code::unsupported;
     if (const auto e=validate_position_adaptive_huffman_stream(stream,limits);e!=PositionAdaptiveHuffmanFormatError::none) return mapped(e);
     const auto* spec=entropy::internal::position_adaptive_huffman_spec(stream.profile);
     PositionAdaptiveHuffmanWorkspace r{};r.raw_bytes=stream.frame_size;r.token_count=stream.frame_size;
@@ -34,8 +35,11 @@ Code workspace(const PositionAdaptiveHuffmanStreamHeader& stream,const core::Dec
         || !core::checked_multiply(r.symbol_count,sizeof(std::uint16_t),r.symbol_bytes)) return Code::limit_exceeded;
     if (encode) {
         r.payload_bytes=bits/8;r.private_serialized_bytes=r.serialized_bytes;
-        const auto f=dictionary::internal::calculate_lzss_short_prefix_workspace(r.raw_bytes,stream.dictionary,limits,
-            dictionary::internal::LzssTypedTokenVariant::field_context_64k_short_length_escape);
+        const auto f=stream.profile==Profile::window_64k
+            ? dictionary::internal::calculate_lzss_short_prefix_workspace(r.raw_bytes,stream.dictionary,limits,
+                dictionary::internal::LzssTypedTokenVariant::field_context_64k_short_length_escape)
+            : dictionary::internal::calculate_lzss_position_distance_1m_five_prefix_workspace(r.raw_bytes,stream.dictionary,limits,
+                dictionary::internal::LzssTypedTokenVariant::field_context_1m_short_length_escape);
         if (f.error!=dictionary::internal::LzssShortPrefixError::none) return Code::limit_exceeded;
         r.finder_bytes=f.workspace_size;
     }
@@ -115,8 +119,11 @@ core::ProcessResult PositionAdaptiveHuffmanOwnedEncoder::process(std::span<const
         consumed+=n;received_+=n;collected_+=n;
         if (collected_!=target) return {consumed,0,consumed ? S::progress : S::need_input,{}};
         const auto& w=workspace_;
-        const auto parsed=dictionary::internal::tokenize_lzss_short_length_escape_candidate_indexed_scratch(
-            {raw_.get(),target},stream_.dictionary,limits_,5,{tokens_.get(),w.token_count},{finder_.get(),w.finder_bytes});
+        const auto parsed=stream_.profile==Profile::window_64k
+            ? dictionary::internal::tokenize_lzss_short_length_escape_candidate_indexed_scratch(
+                {raw_.get(),target},stream_.dictionary,limits_,5,{tokens_.get(),w.token_count},{finder_.get(),w.finder_bytes})
+            : dictionary::internal::tokenize_lzss_position_distance_1m_five_prefix_candidate(
+                {raw_.get(),target},stream_.dictionary,limits_,5,{tokens_.get(),w.token_count},{finder_.get(),w.finder_bytes});
         if (parsed.error!=dictionary::internal::LzssShortMatchCandidateError::none) return fail(Code::internal_error,consumed);
         const auto r=encode_position_adaptive_huffman_frame({tokens_.get(),parsed.token_count},
             {stream_,limits_,sequence_,committed_},{nodes_.get(),w.node_count},{symbols_.get(),w.symbol_count},
@@ -130,6 +137,8 @@ core::ProcessResult PositionAdaptiveHuffmanOwnedEncoder::process(std::span<const
 Code PositionAdaptiveHuffmanOwnedDecoder::requirements(Profile profile,std::uint32_t capacity,
     const core::DecoderLimits& l,PositionAdaptiveHuffmanWorkspace& r) noexcept {
     PositionAdaptiveHuffmanStreamHeader s{};s.profile=profile;s.frame_size=capacity;
+    if (const auto* spec=entropy::internal::position_adaptive_huffman_spec(profile))
+        s.dictionary.window_size=spec->window_size;
     return workspace(s,l,false,sizeof(PositionAdaptiveHuffmanOwnedDecoder),r);
 }
 std::unique_ptr<PositionAdaptiveHuffmanOwnedDecoder> PositionAdaptiveHuffmanOwnedDecoder::create(

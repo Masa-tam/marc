@@ -10977,6 +10977,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
     list(FILTER position_adaptive_private_sources EXCLUDE REGEX "^tests/")
     add_executable(marc_position_adaptive_huffman_owned_tests
         tests/position_adaptive_huffman_owned_tests.cpp src/frame/lzss_position_adaptive_huffman_owned.cpp
+        src/dictionary/lzss_position_distance_1m_five_prefix_candidate.cpp
+        src/dictionary/lzss_position_distance_1m_five_prefix_finder.cpp
         src/dictionary/lzss_short_match_candidate.cpp src/dictionary/lzss_short_prefix_match_finder.cpp
         src/dictionary/lzss_match_finder.cpp src/dictionary/lzss_hash_chain_match_finder.cpp
         src/dictionary/lzss_binary_tree_match_finder.cpp ${position_adaptive_private_sources})
@@ -10988,6 +10990,16 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
 
     get_target_property(position_adaptive_owned_sources marc_position_adaptive_huffman_owned_tests SOURCES)
     list(FILTER position_adaptive_owned_sources EXCLUDE REGEX "^tests/")
+    add_executable(marc_position_adaptive_huffman_1m_owned_tests
+        tests/position_adaptive_huffman_1m_owned_tests.cpp ${position_adaptive_owned_sources})
+    target_compile_features(marc_position_adaptive_huffman_1m_owned_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_adaptive_huffman_1m_owned_tests PRIVATE src)
+    set_target_properties(marc_position_adaptive_huffman_1m_owned_tests PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
+    add_test(NAME marc_position_adaptive_huffman_1m_owned COMMAND marc_position_adaptive_huffman_1m_owned_tests)
+    # Full-capacity quota and boundary qualification observed below0.4 seconds.
+    set_tests_properties(marc_position_adaptive_huffman_1m_owned PROPERTIES TIMEOUT 30)
+
     add_executable(marc_position_adaptive_huffman_64k_precursor
         benchmarks/position_adaptive_huffman_64k_precursor.cpp ${position_adaptive_owned_sources})
     target_compile_features(marc_position_adaptive_huffman_64k_precursor PRIVATE cxx_std_20)

@@ -43409,3 +43409,12 @@ Exact-prefix auditing and the launch guard retain strict comparison and rejectio
 requirements. Historical restoration is recorded separately where earlier
 encoder-policy changes already altered bytes. No external implementation is
 consulted, no fuzz is executed and no push or fixed-runtime promotion occurs.
+
+### CR-1971: 2026-10-20 — private1MiB native Adaptive Huffman owner
+
+Author/reviewer: Codex. TVG-1594 reuses the existing first-party exact1MiB finder
+without changing its algorithm or tie breaking. New quota and publication tests
+detect and regress the decoder-query window mismatch. Existing64KiB vectors and
+owner checks remain unchanged in meaning. No external source is consulted;
+public admission and final resource/performance evidence remain separate gates.
+No fuzz or push is performed, and existing generated products are retained.
