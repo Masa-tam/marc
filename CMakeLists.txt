@@ -745,6 +745,13 @@ set(MARC_SOURCES
     src/marc.cpp
 )
 
+list(APPEND MARC_SOURCES
+    src/entropy/position_adaptive_huffman_format.cpp src/entropy/position_adaptive_huffman.cpp
+    src/context/lzss_position_adaptive_huffman_tokens.cpp
+    src/frame/lzss_position_adaptive_huffman_format.cpp src/frame/lzss_position_adaptive_huffman_frame.cpp
+    src/frame/lzss_position_adaptive_huffman_stream_decoder.cpp src/frame/lzss_position_adaptive_huffman_owned.cpp
+    src/frame/lzss_position_adaptive_huffman_c_factory.cpp)
+
 function(marc_configure_target target)
     target_sources(${target} PRIVATE ${MARC_SOURCES})
     target_compile_features(${target} PUBLIC cxx_std_20)
@@ -10982,6 +10989,60 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_precursor_smoke.py
             $<TARGET_FILE:marc_position_adaptive_huffman_64k_precursor>
             ${CMAKE_CURRENT_BINARY_DIR}/position-adaptive-huffman-resource-smoke)
+    add_executable(marc_position_adaptive_huffman_measure benchmarks/position_adaptive_huffman_measure.cpp)
+    target_compile_features(marc_position_adaptive_huffman_measure PRIVATE cxx_std_20)
+    target_link_libraries(marc_position_adaptive_huffman_measure PRIVATE marc::static)
+    if(WIN32)
+        target_link_libraries(marc_position_adaptive_huffman_measure PRIVATE psapi)
+    endif()
+    set_target_properties(marc_position_adaptive_huffman_measure PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
+    add_test(NAME marc_position_adaptive_huffman_64k_public_resource_smoke
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_precursor_smoke.py
+            $<TARGET_FILE:marc_position_adaptive_huffman_measure>
+            ${CMAKE_CURRENT_BINARY_DIR}/position-adaptive-huffman-public-resource-smoke --public)
+    if(MARC_POWERSHELL_EXECUTABLE)
+        add_test(NAME marc_position_adaptive_huffman_64k_bundle_headers
+            COMMAND ${MARC_POWERSHELL_EXECUTABLE} -NoProfile -ExecutionPolicy Bypass
+                -File ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_bundle_header_tests.ps1)
+    endif()
+
+    add_executable(marc_position_adaptive_huffman_api_tests tests/position_adaptive_huffman_api_tests.cpp)
+    target_compile_features(marc_position_adaptive_huffman_api_tests PRIVATE cxx_std_20)
+    target_link_libraries(marc_position_adaptive_huffman_api_tests PRIVATE marc::static)
+    set_target_properties(marc_position_adaptive_huffman_api_tests PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
+    add_test(NAME marc_position_adaptive_huffman_64k_api COMMAND marc_position_adaptive_huffman_api_tests)
+    add_executable(marc_position_adaptive_huffman_cli_candidate tools/marc_cli.cpp)
+    target_compile_features(marc_position_adaptive_huffman_cli_candidate PRIVATE cxx_std_20)
+    target_link_libraries(marc_position_adaptive_huffman_cli_candidate PRIVATE marc::static)
+    set_target_properties(marc_position_adaptive_huffman_cli_candidate PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
+    add_test(NAME marc_cli_position_adaptive_huffman_64k_static
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_adaptive_huffman_64k.py
+            $<TARGET_FILE:marc_position_adaptive_huffman_cli_candidate>
+            ${CMAKE_CURRENT_BINARY_DIR}/cli-position-adaptive-huffman-static)
+    set_tests_properties(marc_cli_position_adaptive_huffman_64k_static PROPERTIES TIMEOUT 120)
+    if(TARGET marc_cli)
+        add_test(NAME marc_cli_position_adaptive_huffman_64k
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_adaptive_huffman_64k.py
+                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-adaptive-huffman)
+        set_tests_properties(marc_cli_position_adaptive_huffman_64k PROPERTIES TIMEOUT 120)
+    endif()
+    foreach(linkage IN ITEMS static shared)
+        if(TARGET marc_${linkage})
+            add_executable(marc_position_adaptive_huffman_c_${linkage} tests/position_adaptive_huffman_c_smoke.c)
+            target_link_libraries(marc_position_adaptive_huffman_c_${linkage} PRIVATE marc::${linkage})
+            set_target_properties(marc_position_adaptive_huffman_c_${linkage} PROPERTIES
+                RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
+            add_test(NAME marc_position_adaptive_huffman_64k_c_${linkage} COMMAND marc_position_adaptive_huffman_c_${linkage})
+            if(linkage STREQUAL "shared")
+                set_tests_properties(marc_position_adaptive_huffman_64k_c_${linkage} PROPERTIES
+                    ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:marc_shared>")
+            endif()
+        endif()
+    endforeach()
 
     add_executable(marc_position_adaptive_huffman_frame_tests
         tests/position_adaptive_huffman_frame_tests.cpp

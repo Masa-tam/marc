@@ -26138,3 +26138,32 @@ Two additional hand-packed core cases establish binary residual0000 costing
 four bits and0001 costing five versus four uniform bypass bits. The updated
 core test and documentation inspection pass. Public reproduction, larger windows,
 exchange and deferred fuzz remain pending.
+
+### TVG-1589: native64KiB public API/CLI and resource boundary
+
+The family exposes one profile-selected C configuration. Only64KiB is admitted
+at this milestone; larger reserved values return Unsupported and unknown values
+return InvalidArgument without mutation. Existing ABI layouts are unchanged.
+Static C++ boundary tests cover exact/one-short257-byte and65536-byte owner
+grants, complete transforms at exact grants, invalid configurations, overlap,
+caller retention/IO declarations and every factory allocation failure. The first
+failure run identified continued allocations after a failed allocation; the owner
+now short-circuits immediately and frees earlier buffers. The assertions remain
+unchanged. Process calls allocate nothing, and terminal results are stable.
+
+Static/shared C smoke tests restore all256 byte values one byte at a time and
+withhold the final malformed frame. Both CLI linkages pass seven round trips,
+all small truncations, nineteen independently frozen stream/frame vectors,
+strict metadata/padding/trailing/foreign-identity checks and a second frame
+that fails after four private tokens. Existing output and temporary files are
+preserved. CLI paths take about13 seconds each; their120-second registrations
+leave headroom. Fixed header guards check nineteen independent headers and2147
+directed alterations. The public resource driver independently restores both
+profiles, records actual identities/settings, distinguishes nominal/allocated
+workspace and resident peaks, and does not launch reserved larger profiles.
+
+Twenty-one runtime/vector/resource registrations and the documentation check
+pass. The initializer inventory explicitly retains all79 earlier initializers
+and adds one common Adaptive Huffman initializer. BM-0265 is a reference-owner
+precursor, not final public performance. Public corpus reproduction,96-profile
+exchange, six larger windows, deferred fuzz and remote gates remain pending.

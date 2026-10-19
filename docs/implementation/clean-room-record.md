@@ -43361,3 +43361,15 @@ first-party FGK/NYT and bypass definitions; hand-packed four/five-bit examples
 pass the core test. Larger outputs and differing query scopes are retained
 explicitly. Public API performance, exchange and later windows are not inferred.
 No external implementation is consulted; no fuzz is executed and no push occurs.
+
+### CR-1966: 2026-10-19 — native64KiB public boundary qualification
+
+Author/reviewer: Codex. TVG-1589 composes the first-party private owner with a
+profile-selected C factory and existing transactional CLI shell. Public alias,
+capacity, admission and all-allocation-failure tests retain their assertions;
+the discovered post-failure allocation attempts are removed by short-circuit
+allocation. Static/shared linkage, independent stream vectors and failed-frame
+withholding pass. Documentation inventory adds precisely one initializer while
+retaining all earlier ones. Resource measurements distinguish public admission,
+caller buffers and resident peaks. Reserved larger windows remain unadmitted.
+No external source is consulted, no fuzz is run and no push is performed.

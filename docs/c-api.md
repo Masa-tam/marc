@@ -1603,3 +1603,44 @@ the fixed qualified runtime passes both C linkage checks for each revised
 window. BM-0263 retains the measured tradeoffs and extra encoder query charges.
 Decoder queries, ABI, public defaults and failure/publication contracts remain
 unchanged. This local qualification does not claim hosted or external execution.
+
+### Native64KiB position-distance Adaptive Huffman candidate
+
+DD-1627 introduces `marc_lzss_position_distance_adaptive_huffman_config_init`,
+`marc_lzss_position_distance_adaptive_huffman_resource_requirements` and
+`marc_lzss_position_distance_adaptive_huffman_create`. They select exactly
+dictionary2/8, context1/35 and Adaptive Huffman1/3; they do not auto-detect or
+accept another entropy profile. Direction is immutable. The known source size
+is mandatory on encode; decode obtains it from the stream header. Frame size
+may be1..65536 with the dictionary window fixed at65536.
+
+The family uses a common configuration with an explicit profile field and
+`marc_lzss_position_distance_adaptive_huffman_config_apply_profile`. Initialization
+selects64KiB. Applying a profile resets its window-dependent defaults while
+preserving direction, original size, caller retention and I/O declarations.
+Larger profile values are reserved and return Unsupported until individually
+qualified; unknown values return InvalidArgument. Failed application preserves
+the configuration. Existing codec configurations and ABI layouts are unchanged.
+
+The encoder retains minimum eligible match5; the decoder accepts lengths3..258.
+Each FGK model resets per frame and does not rescale. Flush leaves the frame
+intact and ResetBlock is unsupported. Stable ended/error states return zero
+counts on subsequent calls. Failed frames never drain; every Error call leaves
+the supplied output bytes unchanged. Earlier validated frames may have drained
+in previous successful calls. CLI file publication remains transactional.
+
+Configurations declare maximum per-call input/output capacities and retained
+caller bytes. Requirements expose raw/token/model/finder/serialized staging,
+owned/control and external charges. The minimum grant is the larger of private
+admission and the configured block ceiling, plus external charges. Query failure
+preserves the resource destination; create sets a refused handle to NULL except
+when config and handle destinations overlap, which is rejected unchanged.
+Configuration and grant failures precede allocation. All allocations occur at
+creation; process calls do not allocate. The16MiB default is logical admission,
+not a resident-memory bound. TVG-1589 qualifies static/shared linkage and exact/
+one-short grants, including complete64KiB frames and every factory allocation
+failure. The public resource smoke with65536 retained control bytes and two
+65536-byte I/O declarations reports minimum grants8,557,860 encode and3,544,404
+decode; callers must query their actual ABI/configuration. The encode requirement
+exceeds8MiB, so the next whole power-of-two grant is16MiB. BM-0265's full-corpus
+reference peaks remain separate from public corpus reproduction and exchange.

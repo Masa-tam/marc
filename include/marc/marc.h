@@ -2254,6 +2254,52 @@ MARC_API marc_status marc_lzss_position_distance_blocked_huffman_resource_requir
 MARC_API marc_status marc_lzss_position_distance_blocked_huffman_create(
     const marc_lzss_position_distance_blocked_huffman_config* config, marc_transform** transform) MARC_NOEXCEPT;
 
+/* Native64KiB position-distance Adaptive Huffman (2/8 + 1/35 + 1/3).
+ * FGK, reset per frame, no rescaling; encoder minimum eligible match5.
+ * max_block_size counts decisions; remaining size fields count bytes.
+ * Default16MiB is logical admission, not resident memory. IO capacities and
+ * retained caller memory are included in the resource query. Query failures
+ * preserve resources; create refuses with NULL except overlapping destinations.
+ * Flush retains the frame, ResetBlock is unsupported, and size must be known. */
+/* Larger identities are reserved until their individual qualification. */
+typedef uint32_t marc_lzss_position_distance_adaptive_huffman_profile;
+#define MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64K UINT32_C(0)
+#define MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_1M UINT32_C(1)
+#define MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_4M UINT32_C(2)
+#define MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_8M UINT32_C(3)
+#define MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_16M UINT32_C(4)
+#define MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_32M UINT32_C(5)
+#define MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64M UINT32_C(6)
+typedef struct marc_lzss_position_distance_adaptive_huffman_config {
+    uint32_t struct_size, abi_version;
+    marc_direction direction;
+    marc_lzss_position_distance_adaptive_huffman_profile profile;
+    uint64_t original_size;
+    uint32_t frame_size, reserved2;
+    uint64_t max_total_output_size, max_frame_size, max_block_size;
+    uint64_t max_compressed_payload_size, max_internal_buffered_bytes;
+    uint64_t max_lz_distance, max_lz_match_length, max_entropy_table_entries;
+    uint64_t max_expansion_ratio, expansion_slack;
+    uint64_t external_retained_bytes, input_capacity_bytes, output_capacity_bytes;
+} marc_lzss_position_distance_adaptive_huffman_config;
+typedef struct marc_lzss_position_distance_adaptive_huffman_resources {
+    uint32_t struct_size, abi_version;
+    uint64_t raw_bytes, token_bytes, serialized_bytes, finder_bytes;
+    uint64_t private_payload_bytes, private_serialized_bytes, node_bytes, symbol_bytes;
+    uint64_t owned_buffer_bytes, owner_bytes, fixed_working_bytes;
+    uint64_t external_charge_bytes, private_admission_bytes, minimum_aggregate_bytes;
+} marc_lzss_position_distance_adaptive_huffman_resources;
+MARC_API marc_status marc_lzss_position_distance_adaptive_huffman_config_init(
+    marc_direction direction, marc_lzss_position_distance_adaptive_huffman_config* config) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_position_distance_adaptive_huffman_config_apply_profile(
+    marc_lzss_position_distance_adaptive_huffman_config* config,
+    marc_lzss_position_distance_adaptive_huffman_profile profile) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_position_distance_adaptive_huffman_resource_requirements(
+    const marc_lzss_position_distance_adaptive_huffman_config* config,
+    marc_lzss_position_distance_adaptive_huffman_resources* resources) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_position_distance_adaptive_huffman_create(
+    const marc_lzss_position_distance_adaptive_huffman_config* config, marc_transform** transform) MARC_NOEXCEPT;
+
 /* Native one-MiB position-distance Blocked Huffman (2/9 + 1/29 + 2/4).
  * Fixed-five encoder; decoder grammar3..258; Huffman cap15.
  * max_block_size counts decisions. Default96MiB is logical admission,

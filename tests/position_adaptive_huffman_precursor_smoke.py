@@ -7,6 +7,7 @@ import sys
 import tempfile
 
 driver=Path(sys.argv[1]).resolve()
+public='--public' in sys.argv[3:]
 base=Path(sys.argv[2]).resolve();base.mkdir(parents=True,exist_ok=True)
 root=Path(tempfile.mkdtemp(prefix='run-',dir=base))
 raw=bytes(range(256))*257
@@ -16,8 +17,10 @@ for profile in ('position','contextual'):
     archive=root/(profile+'.marc');restored=root/(profile+'.raw')
     row={'profile':profile}
     for mode,src,dst in (('encode',source,archive),('decode',archive,restored)):
-        result=subprocess.run([str(driver),profile,mode,str(src),str(dst)],capture_output=True,text=True,check=True)
+        command=[str(driver)]+(['64k'] if public else [])+[profile,mode,str(src),str(dst)]
+        result=subprocess.run(command,capture_output=True,text=True,check=True)
         receipt=json.loads(result.stdout);assert receipt['transform_completed']
+        if public:assert receipt['public_api']
         assert receipt['frame_size']==receipt['window_size']==65536
         assert receipt['codec_seconds']>0 and receipt['peak_resident_bytes']>0
         assert receipt['input_bytes']==src.stat().st_size and receipt['output_bytes']==dst.stat().st_size

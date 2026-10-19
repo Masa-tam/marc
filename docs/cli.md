@@ -1212,3 +1212,26 @@ change; selectors, decoder grammar and transactional publication do not.
 Earlier pending statements describe their milestone state. IX-0108 separately
 records successful hosted CI and external routes reported by the maintainer
 after the combined push. This recording does not change CLI behavior.
+
+### Native64KiB position-distance Adaptive Huffman
+
+Select `lzss-position-distance-adaptive-huffman` explicitly for both encode and
+decode. It carries dictionary2/8, context1/35 and entropy1/3 with window/frame65536,
+reset-per-frame FGK models and known input size. The encoder uses minimum eligible
+match5; the decoder also accepts lengths3/4. Other entropy profiles and near-name
+aliases are rejected rather than inferred.
+
+The16MiB default is logical admission, including caller I/O capacities and the
+CLI's65536-byte retained control allowance. It is not a resident-memory ceiling.
+Each I/O array has65536 bytes; the compressed frame ceiling is2187264 payload
+bytes plus80 metadata bytes. Full-frame entropy/history validation and private
+raw reconstruction precede publication. A failed later frame leaves the final
+CLI target unpublished; an existing target or temporary file is preserved.
+ResetBlock is unsupported, Flush retains the frame, premature EndInput and
+strict trailing data are errors. SDK byte chunking does not alter encoder bytes.
+
+The64KiB candidate passes static/shared C integration and both CLI linkage paths,
+including nineteen independent stream/frame vectors and directed failures.
+BM-0265 remains an internal-owner precursor; public corpus reproduction, exchange
+qualification, the six larger windows, deferred fuzz, hosted CI and external
+four-route evidence remain separate gates.

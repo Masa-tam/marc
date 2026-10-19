@@ -10,6 +10,9 @@ namespace {
 using Code=core::ErrorCode;
 using Token=dictionary::internal::LzssTypedToken;
 using Profile=entropy::internal::PositionAdaptiveHuffmanProfile;
+template<class T> bool allocate(std::unique_ptr<T[]>& target,std::size_t count) noexcept {
+    target.reset(new(std::nothrow) T[count]);return static_cast<bool>(target);
+}
 Code mapped(PositionAdaptiveHuffmanFormatError e) noexcept {
     return e==PositionAdaptiveHuffmanFormatError::limit_exceeded
         || e==PositionAdaptiveHuffmanFormatError::arithmetic_overflow ? Code::limit_exceeded : Code::invalid_argument;
@@ -54,15 +57,10 @@ std::unique_ptr<PositionAdaptiveHuffmanOwnedEncoder> PositionAdaptiveHuffmanOwne
     std::unique_ptr<PositionAdaptiveHuffmanOwnedEncoder> p(new(std::nothrow) PositionAdaptiveHuffmanOwnedEncoder);
     if (!p) {error=Code::out_of_memory;return {};}
     p->stream_=s;p->limits_=l;p->workspace_=w;
-    p->raw_.reset(new(std::nothrow) std::byte[w.raw_bytes]);
-    p->serialized_.reset(new(std::nothrow) std::byte[w.serialized_bytes]);
-    p->payload_.reset(new(std::nothrow) std::byte[w.payload_bytes]);
-    p->staged_.reset(new(std::nothrow) std::byte[w.private_serialized_bytes]);
-    p->finder_.reset(new(std::nothrow) std::byte[w.finder_bytes]);
-    p->tokens_.reset(new(std::nothrow) Token[w.token_count]);
-    p->nodes_.reset(new(std::nothrow) entropy::internal::AdaptiveHuffmanNode[w.node_count]);
-    p->symbols_.reset(new(std::nothrow) std::uint16_t[w.symbol_count]);
-    if (!p->raw_ || !p->serialized_ || !p->payload_ || !p->staged_ || !p->finder_ || !p->tokens_ || !p->nodes_ || !p->symbols_) {
+    if (!allocate(p->raw_,w.raw_bytes) || !allocate(p->serialized_,w.serialized_bytes)
+        || !allocate(p->payload_,w.payload_bytes) || !allocate(p->staged_,w.private_serialized_bytes)
+        || !allocate(p->finder_,w.finder_bytes) || !allocate(p->tokens_,w.token_count)
+        || !allocate(p->nodes_,w.node_count) || !allocate(p->symbols_,w.symbol_count)) {
         error=Code::out_of_memory;return {};
     }
     if (const auto e=serialize_position_adaptive_huffman_stream(s,l,p->header_);e!=PositionAdaptiveHuffmanFormatError::none) {
@@ -139,11 +137,8 @@ std::unique_ptr<PositionAdaptiveHuffmanOwnedDecoder> PositionAdaptiveHuffmanOwne
     PositionAdaptiveHuffmanWorkspace w{};error=requirements(profile,capacity,limits,w);if (error!=Code::none) return {};
     std::unique_ptr<PositionAdaptiveHuffmanOwnedDecoder> p(new(std::nothrow) PositionAdaptiveHuffmanOwnedDecoder);
     if (!p) {error=Code::out_of_memory;return {};}
-    p->raw_.reset(new(std::nothrow) std::byte[w.raw_bytes]);p->serialized_.reset(new(std::nothrow) std::byte[w.serialized_bytes]);
-    p->tokens_.reset(new(std::nothrow) Token[w.token_count]);
-    p->nodes_.reset(new(std::nothrow) entropy::internal::AdaptiveHuffmanNode[w.node_count]);
-    p->symbols_.reset(new(std::nothrow) std::uint16_t[w.symbol_count]);
-    if (!p->raw_ || !p->serialized_ || !p->tokens_ || !p->nodes_ || !p->symbols_) {error=Code::out_of_memory;return {};}
+    if (!allocate(p->raw_,w.raw_bytes) || !allocate(p->serialized_,w.serialized_bytes) || !allocate(p->tokens_,w.token_count)
+        || !allocate(p->nodes_,w.node_count) || !allocate(p->symbols_,w.symbol_count)) {error=Code::out_of_memory;return {};}
     auto l=limits;l.max_frame_size=std::min<std::uint64_t>(l.max_frame_size,capacity);
     p->decoder_.emplace(profile,l,std::span(p->serialized_.get(),w.serialized_bytes),std::span(p->tokens_.get(),w.token_count),
         std::span(p->raw_.get(),w.raw_bytes),std::span(p->nodes_.get(),w.node_count),std::span(p->symbols_.get(),w.symbol_count),

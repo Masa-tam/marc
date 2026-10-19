@@ -1706,7 +1706,34 @@ foreach(stale_position_distance_contract IN ITEMS
         message(FATAL_ERROR "Stale position-distance status: ${stale_position_distance_contract}")
     endif()
 endforeach()
-math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 3 + 2 + 2 + 2 + 2 + 7 + 7 + 7")
+math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 3 + 2 + 2 + 2 + 2 + 7 + 7 + 7 + 1")
+set(c_api_position_adaptive_initializers ${c_api_config_initializers})
+list(FILTER c_api_position_adaptive_initializers INCLUDE REGEX
+    "marc_lzss_position_distance_adaptive_huffman_config_init")
+list(LENGTH c_api_position_adaptive_initializers c_api_position_adaptive_count)
+if(NOT c_api_position_adaptive_count EQUAL 1)
+    message(FATAL_ERROR "Native Adaptive Huffman must have one profile-selected public initializer")
+endif()
+foreach(position_adaptive_contract IN ITEMS
+        "marc_lzss_position_distance_adaptive_huffman_config_init"
+        "marc_lzss_position_distance_adaptive_huffman_config_apply_profile"
+        "marc_lzss_position_distance_adaptive_huffman_resource_requirements"
+        "marc_lzss_position_distance_adaptive_huffman_create"
+        "16MiB" "Failed frames never drain")
+    string(FIND "${c_api_content}" "${position_adaptive_contract}" position_adaptive_offset)
+    if(position_adaptive_offset EQUAL -1)
+        message(FATAL_ERROR "Missing native Adaptive Huffman API contract: ${position_adaptive_contract}")
+    endif()
+endforeach()
+foreach(position_adaptive_cli_contract IN ITEMS
+        "### Native64KiB position-distance Adaptive Huffman"
+        "lzss-position-distance-adaptive-huffman"
+        "dictionary2/8, context1/35 and entropy1/3" "16MiB")
+    string(FIND "${cli_content}" "${position_adaptive_cli_contract}" position_adaptive_cli_offset)
+    if(position_adaptive_cli_offset EQUAL -1)
+        message(FATAL_ERROR "Missing native Adaptive Huffman CLI contract: ${position_adaptive_cli_contract}")
+    endif()
+endforeach()
 foreach(one_mib_contract IN ITEMS
         "marc_lzss_position_distance_dynamic_range_1m_config_init()"
         "marc_lzss_position_distance_dynamic_range_1m_workspace_requirements()"
@@ -1998,7 +2025,7 @@ if(NOT c_api_profile_count EQUAL expected_c_api_profile_count)
         "C API initializer count ${c_api_profile_count} must contain the "
         "${cli_profile_count} CLI profiles plus five experimental profiles "
         "and three existing public position-distance families plus "
-        "two separate eight-MiB, two separate sixteen-MiB and two separate thirty-two-MiB and two separate sixty-four-MiB direction initializers plus seven owning position rANS initializers, seven owning position tANS initializers and seven owning position Blocked Huffman initializers")
+        "two separate eight-MiB, two separate sixteen-MiB and two separate thirty-two-MiB and two separate sixty-four-MiB direction initializers plus seven owning position rANS initializers, seven owning position tANS initializers, seven owning position Blocked Huffman initializers and one profile-selected native Adaptive Huffman initializer")
 endif()
 list(FILTER c_api_config_initializers INCLUDE REGEX
     "marc_lzss_contextual_(dynamic_range|rans|tans|adaptive_huffman|blocked_huffman)_config_init")
