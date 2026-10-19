@@ -26852,3 +26852,18 @@ routes pass. Earlier adapter runs are retained as a distinct execution scope.
 Existing corpus sizes, speed and resident-peak gates are not inferred from
 these small exchange fixtures. Six full-corpus campaigns, deferred fuzz and
 remote qualification remain pending. No original artifact is removed.
+
+### TVG-1622: public native Adaptive Huffman1m full-corpus audit
+
+BM-0267 records all12 manifest-verified Silesia members, actual same-window/
+same-frame identities and three fresh-process observations per profile/direction.
+The independent artifact audit rehashes72 deterministic archives and72 exact
+restorations, rechecks144 timing/resource receipts and1242
+frame headers, and recalculates sizes, member medians, aggregate rates and maximum
+process-resident peaks. Actual serialized settings qualify the contextual control;
+logical admission/workspace queries remain distinct from resident measurements.
+
+Record every member and the aggregate trade-offs, including larger native outputs.
+No encoder/decoder or existing artifact changes. This milestone leaves5
+larger-window full-corpus campaigns pending. Final family result review, deferred
+fuzz and hosted/external102-profile qualification remain separate unfinished work.
