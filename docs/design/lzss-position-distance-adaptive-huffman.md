@@ -153,3 +153,11 @@ planned payload before committing metadata. Checked products precede range
 checks. These private accounting rules are conservative operation limits, not
 yet public default grants. All token-result counts/sizes are zero on failure,
 even when private scratch already contains a validated prefix of tokens.
+
+The64KiB stream/frame metadata milestone TVG-1583 qualifies canonical headers,
+prefix bounds and private decoder requirements. The stream is known-size only;
+the all-ones unknown-size marker is rejected even under a permissive total
+output limit. Prefix preflight validates80 bytes before payload buffering;
+full preflight checks the complete extent but does not replace entropy/history
+validation or authorize raw publication. All other per-window completion gates
+remain open at this metadata-only milestone.

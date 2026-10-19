@@ -43300,3 +43300,14 @@ ordinary outputs and zero failure counts despite partial private progress.
 Exact/one-short accounting and a full64KiB late-distance case pass. Existing
 formats and generated products are retained. No external implementation is
 consulted, no fuzz is run, and full frame/public/measurement gates remain open.
+
+### CR-1960: 2026-10-19 — native64KiB stream/frame metadata qualification
+
+Author/reviewer: Codex. TVG-1583 adds independently packed stream/frame vectors
+to DD-1627 using explicit little-endian fields. New metadata validators select
+the exact reserved profile before checking extents and model requirements;
+they do not reuse a different codec's identity or silently admit larger windows.
+Truncation, corruption, quota and unchanged-output tests pass with prior frozen
+entropy vectors retained. Existing productions and the qualified fixed runtime
+remain untouched. Complete frame decoding/publication is a later gate.
+No external implementation is consulted and fuzz remains explicitly deferred.

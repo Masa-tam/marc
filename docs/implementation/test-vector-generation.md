@@ -26038,3 +26038,23 @@ from33 to32 valid bits fails after private prefix tokens exist; every ordinary
 token remains unchanged. Seven format/core/token/vector/documentation
 registrations pass. Full frame/raw publication, API/CLI, measurements, exchange
 and larger-window qualifications remain pending; fuzz is not executed.
+
+### TVG-1583: native Adaptive Huffman64KiB stream/frame metadata
+
+The independent oracle adds fourteen frozen112-byte stream headers and complete
+single-frame vectors (empty input has no frame), retaining the earlier entropy
+fixtures unchanged. New bounded parsers/serializers reproduce every stream and
+frame header exactly, including tuple2/8+1/35+1/3, FGK/no-rescale parameters,
+9188 node slots and the fixed16-byte descriptor. Unknown-size markers and
+cross-profile identities are rejected rather than inferred or widened.
+
+Directed cases cover every stream-header truncation, every complete-frame
+truncation, fixed frame/descriptor metadata corruption, reserved parameter bytes,
+short serialization destinations and exact/one-short private frame requirements.
+Ordinary parsed structures, consumed counts, requirements and unused output
+tails remain unchanged on failure. Prefix preflight succeeds with just80 bytes
+only after validating all metadata; full preflight additionally requires the
+payload extent. Neither preflight claims entropy or history validation.
+Nine format/core/token/vector/documentation registrations pass. Whole-frame
+encoding/restoration and publication controllers, API/CLI, comparisons, exchange
+and larger-profile qualifications remain pending. No fuzz is executed.

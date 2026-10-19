@@ -157,6 +157,32 @@ def vectors():
     assert by_name['one-A']['valid_bits']==1
     return {'format':'DD-1627 position-distance Adaptive Huffman64KiB','vectors':result}
 
+def frame_vectors():
+    result=vectors()
+    result['format']='DD-1627 position-distance Adaptive Huffman64KiB stream/frame'
+    for row in result['vectors']:
+        raw_size=len(bytes.fromhex(row['raw_hex']))
+        header=bytearray(112)
+        header[:4]=b'MARC'
+        for at,value in [(4,2),(6,0),(8,64),(10,1),(12,2),(14,8),(16,1),(18,3),(96,1),(98,35)]:
+            struct.pack_into('<H',header,at,value)
+        for at,value in [(20,65536),(28,16),(32,16),(48,16),(64,65536),(68,3),(72,258),
+                         (84,4570),(88,9188)]:
+            struct.pack_into('<I',header,at,value)
+        struct.pack_into('<Q',header,40,raw_size)
+        header[80:84]=bytes([1,1,48,0])
+        row['stream_hex']=header.hex()
+        row['frame_hex']=''
+        if raw_size:
+            payload=bytes.fromhex(row['payload_hex'])
+            descriptor=bytes.fromhex(row['descriptor_hex'])
+            decisions=len(row['decisions'])
+            frame=struct.pack('<4sHHQIIIIIIII16s',b'MRF2',64,0,0,raw_size,len(row['tokens']),
+                              decisions,decisions,len(payload),16,0,0,bytes(16))
+            assert len(frame)==64
+            row['frame_hex']=(frame+descriptor+payload).hex()
+    return result
+
 def main():
     parser=argparse.ArgumentParser(__doc__)
     parser.add_argument('--output',type=Path)
@@ -164,8 +190,14 @@ def main():
     parser.add_argument('--format-tool',type=Path)
     parser.add_argument('--entropy-tool',type=Path)
     parser.add_argument('--token-tool',type=Path)
+    parser.add_argument('--frames',action='store_true')
+    parser.add_argument('--frame-tool',type=Path)
     args=parser.parse_args()
-    result=vectors()
+    result=frame_vectors() if args.frames else vectors()
+    if args.frame_tool:
+        assert args.frames
+        for row in result['vectors']:
+            subprocess.run([str(args.frame_tool),row['stream_hex'],row['frame_hex']],check=True,timeout=30)
     if args.format_tool:
         for row in result['vectors']:
             subprocess.run([str(args.format_tool),row['descriptor_hex'],str(len(row['decisions'])),
