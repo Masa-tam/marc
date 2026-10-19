@@ -43446,3 +43446,12 @@ profile table to the object-tree oracle and bounded file transport. Complete
 frame bytes are compared with the generic first-party codec without admitting
 the public4MiB profile. Earlier fixture bytes are unchanged. No external source,
 fuzz, fixed-runtime replacement or push is involved.
+
+### CR-1975: 2026-10-20 — private4MiB owner baseline
+
+Author/reviewer: Codex. TVG-1598 uses the existing first-party exact4MiB finder
+and the same generic native FGK frame implementation. Reusable owner tests retain
+the earlier1MiB default and add explicit4MiB selection, including full-size quota
+and publication checks. The measured reference allocation is recorded before
+any buffer-reuse change. No external source, fuzz, push or fixed-runtime update
+is involved.

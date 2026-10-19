@@ -13,11 +13,11 @@ using namespace marc::frame::internal;
 using Profile=marc::entropy::internal::PositionAdaptiveHuffmanProfile;
 using Code=marc::core::ErrorCode;
 using Status=marc::core::StreamStatus;
-constexpr auto profile=Profile::window_1m;
-constexpr std::uint32_t extent=1048576;
+auto profile=Profile::window_1m;
+std::uint32_t extent=1048576,decisions_per_byte=8;
 constexpr auto end=marc::core::flag_value(marc::core::ProcessFlags::end_input);
 void check(bool condition,const std::source_location where=std::source_location::current()) {
-    if (!condition) throw std::runtime_error("1MiB native FGK owner check failed at line "+std::to_string(where.line()));
+    if (!condition) throw std::runtime_error("native FGK owner check failed at line "+std::to_string(where.line()));
 }
 PositionAdaptiveHuffmanStreamHeader header(std::uint32_t frame,std::size_t original) {
     PositionAdaptiveHuffmanStreamHeader h{};h.profile=profile;h.frame_size=frame;
@@ -25,7 +25,7 @@ PositionAdaptiveHuffmanStreamHeader header(std::uint32_t frame,std::size_t origi
 }
 marc::core::DecoderLimits limits(std::uint32_t frame) {
     marc::core::DecoderLimits l{};l.max_frame_size=frame;l.max_lz_distance=extent;
-    l.max_block_size=8*static_cast<std::uint64_t>(frame);
+    l.max_block_size=decisions_per_byte*static_cast<std::uint64_t>(frame);
     l.max_compressed_payload_size=(267*static_cast<std::uint64_t>(frame)+7)/8;
     // Query only: allocation is always admitted against the returned exact size.
     l.max_internal_buffered_bytes=std::numeric_limits<std::uint64_t>::max();return l;
@@ -97,7 +97,7 @@ void admission(std::uint32_t frame) {
     --l.max_internal_buffered_bytes;sentinel=d;sentinel.aggregate_bytes=17;
     check(PositionAdaptiveHuffmanOwnedDecoder::requirements(profile,frame,l,sentinel)==Code::limit_exceeded && sentinel.aggregate_bytes==17);
     check(!PositionAdaptiveHuffmanOwnedDecoder::create(profile,frame,l,error) && error==Code::limit_exceeded);
-    std::cout<<"1MiB capacity="<<frame<<" aggregate encode="<<e.aggregate_bytes<<" decode="<<d.aggregate_bytes
+    std::cout<<"window="<<extent<<" capacity="<<frame<<" aggregate encode="<<e.aggregate_bytes<<" decode="<<d.aggregate_bytes
         <<" finder="<<e.finder_bytes<<" owned encode="<<e.owned_bytes<<" decode="<<d.owned_bytes<<'\n';
 }
 void rejected(const std::vector<std::byte>& wire,std::size_t expected_prefix) {
@@ -147,8 +147,10 @@ void failed_frame() {
     check(failed);
 }
 }
-int main() {
+int main(int argc,char** argv) {
     try {
+        if (argc==2) {check(std::string(argv[1])=="4m");profile=Profile::window_4m;extent=4194304;decisions_per_byte=9;}
+        else check(argc==1);
         roundtrip({},5,true);roundtrip({std::byte{0}},5,true);roundtrip({std::byte{255}},5,true);
         std::vector<std::byte> values;for (unsigned i=0;i<256;++i) values.push_back(static_cast<std::byte>(i));
         roundtrip(values,17,true);
@@ -156,6 +158,6 @@ int main() {
         std::vector<std::byte> mixed(1025);std::uint32_t state=17;
         for (auto& b:mixed) {state=state*1664525u+1013904223u;b=static_cast<std::byte>(state>>24);}
         roundtrip(mixed,257,true);admission(257);admission(extent);failed_frame();
-        std::cout<<"native FGK1MiB owned checks passed\n";
+        std::cout<<"native FGK owned checks passed\n";
     } catch (const std::exception& error) {std::cerr<<error.what()<<'\n';return 1;}
 }

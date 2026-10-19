@@ -256,3 +256,9 @@ length3/distance4194301 reference. Existing64KiB and1MiB fixture objects remain
 unchanged. File input bounds are extended to this profile; per-fixture decision
 admission includes the declared frame while retaining an independent finite
 internal-buffer limit.
+
+The private4MiB owner connects the existing exact four-MiB five-prefix finder,
+retaining eligible length5, per-frame resets and the success-only drain contract.
+Its first resource qualification uses the same three-buffer reference encode
+staging as64KiB/1MiB. This baseline is measured separately before considering
+private-buffer reuse; no public4MiB admission is implied by the private owner.

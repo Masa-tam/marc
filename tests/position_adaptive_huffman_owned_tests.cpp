@@ -68,7 +68,7 @@ void admission() {
     auto d=PositionAdaptiveHuffmanOwnedDecoder::create(profile,256,limits,error);check(d && error==Code::none);
     auto bytes=encode(raw,256,4096,4096);check(drive(*d,bytes,4096,4096)==raw);
     --limits.max_internal_buffered_bytes;check(!PositionAdaptiveHuffmanOwnedDecoder::create(profile,256,limits,error) && error==Code::limit_exceeded);
-    h.profile=PositionAdaptiveHuffmanProfile::window_4m;limits={};
+    h.profile=PositionAdaptiveHuffmanProfile::window_8m;limits={};
     check(PositionAdaptiveHuffmanOwnedEncoder::requirements(h,limits,w)==Code::unsupported);
     h.profile=profile;h.original_size=5;h.frame_size=5;
     auto e=PositionAdaptiveHuffmanOwnedEncoder::create(h,{},error);check(static_cast<bool>(e));

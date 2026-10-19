@@ -26338,3 +26338,20 @@ takes5.00 seconds; its registered60-second limit retains measured headroom.
 No earlier vectors are regenerated differently. This is format/reference
 evidence; owned/public4MiB admission, measurements and exchange remain separate
 pending milestones. Fuzz is not executed.
+
+### TVG-1598: private4MiB owner baseline and quota qualification
+
+Connect the existing first-party exact4MiB five-prefix finder to the generic
+native owner. Reuse the1MiB owner checks through an explicitly selected4MiB
+test profile without weakening its original default1MiB assertions. Check
+full-window sizes4194303/4194304/4194305, one-byte/split I/O, stable terminals,
+exact/one-short grants at257 and4194304 capacities, failed later-frame entropy,
+exhaustive small-stream truncations, padding and strict trailing data.
+
+Both builds pass four related registrations: the three64KiB/1MiB/4MiB owners
+and documentation. Full-capacity logical requirements are526020056 encode and
+194817544 decode; the finder accounts for51118080 bytes. This is the reference
+three-buffer encode baseline, not a resident peak or public default grant.
+Larger private owners and public4MiB admission remain unsupported/pending.
+Private-buffer reuse, corpus measurements, exchange, deferred fuzz and remote
+qualification are separate remaining gates. No fuzz is executed.
