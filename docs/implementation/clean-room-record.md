@@ -43662,3 +43662,12 @@ codec implementation sources remain unchanged; rebuilding unrelated targets
 is not represented as a required or completed regression gate. No external
 implementation, fuzz or push is involved. Remaining corpus, complete schema
 history and remote results remain explicitly pending.
+
+### CR-1998: 2026-10-20 — native Adaptive Huffman complete schema-history audit
+
+Author/reviewer: Codex. TVG-1621 and IX-0118 audit retained derived-schema
+outputs and distinguish actual native-shell execution from earlier adapter
+execution. Counter coverage is reported exactly as recorded; missing older
+launch observations are not invented. New producer bytes agree with the
+qualified first-party implementation. No external implementation is consulted,
+no fuzz or push occurs, and incomplete full-corpus/remote gates remain pending.

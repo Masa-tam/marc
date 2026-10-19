@@ -2846,3 +2846,28 @@ These are local incremental results, not the final whole-history/repository
 qualification. Full corpus/peak comparisons, complete schema history and final
 runtime promotion remain pending. Fuzz remains deferred by user instruction;
 no push or hosted/external102-profile result is claimed.
+
+### IX-0118: native Adaptive Huffman complete local schema history
+
+The primary-build static consumer verifies derived schemas1 through92. An
+artifact audit independently rehashes all5223 archived, restored and re-encoded
+triples against their manifests and input digests. All92 source/verified
+schema directories are retained. Thirty-one admission receipts contain3425
+rejected cases with no output files;3398 also explicitly record zero codec
+launches. The older receipt without that counter is not relabelled as having
+measured it. These are derived-schema compatibility results, not newly obtained
+external historical artifacts.
+
+Native Unix-shell execution is now qualified separately from the earlier
+adapter runs. Its fourth102-entry producer agrees byte-for-byte with the
+primary-build producer. Native self-execution and both primary/second-build
+cross directions pass all102 strict restoration/re-encoding entries. Seven
+independent header registrations pass in that native shell, each checking19
+positive headers and2147 directed alterations. Its schema92 admission guard
+rejects132 cases with zero codec launches and output files. Earlier adapter,
+failed service-start and saved-consumer evidence remains preserved.
+
+This completes the local structural/exchange branch of the family audit.
+Six larger-window full-corpus size/rate/resident-peak comparisons remain
+unfinished. Fuzz is still deferred by user instruction; no push, hosted CI
+success or external four-route102-profile result is claimed.

@@ -26838,3 +26838,17 @@ repository-wide qualification. The changed-target builds finish successfully.
 Complete schema history and six remaining full-corpus/peak comparisons remain
 pending. This runtime qualification does not complete the goal. Fuzz remains
 deferred; hosted CI/external102-profile results are not yet available.
+
+### TVG-1621: native Adaptive Huffman schema-history and shell audit
+
+IX-0118 completes primary-build schema1..92 execution and rehashes5223
+round-trip triples. Recheck3425 no-output rejection receipts, distinguishing
+3398 explicit zero-launch observations from the older receipt without that
+field. A separately probed native Unix shell passes all seven independent
+header registrations and132 schema92 pre-launch rejections. Its102-body
+producer matches the primary producer and three additional native self/cross
+routes pass. Earlier adapter runs are retained as a distinct execution scope.
+
+Existing corpus sizes, speed and resident-peak gates are not inferred from
+these small exchange fixtures. Six full-corpus campaigns, deferred fuzz and
+remote qualification remain pending. No original artifact is removed.
