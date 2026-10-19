@@ -43227,3 +43227,15 @@ implementation change. The initial inspection finds no existing pool/override
 rule in the inspected ANS builders; complete profile/runtime evidence is still
 pending. Specify the opposite-singleton experiment independently. No external
 implementation is consulted and no compression/performance benefit is assumed.
+
+### CR-1954: 2026-10-19 — ANS opposite-singleton runtime evidence
+
+Author/reviewer: Codex. TVG-1578 implements the independently stated200-decision
+vector with existing repository normalizers, serializers, reverse writers and
+decoders across fifteen implementations. Original contexts remain independent;
+duplicating an equal pooled distribution is decoder-compatible but larger in
+this counterexample. Test adapters share only their own diagnostic scaffolding;
+no production codec expression is changed or copied from an external source.
+Existing rANS format and tANS core tests pass with their vectors intact.
+No external implementation is consulted. Final source/artifact preservation
+and the investigation conclusion remain separate local gates.

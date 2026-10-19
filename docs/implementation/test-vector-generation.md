@@ -25922,3 +25922,29 @@ repeated by this recording audit. Hosted CI and four95-archive external results
 are maintainer-supplied evidence at the exact revision in IX-0108, not newly
 executed local tests or independent inspection of remote binaries. Required
 documentation and diff checks precede the recording commit.
+
+### TVG-1578: all-window ANS independent-model and repeated-pool experiment
+
+DD-1626's first-party C++ probe instantiates all fourteen current public
+position-distance rANS/tANS entropy profiles and the retained compact4MiB rANS
+implementation. Feed200 alternating decisions: context0 always emits0,
+context1 always emits1. Each builder produces separate4096-frequency singletons;
+repeated finish is deterministic. Appending two uniform residual decisions
+changes the decision count but leaves every modeled frequency unchanged.
+
+Copy the diagnostic equal2048/2048 distribution into both context slots.
+For both original and repeated-pool plans, use actual reverse-writer sizing,
+serialized descriptors, payload emission and existing decoder restoration.
+tANS descriptors are reparsed before decoding; rANS decoding parses descriptor
+bytes itself. All30 streams restore. Every repeated-pool stream is27 bytes
+larger: descriptor+2 and payload+25. All current context slots remain present;
+this tests repeated equal models, not a new shared-model format or corpus gain.
+
+The new applicability registration, eight existing rANS format registrations,
+seven existing tANS core registrations and documentation layout all pass:
+17 registrations. Frozen vectors and existing malformed/failure cases are
+unchanged. The diagnostic executable has a separate output directory; existing
+codec sources, public selectors, frame representation and quotas are unchanged.
+No speed or peak-memory claim is inferred from test wall time. Final retained
+product/source checks and the complete applicability conclusion remain pending
+at this milestone; no CI execution or push is performed.

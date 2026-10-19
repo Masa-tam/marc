@@ -10937,6 +10937,18 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
                 ${CMAKE_CURRENT_BINARY_DIR}/cli-position-blocked-huffman-1m)
         set_tests_properties(marc_cli_position_blocked_huffman_1m PROPERTIES TIMEOUT 180)
     endif()
+    add_executable(marc_position_ans_pool_applicability
+        tests/position_ans_pool_applicability.cpp
+        src/entropy/position_rans_4m_format.cpp
+        src/entropy/position_rans_4m_encoder.cpp
+        src/entropy/position_rans_4m_decoder.cpp)
+    target_compile_features(marc_position_ans_pool_applicability PRIVATE cxx_std_20)
+    target_include_directories(marc_position_ans_pool_applicability PRIVATE src)
+    target_link_libraries(marc_position_ans_pool_applicability PRIVATE marc::static)
+    set_target_properties(marc_position_ans_pool_applicability PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
+    add_test(NAME marc_position_ans_pool_applicability COMMAND marc_position_ans_pool_applicability)
+
     add_executable(marc_position_blocked_huffman_64k_cli_candidate tools/marc_cli.cpp)
     target_compile_features(marc_position_blocked_huffman_64k_cli_candidate PRIVATE cxx_std_20)
     target_link_libraries(marc_position_blocked_huffman_64k_cli_candidate PRIVATE marc::static)
