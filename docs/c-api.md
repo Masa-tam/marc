@@ -1618,7 +1618,7 @@ The family uses a common configuration with an explicit profile field and
 `marc_lzss_position_distance_adaptive_huffman_config_apply_profile`. Initialization
 selects64KiB. Applying a profile resets its window-dependent defaults while
 preserving direction, original size, caller retention and I/O declarations.
-Profile values32MiB and larger are reserved and return Unsupported until individually
+Profile value64MiB is reserved and returns Unsupported until individually
 qualified; unknown values return InvalidArgument. Failed application preserves
 the configuration. Existing codec configurations and ABI layouts are unchanged.
 
@@ -1729,3 +1729,24 @@ failure contracts remain unchanged. The same-window public contextual16MiB
 control verifies dictionary2/5, entropy1/2, context1/4, actual window/frame
 16777216 and complete restoration. These pilots do not replace full-corpus
 size/rate/resident-peak comparisons or exchange qualification.
+
+### Native32MiB position-distance Adaptive Huffman
+
+Apply `MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_32M` to select
+dictionary2/13, context1/40 and Adaptive Huffman1/8. The dictionary window is
+33554432 bytes; frame size may be1..33554432. Defaults are frame/max-frame
+33554432, maximum block335544320 decisions, maximum payload1119879168 bytes,
+14064 model entries and2048MiB logical admission. I/O capacities remain65536
+bytes each. Existing profile defaults and stream representations are unchanged.
+
+With65536 retained control bytes and two65536-byte I/O declarations, measured
+minimum grants are1960149642 encode and1556595466 decode bytes. Actual ABI/
+configuration queries remain required; these charges are not resident peaks.
+The owner retains the preceding single private frame and ordinary output/
+failed-frame publication contracts.
+
+For a same-window contextual control, its existing64MiB API accepts window and
+frame33554432. The pilot verifies dictionary2/6, entropy1/2, context1/5, actual
+window/frame and complete restoration. This is an explicitly configured API
+control, not an additional public contextual32MiB profile. Full corpus and
+resident-peak comparisons and exchange remain independent subsequent gates.

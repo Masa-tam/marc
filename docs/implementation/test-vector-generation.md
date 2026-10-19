@@ -26648,3 +26648,35 @@ pilots take6.69 and9.95 seconds respectively, supporting a60-second test limit.
 No public admission is implied. Full corpus/peak comparisons,101-profile
 exchange, the last larger profile, deferred fuzz and remote results remain
 pending. No fuzz or fixed-runtime replacement is performed.
+
+### TVG-1613: native32MiB public boundary and configured contextual control
+
+Admit32MiB through the common public factory and exact CLI selector. Derive
+2048MiB logical admission from qualified private requirements and public
+I/O/control charges. With65536 retained control bytes and two65536-byte I/O
+declarations, measured minimum public grants are1960149642 encode and
+1556595466 decode bytes. Preserve earlier profile defaults and ABI layouts.
+
+Full-frame exact/one-short quotas, every factory allocation failure,
+allocation-free processing, arbitrary chunking and stable terminal states
+retain their preceding assertions. Both C linkages and both CLI linkages pass
+initial pilots on each build. CLI coverage retains19 golden files, seven
+boundary round trips, strict foreign/near-name rejection, small truncations,
+padding/trailing validation, late failed-frame withholding and target/tmp
+preservation. Existing smaller profiles are rerun with the new implementation.
+
+The existing contextual64MiB API accepts actual window/frame33554432. Its
+pilot verifies dictionary2/6, entropy1/2, context1/5 and restoration of33554688
+bytes. This is an explicitly configured API control, not a new public32MiB
+contextual profile. Full12 corpus/peak comparisons remain pending.
+
+Initial API/resource/C runs pass four registrations per build below31 seconds.
+The slowest initial CLI pilot takes87.10 seconds. Retain the inherited large-
+window resource lock and set API120 seconds, resource/C30 seconds and CLI300
+seconds from those observations.101-profile exchange, the last larger profile,
+deferred fuzz and hosted/external results remain pending. No fuzz is run.
+
+Final related runs pass72 registrations on the first build and67 on the
+second, taking329.97 and411.61 seconds. Earlier SDK generations and fixed
+Release products remain preserved. Full measurements and exchange remain
+separate unfinished gates.

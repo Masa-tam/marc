@@ -11,8 +11,8 @@ import tempfile
 tool=Path(sys.argv[1]).resolve();base=Path(sys.argv[2]).resolve();base.mkdir(parents=True,exist_ok=True)
 stage=Path(tempfile.mkdtemp(prefix='run-',dir=base))
 window=sys.argv[3] if len(sys.argv)==4 else '64k'
-assert window in ('64k','1m','4m','8m','16m')
-extent,index={'64k':(65536,0),'1m':(1048576,1),'4m':(4194304,2),'8m':(8388608,3),'16m':(16777216,4)}[window]
+assert window in ('64k','1m','4m','8m','16m','32m')
+extent,index={'64k':(65536,0),'1m':(1048576,1),'4m':(4194304,2),'8m':(8388608,3),'16m':(16777216,4),'32m':(33554432,5)}[window]
 suffix='' if window=='64k' else '-'+window;codec='lzss-position-distance-adaptive-huffman'+suffix
 
 
@@ -72,12 +72,12 @@ late=stage/'late.marc';late.write_bytes(header+first+second);invoke('decode',lat
 
 for i,selected in enumerate(('lzss-position-adaptive-huffman'+suffix,codec+'-64k',codec+'-64K')):
     invoke('encode',stage/'1.input',stage/f'near-{i}.marc',False,selected)
-contextual_suffix='-16m' if window=='8m' else suffix
+contextual_suffix='-16m' if window=='8m' else '-64m' if window=='32m' else suffix
 for i,selected in enumerate(('adaptive-huffman','lzss-adaptive-huffman','lzss-contextual-adaptive-huffman'+contextual_suffix,
                              'lzss-position-distance-blocked-huffman'+suffix,'lzss-position-distance-tans'+suffix)):
     old=stage/f'old-{i}.marc';invoke('encode',stage/'256.input',old,True,selected)
     invoke('decode',old,stage/f'old-{i}.raw',False)
-for other in ('64k','1m','4m','8m','16m'):
+for other in ('64k','1m','4m','8m','16m','32m'):
     if other==window:continue
     fixture=Path(__file__).parent/'data'/f'position_adaptive_huffman_{other}_frame_vectors.json'
     row=next(r for r in json.loads(fixture.read_text(encoding='utf-8'))['vectors'] if r['name']=='one-A')

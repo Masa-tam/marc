@@ -43584,3 +43584,13 @@ profile/variant pairings, exact admission and ordinary failure/failed-frame
 publication contracts remain intact. No external source, fuzz, push or fixed
 runtime replacement is involved. Public, corpus and exchange evidence remain
 subsequent independent gates.
+
+### CR-1990: 2026-10-20 — native32MiB public integration
+
+Author/reviewer: Codex. TVG-1613 connects the defined32MiB FGK identity through
+the first-party common API and CLI. Actual resource queries and pilots determine
+admission/test limits. The existing contextual API is exercised at matching
+window/frame with emitted identities and restoration checked. Earlier profile
+representations, allocation-failure and publication assertions remain intact.
+No external source, fuzz, push or fixed-runtime replacement is involved.
+Full corpus and exchange evidence remain independent subsequent gates.

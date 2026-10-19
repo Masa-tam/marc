@@ -1280,3 +1280,14 @@ I/O arrays. The payload ceiling is559939584 bytes plus80 metadata bytes.
 Complete-frame validation precedes draining; whole-file publication preserves
 the existing transactional target/tmp contract. Corpus and exchange evidence
 remain separate from public correctness/resource pilots.
+
+### Native32MiB position-distance Adaptive Huffman
+
+Select `lzss-position-distance-adaptive-huffman-32m` for encode and decode.
+Its exact identities are dictionary2/13, context1/40 and entropy1/8, with
+window/frame33554432 bytes and eligible match length5. The decoder also accepts
+lengths3/4. The CLI requests2048MiB logical admission and retains two65536-byte
+I/O arrays. The payload ceiling is1119879168 bytes plus80 metadata bytes.
+Complete-frame validation precedes draining; whole-file publication preserves
+the existing transactional target/tmp contract. Corpus and exchange results
+remain separate from public correctness/resource pilots.
