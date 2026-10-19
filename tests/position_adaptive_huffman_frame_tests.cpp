@@ -59,7 +59,7 @@ void fixture(const std::vector<std::byte>& stream_bytes,const std::vector<std::b
     check(stream_bytes.size()==112);
     const auto variant=std::to_integer<unsigned>(stream_bytes[14])
         | (std::to_integer<unsigned>(stream_bytes[15])<<8);
-    check(variant>=8 && variant<=10);
+    check(variant>=8 && variant<=11);
     const auto selected=static_cast<PositionAdaptiveHuffmanProfile>(variant-8);
     auto limits=marc::core::DecoderLimits{};
     limits.max_block_size=std::max(limits.max_block_size,
@@ -137,7 +137,7 @@ std::vector<std::byte> fixture_file(const char* path,std::size_t maximum) {
     check(static_cast<bool>(source));return bytes;
 }
 void files(char** paths) {
-    constexpr std::size_t maximum_raw=4194304;
+    constexpr std::size_t maximum_raw=8388608;
     auto stream=fixture_file(paths[0],112);
     auto frame=fixture_file(paths[1],80+(267*maximum_raw+7)/8);
     auto raw=fixture_file(paths[2],maximum_raw);

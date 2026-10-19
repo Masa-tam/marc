@@ -276,3 +276,11 @@ removing the duplicate payload and serialized staging allocations. Decode stays
 194817544 bytes and the finder stays51118080. No format ceiling, model rule,
 descriptor, token parse or decoder representation changes. These observations
 are private logical charges, separate from forthcoming public resident peaks.
+
+The next qualification step freezes independent8MiB stream/frame and boundary
+vectors under the already reserved identity: dictionary2/11, context1/38 and
+Adaptive Huffman1/6, with55 contexts,4647 alphabet entries and9349 nodes.
+The full-window late-reference fixture represents8388608 repeated bytes with
+32516 tokens,325168 decisions and40650 payload bytes, one valid final bit and
+final distance8388605. This format/vector step does not admit a new public
+profile or assume a memory grant.

@@ -43484,3 +43484,11 @@ Prefix/body equality, launch-guard negatives, reciprocal execution and saved
 preceding static consumers provide incremental local evidence. No external
 source, fuzz, push or fixed-runtime replacement is involved. Complete schema
 history, corpus results and final family/remote gates remain pending.
+
+### CR-1979: 2026-10-20 — independent8MiB native FGK fixtures
+
+Author/reviewer: Codex. TVG-1602 extends the first-party mathematical fixture
+generator's frozen output to the next reserved window. File transport retains
+complete decoder-visible bytes and explicit token fields. Both reference and
+private scratch paths are checked against those independent bytes. No external
+source, public factory admission, fuzz, push or fixed-runtime update is involved.

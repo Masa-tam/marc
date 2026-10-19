@@ -26423,3 +26423,18 @@ native-shell admission required. The first build passes the three header
 registrations and document layout. Keep full-chain/final102 audit, corpus
 measurements, four larger profiles, deferred fuzz and remote results pending.
 No fuzz is executed and no existing product is replaced.
+
+### TVG-1602: independently generated8MiB native FGK vectors
+
+Freeze14 stream/frame fixtures and five boundaries from the independent
+mathematical generator for the already reserved8MiB identity. The full-window
+late-reference fixture has8388608 raw bytes,32516 tokens,325168 decisions,
+40650 payload bytes and one valid final bit; its final match distance is8388605.
+Use the bounded file transport for raw and little-endian token fields rather
+than command-line expansion or compile-time materialization. Raise only the
+fixture bridge's selected-profile and raw-size bounds through8MiB.
+
+Check the new and all preceding frozen vector sets on both builds, including
+reference/scratch equality, ordinary failure invariance, private admission and
+model alias checks. Internal ownership, API/CLI, corpus measurements,99-profile
+exchange and all later family/remote gates remain pending. Fuzz is not run.
