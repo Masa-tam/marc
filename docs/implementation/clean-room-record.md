@@ -43623,3 +43623,13 @@ evidence and replaced by explicit test-runner/fresh-process qualification,
 without reclassifying the original receipt. No external source, fuzz, push or
 fixed-runtime replacement is involved. Public/corpus/exchange gates remain
 unfinished.
+
+### CR-1994: 2026-10-20 — native64MiB public integration
+
+Author/reviewer: Codex. TVG-1617 connects the last independently specified native
+FGK identity through the common first-party API and CLI. Actual resource queries
+and pilots determine admission/test limits; a checked-size immutable table
+retains previous profile defaults. Unknown-value invariance, allocation failure
+and failed-frame/transactional publication assertions remain intact. No external
+source, fuzz, push or fixed-runtime replacement is involved. Corpus, exchange
+and final remote gates remain separate unfinished work.

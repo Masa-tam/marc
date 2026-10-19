@@ -1618,9 +1618,8 @@ The family uses a common configuration with an explicit profile field and
 `marc_lzss_position_distance_adaptive_huffman_config_apply_profile`. Initialization
 selects64KiB. Applying a profile resets its window-dependent defaults while
 preserving direction, original size, caller retention and I/O declarations.
-Profile value64MiB is reserved and returns Unsupported until individually
-qualified; unknown values return InvalidArgument. Failed application preserves
-the configuration. Existing codec configurations and ABI layouts are unchanged.
+All seven defined profile values are admitted; unknown values return
+InvalidArgument. Failed application preserves the configuration. Existing codec configurations and ABI layouts are unchanged.
 
 The encoder retains minimum eligible match5; the decoder accepts lengths3..258.
 Each FGK model resets per frame and does not rescale. Flush leaves the frame
@@ -1750,3 +1749,24 @@ frame33554432. The pilot verifies dictionary2/6, entropy1/2, context1/5, actual
 window/frame and complete restoration. This is an explicitly configured API
 control, not an additional public contextual32MiB profile. Full corpus and
 resident-peak comparisons and exchange remain independent subsequent gates.
+
+### Native64MiB position-distance Adaptive Huffman
+
+Apply `MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64M` to select
+dictionary2/14, context1/41 and Adaptive Huffman1/9. Window is67108864 bytes and
+frame size may be1..67108864. Defaults are frame/max-frame67108864, maximum
+block738197504 decisions, maximum payload2239758336 bytes,14098 model entries
+and4096MiB logical admission. I/O defaults remain65536 bytes each. All earlier
+profile defaults and representations remain unchanged.
+
+With65536 retained control bytes and two65536-byte I/O declarations, observed
+minimum grants are3918890000 encode and3112682640 decode bytes. Query the
+actual ABI/configuration before construction. These logical amounts are not
+resident peaks. The owner preserves single private frame staging and ordinary
+failure/failed-frame publication contracts. Unknown profile values fail before
+table indexing and preserve the supplied configuration.
+
+The same-window public contextual64MiB control verifies dictionary2/6,
+entropy1/2, context1/5, actual window/frame67108864 and complete restoration.
+Full-corpus size/rate/resident-peak comparisons and exchange qualification
+remain separate from public correctness/resource pilots.

@@ -131,10 +131,10 @@ void invalid_configurations() {
         const auto refused=marc_lzss_position_distance_adaptive_huffman_create(&c,&p);tracked=false;
         check(refused==expected && !p && !allocations);
     }
-    auto c=initial;c.profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64M;const auto saved=c;
-    check(marc_lzss_position_distance_adaptive_huffman_config_apply_profile(&c,c.profile)==MARC_STATUS_UNSUPPORTED
+    auto c=initial;c.profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64M+1;const auto saved=c;
+    check(marc_lzss_position_distance_adaptive_huffman_config_apply_profile(&c,c.profile)==MARC_STATUS_INVALID_ARGUMENT
         && !std::memcmp(&saved,&c,sizeof(c)));
-    check(marc_lzss_position_distance_adaptive_huffman_resource_requirements(&c,&r)==MARC_STATUS_UNSUPPORTED);
+    check(marc_lzss_position_distance_adaptive_huffman_resource_requirements(&c,&r)==MARC_STATUS_INVALID_ARGUMENT);
     check(marc_lzss_position_distance_adaptive_huffman_config_apply_profile(&c,99)==MARC_STATUS_INVALID_ARGUMENT
         && !std::memcmp(&saved,&c,sizeof(c)));
     check(marc_lzss_position_distance_adaptive_huffman_config_apply_profile(&c,MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64K)==MARC_STATUS_OK
@@ -170,7 +170,8 @@ int main(int argc,char** argv) {try {
         else if (std::string(argv[1])=="4m") {selected_profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_4M;window=4194304;decisions_per_byte=9;model_entries=13962;}
         else if (std::string(argv[1])=="8m") {selected_profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_8M;window=8388608;decisions_per_byte=9;model_entries=13996;}
         else if (std::string(argv[1])=="16m") {selected_profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_16M;window=16777216;decisions_per_byte=9;model_entries=14030;}
-        else {check(std::string(argv[1])=="32m");selected_profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_32M;window=33554432;decisions_per_byte=10;model_entries=14064;}
+        else if (std::string(argv[1])=="32m") {selected_profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_32M;window=33554432;decisions_per_byte=10;model_entries=14064;}
+        else {check(std::string(argv[1])=="64m");selected_profile=MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64M;window=67108864;decisions_per_byte=11;model_entries=14098;}
     }
     else check(argc==1);
     directed();std::cout<<"native FGK public checks passed\n";return 0;}

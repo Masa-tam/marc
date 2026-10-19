@@ -2,6 +2,7 @@
 #include "core/buffer_overlap.hpp"
 #include <marc/marc.h>
 #include <algorithm>
+#include <array>
 #include <limits>
 #include <new>
 
@@ -56,7 +57,6 @@ marc_status prepare(const Config* c,marc::core::DecoderLimits& limits,PositionAd
         || c->profile>MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64M
         || (c->direction!=MARC_DIRECTION_ENCODE && c->direction!=MARC_DIRECTION_DECODE)
         || !c->frame_size) return MARC_STATUS_INVALID_ARGUMENT;
-    if (c->profile>MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_32M) return MARC_STATUS_UNSUPPORTED;
     const auto selected=static_cast<marc::entropy::internal::PositionAdaptiveHuffmanProfile>(c->profile);
     const auto& spec=*marc::entropy::internal::position_adaptive_huffman_spec(selected);
     if (c->frame_size>spec.window_size) return MARC_STATUS_INVALID_ARGUMENT;
@@ -95,7 +95,6 @@ marc_status marc_lzss_position_distance_adaptive_huffman_config_apply_profile(Co
     if (!out || out->struct_size!=sizeof(*out) || out->abi_version!=MARC_ABI_VERSION || out->reserved2
         || (out->direction!=MARC_DIRECTION_ENCODE && out->direction!=MARC_DIRECTION_DECODE)
         || profile>MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64M) return MARC_STATUS_INVALID_ARGUMENT;
-    if (profile>MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_32M) return MARC_STATUS_UNSUPPORTED;
     Config next{};
     const auto error=marc_lzss_position_distance_adaptive_huffman_config_init(out->direction,&next);
     if (error!=MARC_STATUS_OK) return error;
@@ -108,12 +107,10 @@ marc_status marc_lzss_position_distance_adaptive_huffman_config_apply_profile(Co
         next.max_compressed_payload_size=(UINT64_C(267)*spec.window_size+7)/8;
         // Qualified private encode admissions, before public IO/control:
         // 1MiB132410060,4MiB246050184,8MiB490893070,16MiB980578452 bytes.
-        // 32MiB1959948826 bytes.
-        next.max_internal_buffered_bytes=(profile==MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_1M
-            ? UINT64_C(128) : profile==MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_4M
-                ? UINT64_C(256) : profile==MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_8M
-                    ? UINT64_C(512) : profile==MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_16M
-                        ? UINT64_C(1024) : UINT64_C(2048))<<20;
+        // 32MiB1959948826,64MiB3918689184 bytes.
+        constexpr std::array<std::uint64_t,7> memory_mib{16,128,256,512,1024,2048,4096};
+        static_assert(memory_mib.size()==MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64M+1);
+        next.max_internal_buffered_bytes=memory_mib[profile]<<20;
         next.max_entropy_table_entries=spec.node_entries()+spec.alphabet_entries;
     }
     next.original_size=out->original_size;next.external_retained_bytes=out->external_retained_bytes;

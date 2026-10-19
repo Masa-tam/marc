@@ -11077,6 +11077,11 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_precursor_smoke.py
             $<TARGET_FILE:marc_position_adaptive_huffman_measure>
             ${CMAKE_CURRENT_BINARY_DIR}/position-adaptive-huffman-32m-public-resource-smoke --public --window=32m)
+    add_test(NAME marc_position_adaptive_huffman_64m_public_resource_smoke
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_precursor_smoke.py
+            $<TARGET_FILE:marc_position_adaptive_huffman_measure>
+            ${CMAKE_CURRENT_BINARY_DIR}/position-adaptive-huffman-64m-public-resource-smoke --public --window=64m)
     if(MARC_POWERSHELL_EXECUTABLE)
         add_test(NAME marc_position_adaptive_huffman_64k_bundle_headers
             COMMAND ${MARC_POWERSHELL_EXECUTABLE} -NoProfile -ExecutionPolicy Bypass
@@ -11121,6 +11126,10 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
     add_test(NAME marc_position_adaptive_huffman_8m_api COMMAND marc_position_adaptive_huffman_api_tests 8m)
     add_test(NAME marc_position_adaptive_huffman_16m_api COMMAND marc_position_adaptive_huffman_api_tests 16m)
     add_test(NAME marc_position_adaptive_huffman_32m_api COMMAND marc_position_adaptive_huffman_api_tests 32m)
+    add_test(NAME marc_position_adaptive_huffman_64m_api COMMAND marc_position_adaptive_huffman_api_tests 64m)
+    # Fresh64MiB API pilots observed below72 seconds, resource pilot below11.
+    set_tests_properties(marc_position_adaptive_huffman_64m_api PROPERTIES TIMEOUT 300)
+    set_tests_properties(marc_position_adaptive_huffman_64m_public_resource_smoke PROPERTIES TIMEOUT 60)
     # Full32MiB API/resource/C pilots observed below31 seconds.
     set_tests_properties(marc_position_adaptive_huffman_32m_api PROPERTIES TIMEOUT 120)
     set_tests_properties(marc_position_adaptive_huffman_32m_public_resource_smoke PROPERTIES TIMEOUT 30)
@@ -11165,6 +11174,11 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
     add_test(NAME marc_cli_position_adaptive_huffman_32m_static
         COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_adaptive_huffman_64k.py
             $<TARGET_FILE:marc_position_adaptive_huffman_cli_candidate> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-adaptive-huffman-32m-static 32m)
+    add_test(NAME marc_cli_position_adaptive_huffman_64m_static
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_adaptive_huffman_64k.py
+            $<TARGET_FILE:marc_position_adaptive_huffman_cli_candidate> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-adaptive-huffman-64m-static 64m)
+    # Both stacks' locked CLI pilots observed below182 seconds.
+    set_tests_properties(marc_cli_position_adaptive_huffman_64m_static PROPERTIES TIMEOUT 600)
     # The inherited large-window lock is retained; initial pilots stay below88 seconds.
     set_tests_properties(marc_cli_position_adaptive_huffman_32m_static PROPERTIES TIMEOUT 300)
     # Inherited large-window lock is retained; initial pilots stay below52 seconds.
@@ -11193,6 +11207,10 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
         add_test(NAME marc_cli_position_adaptive_huffman_32m
             COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_adaptive_huffman_64k.py
                 $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-adaptive-huffman-32m 32m)
+        add_test(NAME marc_cli_position_adaptive_huffman_64m
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_adaptive_huffman_64k.py
+                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli-position-adaptive-huffman-64m 64m)
+        set_tests_properties(marc_cli_position_adaptive_huffman_64m PROPERTIES TIMEOUT 600)
         set_tests_properties(marc_cli_position_adaptive_huffman_32m PROPERTIES TIMEOUT 300)
         set_tests_properties(marc_cli_position_adaptive_huffman_16m PROPERTIES TIMEOUT 180)
         set_tests_properties(marc_cli_position_adaptive_huffman_8m PROPERTIES TIMEOUT 180)
@@ -11211,6 +11229,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             add_test(NAME marc_position_adaptive_huffman_8m_c_${linkage} COMMAND marc_position_adaptive_huffman_c_${linkage} 8m)
             add_test(NAME marc_position_adaptive_huffman_16m_c_${linkage} COMMAND marc_position_adaptive_huffman_c_${linkage} 16m)
             add_test(NAME marc_position_adaptive_huffman_32m_c_${linkage} COMMAND marc_position_adaptive_huffman_c_${linkage} 32m)
+            add_test(NAME marc_position_adaptive_huffman_64m_c_${linkage} COMMAND marc_position_adaptive_huffman_c_${linkage} 64m)
+            set_tests_properties(marc_position_adaptive_huffman_64m_c_${linkage} PROPERTIES TIMEOUT 60)
             set_tests_properties(marc_position_adaptive_huffman_32m_c_${linkage} PROPERTIES TIMEOUT 30)
             set_tests_properties(marc_position_adaptive_huffman_16m_c_${linkage} PROPERTIES TIMEOUT 30)
             set_tests_properties(marc_position_adaptive_huffman_8m_c_${linkage} PROPERTIES TIMEOUT 30)
@@ -11226,6 +11246,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
                 set_tests_properties(marc_position_adaptive_huffman_16m_c_${linkage} PROPERTIES
                     ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:marc_shared>")
                 set_tests_properties(marc_position_adaptive_huffman_32m_c_${linkage} PROPERTIES
+                    ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:marc_shared>")
+                set_tests_properties(marc_position_adaptive_huffman_64m_c_${linkage} PROPERTIES
                     ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:marc_shared>")
             endif()
         endif()

@@ -26750,3 +26750,34 @@ kept locally and does not appear in public documentation.
 Public integration, full corpus/peak measurements,102-profile exchange,
 deferred fuzz and final family/remote gates remain pending. No fuzz is executed
 and earlier SDK/fixed products remain preserved.
+
+### TVG-1617: native64MiB public boundary and resource qualification
+
+Admit the last defined profile through the common factory and exact CLI
+selector. All seven defined profile values are now supported; the next value
+and other unknown values fail as InvalidArgument without mutation. An immutable
+seven-entry memory-default table retains all earlier defaults and selects
+4096MiB from the qualified64MiB owner requirements. With65536 retained control
+bytes and two65536-byte I/O declarations, observed public minimum grants are
+3918890000 encode and3112682640 decode bytes.
+
+Retain full-frame exact/one-short quotas, every factory allocation failure,
+allocation-free processing, arbitrary chunking, stable terminal states and both
+C linkages. CLI pilots retain19 independent golden files, seven boundary round
+trips, strict foreign/near-name rejection, small truncations, padding/trailing
+validation, late failed-frame withholding and target/tmp preservation. The
+same-window contextual API control verifies dictionary2/6, entropy1/2,
+context1/5, actual window/frame67108864 and all67109120 restored pilot bytes.
+
+Initial API/resource/C runs pass four registrations per build. API observations
+are63.94 and71.09 seconds, and the longest resource pilot is10.64 seconds.
+Both CLI linkages pass on each build; the slowest pilot is181.55 seconds.
+Retain the inherited large-window resource lock; set API300 seconds,
+resource/C60 seconds and CLI600 seconds from those observations. Full12
+size/rate/resident-peak comparisons,102-profile exchange, deferred fuzz and
+final family/remote results remain pending. No fuzz is run.
+
+Related qualification completes with82 passing registrations on the first
+build and76 on the second, taking649.62 and844.57 seconds respectively.
+No failing registration remains in these runs. These counts cover the native
+family integration subset, not the final repository-wide audit.
