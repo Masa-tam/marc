@@ -4282,3 +4282,20 @@ without invented zero deltas. Format, quotas, baseline/release state, schema85
 and95-profile membership remain unchanged. All requested windows are processed
 locally; CI is not run and the maintainer controls pushing these diagnostic and
 documentation commits.
+
+## 2026-10-20: native position-distance Adaptive Huffman local qualification
+
+The64KiB/1MiB/4MiB/8MiB/16MiB/32MiB/64MiB family has completed the requested
+local implementation, API/CLI, comparison and102-entry exchange qualification.
+[IX-0119](interoperability.md) records the final scope and preservation audit;
+[BM-0273](benchmarks.md) summarizes all seven full-corpus comparisons.
+All84 native member archives are larger than their same-window contextual
+controls. Rates and process peaks are observations with the recorded sampling
+limits, not universal advantages. Existing formats and generated data remain
+preserved, including the established historical restore-only distinction.
+
+Fuzz is deferred by explicit user instruction and has not run. This exception
+does not satisfy the baseline fuzz requirement. Hosted CI and four external
+102-archive verification results at the final pushed revision remain pending.
+The maintainer controls pushing; no release-wide or whole-goal completion is
+claimed from these local results.

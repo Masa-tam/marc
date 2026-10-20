@@ -26979,3 +26979,18 @@ not statistical significance or universal advantages. No codec, runtime or
 existing stream changes, and no additional benchmark or fuzz run occurs.
 Final preservation/exchange review and maintainer-controlled hosted/external
 102-archive confirmation remain separate gates.
+
+### TVG-1630: native Adaptive Huffman final local evidence audit
+
+Rehash all408 archive bodies from four102-entry producers, compare their
+ordered codec/file/size/digest entries and verify the unchanged95-entry prefix.
+Recheck all92 retained derived-schema manifests and5223 archive/restored/
+re-encoded triples. Retain the earlier measured rejection/launch-counter scope
+without inferring missing counters or running codecs again. Recheck273 saved
+original products, five promoted products,268 unchanged counterparts and the
+fixed future Release output configuration. All checks pass.
+
+IX-0119 and BM-0273 separate local completion, negative comparison outcomes,
+explicitly unexecuted fuzz, and pending hosted/external102-entry confirmation.
+The final source edit is an exactly reconciled comment-only correction.
+No new binary, benchmark observation, fuzz run or push is produced by this audit.

@@ -2871,3 +2871,42 @@ This completes the local structural/exchange branch of the family audit.
 Six larger-window full-corpus size/rate/resident-peak comparisons remain
 unfinished. Fuzz is still deferred by user instruction; no push, hosted CI
 success or external four-route102-profile result is claimed.
+
+### IX-0119: native Adaptive Huffman family final local audit
+
+The seven profiles from64KiB through64MiB are locally qualified in window
+order. Exact formats and independent vectors, bounded owners and public APIs,
+CLI routes, differential and failure-invariance tests, failed-frame withholding,
+resource limits and HashTap composition are covered by the recorded related
+tests. The final family runs pass82 primary-build and76 second-build related
+registrations; these are not a claim that every repository test was rerun.
+
+Schema92 contains102 archives. Four locally produced bundles agree in every
+archive body and order, including a native second-platform shell producer.
+The starting95-entry prefix retains its bytes and representation. Self and
+cross execution, saved schema85/schema91 consumers, directed header/admission
+rejection and derived schemas1..92 are qualified as recorded in IX-0116..0118.
+The final read-only audit rehashes408 current bodies and5223 historical
+archive/restoration/re-encoding triples. IX-0110's seven historical restore-only
+exceptions remain distinct from the unchanged starting95-entry prefix.
+The whole-history consumer scope and the older missing launch counter remain
+exactly as stated in IX-0118; no additional codec executions are inferred.
+
+All273 saved original build products remain intact. Five qualified products
+replace their fixed-path counterparts and268 other products remain unchanged.
+The latest qualified executable and future build output retain the established
+Release location. The final public-header edit changes a comment only; it
+does not change ABI, stream representation or qualified binary behavior.
+
+BM-0266..0273 complete all seven twelve-member size, lifecycle-rate and process
+peak comparisons, including configured same-window controls where required.
+Every native member archive is larger than its contextual control; aggregate
+size increases range from9.570631% to20.130239%. Observed speed gains have
+member exceptions and do not establish universal superiority. Larger-window
+encoder peaks are also higher. These negative results are retained explicitly.
+
+Local qualification is complete under the user's explicit fuzz deferral.
+Fuzz remains unexecuted and its hosted job remains disabled pending instruction.
+No push is performed. Hosted CI and four external102-archive routes at the
+maintainer's eventual pushed revision remain unconfirmed; this record does not
+declare the release or the whole goal complete.

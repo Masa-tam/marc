@@ -9411,3 +9411,8 @@ context algorithm1 variants35..41 and Adaptive Huffman algorithm1 variants3..9.
 Each tuple is inseparable. Earlier Adaptive Huffman variants and all other
 identities are unchanged. Reservation does not imply public admission or
 completion; implement and qualify the seven windows sequentially.
+
+All seven tuples have subsequently completed local public admission and
+qualification as recorded in [IX-0119](interoperability.md). Their exact wire
+grammar above is unchanged. Deferred fuzz and pending hosted/external gates
+remain distinct from local format/API admission.

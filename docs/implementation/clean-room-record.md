@@ -43770,3 +43770,16 @@ The native size disadvantage, individual slower members, differing query scopes
 and limited three-sample serial methodology are explicit. No external codec
 implementation, new timing run, fuzz or push is involved. Final preservation/
 exchange review and hosted/external confirmation remain separate gates.
+
+### CR-2007: 2026-10-20 — native Adaptive Huffman final local qualification
+
+Author/reviewer: Codex. TVG-1630 and IX-0119 reconcile the first-party source,
+scoped expression/provenance review, related tests, seven full-corpus comparison
+campaigns, saved products and local exchange evidence. Final artifact rehashes
+pass without new codec executions. No external implementation was consulted
+for this audit. Earlier review limitations and historical restore-only cases
+are preserved. All native corpus members remain larger than their contextual
+controls; no favorable compression result is invented. Fuzz is explicitly
+deferred and unexecuted. Hosted CI and external four-route102-entry results
+await maintainer confirmation at the eventual pushed revision. No push or
+release-wide completion is claimed.
