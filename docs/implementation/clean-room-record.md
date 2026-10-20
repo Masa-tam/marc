@@ -43759,3 +43759,14 @@ external source-code database comparison or a whole-repository similarity claim.
 It records the implementation process without asserting a legal guarantee.
 Final result synthesis, preservation/exchange review and hosted/external gates
 remain separate; fuzz is unexecuted by explicit maintainer instruction.
+
+### CR-2006: 2026-10-20 — seven-window Adaptive Huffman comparison audit
+
+Author/reviewer: Codex. BM-0273 and TVG-1629 synthesize the seven independently
+re-read first-party public API campaigns without changing their observations,
+measured source revisions or stream representations. All twelve size results,
+aggregate sizes and direction-specific rates/peaks remain available per window.
+The native size disadvantage, individual slower members, differing query scopes
+and limited three-sample serial methodology are explicit. No external codec
+implementation, new timing run, fuzz or push is involved. Final preservation/
+exchange review and hosted/external confirmation remain separate gates.

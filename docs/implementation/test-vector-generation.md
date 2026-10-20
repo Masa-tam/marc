@@ -26963,3 +26963,19 @@ Document checks qualify these edits without rebuilding or remeasuring codecs.
 The seven-window result synthesis and final preservation/exchange audit remain
 separate next gates. Fuzz stays explicitly deferred and unexecuted; hosted CI
 and external four-route102-archive confirmation remain unconfirmed.
+
+### TVG-1629: seven-window native Adaptive Huffman result synthesis
+
+BM-0273 recalculates the seven aggregate size deltas, lifecycle-rate ratios,
+maximum process peaks and member-specific slower-rate lists from the audited
+BM-0266..0272 records. Each retains all twelve members and three fresh-process
+observations per profile/direction. Actual 8MiB/32MiB configured contextual
+controls are qualified rather than inferred from missing public selectors.
+
+All 84 native member archives are larger. Record the negative size result,
+non-monotonic member behavior across windows, and slower-rate exceptions.
+Near-unity ratios and small peak differences are descriptive observations,
+not statistical significance or universal advantages. No codec, runtime or
+existing stream changes, and no additional benchmark or fuzz run occurs.
+Final preservation/exchange review and maintainer-controlled hosted/external
+102-archive confirmation remain separate gates.

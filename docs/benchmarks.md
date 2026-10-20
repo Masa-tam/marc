@@ -13513,3 +13513,83 @@ speed or memory guarantees.
 The larger native total is retained as measured. Parser/model tuning
 would be separately qualified work; no existing representation or
 decoder is changed to conceal the result.
+
+### BM-0273: seven-window native Adaptive Huffman comparison synthesis
+
+BM-0266 through BM-0272 retain every size, encode/decode rate and process peak
+for the same twelve manifest-verified Silesia members (211,938,580 raw bytes)
+at each window. All seven campaigns have three fresh-process observations per
+member/profile/direction, actual matching windows/frames and exact restoration.
+The 8MiB and 32MiB contextual controls use the existing 16MiB and 64MiB APIs
+explicitly configured to the smaller actual window/frame; they are not new
+published contextual profiles. Their emitted identities and parameters are
+checked in the corresponding campaign records.
+
+P/C means native position-distance/contextual Adaptive Huffman. Each rate uses
+total raw bytes divided by the sum of member median codec lifecycle durations,
+including query/construction/allocation, processing and destruction/release,
+excluding file I/O. Peaks are maximum complete-process resident observations,
+not logical admission or caller-workspace queries. Those query scopes differ.
+Each campaign retains its actual measured source revision in its detailed record.
+
+|Window|P bytes|C bytes|P size change|Encode P/C rate ratio|Decode P/C rate ratio|
+|---|---:|---:|---:|---:|---:|
+|64KiB|86,848,574|79,262,639|+9.571%|1.284|1.691|
+|1MiB|78,750,780|68,089,854|+15.657%|1.407|1.864|
+|4MiB|77,142,597|65,403,189|+17.949%|1.483|1.967|
+|8MiB|76,518,485|64,372,497|+18.868%|1.085|1.493|
+|16MiB|76,189,446|63,797,359|+19.424%|1.201|1.657|
+|32MiB|75,921,961|63,406,098|+19.739%|1.199|1.775|
+|64MiB|75,841,754|63,132,942|+20.130%|1.025|1.727|
+
+|Window|Encode peak P/C bytes|Decode peak P/C bytes|
+|---|---:|---:|
+|64KiB|6,795,264/6,914,048|6,094,848/6,107,136|
+|1MiB|35,500,032/26,185,728|19,865,600/19,824,640|
+|4MiB|114,536,448/82,264,064|63,393,792/63,336,448|
+|8MiB|222,552,064/155,512,832|121,090,048/119,828,480|
+|16MiB|433,889,280/300,441,600|231,800,832/231,194,624|
+|32MiB|859,852,800/591,114,240|456,388,608/454,787,072|
+|64MiB|1,499,557,888/897,634,304|883,953,664/881,233,920|
+
+Aggregate rates do not describe every member. The following native members
+have lower observed median throughput than their same-window controls; a dash
+means none in this campaign. All individual rates remain in the detailed tables.
+
+|Window|Slower encode members|Slower decode members|
+|---|---|---|
+|64KiB|-|-|
+|1MiB|dickens, webster|dickens, nci|
+|4MiB|-|dickens, nci, webster|
+|8MiB|dickens, mozilla, osdb, webster, xml|dickens, nci, webster|
+|16MiB|osdb, reymont, xml, x-ray|dickens, nci, webster|
+|32MiB|dickens, osdb, xml|dickens, nci, webster|
+|64MiB|dickens, osdb, reymont, sao, webster, xml, x-ray|dickens, nci, reymont, webster, xml|
+
+All 84 matched member comparisons produce larger native archives. This family
+does not establish a compression-size advantage over contextual Adaptive
+Huffman. The larger outputs remain supported, tested and recorded; no existing
+format or old artifact is changed to conceal them, and no Dynamic Range size
+comparison is made an adoption condition. The FGK binary-residual tradeoff is
+explained in [DD-1627](design/lzss-position-distance-adaptive-huffman.md).
+
+Native maximum encode/decode process peaks are slightly lower at 64KiB and
+higher at each larger window in these observations. These maxima do not imply
+the same ordering for every individual member, and small differences do not
+establish guaranteed memory savings. Full per-member peaks remain recorded.
+
+Larger windows do not guarantee a smaller result for each member. Native
+mozilla grows from 22,257,064 bytes at 32MiB to 22,357,447 at 64MiB, while
+webster shrinks from 13,095,365 to 12,914,775 bytes. The complete seven-window
+tables preserve both effects without inferring a universal file-size rule.
+
+Observations follow the retained serial order, with three samples grouped by
+profile for each member. These ratios are descriptive; they do not establish
+statistical significance or eliminate run/order variation. In particular the
+64MiB aggregate encode ratio near unity is not a demonstrated general speed
+advantage. Cross-window campaigns also retain their separate measured revisions
+and execution periods. No timing sample is discarded to favor either profile.
+
+All seven local measurement and artifact-audit campaigns are recorded. This
+synthesis is not a new benchmark run, hosted CI result or external verification.
+Fuzz remains explicitly deferred and is not counted as passing evidence.
