@@ -27001,7 +27001,7 @@ After the explicit maintainer request, the bounded decoder stream harness was
 enabled for all seven position-distance Adaptive Huffman profiles. It compares
 whole-input and split-input processing while preserving the fixed output guard
 and malformed-frame withholding boundary. The local ASan/UBSan/libFuzzer run
-completed 792350 executions in 30 seconds, added34 coverage units, and reported
-no crash, hang or sanitizer finding. Input and output bounds are recorded in
+completed 129686 executions in 30 seconds, applying every input to all seven
+profiles, with no crash, hang or sanitizer finding. Input and output bounds are recorded in
 the private receipt. CI exclusion for this family was removed; hosted execution
 and the later external archive gate remain separate.

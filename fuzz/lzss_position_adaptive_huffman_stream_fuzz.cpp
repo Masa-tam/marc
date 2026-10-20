@@ -88,17 +88,18 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data,
     if (size > max_input)
         return 0;
     const auto input = std::as_bytes(std::span(data, size));
-    const auto profile = static_cast<PositionAdaptiveHuffmanProfile>(
-        size == 0 ? 0 : data[0] % 7);
-    const auto whole = run(profile, input, max_input + 1, max_output);
-    const auto split = run(profile, input, 7, 1);
-    if (whole.result.status != split.result.status ||
-        whole.result.error.code != split.result.error.code ||
-        whole.result.error.byte_position != split.result.error.byte_position ||
-        whole.result.output_produced != split.result.output_produced ||
-        !std::equal(whole.output.begin(),
-                    whole.output.begin() + whole.result.output_produced,
-                    split.output.begin()))
-        std::abort();
+    for (unsigned profile_id = 0; profile_id != 7; ++profile_id) {
+        const auto profile = static_cast<PositionAdaptiveHuffmanProfile>(profile_id);
+        const auto whole = run(profile, input, max_input + 1, max_output);
+        const auto split = run(profile, input, 7, 1);
+        if (whole.result.status != split.result.status ||
+            whole.result.error.code != split.result.error.code ||
+            whole.result.error.byte_position != split.result.error.byte_position ||
+            whole.result.output_produced != split.result.output_produced ||
+            !std::equal(whole.output.begin(),
+                        whole.output.begin() + whole.result.output_produced,
+                        split.output.begin()))
+            std::abort();
+    }
     return 0;
 }
