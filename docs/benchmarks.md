@@ -13444,3 +13444,72 @@ speed or memory guarantees.
 The larger native total is retained as measured. Parser/model tuning
 would be separately qualified work; no existing representation or
 decoder is changed to conceal the result.
+
+### BM-0272: public position-distance Adaptive Huffman64MiB
+
+DD-1627 compares both public APIs on all12 manifest-verified Silesia members.
+Window and frame are67108864 bytes. Actual identities are dictionary2/14,
+context1/41, entropy1/9 and dictionary2/6,
+context1/5, entropy1/2 for contextual Adaptive Huffman.
+Each member/profile/direction has three fresh-process observations. All72
+archive bodies are deterministic and all72 restorations are rehashed.
+Serialized dictionary/entropy/context parameters are retained and checked.
+Both encoders use minimum eligible match5; native decoding also accepts3/4.
+
+P/C means position-distance/contextual. Rates use median codec lifecycle
+call durations, excluding file I/O. Totals divide total raw bytes by summed
+member medians; resident peaks are maxima of complete-process observations.
+Both drivers retain131072 I/O bytes and65536 control bytes. Native logical
+queries include owner/call/control charges; contextual queries describe
+caller workspaces. Allocated versus nominal workspace extents are recorded
+separately. These scopes are not resident peaks or universal memory bounds.
+Cooperative intermissions, if requested, occur between child processes
+and outside every measured codec lifetime.
+
+|Member|Raw bytes|P bytes|C bytes|P change vs C|
+|---|---:|---:|---:|---:|
+|dickens|10,192,446|4,329,445|3,268,818|+32.447%|
+|mozilla|51,220,480|22,357,447|19,606,924|+14.028%|
+|mr|9,970,564|4,357,878|3,415,721|+27.583%|
+|nci|33,553,445|2,794,504|2,168,706|+28.856%|
+|ooffice|6,152,192|3,612,387|3,141,068|+15.005%|
+|osdb|10,085,684|3,897,429|3,363,041|+15.890%|
+|reymont|6,627,202|2,075,769|1,590,817|+30.484%|
+|samba|21,606,400|5,802,627|4,936,911|+17.536%|
+|sao|7,251,944|6,069,774|5,609,637|+8.203%|
+|webster|41,458,703|12,914,775|9,820,466|+31.509%|
+|xml|5,345,280|702,562|568,422|+23.599%|
+|x-ray|8,474,240|6,927,157|5,642,411|+22.769%|
+|Total|211,938,580|75,841,754|63,132,942|+20.130%|
+
+|Member|Encode P/C MiB/s|Decode P/C MiB/s|Encode peak P/C bytes|Decode peak P/C bytes|
+|---|---:|---:|---:|---:|
+|dickens|0.476/0.546|9.444/13.471|948,056,064/183,721,984|824,913,920/823,877,632|
+|mozilla|0.115/0.112|1.961/1.070|1,499,557,888/897,634,304|883,953,664/881,233,920|
+|mr|0.336/0.165|4.219/2.987|945,184,768/180,101,120|824,705,024/823,779,328|
+|nci|0.224/0.155|45.535/65.751|1,250,213,888/579,751,936|846,761,984/846,102,528|
+|ooffice|0.451/0.425|1.277/0.700|894,840,832/114,896,896|820,146,176/819,691,520|
+|osdb|0.417/0.578|1.932/1.058|946,253,824/181,993,472|824,369,152/823,836,672|
+|reymont|0.385/0.498|9.112/9.349|899,448,832/121,430,016|819,073,024/818,642,944|
+|samba|0.528/0.525|3.522/1.968|1,097,875,456/379,404,288|837,808,128/836,939,776|
+|sao|0.195/0.197|0.609/0.317|911,544,320/136,052,736|823,726,080/823,226,368|
+|webster|0.051/0.054|13.893/19.037|1,363,230,720/721,891,328|864,751,616/861,679,616|
+|xml|3.028/4.926|15.564/15.680|881,463,296/98,598,912|816,414,720/816,291,840|
+|x-ray|0.341/0.471|1.328/0.774|928,296,960/156,860,416|825,827,328/824,496,128|
+|Total / maximum|0.131/0.128|3.080/1.783|1,499,557,888/897,634,304|883,953,664/881,233,920|
+
+Position produces fewer bytes on0/12 members. Larger outputs remain
+recorded. No Dynamic Range ratio is an adoption condition. Small resident
+differences are observations rather than guaranteed savings. This records
+local public API measurements, not hosted CI or external verification.
+Measured source: 5502e47180fcf8023e0d3d4bbf1d3286b7054d13.
+
+Aggregate native archive size changes by+20.130% relative to the
+same-window control. Native/control aggregate throughput ratios are
+1.025 encode and1.727 decode; observed process-peak
+ratios are1.671 encode and1.003 decode.
+These describe this corpus and recorded configuration, not universal
+speed or memory guarantees.
+The larger native total is retained as measured. Parser/model tuning
+would be separately qualified work; no existing representation or
+decoder is changed to conceal the result.
