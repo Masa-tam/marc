@@ -43731,3 +43731,31 @@ restoration are checked before qualification. Machine information remains in
 local evidence. Larger outputs and resource trade-offs are recorded without
 altering a format or claiming universal improvements. No external implementation,
 fuzz or push is involved; final local review and remote gates remain pending.
+
+### CR-2005: 2026-10-20 — native Adaptive Huffman scoped source review
+
+Author/reviewer: Codex. IR-1372 and DD-1627 retain the independent design and
+provenance. Review covers fifteen new production source/header files, the new
+public declarations, complete CLI helper, added routing/help with its existing
+transaction context, and the complete independent Python oracle. Separately
+review the three measurement/audit sources and six complete contract tests.
+All reviewed hashes are reconciled with the current sources in TVG-1628.
+
+Intentional first-party reuse comprises the unchanged FGK primitive and the
+existing same-window dictionary backends. The oracle uses its own object-tree,
+rank and explicit little-endian/LSB-first representation before optional product
+comparisons. No external codec implementation was consulted. Review checks
+bounded dispatch and arithmetic, NYT/padding/finish validation, ordinary-output
+invariance, private token/history/raw staging and failed-frame withholding.
+The source-to-execution review confirms the stated directed-test coverage;
+it does not represent those tests as fuzz evidence.
+
+No functional defect was found in the stated review scope. Correct the stale
+public admission comment only; its exact replacement changes no C tokens,
+ABI, format or codec behavior. Update the architecture wording to distinguish
+per-window search backends. Existing qualified binaries and generated data are
+retained. This is a bounded source/expression and provenance review, not an
+external source-code database comparison or a whole-repository similarity claim.
+It records the implementation process without asserting a legal guarantee.
+Final result synthesis, preservation/exchange review and hosted/external gates
+remain separate; fuzz is unexecuted by explicit maintainer instruction.

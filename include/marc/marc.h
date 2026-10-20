@@ -2262,7 +2262,7 @@ MARC_API marc_status marc_lzss_position_distance_blocked_huffman_create(
  * retained caller memory are included in the resource query. Query failures
  * preserve resources; create refuses with NULL except overlapping destinations.
  * Flush retains the frame, ResetBlock is unsupported, and size must be known. */
-/* Reserved identities return Unsupported until their individual qualification. */
+/* All seven profiles are admitted; unknown values return InvalidArgument. */
 typedef uint32_t marc_lzss_position_distance_adaptive_huffman_profile;
 #define MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_64K UINT32_C(0)
 #define MARC_LZSS_POSITION_DISTANCE_ADAPTIVE_HUFFMAN_PROFILE_1M UINT32_C(1)

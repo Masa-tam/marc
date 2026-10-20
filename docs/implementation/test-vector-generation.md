@@ -26942,3 +26942,24 @@ Record every member and the aggregate trade-offs, including larger native output
 No encoder/decoder or existing artifact changes. This milestone leaves0
 larger-window full-corpus campaigns pending. Final family result review, deferred
 fuzz and hosted/external102-profile qualification remain separate unfinished work.
+
+### TVG-1628: native Adaptive Huffman source and contract review reconciliation
+
+Reconcile retained reviews with the current hashes of fifteen new production
+source/header files, the added public declarations and CLI integration scope,
+the independent mathematical vector oracle, three measurement/audit sources
+and six complete contract-test sources. The CLI main file review covers the
+added routing/help branches and their existing transaction context; it does
+not claim a new whole-repository review.
+
+The implementation remains that qualified by the related 82-test and 76-test
+runs and the dedicated seven-profile HashTap checks. Correct one stale public
+header comment to describe all seven admitted profiles and InvalidArgument for
+unknown values. Verify the exact comment-only replacement: C tokens, ABI and
+codec behavior are unchanged. Add the family architecture description with
+its distinct same-window backends, private staging and publication contracts.
+Document checks qualify these edits without rebuilding or remeasuring codecs.
+
+The seven-window result synthesis and final preservation/exchange audit remain
+separate next gates. Fuzz stays explicitly deferred and unexecuted; hosted CI
+and external four-route102-archive confirmation remain unconfirmed.

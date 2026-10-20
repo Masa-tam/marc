@@ -6144,3 +6144,29 @@ the95-archive schema85 bundle and complete historical/local exchange evidence.
 Fuzz and further ratio/speed/physical-peak measurement were explicitly omitted
 through this goal; earlier measurements remain recorded. Hosted CI and external
 four-route95 confirmation remain separate gates.
+
+## Native position-distance Adaptive Huffman family
+
+Seven optional typed-token profiles cover 64KiB through 64MiB without replacing
+existing byte-stream pipelines. Each profile binds a distinct dictionary,
+context and entropy tuple. Each uses its existing same-window dictionary
+backend with a minimum eligible match length of 5 bytes. Typed tokens feed a
+forward bank of independently updated FGK models: token kind, literal,
+length class, distance class and low distance bits follow the schedule in the
+[family design](design/lzss-position-distance-adaptive-huffman.md). Models reset
+per frame and do not rescale. Known original size fixes frame extents;
+EndInput confirms strict stream completion after draining.
+
+Checked admission covers owned workspaces, controls and declared caller I/O
+and retention. It remains distinct from measured process resident peaks. The
+reference encoder plans then writes; larger owners write into a single private
+serialized arena. Decoding proceeds once into private tokens, validates their
+history and reconstructs private raw bytes before a frame enters drain. A call
+publishing bytes returns before parsing later potentially failing input, so an
+error call produces no output. The CLI retains whole-file publication after
+complete stream success and sink close.
+
+[Public API](c-api.md), [CLI](cli.md), [measurements](benchmarks.md) and
+[exchange evidence](interoperability.md) record the exact settings and separate
+local qualification from hosted CI/external results. Fuzz execution remains
+deferred by the maintainer; unexecuted fuzz is not counted as passing evidence.
