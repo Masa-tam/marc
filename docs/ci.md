@@ -6,12 +6,39 @@ bundle generation. Benchmark smoke tests and deterministic CLI fuzz campaigns
 remain enabled. The regular suites exclude only the explicit `ci-deep` label.
 Successful regular CI is not evidence that the complete suite passed.
 
-The same workflow runs the complete, unfiltered suites nightly at 18:17 UTC.
+The same workflow checks nightly at 18:17 UTC whether the exact commit already
+has successful complete validation. Only that confirmed success suppresses
+the nightly build, tests, package, fuzz and bundle jobs. Unverified, failed,
+cancelled or still-running validations do not suppress work. An unavailable
+history API also causes validation to run conservatively. A short history
+check job still runs on a skipped night.
+
 It can also be started from Actions using **Run workflow** with
-`full_validation` enabled (the default). Select the exact candidate ref and
+`full_validation` enabled (the default). Manual runs always execute, even for
+an already validated commit. Push/PR regular runs are also unconditional.
+Select the exact candidate ref and
 record its commit and run ID. Release qualification requires complete success
 on that commit, together with package, fuzz and exchange gates. A nightly run
 of a different commit does not satisfy that requirement.
+
+The history check requires a successful run of this same workflow and exact
+SHA, plus the successful **Complete validation succeeded** marker job in
+that run's recorded attempt. That marker depends on both platform suites,
+both fuzz jobs and the entire installed-package matrix, and only runs for
+complete scope. Regular successes and skipped-night successes cannot serve
+as complete evidence. Older runs without the marker are conservatively
+revalidated. A prior confirmed success remains reusable even if a separate
+later run fails; manual execution can always force a fresh result.
+
+The gate uses the read-only GitHub
+[workflow runs](https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-workflow)
+and [run-attempt jobs](https://docs.github.com/en/rest/actions/workflow-jobs#list-jobs-for-a-workflow-run-attempt)
+APIs with pagination. Only the planning job requests `actions: read`.
+The history policy has ten offline regression tests, covering success scope,
+failed/cancelled runs, exact commit/workflow matching, run attempts,
+pagination, API failures, and manual execution/output. They passed locally,
+alongside the generated CTest partition and documentation checks. Hosted API
+authorization and dispatch remain to be confirmed after push.
 
 `cmake/MarcCiTestLabels.cmake` contains the reviewed inventory of long tests.
 The initial inventory uses tests taking at least 60 seconds on either hosted

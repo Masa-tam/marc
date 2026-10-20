@@ -23,7 +23,28 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
 
 jobs:
+  validation-plan:
+    name: Select validation work
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      run: ${{ steps.plan.outputs.run }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Test validation history policy
+        run: python3 -B tests/ci_validation_gate_tests.py
+      - name: Check complete-validation history
+        id: plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/ci_validation_gate.py
+
   windows-msvc:
+    needs: validation-plan
+    if: needs.validation-plan.outputs.run == 'true'
     name: Windows / Visual Studio 2026 / MSBuild
     runs-on: windows-2025-vs2026
     steps:
@@ -60,6 +81,8 @@ jobs:
           if-no-files-found: error
 
   ubuntu-ninja:
+    needs: validation-plan
+    if: needs.validation-plan.outputs.run == 'true'
     name: Ubuntu 24.04 / Ninja
     runs-on: ubuntu-24.04
     steps:
@@ -96,6 +119,8 @@ jobs:
           if-no-files-found: error
 
   ubuntu-fuzz-position-blocked-huffman:
+    needs: validation-plan
+    if: needs.validation-plan.outputs.run == 'true'
     name: Ubuntu 24.04 / position-distance blocked-Huffman fuzz
     runs-on: ubuntu-24.04
     steps:
@@ -118,6 +143,8 @@ jobs:
           -R 'marc_fuzz_lzss_position_blocked_huffman_(8m|16m|32m|64m)_public_smoke'
 
   ubuntu-fuzz-position-adaptive-huffman:
+    needs: validation-plan
+    if: needs.validation-plan.outputs.run == 'true'
     name: Ubuntu 24.04 / position-distance Adaptive Huffman fuzz
     runs-on: ubuntu-24.04
     steps:
@@ -132,6 +159,8 @@ jobs:
         run: ctest --test-dir out/build/ninja-release --output-on-failure --parallel 1 --timeout 120 -R '^marc_fuzz_lzss_position_adaptive_huffman_stream_smoke$'
 
   installed-package:
+    needs: validation-plan
+    if: needs.validation-plan.outputs.run == 'true'
     name: ${{ matrix.os_name }} / ${{ matrix.linkage }} package
     runs-on: ${{ matrix.runner }}
     strategy:
@@ -185,3 +214,21 @@ jobs:
         run: >-
           LD_LIBRARY_PATH='${{ github.workspace }}/out/install/lib'
           ctest --test-dir out/consumer -C Release --output-on-failure --timeout 600
+
+  complete-validation:
+    name: Complete validation succeeded
+    needs:
+      - validation-plan
+      - windows-msvc
+      - ubuntu-ninja
+      - ubuntu-fuzz-position-blocked-huffman
+      - ubuntu-fuzz-position-adaptive-huffman
+      - installed-package
+    if: >-
+      success() &&
+      needs.validation-plan.outputs.run == 'true' &&
+      (github.event_name == 'schedule' || inputs.full_validation)
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Record complete-validation success
+        run: echo 'Complete validation succeeded for this revision and run attempt.'

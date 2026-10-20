@@ -43805,3 +43805,15 @@ default invocation still runs both parts. No external implementation was
 consulted and no codec, stream identity, or archive representation is changed.
 Local selection checks and codec campaign results are recorded separately
 from subsequent hosted timing and release qualification.
+
+### CR-2010: 2026-10-21 — commit-specific complete-validation reuse
+
+Author/reviewer: Codex. The first-party CI workflow gains a read-only history
+gate based on the official GitHub workflow-run and attempt-job REST API
+documentation linked in `docs/ci.md`. Only a same-SHA, same-workflow successful
+complete run with the aggregate marker suppresses scheduled work. Manual and
+push/PR executions remain unconditional; failed, cancelled, incomplete and
+unavailable history is not success evidence. Offline history regressions
+cover scope, attempt, pagination and lookup failures. No codec implementation,
+format or existing generated artifact is changed. Actual hosted dispatch and
+API authorization remain separate verification steps after maintainer push.
