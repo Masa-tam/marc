@@ -6168,5 +6168,7 @@ complete stream success and sink close.
 
 [Public API](c-api.md), [CLI](cli.md), [measurements](benchmarks.md) and
 [exchange evidence](interoperability.md) record the exact settings and separate
-local qualification from hosted CI/external results. Fuzz execution remains
-deferred by the maintainer; unexecuted fuzz is not counted as passing evidence.
+local qualification from hosted CI/external results. The later explicit request
+enabled a bounded seven-profile sanitizer fuzz campaign; its private receipt
+records the completed local run. Hosted CI and external results remain separate
+gates.

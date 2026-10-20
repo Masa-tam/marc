@@ -43779,7 +43779,9 @@ campaigns, saved products and local exchange evidence. Final artifact rehashes
 pass without new codec executions. No external implementation was consulted
 for this audit. Earlier review limitations and historical restore-only cases
 are preserved. All native corpus members remain larger than their contextual
-controls; no favorable compression result is invented. Fuzz is explicitly
-deferred and unexecuted. Hosted CI and external four-route102-entry results
-await maintainer confirmation at the eventual pushed revision. No push or
+controls; no favorable compression result is invented. Fuzz was initially
+deferred, then explicitly enabled for this family; the bounded seven-profile
+sanitizer campaign completed without findings and did not change any stream
+representation. Hosted CI and external four-route102-entry results await
+maintainer confirmation at the eventual pushed revision. No push or
 release-wide completion is claimed.

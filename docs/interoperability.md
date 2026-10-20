@@ -2906,7 +2906,11 @@ member exceptions and do not establish universal superiority. Larger-window
 encoder peaks are also higher. These negative results are retained explicitly.
 
 Local qualification is complete under the user's explicit fuzz deferral.
-Fuzz remains unexecuted and its hosted job remains disabled pending instruction.
-No push is performed. Hosted CI and four external102-archive routes at the
-maintainer's eventual pushed revision remain unconfirmed; this record does not
-declare the release or the whole goal complete.
+The later explicit request enabled the bounded position-distance Adaptive
+Huffman fuzzer. Its local sanitizer campaign completed 792350 executions in
+30 seconds across all seven profiles without a crash, hang or sanitizer finding;
+fixed limits and coverage remain in the private fuzz receipt. The CI fuzz
+exclusion for this family is removed. No push is performed. Hosted CI and four
+external102-archive routes at the maintainer's eventual pushed revision remain
+unconfirmed; this record does not declare the release or the whole goal
+complete.

@@ -3216,6 +3216,23 @@ if(MARC_BUILD_BENCHMARKS)
 endif()
 
 if(MARC_BUILD_FUZZERS)
+    add_executable(marc_fuzz_lzss_position_adaptive_huffman_stream
+        fuzz/lzss_position_adaptive_huffman_stream_fuzz.cpp)
+    target_compile_features(marc_fuzz_lzss_position_adaptive_huffman_stream PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_position_adaptive_huffman_stream PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_position_adaptive_huffman_stream PRIVATE
+        -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer
+        -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_lzss_position_adaptive_huffman_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_lzss_position_adaptive_huffman_stream PRIVATE marc::static)
+    add_test(NAME marc_fuzz_lzss_position_adaptive_huffman_stream_smoke
+        COMMAND marc_fuzz_lzss_position_adaptive_huffman_stream
+            -runs=1000 -max_len=8192 -timeout=5)
+    set_tests_properties(marc_fuzz_lzss_position_adaptive_huffman_stream_smoke
+        PROPERTIES TIMEOUT 90 LABELS fuzz-smoke)
+
     add_executable(marc_fuzz_lzss_position_rans_1m_public fuzz/lzss_position_rans_1m_public_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_1m_public PRIVATE cxx_std_20)
     target_compile_options(marc_fuzz_lzss_position_rans_1m_public PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)

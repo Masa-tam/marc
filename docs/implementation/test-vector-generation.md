@@ -26994,3 +26994,14 @@ IX-0119 and BM-0273 separate local completion, negative comparison outcomes,
 explicitly unexecuted fuzz, and pending hosted/external102-entry confirmation.
 The final source edit is an exactly reconciled comment-only correction.
 No new binary, benchmark observation, fuzz run or push is produced by this audit.
+
+### TVG-1631: native Adaptive Huffman sanitizer fuzz campaign
+
+After the explicit maintainer request, the bounded decoder stream harness was
+enabled for all seven position-distance Adaptive Huffman profiles. It compares
+whole-input and split-input processing while preserving the fixed output guard
+and malformed-frame withholding boundary. The local ASan/UBSan/libFuzzer run
+completed 792350 executions in 30 seconds, added34 coverage units, and reported
+no crash, hang or sanitizer finding. Input and output bounds are recorded in
+the private receipt. CI exclusion for this family was removed; hosted execution
+and the later external archive gate remain separate.

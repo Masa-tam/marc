@@ -4294,8 +4294,10 @@ controls. Rates and process peaks are observations with the recorded sampling
 limits, not universal advantages. Existing formats and generated data remain
 preserved, including the established historical restore-only distinction.
 
-Fuzz is deferred by explicit user instruction and has not run. This exception
-does not satisfy the baseline fuzz requirement. Hosted CI and four external
+Fuzz was initially deferred by explicit user instruction. A later explicit
+request enabled and locally completed the bounded position-distance Adaptive
+Huffman sanitizer campaign across all seven profiles; detailed counts and
+limits are retained in the private receipt. Hosted CI and four external
 102-archive verification results at the final pushed revision remain pending.
 The maintainer controls pushing; no release-wide or whole-goal completion is
 claimed from these local results.
