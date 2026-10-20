@@ -2914,3 +2914,14 @@ exclusion for this family is removed. No push is performed. Hosted CI and four
 external102-archive routes at the maintainer's eventual pushed revision remain
 unconfirmed; this record does not declare the release or the whole goal
 complete.
+
+### IX-0120: 2026-10-21 — hosted and external final confirmation
+
+The maintainer reported successful CI completion for revision
+`f9a3cb05226840482370ef768a5eb51597241aaa`, including the re-enabled
+position-distance Adaptive Huffman fuzz job. Four external routes then verified
+all102 archives: Windows MSVC, Ubuntu Ninja, and two Ubuntu Clang route runs.
+Each reported102 archives verified at the same revision. This closes the
+hosted/external gate for the local qualification recorded in IX-0119. Fuzz
+remains bounded by the committed harness and its recorded sanitizer campaign;
+no unbounded campaign or local-environment disclosure is implied.

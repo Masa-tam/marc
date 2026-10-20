@@ -4298,6 +4298,7 @@ Fuzz was initially deferred by explicit user instruction. A later explicit
 request enabled and locally completed the bounded position-distance Adaptive
 Huffman sanitizer campaign across all seven profiles; detailed counts and
 limits are retained in the private receipt. Hosted CI and four external
-102-archive verification results at the final pushed revision remain pending.
-The maintainer controls pushing; no release-wide or whole-goal completion is
-claimed from these local results.
+102-archive verification results at the final pushed revision are recorded in
+[IX-0120](interoperability.md): CI and all four external routes passed. The
+position-distance Adaptive Huffman goal is complete; unrelated repository-wide
+baseline work is outside this goal.

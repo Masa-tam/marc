@@ -43785,3 +43785,11 @@ sanitizer campaign completed without findings and did not change any stream
 representation. Hosted CI and external four-route102-entry results await
 maintainer confirmation at the eventual pushed revision. No push or
 release-wide completion is claimed.
+
+### CR-2008: 2026-10-21 — final hosted/external confirmation
+
+Author/reviewer: Codex. The maintainer supplied CI success and four external
+102-archive verification results for the committed f9a3cb05 revision. The
+reported route labels and archive counts are recorded verbatim in IX-0120 and
+the private receipt. This is confirmation of execution and exchange evidence,
+not a legal guarantee and not a similarity claim.

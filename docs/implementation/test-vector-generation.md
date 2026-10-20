@@ -27005,3 +27005,11 @@ completed 129686 executions in 30 seconds, applying every input to all seven
 profiles, with no crash, hang or sanitizer finding. Input and output bounds are recorded in
 the private receipt. CI exclusion for this family was removed; hosted execution
 and the later external archive gate remain separate.
+
+### TVG-1632: hosted and external archive confirmation
+
+For revision `f9a3cb05226840482370ef768a5eb51597241aaa`, the maintainer
+reported successful CI and four successful external route verifications. Each
+route restored and verified102 archives. This record is user-supplied external
+evidence; it is kept separate from the local artifact rehash and does not add
+local environment details.
