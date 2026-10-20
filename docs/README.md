@@ -6,6 +6,8 @@ navigate chronological development records.
 
 ## Library and format
 
+- [CI validation scopes](ci.md): regular push/PR checks, nightly and manual
+  complete validation, long-test inventory and release evidence.
 - [Command-line tool](cli.md): usage, profiles, and file/error behavior.
 - [Composition matrix and admission history](composition.md): the current
   profile matrix is authoritative; publication criteria, the deferred

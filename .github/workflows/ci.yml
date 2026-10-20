@@ -3,13 +3,24 @@ name: CI
 on:
   push:
   pull_request:
+  schedule:
+    - cron: '17 18 * * *'
+  workflow_dispatch:
+    inputs:
+      full_validation:
+        description: Run every test, including long boundary and differential campaigns
+        type: boolean
+        default: true
 
 permissions:
   contents: read
 
+env:
+  MARC_CI_SCOPE: ${{ (github.event_name == 'schedule' || inputs.full_validation) && 'complete' || 'regular' }}
+
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
 
 jobs:
   windows-msvc:
@@ -21,10 +32,17 @@ jobs:
           submodules: recursive
       - name: Configure
         run: cmake --preset windows-msvc -DMARC_BUILD_BENCHMARKS=ON -DMARC_BUILD_FUZZERS=OFF
+      - name: Record validation scope
+        shell: pwsh
+        run: '"Validation scope: $env:MARC_CI_SCOPE; revision: $env:GITHUB_SHA" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append'
       - name: Build
         run: cmake --build --preset windows-msvc-release --parallel
-      - name: Test
-        run: ctest --preset windows-msvc-release --parallel 2
+      - name: Test (regular)
+        if: env.MARC_CI_SCOPE == 'regular'
+        run: ctest --preset windows-msvc-release --parallel 2 --label-exclude '^ci-deep$' --no-tests=error
+      - name: Test (complete)
+        if: env.MARC_CI_SCOPE == 'complete'
+        run: ctest --preset windows-msvc-release --parallel 2 --no-tests=error
       - name: Generate interoperability bundle
         shell: pwsh
         run: >-
@@ -50,10 +68,17 @@ jobs:
           submodules: recursive
       - name: Configure
         run: cmake --preset ninja-release -DMARC_BUILD_BENCHMARKS=ON -DMARC_BUILD_FUZZERS=OFF
+      - name: Record validation scope
+        shell: pwsh
+        run: '"Validation scope: $env:MARC_CI_SCOPE; revision: $env:GITHUB_SHA" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append'
       - name: Build
         run: cmake --build --preset ninja-release
-      - name: Test
-        run: ctest --preset ninja-release --parallel 2
+      - name: Test (regular)
+        if: env.MARC_CI_SCOPE == 'regular'
+        run: ctest --preset ninja-release --parallel 2 --label-exclude '^ci-deep$' --no-tests=error
+      - name: Test (complete)
+        if: env.MARC_CI_SCOPE == 'complete'
+        run: ctest --preset ninja-release --parallel 2 --no-tests=error
       - name: Generate interoperability bundle
         shell: pwsh
         run: >-

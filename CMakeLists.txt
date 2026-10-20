@@ -7888,8 +7888,16 @@ if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
     if(Python3_Interpreter_FOUND)
         add_test(NAME marc_cli_position_distance_64m_boundaries
             COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_distance_64m_boundaries.py
-                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli64m-boundaries)
+                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli64m-boundaries --section boundaries)
         set_tests_properties(marc_cli_position_distance_64m_boundaries PROPERTIES TIMEOUT 3600)
+        add_test(NAME marc_cli_position_distance_64m_stress
+            COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_distance_64m_boundaries.py
+                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli64m-stress --section stress)
+        # Each part retains the existing watchdog. Serialize the two large
+        # campaigns with other large-window tests until concurrent RSS is measured.
+        set_tests_properties(marc_cli_position_distance_64m_boundaries
+            marc_cli_position_distance_64m_stress PROPERTIES RESOURCE_LOCK marc_large_window)
+        set_tests_properties(marc_cli_position_distance_64m_stress PROPERTIES TIMEOUT 3600)
     endif()
 endif()
 
@@ -11442,4 +11450,18 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
     set_tests_properties(marc_position_adaptive_huffman_hash_tap PROPERTIES
         TIMEOUT 30
         PASS_REGULAR_EXPRESSION "Verified seven native Adaptive Huffman HashTap profiles and failed-frame withholding")
+endif()
+
+if(MARC_BUILD_TESTS)
+    include(cmake/MarcCiTestLabels.cmake)
+    if(Python3_Interpreter_FOUND
+            AND TEST marc_cli_position_distance_64m_boundaries
+            AND TEST marc_interoperability_schema_compatibility)
+        add_test(NAME marc_ci_test_partition
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/ci_test_partition.py
+                --ctest ${CMAKE_CTEST_COMMAND}
+                --build ${CMAKE_CURRENT_BINARY_DIR} --config $<CONFIG>)
+        set_tests_properties(marc_ci_test_partition PROPERTIES TIMEOUT 180)
+    endif()
 endif()

@@ -1,8 +1,13 @@
 """Qualify the actual explicit sixty-four-MiB file-loop and transaction."""
 from pathlib import Path
-import struct,subprocess,sys,tempfile,json,hashlib,time
+import argparse,struct,subprocess,sys,tempfile,json,hashlib,time
 from lzss_position_distance_64m_frame_reference import frame as oracle_frame
-cli=Path(sys.argv[1]).resolve();parent=Path(sys.argv[2]);parent.mkdir(parents=True,exist_ok=True)
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('cli',type=Path)
+parser.add_argument('parent',type=Path)
+parser.add_argument('--section',choices=('all','boundaries','stress'),default='all')
+args=parser.parse_args()
+cli=args.cli.resolve();parent=args.parent;parent.mkdir(parents=True,exist_ok=True)
 root=Path(tempfile.mkdtemp(prefix='run-',dir=parent));codec='lzss-position-distance-dynamic-range-64m';F=67108864;serial=0;records=[]
 def sha(b):return hashlib.sha256(b).hexdigest()
 def invoke(direction,source,output,selected=codec,expected=0,extra=(),timeout=120):
@@ -23,6 +28,21 @@ def fail(name,wire,selected=codec):
  with source.open('xb') as f:f.write(wire)
  invoke('decode',source,output,selected,1)
  assert not output.exists() and not Path(str(output)+'.tmp').exists(),name
+def stress():
+ # Two incompressible full frames exercise retained and candidate generations.
+ # Keep the original recipe, exact checks and finite per-command watchdogs.
+ data=hashlib.shake_256(b'marc independent DD-1509 incompressible recipe').digest(2*F)
+ with (root/'stress-input.bin').open('xb') as f:f.write(data)
+ invoke('encode',root/'stress-input.bin',root/'stress.marc',timeout=1200)
+ invoke('decode',root/'stress.marc',root/'stress-decoded.bin');assert (root/'stress-decoded.bin').read_bytes()==data
+ invoke('encode',root/'stress-decoded.bin',root/'stress-again.marc',timeout=1200);wire_stress=(root/'stress.marc').read_bytes();assert (root/'stress-again.marc').read_bytes()==wire_stress
+ records.append(dict(recipe='shake256-two-full-frames',raw=len(data),wire_bytes=len(wire_stress),wire_sha256=sha(wire_stress),raw_sha256=sha(data)))
+def finish():
+ result=dict(passed=True,invocations=serial,records=records,full_window=True,section=args.section)
+ with (root/'qualification.json').open('x') as f:json.dump(result,f,indent=2)
+ print(json.dumps(result,sort_keys=True))
+if args.section=='stress':
+ stress();finish();sys.exit(0)
 streams={}
 for n in (0,1,256,F-1,F,F+1,2*F,2*F+1):
  data=bytes(range(256)) if n==256 else b'A'*min(n,F)+b'B'*max(n-F,0)
@@ -51,14 +71,7 @@ invoke('encode',root/'far-input.bin',root/'far.marc')
 far_wire=(root/'far.marc').read_bytes();assert far_wire[112:]==far_frame
 invoke('decode',root/'far.marc',root/'far-decoded.bin');assert (root/'far-decoded.bin').read_bytes()==data
 records.append(dict(recipe='maximum-encoder-distance',distance=F-5,raw=F,wire_bytes=len(far_wire),wire_sha256=sha(far_wire),oracle_frame_equal=True))
-# Two incompressible full frames exercise retained and candidate generations.
-# Their encode work needs a larger finite watchdog on slower test runners.
-data=hashlib.shake_256(b'marc independent DD-1509 incompressible recipe').digest(2*F)
-with (root/'stress-input.bin').open('xb') as f:f.write(data)
-invoke('encode',root/'stress-input.bin',root/'stress.marc',timeout=1200)
-invoke('decode',root/'stress.marc',root/'stress-decoded.bin');assert (root/'stress-decoded.bin').read_bytes()==data
-invoke('encode',root/'stress-decoded.bin',root/'stress-again.marc',timeout=1200);wire_stress=(root/'stress.marc').read_bytes();assert (root/'stress-again.marc').read_bytes()==wire_stress
-records.append(dict(recipe='shake256-two-full-frames',raw=len(data),wire_bytes=len(wire_stress),wire_sha256=sha(wire_stress),raw_sha256=sha(data)))
+if args.section=='all':stress()
 small=bytearray(streams[256]);struct.pack_into('<I',small,20,256);struct.pack_into('<I',small,64,1);struct.pack_into('<I',small,72,3)
 with (root/'bounded-header.marc').open('xb') as f:f.write(small)
 invoke('decode',root/'bounded-header.marc',root/'bounded-header.bin');assert (root/'bounded-header.bin').read_bytes()==bytes(range(256))
@@ -90,5 +103,4 @@ for direction in ('encode','decode'):
 r=subprocess.run([str(cli)],capture_output=True,timeout=30);assert r.returncode==2
 usage=(r.stdout+r.stderr).decode();assert usage.count(codec)==1
 assert usage.index('lzss-position-distance-dynamic-range-32m,')<usage.index(codec+',')
-with (root/'qualification.json').open('x') as f:json.dump(dict(passed=True,invocations=serial,records=records,full_window=True),f,indent=2)
-print(json.dumps(dict(passed=True,invocations=serial,records=records),sort_keys=True))
+finish()

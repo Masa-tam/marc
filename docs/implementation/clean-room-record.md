@@ -43793,3 +43793,15 @@ Author/reviewer: Codex. The maintainer supplied CI success and four external
 reported route labels and archive counts are recorded verbatim in IX-0120 and
 the private receipt. This is confirmation of execution and exchange evidence,
 not a legal guarantee and not a similarity claim.
+
+### CR-2009: 2026-10-21 — measured CI validation scopes
+
+Author/reviewer: Codex. Maintainer-provided hosted logs and repository-owned
+CTest definitions are the inputs for the explicit long-test inventory.
+Regular push/PR runs retain fuzz and benchmark smoke tests; nightly/manual
+complete runs retain every test. The 64-MiB boundary script is partitioned
+without changing its data recipes, mathematical oracle, or assertions; its
+default invocation still runs both parts. No external implementation was
+consulted and no codec, stream identity, or archive representation is changed.
+Local selection checks and codec campaign results are recorded separately
+from subsequent hosted timing and release qualification.

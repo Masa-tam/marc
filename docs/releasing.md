@@ -52,6 +52,9 @@ the changelog and release notes.
    records, all public API/format documentation, and the similarity review.
 5. From a fresh clone, initialize submodules and run the complete Release suite
    on the supported Windows/MSVC and Ubuntu/Ninja configurations.
+   Regular push/PR CI omits the `ci-deep` campaigns. Require an unfiltered
+   nightly or manually dispatched `full_validation` run at this exact commit;
+   see [CI validation scopes](ci.md).
 6. Require the pushed release candidate's installed-package matrix and
    interoperability jobs to succeed. Retain the run ID and artifact metadata.
 7. Complete or explicitly assess every remaining release-evidence item:
