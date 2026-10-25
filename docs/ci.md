@@ -1,8 +1,9 @@
 # CI validation scopes
 
 Pushes and pull requests run the regular Windows/MSVC and Ubuntu/Ninja suites,
-the installed-package matrix, sanitizer fuzz smoke jobs, and interoperability
-bundle generation. Benchmark smoke tests and deterministic CLI fuzz campaigns
+the installed-package matrix and interoperability bundle generation. Dedicated
+sanitizer fuzz jobs are not run in CI; Clang/libFuzzer targets remain available
+for local campaigns. Benchmark smoke tests and deterministic CLI fuzz campaigns
 remain enabled. The regular suites exclude only the explicit `ci-deep` label.
 Successful regular CI is not evidence that the complete suite passed.
 
@@ -23,8 +24,8 @@ of a different commit does not satisfy that requirement.
 
 The history check requires a successful run of this same workflow and exact
 SHA, plus the successful **Complete validation succeeded** marker job in
-that run's recorded attempt. That marker depends on both platform suites,
-both fuzz jobs and the entire installed-package matrix, and only runs for
+that run's recorded attempt. That marker depends on both platform suites
+and the entire installed-package matrix, and only runs for
 complete scope. Regular successes and skipped-night successes cannot serve
 as complete evidence. Older runs without the marker are conservatively
 revalidated. A prior confirmed success remains reusable even if a separate

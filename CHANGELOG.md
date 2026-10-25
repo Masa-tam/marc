@@ -3,6 +3,47 @@
 This file records user-visible marc changes. Project release versions, stream
 format versions, and C ABI versions are independent namespaces.
 
+## 0.8.0 - 2026-10-26
+
+### Added
+
+- Added thirty-five explicit LZSS Position-distance profiles across Dynamic
+  Range, rANS, tANS, Blocked Huffman and Adaptive Huffman, with 64-KiB,
+  1-MiB, 4-MiB, 8-MiB, 16-MiB, 32-MiB and 64-MiB windows. Each profile has
+  bounded streaming encode/decode, public C and CLI integration, validation,
+  resource queries and recorded comparison evidence.
+- Extended interoperability through schema 92 with 102 archives, retaining
+  the preceding 67-profile inventory. Successful hosted CI and four external
+  verification routes are recorded at revision
+  `f9a3cb05226840482370ef768a5eb51597241aaa`.
+
+### Changed
+
+- Removed the two dedicated Ubuntu sanitizer Fuzz jobs for Position-distance
+  Blocked Huffman and Adaptive Huffman from GitHub Actions, including their
+  dependencies in the complete-validation success marker. Local fuzz targets
+  and existing deterministic regression tests remain available.
+- Separated regular push/PR validation from complete nightly/manual validation.
+  Scheduled work is skipped only after successful complete validation of the
+  same commit; manual and push/PR runs remain unconditional.
+- Improved the native Position-distance Blocked Huffman encoder's model-pool
+  planning across all seven windows. Revised output preserves the decoder
+  grammar and old-archive compatibility; the intentional producer-byte changes
+  and measured speed/memory trade-offs are recorded in the implementation log.
+
+### Validation and research
+
+- Recorded same-window Silesia size, speed and resident-memory comparisons.
+  Native Adaptive Huffman produced larger archives than its contextual controls
+  in all 84 member/window cases; no universal compression or speed advantage
+  is claimed.
+- Completed bounded local sanitizer campaigns and retained their results.
+  Removing CI Fuzz jobs does not replace those results with new execution
+  evidence. Release-commit validation remains separate from earlier results.
+
+C ABI lifecycle version 1 and the forty-two-profile baseline are unchanged.
+Project version 0.8.0 does not imply a stream-format version change.
+
 ## 0.7.0 - 2026-09-24
 
 ### Changed

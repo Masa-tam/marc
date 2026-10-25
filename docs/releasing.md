@@ -55,6 +55,8 @@ the changelog and release notes.
    Regular push/PR CI omits the `ci-deep` campaigns. Require an unfiltered
    nightly or manually dispatched `full_validation` run at this exact commit;
    see [CI validation scopes](ci.md).
+   Dedicated sanitizer Fuzz jobs are not part of GitHub Actions; assess
+   local sanitizer campaign evidence separately under step 7.
 6. Require the pushed release candidate's installed-package matrix and
    interoperability jobs to succeed. Retain the run ID and artifact metadata.
 7. Complete or explicitly assess every remaining release-evidence item:

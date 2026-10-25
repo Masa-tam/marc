@@ -43817,3 +43817,20 @@ unavailable history is not success evidence. Offline history regressions
 cover scope, attempt, pagination and lookup failures. No codec implementation,
 format or existing generated artifact is changed. Actual hosted dispatch and
 API authorization remain separate verification steps after maintainer push.
+
+### CR-2011: 2026-10-26 — remove dedicated CI fuzz jobs and prepare 0.8.0
+
+Author/reviewer: Codex. The maintainer requests removal of the two dedicated
+GitHub Actions Fuzz jobs and intends to release this codec-extension boundary
+as 0.8.0. Remove only the dedicated Blocked Huffman and Adaptive Huffman jobs
+and their aggregate-success dependencies. Retain local fuzz infrastructure,
+existing regression coverage and prior execution evidence. Update project and
+runtime versions, their metadata assertion, CI guidance and release notes.
+Use first-party implementation and exchange records only; no external codec
+source is consulted. This preparation does not publish a release or claim new
+hosted CI, corpus, interoperability or sanitizer execution.
+
+Validation: all ten offline CI-history regressions, unchanged-job and
+remaining-dependency checks, version consistency checks and git diff --check
+pass. Full documentation validation stops at the absent GoogleTest submodule
+license; no full library build/test or hosted workflow run is claimed.
