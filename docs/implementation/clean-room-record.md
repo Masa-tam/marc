@@ -43921,3 +43921,15 @@ public4MiB tests and reference comparison bodies are not rewritten. TVG-1638
 records targeted execution, exact inventory accounting and product identity.
 No external implementation, representation change, corpus benchmark, sanitizer
 campaign, hosted result or push is claimed.
+
+### CR-2018: 2026-10-26 — dead HashChain trial entry retirement
+
+Author/reviewer: Codex. DD-1632/IR-1377 remove unadopted mixer/cap adapters and
+experiment-only assertions. Preserve the mixed helper's actual production,
+probe and no-probe comparisons rather than deleting those input recipes.
+Twenty candidate-only tests retire; three retained mixed comparisons are
+renamed explicitly. Retained source-body comparison confirms22 ordinary/
+reference algorithm/helper bodies and the HashChain state fields are unchanged.
+TVG-1639 records runtime inventory, relevant execution, public observations and
+configure-only fuzz availability. No external implementation, format change,
+new corpus measurement, fuzz execution, hosted result or push is claimed.

@@ -213,3 +213,19 @@ user data and must not be staged, moved or deleted as part of this refactoring.
 | 4 MiB owning/reference wrappers | Three-source test-only reference support, reusing production primitives. |
 | 8 MiB prepared-owning adapter/storage/stream | Adopted public encoder route: retain; operation/reference companions remain test oracles. |
 | 16/32/64 MiB public owning routes | Adopted public implementations: retain for later shared-mechanics refactoring. |
+
+- Checkpoint E: DD-1632/TVG-1639 remove dead mixer and bucket trial code.
+  Retained production/reference algorithm bodies (22) and HashChain state
+  fields are identical. Twenty candidate cases retire and three mixed
+  probe/control comparisons retain their recipes with explicit names.
+  All 3,460 main cases pass; inventory is 4,189 registrations. Public exports,
+  snapshots and 102 archive comparisons match v0.8.0. Clang/Ninja Fuzz-enabled
+  configuration generates successfully without building or executing fuzz.
+- Checkpoint E hosted gate: push the commit carrying TVG-1639 and request CI
+  with full_validation enabled at that exact revision. Confirm full retained
+  Windows/Linux suites, installed-package consumers and 102-entry bundles.
+  The report for checkpoint B does not qualify this later source revision.
+  After this gate, continue maintained benchmark consolidation and the remaining
+  build/API/codec sharing phases. Public measurement precursors are retained
+  until their documented phase-three replacements are validated; remaining
+  reference/profiling helpers require explicit role review before completion.

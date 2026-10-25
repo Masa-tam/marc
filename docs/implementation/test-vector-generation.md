@@ -27155,3 +27155,38 @@ matches TVG-1637's qualified artifact. Thus its224 config/query observations,
 111 ABI layouts and102 archive comparison results are retained product evidence,
 not new codec executions. All retained direct file dependencies resolve. Full
 hosted/installed-consumer qualification remains a separate later checkpoint.
+
+### TVG-1639: HashChain trial cleanup and checkpoint E qualification
+
+Remove20 experiment-only main cases and explicitly rename three mixed
+comparisons while preserving their production/probe/no-probe recipes. Runtime
+inventory equality accounts for precisely those changes:3460 main cases and
+4189 complete CTest registrations. All3460 main cases pass in142.29 seconds.
+Compare22 retained ordinary/reference function bodies, including the actual
+workspace, search and advance algorithm templates; each matches the previous
+source after newline normalization. HashChain state fields and their order
+are identical;262144 and best-length probing remain the production policy.
+
+MSVC shared/static libraries, CLI and main tests build. All251
+public export names,224 config/query observations and111 numeric ABI layouts
+match v0.8.0. Strict schema92 verification passes all102 restorations and
+byte-identical re-encodings. The separately retained4MiB reference/public
+executable passed161 cases at TVG-1638. No aggregate4189-suite or Linux
+execution is inferred from these scoped results.
+
+A Clang/Ninja configuration with FUZZERS=ON and TESTS/BENCHMARKS=OFF generates
+successfully, proving the retained optional target definitions resolve after
+the two obsolete private-interface harnesses retire. It does not build or
+execute a fuzz campaign. The first direct cmd-shell invocation failed in
+argument quoting before configuration; a saved native batch invocation
+successfully performs the same configure. Existing dedicated CI fuzz jobs
+remain absent. The final hosted checkpoint needs a maintainer push and
+complete Windows/Linux/package/bundle validation at the committed revision.
+
+TVG-1639 final local checks: documentation, CI-history, CI-partition and corpus
+verification CTests pass4/4 after the log updates. git diff --check passes.
+The TVG-1638 dependency audit also reconciles the actual463-project solution:
+exactly six private targets retire and one test-only support target is renamed;
+other source/dependency sets match. A first local checker compared path-sorted
+references with name-sorted references; comparing dependency sets corrects that
+receipt-checker assertion without requiring any product or build-graph change.

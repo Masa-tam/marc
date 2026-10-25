@@ -35187,3 +35187,16 @@ interfaces and retire with those experiments. The current public-factory and
 stream decoder harnesses remain byte-identical. This applies the plan's
 experiment-test retirement rule; it does not remove a retained public codec's
 fuzz boundary or add any CI fuzz job. Document this distinction explicitly.
+
+### DD-1632: remove dead HashChain trials without changing admitted search
+
+Remove the rejected mnemonic mixer and the private65536/262144/1048576/4194304
+bucket-comparison adapters, query functions and typed entries. The admitted
+262144 standard workspace/initializer/probe behavior stays unchanged. Keep
+the explicit no-probe implementation as an independent search-policy control
+and retain BinaryTree/exhaustive differential checks. Delete only candidate
+assertions in mixed helpers; retain their production/probe/control recipes
+under explicit names. State fields, order, resource admission and all public
+API/format/default contracts remain unchanged. Remaining profiling/reference
+helpers and public measurement tools are reviewed in later common-mechanics
+and benchmark phases, not automatically classified as rejected candidates.

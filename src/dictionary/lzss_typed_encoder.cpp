@@ -261,15 +261,6 @@ template <bool Timed = false, LzssMatchFinder Finder, typename Consumer>
     return validation;
 }
 
-template <std::size_t BucketCap>
-[[nodiscard]] LzssHashChainWorkspaceRequirements
-calculate_bucket_scaled_hash_chain_workspace(
-    const std::size_t input_size, const LzssParameters& parameters,
-    const core::DecoderLimits& limits) noexcept {
-    return calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
-        input_size, parameters, limits, BucketCap);
-}
-
 template <LzssMatchFinder Finder, auto CalculateWorkspace,
           auto InitializeFinder>
 [[nodiscard]] LzssTypedEncodeResult
@@ -343,23 +334,6 @@ encode_lzss_typed_tokens_hash_chain_single_pass_with(
         return run_typed_parser<true>(input, finder, consume, timing);
     }
     return run_typed_parser(input, finder, consume);
-}
-
-template <std::size_t BucketCap>
-[[nodiscard]] LzssTypedEncodeResult
-encode_lzss_typed_tokens_hash_chain_bucket_scaled_single_pass(
-    const std::span<const std::byte> input,
-    const LzssParameters& parameters, const core::DecoderLimits& limits,
-    const std::span<LzssTypedToken> private_tokens,
-    const std::span<std::byte> match_finder_workspace,
-    LzssMatchFinderStatistics* const statistics,
-    const LzssTypedTokenVariant variant) noexcept {
-    return encode_lzss_typed_tokens_hash_chain_single_pass_with<
-        LzssHashChainBucketScaledMatchFinder<BucketCap>,
-        calculate_bucket_scaled_hash_chain_workspace<BucketCap>,
-        initialize_lzss_hash_chain_bucket_scaled_match_finder<BucketCap>>(
-            input, parameters, limits, private_tokens,
-            match_finder_workspace, statistics, variant);
 }
 
 } // namespace
@@ -487,62 +461,6 @@ LzssTypedEncodeResult encode_lzss_typed_tokens_hash_chain_single_pass(
 }
 
 LzssTypedEncodeResult
-encode_lzss_typed_tokens_hash_chain_legacy_65536_single_pass(
-    const std::span<const std::byte> input,
-    const LzssParameters& parameters, const core::DecoderLimits& limits,
-    const std::span<LzssTypedToken> private_tokens,
-    const std::span<std::byte> match_finder_workspace,
-    LzssMatchFinderStatistics* const statistics,
-    const LzssTypedTokenVariant variant) noexcept {
-    return encode_lzss_typed_tokens_hash_chain_bucket_scaled_single_pass<
-        lzss_hash_chain_legacy_bucket_cap>(
-            input, parameters, limits, private_tokens,
-            match_finder_workspace, statistics, variant);
-}
-
-LzssTypedEncodeResult
-encode_lzss_typed_tokens_hash_chain_buckets_262144_single_pass(
-    const std::span<const std::byte> input,
-    const LzssParameters& parameters, const core::DecoderLimits& limits,
-    const std::span<LzssTypedToken> private_tokens,
-    const std::span<std::byte> match_finder_workspace,
-    LzssMatchFinderStatistics* const statistics,
-    const LzssTypedTokenVariant variant) noexcept {
-    return encode_lzss_typed_tokens_hash_chain_bucket_scaled_single_pass<
-        lzss_hash_chain_bucket_cap_262144>(
-            input, parameters, limits, private_tokens,
-            match_finder_workspace, statistics, variant);
-}
-
-LzssTypedEncodeResult
-encode_lzss_typed_tokens_hash_chain_buckets_1048576_single_pass(
-    const std::span<const std::byte> input,
-    const LzssParameters& parameters, const core::DecoderLimits& limits,
-    const std::span<LzssTypedToken> private_tokens,
-    const std::span<std::byte> match_finder_workspace,
-    LzssMatchFinderStatistics* const statistics,
-    const LzssTypedTokenVariant variant) noexcept {
-    return encode_lzss_typed_tokens_hash_chain_bucket_scaled_single_pass<
-        lzss_hash_chain_bucket_cap_1048576>(
-            input, parameters, limits, private_tokens,
-            match_finder_workspace, statistics, variant);
-}
-
-LzssTypedEncodeResult
-encode_lzss_typed_tokens_hash_chain_buckets_4194304_single_pass(
-    const std::span<const std::byte> input,
-    const LzssParameters& parameters, const core::DecoderLimits& limits,
-    const std::span<LzssTypedToken> private_tokens,
-    const std::span<std::byte> match_finder_workspace,
-    LzssMatchFinderStatistics* const statistics,
-    const LzssTypedTokenVariant variant) noexcept {
-    return encode_lzss_typed_tokens_hash_chain_bucket_scaled_single_pass<
-        lzss_hash_chain_bucket_cap_4194304>(
-            input, parameters, limits, private_tokens,
-            match_finder_workspace, statistics, variant);
-}
-
-LzssTypedEncodeResult
 encode_lzss_typed_tokens_hash_chain_no_probe_single_pass(
     const std::span<const std::byte> input,
     const LzssParameters& parameters, const core::DecoderLimits& limits,
@@ -570,22 +488,6 @@ encode_lzss_typed_tokens_hash_chain_best_length_probe_single_pass(
         LzssHashChainBestLengthProbeMatchFinder,
         calculate_lzss_hash_chain_workspace,
         initialize_lzss_hash_chain_best_length_probe_match_finder>(
-            input, parameters, limits, private_tokens,
-            match_finder_workspace, statistics, variant);
-}
-
-LzssTypedEncodeResult
-encode_lzss_typed_tokens_hash_chain_mnemonic_mixer_v1_single_pass(
-    const std::span<const std::byte> input,
-    const LzssParameters& parameters, const core::DecoderLimits& limits,
-    const std::span<LzssTypedToken> private_tokens,
-    const std::span<std::byte> match_finder_workspace,
-    LzssMatchFinderStatistics* const statistics,
-    const LzssTypedTokenVariant variant) noexcept {
-    return encode_lzss_typed_tokens_hash_chain_single_pass_with<
-        LzssHashChainMnemonicMixerV1MatchFinder,
-        calculate_lzss_hash_chain_workspace,
-        initialize_lzss_hash_chain_mnemonic_mixer_v1_match_finder>(
             input, parameters, limits, private_tokens,
             match_finder_workspace, statistics, variant);
 }

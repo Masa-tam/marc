@@ -104,40 +104,6 @@ LzssHashChainWorkspaceRequirements calculate_lzss_hash_chain_workspace(
             input_size, parameters, limits);
 }
 
-bool is_supported_lzss_hash_chain_private_bucket_cap(
-    const std::size_t bucket_cap) noexcept {
-    return bucket_cap == lzss_hash_chain_legacy_bucket_cap
-        || bucket_cap == lzss_hash_chain_bucket_cap_262144
-        || bucket_cap == lzss_hash_chain_bucket_cap_1048576
-        || bucket_cap == lzss_hash_chain_bucket_cap_4194304;
-}
-
-LzssHashChainWorkspaceRequirements
-calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
-    const std::size_t input_size, const LzssParameters& parameters,
-    const core::DecoderLimits& limits,
-    const std::size_t bucket_cap) noexcept {
-    switch (bucket_cap) {
-    case lzss_hash_chain_legacy_bucket_cap:
-        return calculate_lzss_hash_chain_workspace_impl<
-            lzss_hash_chain_legacy_bucket_cap>(
-                input_size, parameters, limits);
-    case lzss_hash_chain_bucket_cap_262144:
-        return calculate_lzss_hash_chain_workspace_impl<
-            lzss_hash_chain_bucket_cap_262144>(input_size, parameters, limits);
-    case lzss_hash_chain_bucket_cap_1048576:
-        return calculate_lzss_hash_chain_workspace_impl<
-            lzss_hash_chain_bucket_cap_1048576>(input_size, parameters, limits);
-    case lzss_hash_chain_bucket_cap_4194304:
-        return calculate_lzss_hash_chain_workspace_impl<
-            lzss_hash_chain_bucket_cap_4194304>(input_size, parameters, limits);
-    default:
-        LzssHashChainWorkspaceRequirements result{};
-        result.error = LzssHashChainError::invalid_bucket_cap;
-        return result;
-    }
-}
-
 LzssHashChainError initialize_lzss_hash_chain_match_finder(
     const std::span<const std::byte> input,
     const LzssParameters& parameters, const core::DecoderLimits& limits,
@@ -146,63 +112,6 @@ LzssHashChainError initialize_lzss_hash_chain_match_finder(
     LzssMatchFinderStatistics* const statistics) noexcept {
     const auto required = calculate_lzss_hash_chain_workspace(
         input.size(), parameters, limits);
-    if (required.error != LzssHashChainError::none) return required.error;
-    if (workspace.size() < required.workspace_size)
-        return LzssHashChainError::workspace_too_small;
-    const auto active_workspace = workspace.first(required.workspace_size);
-    if (!active_workspace.empty()
-        && reinterpret_cast<std::uintptr_t>(active_workspace.data())
-               % required.workspace_alignment != 0) {
-        return LzssHashChainError::misaligned_workspace;
-    }
-    const auto overlap = core::check_buffer_overlap(
-        input.data(), input.size(), active_workspace.data(),
-        active_workspace.size());
-    if (overlap == core::BufferOverlap::overlap)
-        return LzssHashChainError::overlapping_buffers;
-    if (overlap == core::BufferOverlap::arithmetic_overflow)
-        return LzssHashChainError::arithmetic_overflow;
-
-    LzssHashChainMatchFinder initialized{};
-    initialized.input_ = input;
-    initialized.parameters_ = parameters;
-    initialized.statistics_ = statistics;
-    if (required.workspace_size == 0) {
-        finder = initialized;
-        return LzssHashChainError::none;
-    }
-
-    auto heads = std::span<std::size_t>{
-        reinterpret_cast<std::size_t*>(active_workspace.data()),
-        required.bucket_count};
-    auto links = std::span<std::uint32_t>{
-        reinterpret_cast<std::uint32_t*>(
-            active_workspace.data() + required.link_offset),
-        required.link_count};
-    for (std::size_t index = 0; index < heads.size(); ++index) {
-        std::construct_at(
-            heads.data() + index, std::numeric_limits<std::size_t>::max());
-    }
-    for (std::size_t index = 0; index < links.size(); ++index) {
-        std::construct_at(links.data() + index, UINT32_C(0));
-    }
-
-    initialized.heads_ = heads;
-    initialized.links_ = links;
-    finder = initialized;
-    return LzssHashChainError::none;
-}
-
-LzssHashChainError
-initialize_lzss_hash_chain_match_finder_with_private_bucket_cap(
-    const std::span<const std::byte> input,
-    const LzssParameters& parameters, const core::DecoderLimits& limits,
-    const std::span<std::byte> workspace, const std::size_t bucket_cap,
-    LzssHashChainMatchFinder& finder,
-    LzssMatchFinderStatistics* const statistics) noexcept {
-    const auto required =
-        calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
-            input.size(), parameters, limits, bucket_cap);
     if (required.error != LzssHashChainError::none) return required.error;
     if (workspace.size() < required.workspace_size)
         return LzssHashChainError::workspace_too_small;
@@ -434,36 +343,6 @@ void LzssHashChainMatchFinder::advance(
     const std::size_t position,
     const std::size_t next_position) noexcept {
     advance_with<calculate_lzss_prefix_hash>(position, next_position);
-}
-
-LzssMatch LzssHashChainMnemonicMixerV1MatchFinder::find_match(
-    const std::size_t position) const noexcept {
-    return implementation_.find_match_with<
-        calculate_lzss_prefix_hash_mnemonic_mixer_v1, false>(position);
-}
-
-void LzssHashChainMnemonicMixerV1MatchFinder::advance(
-    const std::size_t position,
-    const std::size_t next_position) noexcept {
-    implementation_.advance_with<
-        calculate_lzss_prefix_hash_mnemonic_mixer_v1>(
-            position, next_position);
-}
-
-LzssHashChainError
-initialize_lzss_hash_chain_mnemonic_mixer_v1_match_finder(
-    const std::span<const std::byte> input,
-    const LzssParameters& parameters, const core::DecoderLimits& limits,
-    const std::span<std::byte> workspace,
-    LzssHashChainMnemonicMixerV1MatchFinder& finder,
-    LzssMatchFinderStatistics* const statistics) noexcept {
-    LzssHashChainMnemonicMixerV1MatchFinder initialized{};
-    const auto error = initialize_lzss_hash_chain_match_finder(
-        input, parameters, limits, workspace, initialized.implementation_,
-        statistics);
-    if (error != LzssHashChainError::none) return error;
-    finder = initialized;
-    return LzssHashChainError::none;
 }
 
 LzssHashChainError

@@ -137,7 +137,7 @@ void expect_private_match_finders_typed_equal_exact(
               canonical);
 }
 
-void expect_mnemonic_mixer_typed_equal_exact(
+void expect_probe_and_control_typed_equal_exact(
     const std::span<const std::byte> input,
     const LzssParameters& parameters = {},
     const LzssTypedTokenVariant variant =
@@ -154,39 +154,23 @@ void expect_mnemonic_mixer_typed_equal_exact(
         input.size(), parameters, {});
     ASSERT_EQ(required.error, LzssHashChainError::none);
     AlignedWorkspace legacy_owner(required.workspace_size);
-    AlignedWorkspace mnemonic_owner(required.workspace_size);
     std::vector<LzssTypedToken> legacy(input.size());
-    std::vector<LzssTypedToken> mnemonic(input.size());
     LzssMatchFinderStatistics legacy_statistics{};
-    LzssMatchFinderStatistics mnemonic_statistics{};
     const auto legacy_result =
         encode_lzss_typed_tokens_hash_chain_single_pass(
             input, parameters, {}, legacy,
             legacy_owner.bytes(required.workspace_size),
             &legacy_statistics, variant);
-    const auto mnemonic_result =
-        encode_lzss_typed_tokens_hash_chain_mnemonic_mixer_v1_single_pass(
-            input, parameters, {}, mnemonic,
-            mnemonic_owner.bytes(required.workspace_size),
-            &mnemonic_statistics, variant);
     ASSERT_EQ(legacy_result.error, LzssTypedEncodeError::none);
-    ASSERT_EQ(mnemonic_result.error, LzssTypedEncodeError::none);
     ASSERT_EQ(legacy_result.token_count, reference.size());
-    ASSERT_EQ(mnemonic_result.token_count, reference.size());
     EXPECT_EQ(legacy_result.token_storage_size,
               reference.size() * sizeof(LzssTypedToken));
-    EXPECT_EQ(mnemonic_result.token_storage_size,
-              reference.size() * sizeof(LzssTypedToken));
     EXPECT_EQ(legacy_statistics.query_count, reference.size());
-    EXPECT_EQ(mnemonic_statistics.query_count, reference.size());
     EXPECT_FALSE(legacy_statistics.overflowed);
-    EXPECT_FALSE(mnemonic_statistics.overflowed);
 
     legacy.resize(legacy_result.token_count);
-    mnemonic.resize(mnemonic_result.token_count);
     for (std::size_t index = 0; index < reference.size(); ++index) {
         EXPECT_TRUE(equal_token(legacy[index], reference[index])) << index;
-        EXPECT_TRUE(equal_token(mnemonic[index], reference[index])) << index;
     }
 
     const auto byte_plan = plan_lzss_token_stream(input, parameters, {});
@@ -197,7 +181,6 @@ void expect_mnemonic_mixer_typed_equal_exact(
               LzssEncodeError::none);
     EXPECT_EQ(serialize_typed_tokens(reference), canonical);
     EXPECT_EQ(serialize_typed_tokens(legacy), canonical);
-    EXPECT_EQ(serialize_typed_tokens(mnemonic), canonical);
 
     // Reuse the same capacity, but exercise the private probe independently.
     LzssMatchFinderStatistics probe_statistics{};
@@ -227,106 +210,6 @@ void expect_mnemonic_mixer_typed_equal_exact(
     EXPECT_EQ(control_statistics.hash_chain_best_length_probe_comparison_count, 0U);
     EXPECT_EQ(control_statistics.hash_chain_best_length_probe_pruned_candidate_count, 0U);
     legacy.resize(control.token_count);
-    EXPECT_EQ(serialize_typed_tokens(legacy), canonical);
-}
-
-using BucketScaledTypedEncoder = LzssTypedEncodeResult (*)(
-    std::span<const std::byte>, const LzssParameters&,
-    const marc::core::DecoderLimits&, std::span<LzssTypedToken>,
-    std::span<std::byte>, LzssMatchFinderStatistics*,
-    LzssTypedTokenVariant) noexcept;
-
-struct BucketScaledTypedRoute {
-    std::size_t bucket_cap{};
-    BucketScaledTypedEncoder encode{};
-};
-
-constexpr std::array bucket_scaled_typed_routes{
-    BucketScaledTypedRoute{
-        lzss_hash_chain_bucket_cap_262144,
-        encode_lzss_typed_tokens_hash_chain_buckets_262144_single_pass},
-    BucketScaledTypedRoute{
-        lzss_hash_chain_bucket_cap_1048576,
-        encode_lzss_typed_tokens_hash_chain_buckets_1048576_single_pass},
-    BucketScaledTypedRoute{
-        lzss_hash_chain_bucket_cap_4194304,
-        encode_lzss_typed_tokens_hash_chain_buckets_4194304_single_pass},
-};
-
-void expect_bucket_scaled_typed_equal_exact(
-    const std::span<const std::byte> input,
-    const LzssParameters& parameters = {},
-    const LzssTypedTokenVariant variant =
-        LzssTypedTokenVariant::field_context_64k) {
-    const auto reference_plan = plan_lzss_typed_tokens(
-        input, parameters, {}, variant);
-    ASSERT_EQ(reference_plan.error, LzssTypedEncodeError::none);
-    std::vector<LzssTypedToken> reference(reference_plan.token_count);
-    ASSERT_EQ(encode_lzss_typed_tokens(
-                  input, parameters, {}, reference, variant).error,
-              LzssTypedEncodeError::none);
-
-    const auto legacy_required =
-        calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
-            input.size(), parameters, {},
-            lzss_hash_chain_legacy_bucket_cap);
-    ASSERT_EQ(legacy_required.error, LzssHashChainError::none);
-    AlignedWorkspace legacy_owner(legacy_required.workspace_size);
-    std::vector<LzssTypedToken> legacy(input.size());
-    LzssMatchFinderStatistics legacy_statistics{};
-    const auto legacy_result =
-        encode_lzss_typed_tokens_hash_chain_legacy_65536_single_pass(
-        input, parameters, {}, legacy,
-        legacy_owner.bytes(legacy_required.workspace_size),
-        &legacy_statistics, variant);
-    ASSERT_EQ(legacy_result.error, LzssTypedEncodeError::none);
-    ASSERT_EQ(legacy_result.token_count, reference.size());
-    legacy.resize(legacy_result.token_count);
-
-    const LzssTypedToken sentinel{
-        LzssTypedTokenKind::match, 0, UINT32_C(0xdeadbeef),
-        UINT32_C(0xcafebabe)};
-    for (const auto& route : bucket_scaled_typed_routes) {
-        const auto required =
-            calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
-                input.size(), parameters, {}, route.bucket_cap);
-        ASSERT_EQ(required.error, LzssHashChainError::none);
-        AlignedWorkspace owner(required.workspace_size);
-        std::vector<LzssTypedToken> tokens(input.size(), sentinel);
-        LzssMatchFinderStatistics statistics{};
-        const auto result = route.encode(
-            input, parameters, {}, tokens,
-            owner.bytes(required.workspace_size), &statistics, variant);
-        ASSERT_EQ(result.error, LzssTypedEncodeError::none);
-        EXPECT_EQ(result.match_finder_error, LzssHashChainError::none);
-        ASSERT_EQ(result.token_count, reference.size());
-        EXPECT_EQ(result.token_storage_size,
-                  reference.size() * sizeof(LzssTypedToken));
-        EXPECT_EQ(statistics.query_count, result.token_count);
-        EXPECT_FALSE(statistics.overflowed);
-        for (std::size_t index = 0; index < reference.size(); ++index) {
-            EXPECT_TRUE(equal_token(tokens[index], reference[index]))
-                << route.bucket_cap << ':' << index;
-            EXPECT_TRUE(equal_token(tokens[index], legacy[index]))
-                << route.bucket_cap << ':' << index;
-        }
-        for (std::size_t index = reference.size(); index < tokens.size();
-             ++index) {
-            EXPECT_TRUE(equal_token(tokens[index], sentinel))
-                << route.bucket_cap << ':' << index;
-        }
-        EXPECT_EQ(serialize_typed_tokens(
-                      std::span{tokens}.first(result.token_count)),
-                  serialize_typed_tokens(reference));
-    }
-
-    const auto byte_plan = plan_lzss_token_stream(input, parameters, {});
-    ASSERT_EQ(byte_plan.error, LzssEncodeError::none);
-    std::vector<std::byte> canonical(byte_plan.output_size);
-    ASSERT_EQ(encode_lzss_token_stream(
-                  input, parameters, {}, canonical).error,
-              LzssEncodeError::none);
-    EXPECT_EQ(serialize_typed_tokens(reference), canonical);
     EXPECT_EQ(serialize_typed_tokens(legacy), canonical);
 }
 
@@ -677,196 +560,6 @@ TEST(LzssTypedEncoder, HashChainSinglePassReservesWorstCaseAtomically) {
         }));
 }
 
-TEST(LzssTypedEncoder,
-     BucketScaledHashChainsMatchExactTypedTokensAndCanonicalBytes) {
-    expect_bucket_scaled_typed_equal_exact(bytes(""));
-    expect_bucket_scaled_typed_equal_exact(bytes("A"));
-    expect_bucket_scaled_typed_equal_exact(bytes("AAAAAAAAAAAAAAAA"));
-    expect_bucket_scaled_typed_equal_exact(bytes("ABCDE1ABCDE2ABCDE3"));
-
-    std::vector<std::byte> all_values{};
-    for (std::uint32_t value = 0; value < 256; ++value) {
-        all_values.push_back(static_cast<std::byte>(value));
-    }
-    all_values.insert(all_values.end(), all_values.begin(), all_values.end());
-    expect_bucket_scaled_typed_equal_exact(all_values);
-
-    std::vector<std::byte> generated(2048);
-    std::uint32_t state = UINT32_C(0x8a73e5d1);
-    for (auto& value : generated) {
-        state = state * UINT32_C(1664525) + UINT32_C(1013904223);
-        value = static_cast<std::byte>(state >> 24U);
-    }
-    expect_bucket_scaled_typed_equal_exact(generated);
-
-    std::vector<std::byte> mixed{};
-    for (std::size_t index = 0; index < 1024; ++index) {
-        mixed.push_back(static_cast<std::byte>(
-            index % 41 == 0 ? index & 0xffU : index % 17));
-    }
-    for (const auto variant : {
-             LzssTypedTokenVariant::field_context_64k,
-             LzssTypedTokenVariant::field_context_1m,
-             LzssTypedTokenVariant::field_context_4m,
-             LzssTypedTokenVariant::field_context_16m,
-             LzssTypedTokenVariant::field_context_64m}) {
-        expect_bucket_scaled_typed_equal_exact(mixed, {}, variant);
-    }
-}
-
-TEST(LzssTypedEncoder,
-     BucketScaledHashChainsDeterministicBoundedGeneratedDifferential) {
-    std::uint32_t state = UINT32_C(0x3f6a92c5);
-    for (std::size_t case_index = 0; case_index < 48; ++case_index) {
-        state = state * UINT32_C(1664525) + UINT32_C(1013904223);
-        const auto size = std::size_t{17} + state % 1008U;
-        std::vector<std::byte> input(size);
-        for (auto& value : input) {
-            state = state * UINT32_C(1664525) + UINT32_C(1013904223);
-            const auto generated = static_cast<std::uint8_t>(state >> 24U);
-            value = static_cast<std::byte>(
-                case_index % 3U == 0 ? generated % 13U : generated);
-        }
-        state = state * UINT32_C(1664525) + UINT32_C(1013904223);
-        LzssParameters parameters{};
-        parameters.window_size = 1U + state % 65'535U;
-        state = state * UINT32_C(1664525) + UINT32_C(1013904223);
-        parameters.max_match_length = 5U + state % 254U;
-        expect_bucket_scaled_typed_equal_exact(input, parameters);
-    }
-}
-
-TEST(LzssTypedEncoder,
-     BucketScaledHashChainsPreserveTokensAcrossFirstCapBoundary) {
-    std::vector<std::byte> input(131'329);
-    std::uint32_t state = UINT32_C(0x6d2b79f5);
-    for (auto& value : input) {
-        state = state * UINT32_C(1664525) + UINT32_C(1013904223);
-        value = static_cast<std::byte>(state >> 24U);
-    }
-    LzssParameters parameters{};
-    parameters.window_size = 131'329;
-    constexpr auto variant = LzssTypedTokenVariant::field_context_1m;
-
-    const auto legacy_required =
-        calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
-            input.size(), parameters, {},
-            lzss_hash_chain_legacy_bucket_cap);
-    ASSERT_EQ(legacy_required.error, LzssHashChainError::none);
-    ASSERT_EQ(legacy_required.bucket_count, 65'536U);
-    AlignedWorkspace legacy_owner(legacy_required.workspace_size);
-    std::vector<LzssTypedToken> legacy(input.size());
-    LzssMatchFinderStatistics legacy_statistics{};
-    const auto legacy_result =
-        encode_lzss_typed_tokens_hash_chain_legacy_65536_single_pass(
-            input, parameters, {}, legacy,
-            legacy_owner.bytes(legacy_required.workspace_size),
-            &legacy_statistics, variant);
-    ASSERT_EQ(legacy_result.error, LzssTypedEncodeError::none);
-    legacy.resize(legacy_result.token_count);
-    const auto canonical = serialize_typed_tokens(legacy);
-
-    for (const auto& route : bucket_scaled_typed_routes) {
-        const auto required =
-            calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
-                input.size(), parameters, {}, route.bucket_cap);
-        ASSERT_EQ(required.error, LzssHashChainError::none);
-        ASSERT_EQ(required.bucket_count, 262'144U);
-        AlignedWorkspace owner(required.workspace_size);
-        std::vector<LzssTypedToken> tokens(input.size());
-        LzssMatchFinderStatistics statistics{};
-        const auto result = route.encode(
-            input, parameters, {}, tokens,
-            owner.bytes(required.workspace_size), &statistics, variant);
-        ASSERT_EQ(result.error, LzssTypedEncodeError::none);
-        ASSERT_EQ(result.token_count, legacy.size());
-        EXPECT_EQ(result.token_storage_size,
-                  legacy.size() * sizeof(LzssTypedToken));
-        for (std::size_t index = 0; index < legacy.size(); ++index) {
-            EXPECT_TRUE(equal_token(tokens[index], legacy[index]))
-                << route.bucket_cap << ':' << index;
-        }
-        EXPECT_EQ(serialize_typed_tokens(
-                      std::span{tokens}.first(result.token_count)),
-                  canonical);
-        EXPECT_EQ(statistics.query_count, legacy_statistics.query_count);
-        EXPECT_LE(statistics.candidate_count,
-                  legacy_statistics.candidate_count);
-        EXPECT_EQ(statistics.hash_chain_prefix_match_count
-                      + statistics.hash_chain_prefix_mismatch_count,
-                  statistics.candidate_count);
-        EXPECT_FALSE(statistics.overflowed);
-    }
-}
-
-TEST(LzssTypedEncoder, BucketScaledHashChainFailuresAreAtomicAndBounded) {
-    const auto input = bytes("ABCDE1ABCDE2ABCDE3");
-    const LzssTypedToken sentinel{
-        LzssTypedTokenKind::match, 0, UINT32_C(0xdeadbeef),
-        UINT32_C(0xcafebabe)};
-
-    for (const auto& route : bucket_scaled_typed_routes) {
-        const auto required =
-            calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
-                input.size(), {}, {}, route.bucket_cap);
-        ASSERT_EQ(required.error, LzssHashChainError::none);
-        ASSERT_GT(required.workspace_size, 0U);
-        AlignedWorkspace owner(required.workspace_size);
-        auto workspace = owner.bytes(required.workspace_size);
-
-        std::vector<LzssTypedToken> short_output(input.size() - 1, sentinel);
-        auto result = route.encode(
-            input, {}, {}, short_output, workspace, nullptr,
-            LzssTypedTokenVariant::field_context_64k);
-        EXPECT_EQ(result.error, LzssTypedEncodeError::output_too_small);
-        EXPECT_TRUE(std::ranges::all_of(
-            short_output, [&sentinel](const LzssTypedToken& token) {
-                return equal_token(token, sentinel);
-            }));
-
-        std::vector<LzssTypedToken> output(input.size(), sentinel);
-        result = route.encode(
-            input, {}, {}, output,
-            workspace.first(required.workspace_size - 1U), nullptr,
-            LzssTypedTokenVariant::field_context_64k);
-        EXPECT_EQ(result.error, LzssTypedEncodeError::match_finder_error);
-        EXPECT_EQ(result.match_finder_error,
-                  LzssHashChainError::workspace_too_small);
-        EXPECT_TRUE(std::ranges::all_of(
-            output, [&sentinel](const LzssTypedToken& token) {
-                return equal_token(token, sentinel);
-            }));
-
-        auto limits = marc::core::DecoderLimits{};
-        limits.max_frame_size = input.size();
-        limits.max_block_size = input.size();
-        limits.max_internal_buffered_bytes = input.size()
-            + required.workspace_size
-            + input.size() * sizeof(LzssTypedToken) - 1U;
-        result = route.encode(
-            input, {}, limits, output, workspace, nullptr,
-            LzssTypedTokenVariant::field_context_64k);
-        EXPECT_EQ(result.error,
-                  LzssTypedEncodeError::token_storage_limit_exceeded);
-        EXPECT_TRUE(std::ranges::all_of(
-            output, [&sentinel](const LzssTypedToken& token) {
-                return equal_token(token, sentinel);
-            }));
-
-        std::vector<LzssTypedToken> aliased_storage(
-            (required.workspace_size + sizeof(LzssTypedToken) - 1U)
-            / sizeof(LzssTypedToken), sentinel);
-        auto aliased_workspace = std::as_writable_bytes(
-            std::span{aliased_storage}).first(required.workspace_size);
-        result = route.encode(
-            input, {}, {},
-            std::span{aliased_storage}.first(input.size()),
-            aliased_workspace, nullptr,
-            LzssTypedTokenVariant::field_context_64k);
-        EXPECT_EQ(result.error, LzssTypedEncodeError::overlapping_buffers);
-    }
-}
-
 TEST(LzssTypedEncoder, PrivateMatchFinderEntriesMatchExactTokensAndBytes) {
     expect_private_match_finders_typed_equal_exact(bytes(""));
     expect_private_match_finders_typed_equal_exact(bytes("A"));
@@ -904,12 +597,12 @@ TEST(LzssTypedEncoder, PrivateMatchFinderEntriesMatchExactTokensAndBytes) {
 }
 
 TEST(LzssTypedEncoder,
-     MnemonicMixerSinglePassMatchesExactTokensAndBytes) {
-    expect_mnemonic_mixer_typed_equal_exact(bytes(""));
-    expect_mnemonic_mixer_typed_equal_exact(bytes("A"));
-    expect_mnemonic_mixer_typed_equal_exact(
+     ProbeAndControlSinglePassMatchExactTokensAndBytes) {
+    expect_probe_and_control_typed_equal_exact(bytes(""));
+    expect_probe_and_control_typed_equal_exact(bytes("A"));
+    expect_probe_and_control_typed_equal_exact(
         bytes("AAAAAAAAAAAAAAAA"));
-    expect_mnemonic_mixer_typed_equal_exact(
+    expect_probe_and_control_typed_equal_exact(
         bytes("ABCDE1ABCDE2ABCDE3"));
 
     std::vector<std::byte> all_values{};
@@ -917,7 +610,7 @@ TEST(LzssTypedEncoder,
         all_values.push_back(static_cast<std::byte>(value));
     }
     all_values.insert(all_values.end(), all_values.begin(), all_values.end());
-    expect_mnemonic_mixer_typed_equal_exact(all_values);
+    expect_probe_and_control_typed_equal_exact(all_values);
 
     std::vector<std::byte> collision_records{};
     for (std::uint32_t record = 0; record < 256; ++record) {
@@ -930,11 +623,11 @@ TEST(LzssTypedEncoder,
             collision_records.end(), first.begin(), first.end());
         collision_records.push_back(static_cast<std::byte>(record));
     }
-    expect_mnemonic_mixer_typed_equal_exact(collision_records);
+    expect_probe_and_control_typed_equal_exact(collision_records);
 
     LzssParameters extended{};
     extended.window_size = 1U << 20;
-    expect_mnemonic_mixer_typed_equal_exact(
+    expect_probe_and_control_typed_equal_exact(
         all_values, extended, LzssTypedTokenVariant::field_context_1m);
 }
 
@@ -944,7 +637,7 @@ TEST(LzssTypedEncoder, BestLengthProbeContextualLength256MatchesReference) {
     parameters.window_size = 1U << 20;
     for (const auto size : {255U, 256U, 257U, 1025U}) {
         std::vector<std::byte> input(size, std::byte{0x41});
-        expect_mnemonic_mixer_typed_equal_exact(
+        expect_probe_and_control_typed_equal_exact(
             input, parameters, LzssTypedTokenVariant::field_context_1m);
     }
 }
@@ -1080,61 +773,7 @@ TEST(LzssTypedEncoder, NoProbeRejectsShortWorkspaceWithoutTokenWrites) {
 }
 
 TEST(LzssTypedEncoder,
-     MnemonicMixerSinglePassFailuresAreAtomicAndBounded) {
-    const auto input = bytes("ABCDE1ABCDE2ABCDE3");
-    const auto required = calculate_lzss_hash_chain_workspace(
-        input.size(), {}, {});
-    ASSERT_EQ(required.error, LzssHashChainError::none);
-    ASSERT_GT(required.workspace_size, 0U);
-    AlignedWorkspace owner(required.workspace_size);
-    const LzssTypedToken sentinel{
-        LzssTypedTokenKind::match, 0, 123, 456};
-
-    std::vector<LzssTypedToken> short_output(input.size() - 1U, sentinel);
-    auto result =
-        encode_lzss_typed_tokens_hash_chain_mnemonic_mixer_v1_single_pass(
-            input, {}, {}, short_output,
-            owner.bytes(required.workspace_size));
-    EXPECT_EQ(result.error, LzssTypedEncodeError::output_too_small);
-    EXPECT_EQ(result.token_count, input.size());
-    EXPECT_TRUE(std::ranges::all_of(
-        short_output, [&sentinel](const LzssTypedToken& token) {
-            return equal_token(token, sentinel);
-        }));
-
-    std::vector<LzssTypedToken> output(input.size(), sentinel);
-    result =
-        encode_lzss_typed_tokens_hash_chain_mnemonic_mixer_v1_single_pass(
-            input, {}, {}, output,
-            owner.bytes(required.workspace_size - 1U));
-    EXPECT_EQ(result.error, LzssTypedEncodeError::match_finder_error);
-    EXPECT_EQ(result.match_finder_error,
-              LzssHashChainError::workspace_too_small);
-    EXPECT_TRUE(std::ranges::all_of(
-        output, [&sentinel](const LzssTypedToken& token) {
-            return equal_token(token, sentinel);
-        }));
-
-    auto limits = marc::core::DecoderLimits{};
-    limits.max_frame_size = input.size();
-    limits.max_block_size = input.size();
-    limits.max_internal_buffered_bytes = input.size()
-        + required.workspace_size
-        + input.size() * sizeof(LzssTypedToken) - 1U;
-    result =
-        encode_lzss_typed_tokens_hash_chain_mnemonic_mixer_v1_single_pass(
-            input, {}, limits, output,
-            owner.bytes(required.workspace_size));
-    EXPECT_EQ(result.error,
-              LzssTypedEncodeError::token_storage_limit_exceeded);
-    EXPECT_TRUE(std::ranges::all_of(
-        output, [&sentinel](const LzssTypedToken& token) {
-            return equal_token(token, sentinel);
-        }));
-}
-
-TEST(LzssTypedEncoder,
-     MnemonicMixerDeterministicBoundedFuzzMatchesExactBytes) {
+     ProbeAndControlDeterministicBoundedFuzzMatchExactBytes) {
     std::uint32_t state = UINT32_C(0x9e3779b9);
     constexpr std::array<std::uint32_t, 6> windows{
         1U, 5U, 17U, 64U, 257U, 65'536U};
@@ -1158,7 +797,7 @@ TEST(LzssTypedEncoder,
         parameters.max_match_length =
             maximum_lengths[(case_index / windows.size())
                             % maximum_lengths.size()];
-        expect_mnemonic_mixer_typed_equal_exact(input, parameters);
+        expect_probe_and_control_typed_equal_exact(input, parameters);
     }
 }
 

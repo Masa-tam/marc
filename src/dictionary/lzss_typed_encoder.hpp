@@ -98,60 +98,6 @@ encode_lzss_typed_tokens_hash_chain_best_length_probe_single_pass(
     LzssTypedTokenVariant variant =
         LzssTypedTokenVariant::field_context_64k) noexcept;
 
-// Private experiment entries. They intentionally have no public C/C++ API or
-// frame/format selector while HashChain bucket scaling is being evaluated.
-[[nodiscard]] LzssTypedEncodeResult
-encode_lzss_typed_tokens_hash_chain_legacy_65536_single_pass(
-    std::span<const std::byte> input, const LzssParameters& parameters,
-    const core::DecoderLimits& limits,
-    std::span<LzssTypedToken> private_tokens,
-    std::span<std::byte> match_finder_workspace,
-    LzssMatchFinderStatistics* statistics = nullptr,
-    LzssTypedTokenVariant variant =
-        LzssTypedTokenVariant::field_context_64k) noexcept;
-
-[[nodiscard]] LzssTypedEncodeResult
-encode_lzss_typed_tokens_hash_chain_buckets_262144_single_pass(
-    std::span<const std::byte> input, const LzssParameters& parameters,
-    const core::DecoderLimits& limits,
-    std::span<LzssTypedToken> private_tokens,
-    std::span<std::byte> match_finder_workspace,
-    LzssMatchFinderStatistics* statistics = nullptr,
-    LzssTypedTokenVariant variant =
-        LzssTypedTokenVariant::field_context_64k) noexcept;
-
-[[nodiscard]] LzssTypedEncodeResult
-encode_lzss_typed_tokens_hash_chain_buckets_1048576_single_pass(
-    std::span<const std::byte> input, const LzssParameters& parameters,
-    const core::DecoderLimits& limits,
-    std::span<LzssTypedToken> private_tokens,
-    std::span<std::byte> match_finder_workspace,
-    LzssMatchFinderStatistics* statistics = nullptr,
-    LzssTypedTokenVariant variant =
-        LzssTypedTokenVariant::field_context_64k) noexcept;
-
-[[nodiscard]] LzssTypedEncodeResult
-encode_lzss_typed_tokens_hash_chain_buckets_4194304_single_pass(
-    std::span<const std::byte> input, const LzssParameters& parameters,
-    const core::DecoderLimits& limits,
-    std::span<LzssTypedToken> private_tokens,
-    std::span<std::byte> match_finder_workspace,
-    LzssMatchFinderStatistics* statistics = nullptr,
-    LzssTypedTokenVariant variant =
-        LzssTypedTokenVariant::field_context_64k) noexcept;
-
-// Private experiment entry. It intentionally has no public C/C++ API or
-// frame/format selector while mnemonic mixer v1 is being evaluated.
-[[nodiscard]] LzssTypedEncodeResult
-encode_lzss_typed_tokens_hash_chain_mnemonic_mixer_v1_single_pass(
-    std::span<const std::byte> input, const LzssParameters& parameters,
-    const core::DecoderLimits& limits,
-    std::span<LzssTypedToken> private_tokens,
-    std::span<std::byte> match_finder_workspace,
-    LzssMatchFinderStatistics* statistics = nullptr,
-    LzssTypedTokenVariant variant =
-        LzssTypedTokenVariant::field_context_64k) noexcept;
-
 [[nodiscard]] LzssTypedEncodeResult
 encode_lzss_typed_tokens_binary_tree_single_pass(
     std::span<const std::byte> input, const LzssParameters& parameters,

@@ -12176,3 +12176,13 @@ not adoption evidence. Retain active1MiB prepared-model/fallback and8MiB
 prepared-owning dependencies; distinguish unadopted4MiB prototypes, bounded18
 and private C shims from installed public C declarations. No external source
 or new algorithm reference is consulted.
+
+### IR-1377: retire rejected HashChain mixer and bucket trial entries
+
+Use first-party fixed-gate results for the mnemonic prefix mixer and the
+completed bucket-scaling admission records. The admitted production contract
+is262144 buckets with best-length probing. Preserve the ordinary prefix hash,
+exhaustive parser, BinaryTree and explicit no-probe control. Inspect mixed
+differential helpers before deleting candidate assertions: probe/control
+input recipes remain valuable even when their original test names mention
+the rejected mixer. No external hash, codec or implementation source is used.
