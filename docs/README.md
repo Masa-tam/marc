@@ -124,6 +124,8 @@ navigate chronological development records.
 
 ## Validation and project operation
 
+- [Refactoring toward v1.0: stage 1](design/v1-refactoring-stage-1.md): active
+  cleanup and infrastructure-sharing plan, compatibility gates and progress.
 - [Benchmarks](benchmarks.md): measurement contract and benchmark usage.
 - [Fuzzing](fuzzing.md): bounded fuzz targets, corpora, and sanitizer workflow.
 - [Interoperability](interoperability.md): CI bundles and cross-platform

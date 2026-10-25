@@ -35128,3 +35128,16 @@ and success-only publication. Require per-window correctness and matched
 contextual comparisons. Resource grants and heavy test settings follow pilots.
 Preserve the starting95 bodies and append seven in order. Fuzz is deferred by
 the maintainer; local and later hosted/external completion remain distinct.
+
+### DD-1628: behavior-preserving stage-one refactoring
+
+The maintainer authorizes the six-phase plan in
+[stage-one refactoring](../design/v1-refactoring-stage-1.md): freeze v0.8.0
+comparison evidence, remove completed experiments, consolidate maintenance
+benchmarks, split CMake, share CLI/C API infrastructure and then share
+comparable codec-family mechanics incrementally. Preserve all102 public
+profiles, exact producer bytes, ABI1 and configuration/resource/failure
+contracts. Retain independent test oracles and historical provenance. Do not
+classify prepared/finder_scratch implementations as abandoned by name alone.
+Local commits are authorized; pushing remains the maintainer's action.
+Hosted CI is an explicit checkpoint, never inferred from local success.

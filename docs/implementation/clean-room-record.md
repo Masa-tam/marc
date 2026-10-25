@@ -43834,3 +43834,15 @@ Validation: all ten offline CI-history regressions, unchanged-job and
 remaining-dependency checks, version consistency checks and git diff --check
 pass. Full documentation validation stops at the absent GoogleTest submodule
 license; no full library build/test or hosted workflow run is claimed.
+
+### CR-2012: 2026-10-26 — stage-one refactoring plan and baseline setup
+
+Author/reviewer: Codex. The maintainer requests a persistent Markdown plan,
+execution through its completion conditions, existing-format work-log entries
+and local commits, with push requests at hosted-CI checkpoints. DD-1628 and
+IR-1373 define the independent first-party scope. Record the full six-phase
+plan and link it from the documentation index. Inspect the tracked source,
+public bindings, experiment registrations and current v0.8.0 identity before
+implementation edits. Keep all twelve untracked external corpus files intact.
+Baseline configure/build evidence is in progress and is not counted as passing.
+No external implementation, new stream representation or push is involved.

@@ -12136,3 +12136,12 @@ native frames and existing public failure contracts. DD-1627 defines new exact
 identities rather than altering earlier streams. Author a separate small
 mathematical FGK vector generator and retain hand-checkable payloads. No
 external implementation source or new external compatibility claim is used.
+
+### IR-1373: v1.0 stage-one refactoring baseline
+
+Use only the first-party v0.8.0 source/tag, AGENTS.md, current C ABI/format,
+profile admission records, existing independent vectors and CMake/CTest
+registrations. The maintained plan is docs/design/v1-refactoring-stage-1.md.
+Dependency analysis must distinguish public implementation paths, experimental
+copies and independent correctness oracles. No external codec implementation
+or new algorithm reference is consulted.

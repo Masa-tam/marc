@@ -27013,3 +27013,17 @@ reported successful CI and four successful external route verifications. Each
 route restored and verified102 archives. This record is user-supplied external
 evidence; it is kept separate from the local artifact rehash and does not add
 local environment details.
+
+### TVG-1633: stage-one refactoring plan and baseline configuration
+
+Verify the complete plan and ordered ledgers with the existing documentation
+validator:249 relative links across121 documents and every numbered ledger
+pass. Configure v0.8.0 production sources with Visual Studio18/MSVC19.51,
+x64 Release, static/shared, tests and benchmarks enabled, libFuzzer disabled.
+Configuration and generation pass. Preserve a generated536-project inventory
+with compile/include/project-reference paths and1479 production source/header
+SHA-256 values under ignored out/refactoring. The five cloned experiment
+support targets are referenced only by their own benchmark/test executables
+and ALL_BUILD in that generated inventory. This is dependency evidence, not
+runtime equivalence. Baseline CLI/core-test compilation is still running;
+archive, public-resource and complete-test gates remain pending.
