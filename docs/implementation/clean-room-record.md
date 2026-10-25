@@ -43883,3 +43883,27 @@ tooling retry. All102 public profiles remain; the270 removed cases exercise
 only retired research code. Request maintainer-controlled complete hosted CI
 before continuing the next production refactoring boundary. No hosted result,
 whole-repository completion or push is claimed.
+
+### CR-2015: 2026-10-26 — checkpoint B confirmation and cleanup continuation
+
+Author/reviewer: Codex. The maintainer confirms a successful GitHub push/CI
+result after the requested9dd2b7d8 checkpoint. TVG-1636 distinguishes this
+reported evidence from independent workflow inspection. Resume the existing
+six-phase plan without narrowing its remaining scope. Reinspect current
+tracked sources and registrations before classifying the remaining benchmark
+experiments. No codec implementation or external algorithm source is consulted
+for this confirmation, and no new local test or push is claimed.
+
+### CR-2016: 2026-10-26 — completed benchmark diagnostic retirement
+
+Author/reviewer: Codex. Follow DD-1630/IR-1375 and the unchanged full plan.
+Audit the 50 benchmark-related targets and their consumers from the actual
+Visual Studio solution, rather than stale vcxproj files left by regeneration.
+No retained target consumes them. Retire their source/script/smoke-helper graph
+and four orphan eight-MiB tools. Remove the separate unused Contextual Huffman
+estimator and its own tests only after verifying that no production coder uses
+it. Preserve the active rANS mathematical diagnostic/exporter and vector tools,
+which have real public conformance clients. Historical experimental records
+remain accessible. TVG-1637 distinguishes local evidence and still-pending full
+hosted validation. No external implementation, new format, corpus timing run,
+fuzz campaign or push is involved.

@@ -378,7 +378,7 @@ set(MARC_SOURCES
     src/entropy/contextual_tans_encoder.cpp
     src/entropy/contextual_tans_decode_tables.cpp
     src/entropy/contextual_tans_decoder.cpp
-    src/entropy/contextual_huffman_estimator.cpp
+
     src/entropy/contextual_adaptive_huffman_format.cpp
     src/entropy/contextual_adaptive_huffman_model.cpp
     src/entropy/contextual_adaptive_huffman_decoder.cpp
@@ -1521,344 +1521,7 @@ if(MARC_BUILD_BENCHMARKS)
                 target_link_libraries(marc_position_rans_1m_cli_resources PRIVATE psapi)
             endif()
         endif()
-        add_executable(marc_lzss_position_distance_1m_stream_benchmark
-            benchmarks/lzss_position_distance_1m_stream_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_stream_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_stream_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_stream_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_stream_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_stream_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-stream-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_stream_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_six_phase_benchmark
-            benchmarks/lzss_position_distance_1m_six_phase_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_six_phase_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_six_phase_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_six_phase_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_six_phase_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_six_phase_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-six-phase-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_six_phase_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_search_counts_benchmark
-            benchmarks/lzss_position_distance_1m_search_counts_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_search_counts_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_search_counts_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_search_counts_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_search_counts_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_search_counts_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-search-counts-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_search_counts_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_online_six_benchmark
-            benchmarks/lzss_position_distance_1m_online_six_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_online_six_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_online_six_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_online_six_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_online_six_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_online_six_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-online-six-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_online_six_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_finder_scratch_stream_benchmark
-            benchmarks/lzss_position_distance_1m_finder_scratch_stream_benchmark.cpp
-            src/frame/lzss_position_distance_1m_prepared_owned_encoder.cpp
-            src/frame/lzss_position_distance_1m_finder_scratch_owned_encoder.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_finder_scratch_stream_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_finder_scratch_stream_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_finder_scratch_stream_benchmark PRIVATE marc::static)
-        add_executable(marc_lzss_position_distance_4m_profile_benchmark
-            benchmarks/lzss_position_distance_4m_profile_benchmark.cpp
-            src/dictionary/lzss_position_distance_4m_match_finder.cpp
-            src/dictionary/lzss_position_distance_4m_candidate.cpp
-            src/context/lzss_position_distance_4m_tokens.cpp
-            src/entropy/lzss_position_distance_4m_range_encoder.cpp
-            src/entropy/lzss_position_distance_4m_range_decoder.cpp
-            src/frame/lzss_position_distance_4m_frame.cpp
-            src/frame/lzss_position_distance_4m_raw_frame_encoder.cpp
-            src/frame/lzss_position_distance_4m_encode_workspace.cpp
-            src/frame/lzss_position_distance_4m_workspace.cpp
-            src/frame/lzss_position_distance_4m_frame_streaming_encoder.cpp
-            src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
-            src/frame/lzss_position_distance_4m_owned_encoder.cpp
-            src/frame/lzss_position_distance_4m_owned_decoder.cpp)
-        target_compile_features(marc_lzss_position_distance_4m_profile_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_4m_profile_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_4m_profile_benchmark PRIVATE marc::static)
-        add_executable(marc_lzss_position_distance_4m_finder_scratch_owner_benchmark
-            src/entropy/lzss_position_distance_4m_scratch_range_encoder.cpp
-            src/frame/lzss_position_distance_4m_finder_scratch_encode_workspace.cpp
-            src/frame/lzss_position_distance_4m_finder_scratch_frame.cpp
-            src/frame/lzss_position_distance_4m_finder_scratch_raw_frame_encoder.cpp
-            src/frame/lzss_position_distance_4m_finder_scratch_frame_streaming_encoder.cpp
-            src/frame/lzss_position_distance_4m_finder_scratch_owned_encoder.cpp
-            benchmarks/lzss_position_distance_4m_finder_scratch_owner_benchmark.cpp
-            src/dictionary/lzss_position_distance_4m_five_prefix_finder.cpp
-            src/dictionary/lzss_position_distance_4m_five_prefix_candidate.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_raw_frame_encoder.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_encode_workspace.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_frame_streaming_encoder.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_owned_encoder.cpp
-            src/dictionary/lzss_position_distance_4m_match_finder.cpp
-            src/dictionary/lzss_position_distance_4m_candidate.cpp
-            src/context/lzss_position_distance_4m_tokens.cpp
-            src/entropy/lzss_position_distance_4m_range_encoder.cpp
-            src/entropy/lzss_position_distance_4m_range_decoder.cpp
-            src/frame/lzss_position_distance_4m_frame.cpp
-            src/frame/lzss_position_distance_4m_raw_frame_encoder.cpp
-            src/frame/lzss_position_distance_4m_encode_workspace.cpp
-            src/frame/lzss_position_distance_4m_workspace.cpp
-            src/frame/lzss_position_distance_4m_frame_streaming_encoder.cpp
-            src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
-            src/frame/lzss_position_distance_4m_owned_encoder.cpp
-            src/frame/lzss_position_distance_4m_owned_decoder.cpp)
-        target_compile_features(marc_lzss_position_distance_4m_finder_scratch_owner_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_4m_finder_scratch_owner_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_4m_finder_scratch_owner_benchmark PRIVATE marc::static)
-        if(WIN32)
-            target_link_libraries(marc_lzss_position_distance_4m_finder_scratch_owner_benchmark PRIVATE psapi)
-        endif()
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_4m_finder_scratch_owner_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_4m_finder_scratch_owner_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-4m-scratch-owner-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_4m_finder_scratch_owner_benchmark_smoke.cmake)
-        endif()
 
-        add_executable(marc_lzss_position_distance_4m_range_prepared_owner_benchmark
-            src/entropy/lzss_position_distance_4m_prepared_range_encoder.cpp
-            src/frame/lzss_position_distance_4m_range_prepared_encode_workspace.cpp
-            src/frame/lzss_position_distance_4m_range_prepared_frame.cpp
-            src/frame/lzss_position_distance_4m_range_prepared_raw_frame_encoder.cpp
-            src/frame/lzss_position_distance_4m_range_prepared_frame_streaming_encoder.cpp
-            src/frame/lzss_position_distance_4m_range_prepared_owned_encoder.cpp
-            benchmarks/lzss_position_distance_4m_range_prepared_owner_benchmark.cpp
-            src/dictionary/lzss_position_distance_4m_five_prefix_finder.cpp
-            src/dictionary/lzss_position_distance_4m_five_prefix_candidate.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_raw_frame_encoder.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_encode_workspace.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_frame_streaming_encoder.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_owned_encoder.cpp
-            src/dictionary/lzss_position_distance_4m_match_finder.cpp
-            src/dictionary/lzss_position_distance_4m_candidate.cpp
-            src/context/lzss_position_distance_4m_tokens.cpp
-            src/entropy/lzss_position_distance_4m_range_encoder.cpp
-            src/entropy/lzss_position_distance_4m_range_decoder.cpp
-            src/frame/lzss_position_distance_4m_frame.cpp
-            src/frame/lzss_position_distance_4m_raw_frame_encoder.cpp
-            src/frame/lzss_position_distance_4m_encode_workspace.cpp
-            src/frame/lzss_position_distance_4m_workspace.cpp
-            src/frame/lzss_position_distance_4m_frame_streaming_encoder.cpp
-            src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
-            src/frame/lzss_position_distance_4m_owned_encoder.cpp
-            src/frame/lzss_position_distance_4m_owned_decoder.cpp)
-        target_compile_features(marc_lzss_position_distance_4m_range_prepared_owner_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_4m_range_prepared_owner_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_4m_range_prepared_owner_benchmark PRIVATE marc::static)
-        if(WIN32)
-            target_link_libraries(marc_lzss_position_distance_4m_range_prepared_owner_benchmark PRIVATE psapi)
-        endif()
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_4m_range_prepared_owner_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_4m_range_prepared_owner_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-4m-range-owner-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_4m_range_prepared_owner_benchmark_smoke.cmake)
-        endif()
-
-        add_executable(marc_lzss_position_distance_4m_prepared_owner_benchmark
-            src/context/lzss_position_distance_4m_prepared_model.cpp
-            src/frame/lzss_position_distance_4m_prepared_frame.cpp
-            src/frame/lzss_position_distance_4m_prepared_raw_frame_encoder.cpp
-            src/frame/lzss_position_distance_4m_prepared_frame_streaming_encoder.cpp
-            src/frame/lzss_position_distance_4m_prepared_owned_encoder.cpp
-            benchmarks/lzss_position_distance_4m_prepared_owner_benchmark.cpp
-            src/dictionary/lzss_position_distance_4m_five_prefix_finder.cpp
-            src/dictionary/lzss_position_distance_4m_five_prefix_candidate.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_raw_frame_encoder.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_encode_workspace.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_frame_streaming_encoder.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_owned_encoder.cpp
-            src/dictionary/lzss_position_distance_4m_match_finder.cpp
-            src/dictionary/lzss_position_distance_4m_candidate.cpp
-            src/context/lzss_position_distance_4m_tokens.cpp
-            src/entropy/lzss_position_distance_4m_range_encoder.cpp
-            src/entropy/lzss_position_distance_4m_range_decoder.cpp
-            src/frame/lzss_position_distance_4m_frame.cpp
-            src/frame/lzss_position_distance_4m_raw_frame_encoder.cpp
-            src/frame/lzss_position_distance_4m_encode_workspace.cpp
-            src/frame/lzss_position_distance_4m_workspace.cpp
-            src/frame/lzss_position_distance_4m_frame_streaming_encoder.cpp
-            src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
-            src/frame/lzss_position_distance_4m_owned_encoder.cpp
-            src/frame/lzss_position_distance_4m_owned_decoder.cpp)
-        target_compile_features(marc_lzss_position_distance_4m_prepared_owner_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_4m_prepared_owner_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_4m_prepared_owner_benchmark PRIVATE marc::static)
-        if(WIN32)
-            target_link_libraries(marc_lzss_position_distance_4m_prepared_owner_benchmark PRIVATE psapi)
-        endif()
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_4m_prepared_owner_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_4m_prepared_owner_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-4m-prepared-owner-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_4m_prepared_owner_benchmark_smoke.cmake)
-        endif()
-
-        add_executable(marc_lzss_position_distance_4m_owner_phase_benchmark
-            benchmarks/lzss_position_distance_4m_owner_phase_benchmark.cpp
-            src/dictionary/lzss_position_distance_4m_five_prefix_finder.cpp
-            src/dictionary/lzss_position_distance_4m_five_prefix_candidate.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_raw_frame_encoder.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_encode_workspace.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_frame_streaming_encoder.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_owned_encoder.cpp
-            src/dictionary/lzss_position_distance_4m_match_finder.cpp
-            src/dictionary/lzss_position_distance_4m_candidate.cpp
-            src/context/lzss_position_distance_4m_tokens.cpp
-            src/entropy/lzss_position_distance_4m_range_encoder.cpp
-            src/entropy/lzss_position_distance_4m_range_decoder.cpp
-            src/frame/lzss_position_distance_4m_frame.cpp
-            src/frame/lzss_position_distance_4m_raw_frame_encoder.cpp
-            src/frame/lzss_position_distance_4m_encode_workspace.cpp
-            src/frame/lzss_position_distance_4m_workspace.cpp
-            src/frame/lzss_position_distance_4m_frame_streaming_encoder.cpp
-            src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
-            src/frame/lzss_position_distance_4m_owned_encoder.cpp
-            src/frame/lzss_position_distance_4m_owned_decoder.cpp)
-        target_compile_features(marc_lzss_position_distance_4m_owner_phase_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_4m_owner_phase_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_4m_owner_phase_benchmark PRIVATE marc::static)
-        if(WIN32)
-            target_link_libraries(marc_lzss_position_distance_4m_owner_phase_benchmark PRIVATE psapi)
-        endif()
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_4m_owner_phase_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_4m_owner_phase_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-4m-owner-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_4m_owner_phase_benchmark_smoke.cmake)
-        endif()
-
-        add_executable(marc_lzss_position_distance_4m_owner_benchmark
-            benchmarks/lzss_position_distance_4m_owner_benchmark.cpp
-            src/dictionary/lzss_position_distance_4m_five_prefix_finder.cpp
-            src/dictionary/lzss_position_distance_4m_five_prefix_candidate.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_raw_frame_encoder.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_encode_workspace.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_frame_streaming_encoder.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_owned_encoder.cpp
-            src/dictionary/lzss_position_distance_4m_match_finder.cpp
-            src/dictionary/lzss_position_distance_4m_candidate.cpp
-            src/context/lzss_position_distance_4m_tokens.cpp
-            src/entropy/lzss_position_distance_4m_range_encoder.cpp
-            src/entropy/lzss_position_distance_4m_range_decoder.cpp
-            src/frame/lzss_position_distance_4m_frame.cpp
-            src/frame/lzss_position_distance_4m_raw_frame_encoder.cpp
-            src/frame/lzss_position_distance_4m_encode_workspace.cpp
-            src/frame/lzss_position_distance_4m_workspace.cpp
-            src/frame/lzss_position_distance_4m_frame_streaming_encoder.cpp
-            src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
-            src/frame/lzss_position_distance_4m_owned_encoder.cpp
-            src/frame/lzss_position_distance_4m_owned_decoder.cpp)
-        target_compile_features(marc_lzss_position_distance_4m_owner_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_4m_owner_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_4m_owner_benchmark PRIVATE marc::static)
-        if(WIN32)
-            target_link_libraries(marc_lzss_position_distance_4m_owner_benchmark PRIVATE psapi)
-        endif()
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_4m_owner_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_4m_owner_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-4m-owner-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_4m_owner_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_4m_phase_benchmark
-            benchmarks/lzss_position_distance_4m_phase_benchmark.cpp
-            src/dictionary/lzss_position_distance_4m_match_finder.cpp
-            src/dictionary/lzss_position_distance_4m_candidate.cpp
-            src/context/lzss_position_distance_4m_tokens.cpp
-            src/entropy/lzss_position_distance_4m_range_encoder.cpp
-            src/entropy/lzss_position_distance_4m_range_decoder.cpp
-            src/frame/lzss_position_distance_4m_frame.cpp
-            src/frame/lzss_position_distance_4m_raw_frame_encoder.cpp
-            src/frame/lzss_position_distance_4m_encode_workspace.cpp
-            src/frame/lzss_position_distance_4m_workspace.cpp
-            src/frame/lzss_position_distance_4m_frame_streaming_encoder.cpp
-            src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
-            src/frame/lzss_position_distance_4m_owned_encoder.cpp
-            src/frame/lzss_position_distance_4m_owned_decoder.cpp)
-        target_compile_features(marc_lzss_position_distance_4m_phase_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_4m_phase_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_4m_phase_benchmark PRIVATE marc::static)
-        add_dependencies(marc_lzss_position_distance_4m_phase_benchmark marc_lzss_position_distance_4m_profile_benchmark)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_4m_phase_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_4m_phase_benchmark>"
-                    "-DFIXTURE_GENERATOR=$<TARGET_FILE:marc_lzss_position_distance_4m_profile_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-4m-phase-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_4m_phase_benchmark_smoke.cmake)
-        endif()
-        add_library(marc_position_distance_4m_tokenizer_scope_support STATIC
-            benchmarks/tokenizer_scope/lzss_position_distance_4m_tokenizer_scope.cpp)
-        target_compile_features(marc_position_distance_4m_tokenizer_scope_support PUBLIC cxx_std_20)
-        target_include_directories(marc_position_distance_4m_tokenizer_scope_support PUBLIC
-            ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/tokenizer_scope ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_position_distance_4m_tokenizer_scope_support PUBLIC marc::static)
-        add_executable(marc_lzss_position_distance_4m_tokenizer_scope
-            benchmarks/lzss_position_distance_4m_tokenizer_scope_diagnostic.cpp)
-        target_link_libraries(marc_lzss_position_distance_4m_tokenizer_scope PRIVATE
-            marc_position_distance_4m_tokenizer_scope_support)
-        if(MARC_BUILD_TESTS)
-            add_executable(marc_position_distance_4m_tokenizer_scope_tests
-                tests/lzss_position_distance_4m_tokenizer_scope_tests.cpp)
-            target_link_libraries(marc_position_distance_4m_tokenizer_scope_tests PRIVATE
-                marc_position_distance_4m_tokenizer_scope_support GTest::gtest_main)
-            add_test(NAME marc_position_distance_4m_tokenizer_scope_tests
-                COMMAND marc_position_distance_4m_tokenizer_scope_tests)
-        endif()
-        add_library(marc_position_distance_4m_bucket18_support STATIC
-            benchmarks/bucket18/dictionary/lzss_position_distance_4m_bucket18_finder.cpp
-            benchmarks/bucket18/dictionary/lzss_position_distance_4m_bucket18_candidate.cpp
-            benchmarks/bucket18/frame/lzss_position_distance_4m_bucket18_raw_frame_encoder.cpp
-            benchmarks/bucket18/frame/lzss_position_distance_4m_bucket18_encode_workspace.cpp
-            benchmarks/bucket18/frame/lzss_position_distance_4m_bucket18_frame_streaming_encoder.cpp
-            benchmarks/bucket18/frame/lzss_position_distance_4m_bucket18_owned_encoder.cpp
-            src/frame/lzss_position_distance_4m_five_prefix_owned_encoder.cpp
-            src/frame/lzss_position_distance_4m_owned_decoder.cpp)
-        target_compile_features(marc_position_distance_4m_bucket18_support PUBLIC cxx_std_20)
-        target_include_directories(marc_position_distance_4m_bucket18_support PUBLIC
-            ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/bucket18 ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_position_distance_4m_bucket18_support PUBLIC marc::static)
-        add_executable(marc_lzss_position_distance_4m_bucket18_owner_benchmark
-            benchmarks/lzss_position_distance_4m_bucket18_owner_benchmark.cpp)
-        target_link_libraries(marc_lzss_position_distance_4m_bucket18_owner_benchmark PRIVATE
-            marc_position_distance_4m_bucket18_support)
-        if(WIN32)
-            target_link_libraries(marc_lzss_position_distance_4m_bucket18_owner_benchmark PRIVATE psapi)
-        endif()
-        if(MARC_BUILD_TESTS)
-            add_executable(marc_position_distance_4m_bucket18_tests
-                tests/lzss_position_distance_4m_bucket18_tests.cpp
-                tests/lzss_position_distance_4m_bucket18_streaming_tests.cpp)
-            target_link_libraries(marc_position_distance_4m_bucket18_tests PRIVATE
-                marc_position_distance_4m_bucket18_support GTest::gtest_main)
-            add_test(NAME marc_position_distance_4m_bucket18_tests
-                COMMAND marc_position_distance_4m_bucket18_tests)
-        endif()
         add_library(marc_position_distance_4m_control_support STATIC
             src/frame/lzss_position_distance_4m_five_prefix_owned_encoder.cpp
             src/frame/lzss_position_distance_4m_owned_decoder.cpp)
@@ -1866,379 +1529,7 @@ if(MARC_BUILD_BENCHMARKS)
         target_include_directories(marc_position_distance_4m_control_support PUBLIC
             ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_position_distance_4m_control_support PUBLIC marc::static)
-        add_executable(marc_position_distance_4m_control_repeatability
-            benchmarks/lzss_position_distance_4m_control_repeatability.cpp)
-        target_link_libraries(marc_position_distance_4m_control_repeatability PRIVATE
-            marc_position_distance_4m_control_support)
-        if(MARC_BUILD_TESTS)
-            add_executable(marc_position_distance_4m_control_repeatability_tests
-                tests/position_distance_4m_control_repeatability_tests.cpp)
-            target_link_libraries(marc_position_distance_4m_control_repeatability_tests PRIVATE
-                marc_position_distance_4m_control_support GTest::gtest_main)
-            add_test(NAME marc_position_distance_4m_control_repeatability_tests
-                COMMAND marc_position_distance_4m_control_repeatability_tests)
-        endif()
-        add_executable(marc_lzss_position_distance_4m_probe_length_diagnostic
-            benchmarks/lzss_position_distance_4m_probe_length_diagnostic.cpp
-            benchmarks/lzss_position_distance_4m_probe_length_finder.cpp)
-        target_compile_features(marc_lzss_position_distance_4m_probe_length_diagnostic PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_4m_probe_length_diagnostic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_4m_probe_length_diagnostic PRIVATE marc::static)
-        add_dependencies(marc_lzss_position_distance_4m_probe_length_diagnostic marc_lzss_position_distance_4m_profile_benchmark)
-        if(MARC_BUILD_TESTS)
-            add_executable(marc_position_distance_4m_probe_length_tests
-                tests/lzss_position_distance_4m_probe_length_tests.cpp
-                benchmarks/lzss_position_distance_4m_probe_length_finder.cpp)
-            target_compile_features(marc_position_distance_4m_probe_length_tests PRIVATE cxx_std_20)
-            target_include_directories(marc_position_distance_4m_probe_length_tests PRIVATE
-                ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks)
-            target_link_libraries(marc_position_distance_4m_probe_length_tests PRIVATE marc::static)
-            add_test(NAME marc_position_distance_4m_probe_length_tests
-                COMMAND marc_position_distance_4m_probe_length_tests)
-            add_test(NAME marc_position_distance_4m_probe_length_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DDIAGNOSTIC=$<TARGET_FILE:marc_lzss_position_distance_4m_probe_length_diagnostic>"
-                    "-DFIXTURE_GENERATOR=$<TARGET_FILE:marc_lzss_position_distance_4m_profile_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-4m-probe-length-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_4m_finder_diagnostic_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_4m_finder_diagnostic
-            benchmarks/lzss_position_distance_4m_finder_diagnostic.cpp
-            benchmarks/lzss_position_distance_4m_diagnostic_finder.cpp)
-        target_compile_features(marc_lzss_position_distance_4m_finder_diagnostic PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_4m_finder_diagnostic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_4m_finder_diagnostic PRIVATE marc::static)
-        add_dependencies(marc_lzss_position_distance_4m_finder_diagnostic marc_lzss_position_distance_4m_profile_benchmark)
-        if(MARC_BUILD_TESTS)
-            add_executable(marc_position_distance_4m_finder_diagnostic_tests
-                tests/lzss_position_distance_4m_finder_diagnostic_tests.cpp
-                benchmarks/lzss_position_distance_4m_diagnostic_finder.cpp)
-            target_compile_features(marc_position_distance_4m_finder_diagnostic_tests PRIVATE cxx_std_20)
-            target_include_directories(marc_position_distance_4m_finder_diagnostic_tests PRIVATE
-                ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks)
-            target_link_libraries(marc_position_distance_4m_finder_diagnostic_tests PRIVATE marc::static)
-            add_test(NAME marc_position_distance_4m_finder_diagnostic_tests
-                COMMAND marc_position_distance_4m_finder_diagnostic_tests)
-            add_test(NAME marc_position_distance_4m_finder_diagnostic_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DDIAGNOSTIC=$<TARGET_FILE:marc_lzss_position_distance_4m_finder_diagnostic>"
-                    "-DFIXTURE_GENERATOR=$<TARGET_FILE:marc_lzss_position_distance_4m_profile_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-4m-finder-diagnostic-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_4m_finder_diagnostic_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_4m_five_prefix_phase_benchmark
-            benchmarks/lzss_position_distance_4m_five_prefix_phase_benchmark.cpp
-            src/dictionary/lzss_position_distance_4m_five_prefix_finder.cpp
-            src/dictionary/lzss_position_distance_4m_five_prefix_candidate.cpp
-            src/dictionary/lzss_position_distance_4m_match_finder.cpp
-            src/dictionary/lzss_position_distance_4m_candidate.cpp
-            src/context/lzss_position_distance_4m_tokens.cpp
-            src/entropy/lzss_position_distance_4m_range_encoder.cpp
-            src/entropy/lzss_position_distance_4m_range_decoder.cpp
-            src/frame/lzss_position_distance_4m_frame.cpp
-            src/frame/lzss_position_distance_4m_raw_frame_encoder.cpp
-            src/frame/lzss_position_distance_4m_encode_workspace.cpp
-            src/frame/lzss_position_distance_4m_workspace.cpp
-            src/frame/lzss_position_distance_4m_frame_streaming_encoder.cpp
-            src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
-            src/frame/lzss_position_distance_4m_owned_encoder.cpp
-            src/frame/lzss_position_distance_4m_owned_decoder.cpp)
-        target_compile_features(marc_lzss_position_distance_4m_five_prefix_phase_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_4m_five_prefix_phase_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_4m_five_prefix_phase_benchmark PRIVATE marc::static)
-        add_dependencies(marc_lzss_position_distance_4m_five_prefix_phase_benchmark marc_lzss_position_distance_4m_profile_benchmark)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_4m_five_prefix_phase_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_4m_five_prefix_phase_benchmark>"
-                    "-DFIXTURE_GENERATOR=$<TARGET_FILE:marc_lzss_position_distance_4m_profile_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-4m-five-prefix-phase-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_4m_five_prefix_phase_benchmark_smoke.cmake)
-        endif()
-        if(WIN32)
-            target_link_libraries(marc_lzss_position_distance_4m_profile_benchmark PRIVATE psapi)
-        endif()
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_4m_profile_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_4m_profile_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-4m-profile-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_4m_profile_benchmark_smoke.cmake)
-        endif()
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_finder_scratch_stream_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_finder_scratch_stream_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-finder-scratch-stream-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_finder_scratch_stream_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_prepared_stream_benchmark
-            benchmarks/lzss_position_distance_1m_prepared_stream_benchmark.cpp
-            src/frame/lzss_position_distance_1m_prepared_owned_encoder.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_prepared_stream_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_prepared_stream_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_prepared_stream_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_prepared_stream_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_prepared_stream_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-prepared-stream-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_prepared_stream_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_prepared_model_benchmark
-            benchmarks/lzss_position_distance_1m_prepared_model_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_prepared_model_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_prepared_model_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_prepared_model_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_prepared_model_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_prepared_model_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-prepared-model-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_prepared_model_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_bounded18_stream_benchmark
-            benchmarks/lzss_position_distance_1m_bounded18_stream_benchmark.cpp
-        src/frame/lzss_position_distance_1m_bounded18_encode_workspace.cpp
-        src/frame/lzss_position_distance_1m_bounded18_raw_frame_encoder.cpp
-        src/frame/lzss_position_distance_1m_bounded18_frame_streaming_encoder.cpp
-        src/frame/lzss_position_distance_1m_bounded18_owned_encoder.cpp
-        src/dictionary/lzss_position_distance_1m_bounded18_candidate.cpp
-        src/dictionary/lzss_position_distance_1m_bounded18_finder.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_bounded18_stream_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_bounded18_stream_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_bounded18_stream_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_bounded18_stream_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_bounded18_stream_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-bounded18-stream-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_bounded18_stream_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_bounded18_benchmark
-            benchmarks/lzss_position_distance_1m_bounded18_benchmark.cpp
-            src/dictionary/lzss_position_distance_1m_bounded18_finder.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_bounded18_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_bounded18_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_bounded18_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_bounded18_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_bounded18_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-bounded18-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_bounded18_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_runtime_width_benchmark
-            benchmarks/lzss_position_distance_1m_runtime_width_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_runtime_width_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_runtime_width_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_runtime_width_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_runtime_width_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_runtime_width_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-runtime-width-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_runtime_width_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_width_control_benchmark
-            benchmarks/lzss_position_distance_1m_width_control_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_width_control_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_width_control_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_width_control_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_width_control_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_width_control_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-width-control-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_width_control_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_same_code_benchmark
-            benchmarks/lzss_position_distance_1m_same_code_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_same_code_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_same_code_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_same_code_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_same_code_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_same_code_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-same-code-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_same_code_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_wide_five_benchmark
-            benchmarks/lzss_position_distance_1m_wide_five_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_wide_five_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_wide_five_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_wide_five_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_wide_five_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_wide_five_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-wide_five-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_wide_five_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_observation_benchmark
-            benchmarks/lzss_position_distance_1m_observation_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_observation_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_observation_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_observation_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_observation_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_observation_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-observation-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_observation_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_lazy_six_benchmark
-            benchmarks/lzss_position_distance_1m_lazy_six_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_lazy_six_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_lazy_six_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_lazy_six_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_lazy_six_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_lazy_six_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-lazy-six-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_lazy_six_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_six_fifth_first_benchmark
-            benchmarks/lzss_position_distance_1m_six_fifth_first_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_six_fifth_first_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_six_fifth_first_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_six_fifth_first_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_six_fifth_first_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_six_fifth_first_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-six-fifth-first-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_six_fifth_first_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_six_rolling_benchmark
-            benchmarks/lzss_position_distance_1m_six_rolling_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_six_rolling_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_six_rolling_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_six_rolling_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_six_rolling_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_six_rolling_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-six-rolling-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_six_rolling_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_six_compact_benchmark
-            benchmarks/lzss_position_distance_1m_six_compact_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_six_compact_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_six_compact_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_six_compact_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_six_compact_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_six_compact_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-six-compact-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_six_compact_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_six_prefix_benchmark
-            benchmarks/lzss_position_distance_1m_six_prefix_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_six_prefix_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_six_prefix_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_six_prefix_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_six_prefix_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_six_prefix_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-six-prefix-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_five_prefix_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_shared_advance_benchmark
-            benchmarks/lzss_position_distance_1m_shared_advance_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_shared_advance_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_shared_advance_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_shared_advance_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_shared_advance_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_shared_advance_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-shared-advance-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_five_prefix_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_five_prefix_benchmark
-            benchmarks/lzss_position_distance_1m_five_prefix_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_five_prefix_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_five_prefix_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_five_prefix_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_five_prefix_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_five_prefix_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-five-prefix-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_five_prefix_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_five_finder_benchmark
-            benchmarks/lzss_position_distance_1m_five_finder_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_five_finder_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_five_finder_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_five_finder_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_five_finder_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_five_finder_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-five-finder-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_finder_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_finder_benchmark
-            benchmarks/lzss_position_distance_1m_finder_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_finder_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_finder_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_finder_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_finder_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_finder_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-finder-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_finder_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_finder_scratch_diagnostic
-            benchmarks/lzss_position_distance_1m_finder_scratch_diagnostic.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_finder_scratch_diagnostic PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_finder_scratch_diagnostic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_finder_scratch_diagnostic PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_finder_scratch_diagnostic_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_finder_scratch_diagnostic>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-finder-scratch-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_finder_scratch_diagnostic_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_prepared_phase_benchmark
-            benchmarks/lzss_position_distance_1m_prepared_phase_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_prepared_phase_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_prepared_phase_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_prepared_phase_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_prepared_phase_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_prepared_phase_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-prepared-phase-smoke"
-                    "-DSEARCH_ARG=--five-prefix"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_prepared_phase_benchmark_smoke.cmake)
-        endif()
-        add_executable(marc_lzss_position_distance_1m_phase_benchmark
-            benchmarks/lzss_position_distance_1m_phase_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_1m_phase_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_1m_phase_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_1m_phase_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_1m_five_phase_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_phase_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-five-phase-smoke"
-                    "-DSEARCH_ARG=--five-prefix"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_phase_benchmark_smoke.cmake)
-            add_test(NAME marc_position_distance_1m_phase_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_phase_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-phase-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_phase_benchmark_smoke.cmake)
-        endif()
+
         add_executable(marc_lzss_position_distance_public_benchmark
             benchmarks/lzss_position_distance_public_benchmark.cpp)
         target_compile_features(marc_lzss_position_distance_public_benchmark PRIVATE cxx_std_20)
@@ -2251,198 +1542,50 @@ if(MARC_BUILD_BENCHMARKS)
                     "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-public-benchmark-smoke"
                     -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_public_benchmark_smoke.cmake)
         endif()
-        add_executable(marc_lzss_position_distance_stream_benchmark
-            benchmarks/lzss_position_distance_stream_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_stream_benchmark PRIVATE cxx_std_20)
-        set_target_properties(marc_lzss_position_distance_stream_benchmark PROPERTIES CXX_EXTENSIONS OFF)
-        target_include_directories(marc_lzss_position_distance_stream_benchmark
-            PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_stream_benchmark PRIVATE marc::static)
+
         if(MSVC)
-            target_compile_options(marc_lzss_position_distance_stream_benchmark
-                PRIVATE /W4 /permissive- /Zc:__cplusplus)
+
         else()
-            target_compile_options(marc_lzss_position_distance_stream_benchmark
-                PRIVATE -Wall -Wextra -Wpedantic)
+
         endif()
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_lzss_position_distance_stream_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_stream_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-distance-stream-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_position_distance_stream_benchmark_smoke.cmake)
-            set_tests_properties(marc_lzss_position_distance_stream_benchmark_smoke
-                PROPERTIES LABELS benchmark-experimental-smoke TIMEOUT 60)
-        endif()
-        add_executable(marc_lzss_short_match_candidate_benchmark
-            benchmarks/lzss_short_match_candidate_benchmark.cpp)
-        target_compile_features(marc_lzss_short_match_candidate_benchmark
-            PRIVATE cxx_std_20)
-        set_target_properties(marc_lzss_short_match_candidate_benchmark
-            PROPERTIES CXX_EXTENSIONS OFF)
-        target_include_directories(marc_lzss_short_match_candidate_benchmark
-            PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
         if(MSVC)
-            target_compile_options(marc_lzss_short_match_candidate_benchmark
-                PRIVATE /W4 /permissive- /Zc:__cplusplus)
+
         else()
-            target_compile_options(marc_lzss_short_match_candidate_benchmark
-                PRIVATE -Wall -Wextra -Wpedantic)
+
         endif()
-        target_link_libraries(marc_lzss_short_match_candidate_benchmark
-            PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_lzss_short_match_candidate_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_short_match_candidate_benchmark>"
-                    "-DINPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_short_match_candidate_benchmark_smoke.cmake)
-            set_tests_properties(
-                marc_lzss_short_match_candidate_benchmark_smoke
-                PROPERTIES LABELS benchmark-experimental-smoke)
-            add_test(NAME marc_lzss_position_distance_decode_ab_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_short_match_candidate_benchmark>"
-                    "-DINPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_position_distance_decode_ab_smoke.cmake)
-            set_tests_properties(marc_lzss_position_distance_decode_ab_smoke
-                PROPERTIES LABELS benchmark-experimental-smoke)
-            add_test(NAME marc_lzss_position_distance_encode_ab_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_short_match_candidate_benchmark>"
-                    "-DINPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_position_distance_encode_ab_smoke.cmake)
-            set_tests_properties(marc_lzss_position_distance_encode_ab_smoke
-                PROPERTIES LABELS benchmark-experimental-smoke)
-            add_test(NAME marc_lzss_position_distance_frame_ab_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_short_match_candidate_benchmark>"
-                    "-DINPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_position_distance_frame_ab_smoke.cmake)
-            set_tests_properties(marc_lzss_position_distance_frame_ab_smoke
-                PROPERTIES LABELS benchmark-experimental-smoke)
-        endif()
+
     endif()
     if(TARGET marc_static)
-        add_executable(marc_lzss_contextual_rans_phase_benchmark
-            benchmarks/lzss_contextual_rans_phase_benchmark.cpp)
-        target_compile_features(marc_lzss_contextual_rans_phase_benchmark
-            PRIVATE cxx_std_20)
-        set_target_properties(marc_lzss_contextual_rans_phase_benchmark
-            PROPERTIES CXX_EXTENSIONS OFF)
-        target_include_directories(marc_lzss_contextual_rans_phase_benchmark
-            PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
         if(MSVC)
-            target_compile_options(marc_lzss_contextual_rans_phase_benchmark
-                PRIVATE /W4 /permissive- /Zc:__cplusplus)
+
         else()
-            target_compile_options(marc_lzss_contextual_rans_phase_benchmark
-                PRIVATE -Wall -Wextra -Wpedantic)
+
         endif()
-        target_link_libraries(marc_lzss_contextual_rans_phase_benchmark
-            PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_lzss_contextual_rans_phase_benchmark_smoke
-                COMMAND marc_lzss_contextual_rans_phase_benchmark
-                    ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
-            set_tests_properties(
-                marc_lzss_contextual_rans_phase_benchmark_smoke
-                PROPERTIES LABELS benchmark-experimental-smoke)
-            add_test(NAME marc_lzss_contextual_rans_tokenize_breakdown_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK_EXECUTABLE=$<TARGET_FILE:marc_lzss_contextual_rans_phase_benchmark>"
-                    "-DINPUT_FILE=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_contextual_rans_tokenize_breakdown_smoke.cmake)
-            set_tests_properties(
-                marc_lzss_contextual_rans_tokenize_breakdown_smoke
-                PROPERTIES LABELS benchmark-experimental-smoke)
-            add_test(NAME marc_lzss_contextual_rans_probe_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK_EXECUTABLE=$<TARGET_FILE:marc_lzss_contextual_rans_phase_benchmark>"
-                    "-DINPUT_FILE=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
-                    "-DTEST_DIRECTORY=${CMAKE_CURRENT_BINARY_DIR}/probe-benchmark-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_contextual_rans_probe_benchmark_smoke.cmake)
-            set_tests_properties(marc_lzss_contextual_rans_probe_benchmark_smoke
-                PROPERTIES LABELS benchmark-experimental-smoke)
-        endif()
+
     endif()
 
-    add_executable(marc_lzss_short_match_diagnostic
-        benchmarks/lzss_short_match_diagnostic.cpp
-        benchmarks/lzss_short_match_probe.cpp)
-    target_compile_features(marc_lzss_short_match_diagnostic
-        PRIVATE cxx_std_20)
-    set_target_properties(marc_lzss_short_match_diagnostic
-        PROPERTIES CXX_EXTENSIONS OFF)
-    target_include_directories(marc_lzss_short_match_diagnostic
-        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
-                ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks)
     if(MSVC)
-        target_compile_options(marc_lzss_short_match_diagnostic
-            PRIVATE /W4 /permissive- /Zc:__cplusplus)
+
     else()
-        target_compile_options(marc_lzss_short_match_diagnostic
-            PRIVATE -Wall -Wextra -Wpedantic)
+
     endif()
     if(TARGET marc_static)
-        target_link_libraries(marc_lzss_short_match_diagnostic
-            PRIVATE marc::static)
+
     else()
-        target_link_libraries(marc_lzss_short_match_diagnostic
-            PRIVATE marc::shared)
-    endif()
-    if(MARC_BUILD_TESTS)
-        add_test(NAME marc_lzss_short_match_diagnostic_smoke
-            COMMAND ${CMAKE_COMMAND}
-                "-DMARC_DIAGNOSTIC=$<TARGET_FILE:marc_lzss_short_match_diagnostic>"
-                "-DINPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
-                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_short_match_diagnostic_smoke.cmake)
-        if(TARGET marc_cli)
-            add_test(NAME marc_lzss_short_match_diagnostic_archive_identity
-                COMMAND ${CMAKE_COMMAND}
-                    "-DMARC_DIAGNOSTIC=$<TARGET_FILE:marc_lzss_short_match_diagnostic>"
-                    "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
-                    "-DINPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
-                    "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/short-match-diagnostic-$<CONFIG>"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_short_match_diagnostic_smoke.cmake)
-            add_test(NAME marc_lzss_short_match_diagnostic_multiframe_identity
-                COMMAND ${CMAKE_COMMAND}
-                    "-DMARC_DIAGNOSTIC=$<TARGET_FILE:marc_lzss_short_match_diagnostic>"
-                    "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
-                    "-DINPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
-                    "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/short-match-multiframe-$<CONFIG>"
-                    "-DSYNTHETIC_MULTIFRAME=ON"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_short_match_diagnostic_smoke.cmake)
-        endif()
+
     endif()
 
-    add_executable(marc_contextual_huffman_estimator
-        tools/contextual_huffman_estimator.cpp)
-    target_compile_features(marc_contextual_huffman_estimator PRIVATE cxx_std_20)
-    set_target_properties(marc_contextual_huffman_estimator
-        PROPERTIES CXX_EXTENSIONS OFF)
-    target_include_directories(marc_contextual_huffman_estimator
-        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     if(MSVC)
-        target_compile_options(marc_contextual_huffman_estimator
-            PRIVATE /W4 /permissive- /Zc:__cplusplus)
+
     else()
-        target_compile_options(marc_contextual_huffman_estimator
-            PRIVATE -Wall -Wextra -Wpedantic)
+
     endif()
     if(TARGET marc_static)
-        target_link_libraries(marc_contextual_huffman_estimator
-            PRIVATE marc::static)
+
     else()
-        target_link_libraries(marc_contextual_huffman_estimator
-            PRIVATE marc::shared)
-    endif()
-    if(MARC_BUILD_TESTS)
-        add_test(NAME marc_contextual_huffman_estimator_smoke
-            COMMAND marc_contextual_huffman_estimator
-                ${CMAKE_CURRENT_SOURCE_DIR}/README.md)
-        set_tests_properties(marc_contextual_huffman_estimator_smoke
-            PROPERTIES LABELS benchmark-experimental-smoke)
+
     endif()
 
     add_executable(marc_benchmark benchmarks/marc_benchmark.cpp)
@@ -3903,93 +3046,12 @@ if(MARC_BUILD_TESTS)
             -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/verify_documentation.cmake)
     find_package(Python3 3.9 QUIET COMPONENTS Interpreter)
     if(Python3_Interpreter_FOUND)
-        add_test(NAME marc_position_distance_1m_activation_model_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_position_distance_1m_activation_model.py)
-        set_tests_properties(marc_position_distance_1m_activation_model_tests
-            PROPERTIES LABELS tooling)
+
         add_test(NAME marc_silesia_corpus_verifier_tests
             COMMAND ${Python3_EXECUTABLE}
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_corpus_verifier_tests.py)
         set_tests_properties(marc_silesia_corpus_verifier_tests
             PROPERTIES LABELS tooling)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        add_test(NAME marc_lzss_snapshot_delta_synthetic_generator_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_snapshot_delta_synthetic_generator_tests.py)
-        set_tests_properties(
-            marc_lzss_snapshot_delta_synthetic_generator_tests
-            PROPERTIES LABELS tooling)
-
-
-
-
-
-
-
-
-
-
-
-
-        add_test(NAME marc_silesia_contextual_rans_phase_pilot_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_contextual_rans_phase_pilot_tests.py)
-        set_tests_properties(
-            marc_silesia_contextual_rans_phase_pilot_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_contextual_rans_phase_full_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_contextual_rans_phase_full_runner_tests.py)
-        set_tests_properties(
-            marc_silesia_contextual_rans_phase_full_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_contextual_rans_tokenize_full_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_contextual_rans_tokenize_full_runner_tests.py)
-        set_tests_properties(
-            marc_silesia_contextual_rans_tokenize_full_runner_tests
-            PROPERTIES LABELS tooling)
-
-
-        add_test(NAME marc_silesia_contextual_rans_best_length_probe_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_contextual_rans_best_length_probe_runner_tests.py)
-        set_tests_properties(marc_silesia_contextual_rans_best_length_probe_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_contextual_rans_best_length_probe_full_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_contextual_rans_best_length_probe_full_runner_tests.py)
-        set_tests_properties(marc_silesia_contextual_rans_best_length_probe_full_runner_tests
-            PROPERTIES LABELS tooling)
-
-
-
-
-
-
-
-
-
 
     endif()
     if(TARGET marc_c_roundtrip_example)
@@ -4076,7 +3138,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_contextual_dynamic_range_completion_tests.cpp
         tests/lzss_contextual_dynamic_range_fuzz_regression_tests.cpp
         tests/lzss_field_context_tests.cpp
-        tests/contextual_huffman_estimator_tests.cpp
+
         tests/contextual_adaptive_huffman_format_tests.cpp
         tests/contextual_adaptive_huffman_model_tests.cpp
         tests/contextual_adaptive_huffman_decoder_tests.cpp
@@ -4089,11 +3151,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_decoder_tests.cpp
         tests/lzss_encoder_tests.cpp
         tests/lzss_match_finder_tests.cpp
-        benchmarks/lzss_short_match_probe.cpp
-        tests/lzss_short_match_probe_tests.cpp
-        tests/lzss_model_cost_tests.cpp
-        tests/lzss_distance_bit_cost_tests.cpp
-        tests/lzss_short_distance_policy_tests.cpp
+
         tests/lzss_prefix_hash_tests.cpp
         tests/lzss_binary_tree_match_finder_tests.cpp
         tests/lzss_streaming_decoder_tests.cpp
@@ -4504,7 +3562,7 @@ if(MARC_BUILD_TESTS)
     target_compile_features(marc_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_core_tests
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
-                ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks)
+                )
     if(TARGET marc_static)
         target_link_libraries(marc_core_tests PRIVATE marc::static GTest::gtest_main)
     else()
@@ -7342,7 +6400,6 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
     set_tests_properties(marc_position_distance_32m_public_conformance PROPERTIES TIMEOUT 1200)
 endif()
 
-
 if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
     add_executable(marc_cli_position_distance_32m_allocation_tests
         tests/cli_position_distance_32m_allocation_tests.cpp)
@@ -7527,7 +6584,6 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
         --root ${CMAKE_CURRENT_BINARY_DIR}/position-distance-64m-public-conformance)
     set_tests_properties(marc_position_distance_64m_public_conformance PROPERTIES TIMEOUT 1200)
 endif()
-
 
 if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
     add_executable(marc_cli_position_distance_64m_allocation_tests
@@ -8379,7 +7435,6 @@ if(MARC_BUILD_TESTS)
     endif()
 endif()
 
-
 if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_executable(marc_fuzz_lzss_position_rans_8m_full_literal_public fuzz/lzss_position_rans_8m_full_literal_public_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_position_rans_8m_full_literal_public PRIVATE cxx_std_20)
@@ -8484,7 +7539,6 @@ if(MARC_BUILD_TESTS)
         endforeach()
     endif()
 endif()
-
 
 if(MARC_BUILD_TESTS)
     add_executable(marc_position_rans_16m_full_literal_api_tests tests/position_rans_16m_full_literal_api_tests.cpp)

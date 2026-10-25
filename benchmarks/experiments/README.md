@@ -3,10 +3,11 @@
 During the v1.0 stage-one cleanup, completed match-finder experiment runners
 and their manifests are retired. Descriptions below are historical recipes
 whose complete source is preserved in tag v0.8.0; they do not promise a current
-executable or runner. Remaining contextual diagnostic manifests are reviewed
-separately under the [refactoring plan](../../docs/design/v1-refactoring-stage-1.md).
+executable or runner. The contextual phase/tokenization/probe campaigns are now
+also retired; no active JSON manifest remains here. See the
+[refactoring plan](../../docs/design/v1-refactoring-stage-1.md).
 
-This directory contains inert, versioned JSON descriptions of fixed benchmark
+Historically this directory contained inert, versioned JSON descriptions of fixed benchmark
 experiments. A manifest contains only allowlisted strategy names, numeric
 conditions, expected workspace values, identity fields, and result
 classifications. It never contains a shell command, executable path, Corpus

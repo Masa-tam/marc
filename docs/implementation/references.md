@@ -12155,3 +12155,13 @@ public strategy dispatch and all direct source/script consumers before removal.
 Keep the source baseline, generated target inventory, ABI/resource snapshots
 and schema92 archives as independent comparison receipts. No external algorithm
 or implementation reference is introduced.
+
+### IR-1375: remaining benchmark and estimator retirement
+
+Use the first-party checkpoint B source/solution graph, current public C
+factories, benchmark includes and existing independent conformance tests.
+Trace benchmark-only 1/4MiB variants, phase/counter/cost-model studies and
+unused eight-MiB drivers separately from adopted production paths. Preserve
+the rANS diagnostic module and exporter because current public differential
+tests import/use their independent arithmetic/fixtures; their names alone do
+not establish obsolescence. No external implementation reference is introduced.

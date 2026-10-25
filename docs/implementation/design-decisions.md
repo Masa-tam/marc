@@ -35155,3 +35155,18 @@ requirement. Preserve independent vector and current public-contract validation.
 Verify public-resource/layout snapshots after removing private result/statistic
 members; an unreviewed quota change is not accepted as cleanup. Existing ordinary
 benchmark and adopted strategy correctness coverage remain required.
+
+### DD-1630: retire completed benchmark diagnostics while preserving test oracles
+
+Remove completed 1/4MiB private parser/owner/prepared/finder-scratch comparison
+programs, cloned bucket18/tokenizer diagnostics, Contextual rANS phase studies,
+short-match cost/probe calculators and their own experiment tests. These are
+measurement/selection experiments, not current public decoder oracles. Remove
+the unpublished Contextual Huffman estimator after confirming its only clients
+are its diagnostic program and its own tests. Retain adopted implementations,
+public measurement drivers pending their phase-three replacement, mathematical
+wire/vector generators, actual decoder differential oracles and the external
+corpus verifier. In particular retain position_distance_rans_diagnostic.py and
+its exporter: many current public rANS tests depend on their independent model.
+Account for all removed registrations against the generated solution/runtime
+inventories; keep historical recipes labelled as retired and available in v0.8.0.

@@ -174,3 +174,19 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   102-entry bundle generation. The full plan remains active and incomplete;
   remaining experiments, benchmark consolidation, CMake and API/codec sharing
   resume after the reported CI result. No push or hosted success is inferred.
+
+- 2026-10-26 checkpoint B hosted continuation: the maintainer reports successful
+  push and CI completion after the requested 9dd2b7d8 checkpoint (TVG-1636).
+  No workflow run ID/job logs were supplied; record the report without inventing
+  a full-scope or external-exchange receipt. Resume the remaining plan. The
+  earlier pending-CI wording is historical; final full-scope evidence remains
+  required by the completion audit.
+
+- Checkpoint C local cleanup: DD-1630/TVG-1637 retire 158 diagnostic files,
+  51 targets, 61 explicit test registrations and 31 diagnostic GoogleTest cases.
+  All 3,480 retained main cases and four tooling/documentation/CI cases pass.
+  Public snapshots and all 102 archive comparisons remain identical. The only
+  production source removed in this checkpoint is the unused Contextual Huffman
+  estimator. Current inventory: 4,215 tests. Preserve the active independent
+  rANS oracle/exporter and public measurement drivers pending consolidation.
+  Remaining adopted/reference-path classification and phases 3–6 are open.

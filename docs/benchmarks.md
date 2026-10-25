@@ -12,6 +12,11 @@ HashTree/Sparse implementations, and their private runner/manifests/tests are
 also retired. Their historical diagnostic reports do not describe a current
 benchmark selector. HashChain Exact and BinaryTree Exact remain public encoder
 strategies with their exhaustive-oracle correctness tests.
+The remaining private 1/4-MiB parser/owner/phase/counter and short-match cost
+studies, the Contextual rANS phase campaigns and unused eight-MiB diagnostic
+programs are also retired. Adopted codec implementations and public measurement
+drivers remain. The independently authored rANS diagnostic/exporter and vector
+tools are retained because current public-profile conformance tests use them.
 Public codec implementations, maintained benchmark coverage and independent
 correctness oracles are separate from these retired experiments. Track further
 retirements in [the refactoring plan](design/v1-refactoring-stage-1.md).

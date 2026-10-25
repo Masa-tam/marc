@@ -27100,3 +27100,34 @@ passing registrations, not the entire4307-registration suite. Shared/static
 production builds,102-archive verification, public snapshots/exports and both
 configure-only linkage modes pass as stated above. Complete hosted Windows/
 Linux and package/bundle execution at the committed checkpoint remain pending.
+
+### TVG-1636: checkpoint B maintainer CI confirmation
+
+The maintainer reports that the checkpoint was pushed to GitHub and CI
+completed successfully. The current local checkpoint is
+9dd2b7d8f52a7ab6497885c169f0511dbfe5f7e2, following the requested checkpoint B
+push. Record this as maintainer-supplied hosted evidence, not a locally rerun
+suite or independently fetched workflow receipt. No run ID or job-by-job log
+is supplied; do not invent complete-scope, package or external-exchange counts.
+The reported CI result authorizes resuming the remaining stage-one work.
+
+### TVG-1637: remaining diagnostic cleanup and retained-contract audit
+
+Retire158 reviewed diagnostic source/tool/manifest/test files (20050 lines),
+51 actual solution targets and61 explicit CTest registrations. Enumerate the
+current runtime test inventory against the saved checkpoint B inventory:
+exactly31 main GoogleTest cases belong to the retired diagnostic tests;
+all3480 retained cases remain and no new/unexplained case appears. All3480
+pass in106.93 seconds. The complete inventory has4215 registrations. The
+corpus verifier and documentation/CI-history/partition CTests pass4/4; these
+are scoped local results, not full4215-test or Linux execution claims.
+
+The only production source removed is the unused Contextual Huffman estimator;
+all other production sources/headers are unchanged. Main tests no longer need
+the benchmarks include directory. Final shared/static/CLI/core builds pass.
+Public snapshots retain all224 configuration/query observations and111 numeric
+ABI layouts; strict verification restores and byte-identically re-encodes all102
+saved v0.8.0 archives. Direct retained-source/script references to deleted files
+are absent. The rANS diagnostic/exporter remains as an active independent
+public-profile oracle. Keep ordinary public benchmarks/resource measurement
+programs for their separately validated common-driver replacement in phase3.
