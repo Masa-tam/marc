@@ -43846,3 +43846,17 @@ public bindings, experiment registrations and current v0.8.0 identity before
 implementation edits. Keep all twelve untracked external corpus files intact.
 Baseline configure/build evidence is in progress and is not counted as passing.
 No external implementation, new stream representation or push is involved.
+
+### CR-2013: 2026-10-26 — retire isolated four-MiB experiment copies
+
+Author/reviewer: Codex. Follow DD-1628/IR-1373 and the maintained full plan.
+Trace the five experiment-only support targets and their own consumers before
+removing their copies, diagnostics, benchmarks and tests. Inspect all retained
+first-party source/script includes for dependencies on the75 removed files;
+none remain. Keep production sources, adopted finders, independent correctness
+oracles and historical measurement/provenance records. Add a current benchmark
+retirement notice pointing to the preserved v0.8.0 history. TVG-1634 records
+actual target/hash/API/archive evidence, the corrected manifest-label failure
+and the build retry without representing failed attempts as success. This is
+an internal first-party cleanup, with no external implementation consulted,
+new stream representation, new corpus timing, sanitizer run or push.

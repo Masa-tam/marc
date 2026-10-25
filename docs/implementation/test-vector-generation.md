@@ -27027,3 +27027,38 @@ support targets are referenced only by their own benchmark/test executables
 and ALL_BUILD in that generated inventory. This is dependency evidence, not
 runtime equivalence. Baseline CLI/core-test compilation is still running;
 archive, public-resource and complete-test gates remain pending.
+
+### TVG-1634: preserved public baseline and first isolated experiment retirement
+
+Preserve the v0.8.0 executable/DLL, export list and numeric public API snapshot:
+111 struct layouts,80 initializers and224 configuration/query observations,
+including every profile helper and explicit valid grants for the four separate
+Dynamic Range encoder/decoder pairs. Keep their eight bare-initializer query
+rejections distinct from the admitted queries. Schema92 generation and strict
+verification pass all102 restorations and byte-identical re-encodings at full
+revision86af8bf2599075f7345e1a9aa01aebdb2c7e9b73. The first bundle's short
+revision label was rejected by manifest preflight; retain that failed receipt
+and use a separately generated full-revision bundle, without relabelling failure.
+
+The isolated end_probe/phase_split/probe17/word4/word8 retirement removes75
+tracked files and9079 source lines,166 CMake lines,17 generated projects and
+seven experiment-only test registrations. Generated configurations retain519
+other projects with unchanged compile/include source and project-reference
+inventories against the saved original536-project receipt. All1479 production
+source/header SHA-256 values remain identical. Remaining CMake edits are only
+the reviewed block deletions; no public or independent-oracle source changes.
+The825 explicit CTest names and unchanged main GoogleTest registration remain.
+Documentation verification passes. The baseline CLI build passes; an initial
+core-test MSBuild invocation stalled in sandbox worker communication and was
+interrupted, then the no-node-reuse elevated retry built successfully. The3781
+main GoogleTest cases are executing through individual CTest processes; their
+final result and repository-wide/hosted gates remain pending at this entry.
+
+TVG-1634 checkpoint closure: all3781 main GoogleTest cases pass in136.62
+seconds using individual CTest invocations. The separately built post-removal
+CLI passes all102 saved baseline archive restorations and byte-identical
+re-encodings. All224 public configuration/query observations and111 ABI
+layouts match exactly. The first CTest list invocation used a relative path
+resolved under the build directory and ran no tests; the successful invocation
+uses the absolute saved list. These are local scoped results; the other825
+explicit registrations and hosted/external checkpoint remain separate.

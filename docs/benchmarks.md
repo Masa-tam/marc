@@ -1,5 +1,16 @@
 # Benchmarks
 
+## Refactoring retirement notice
+
+The v1.0 stage-one cleanup retires the private four-MiB end-probe,
+phase-split, probe17, word4 and word8 experiment implementations, their own
+benchmarks and experiment-only tests. Historical measurements below describe
+the revisions at which they were run; their commands are not maintained entry
+points in the current tree. The complete implementations remain in tag v0.8.0.
+Public codec implementations, maintained benchmark coverage and independent
+correctness oracles are separate from these retired experiments. Track further
+retirements in [the refactoring plan](design/v1-refactoring-stage-1.md).
+
 ## Private context-9 whole-stream measurement
 
 With `MARC_BUILD_BENCHMARKS=ON` and a static library, build

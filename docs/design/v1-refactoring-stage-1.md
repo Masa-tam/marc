@@ -28,19 +28,19 @@ headers. These are starting observations, not deletion or line-count targets.
 
 ### 1. Freeze the comparison boundary
 
-- [ ] Capture source/tag identity, compiler, build options and target inventory.
-- [ ] Capture public profile names, ABI symbols/layouts, configuration defaults
+- [x] Capture source/tag identity, compiler, build options and target inventory.
+- [x] Capture public profile names, ABI symbols/layouts, configuration defaults
   and direction-specific resource/workspace requirements.
-- [ ] Preserve v0.8.0 executables and a 102-profile archive bundle outside tracked
+- [x] Preserve v0.8.0 executables and a 102-profile archive bundle outside tracked
   source; retain deterministic corpus recipes and malformed-input regressions.
-- [ ] Establish baseline local build/test results, recording actual coverage.
+- [x] Establish baseline local build/test results, recording actual coverage.
 
 ### 2. Remove completed experiments
 
 - [ ] Classify experimental targets and their transitive source/script/test
   dependencies; distinguish public production dependencies and independent
   correctness oracles from abandoned candidates.
-- [ ] Remove diagnostic copies such as end_probe, phase_split, probe17, word4
+- [x] Remove diagnostic copies such as end_probe, phase_split, probe17, word4
   and word8 after proving their isolation from public routes.
 - [ ] Remove superseded phase, search and old/new experimental drivers, runners,
   manifests and experiment-only tests with their build registrations.
@@ -130,3 +130,24 @@ user data and must not be staged, moved or deleted as part of this refactoring.
 
 - 2026-10-26: plan recorded; no implementation phase is complete yet. The
   current tree is the v0.8.0 source plus external untracked corpus inputs.
+
+- 2026-10-26 checkpoint A: saved the unchanged v0.8.0 production executable/DLL,
+  export list, 111 numeric ABI struct layouts and 224 config/query observations
+  (all 80 initializers, every public profile helper, plus explicit admission
+  grants for the four direction-specific Dynamic Range pairs). Bare initializers
+  for those pairs intentionally require later caller limits; rejection status is
+  retained separately from the successful granted queries. A schema-92 bundle
+  passes strict restoration and byte-identical re-encoding of all 102 archives.
+- Checkpoint A cleanup removes 75 isolated experiment files (9,079 source lines),
+  166 CMake registration lines, 17 targets and seven experiment-only test names.
+  The other 519 generated targets retain source/include/dependency inventories;
+  all 1,479 production source/header hashes are unchanged. Complete phase 2
+  remains open. Logs: TVG-1634 and CR-2013. A baseline core-test run is active;
+  no complete-suite or hosted result is claimed yet.
+
+- Checkpoint A local validation: all 3,781 main GoogleTest cases pass through
+  separate CTest invocations (136.62 seconds). A separate post-removal CLI build
+  passes all 102 baseline archive restoration/re-encoding comparisons. Its
+  224 configuration/query observations and 111 ABI layouts match the baseline
+  exactly. This establishes phase 1's local comparison boundary, not a full
+  repository test or hosted/external qualification of the refactoring.
