@@ -27062,3 +27062,41 @@ layouts match exactly. The first CTest list invocation used a relative path
 resolved under the build directory and ran no tests; the successful invocation
 uses the absolute saved list. These are local scoped results; the other825
 explicit registrations and hosted/external checkpoint remain separate.
+
+### TVG-1635: rejected-finder source and public-boundary qualification
+
+The dependency closure removes111 research source/tool/manifest/test files
+(42699 lines before deletion),16 production translation units and29 explicit
+runner/benchmark test registrations. Remove270 research-only GoogleTest
+cases. Runtime enumeration proves exact set equality between the prior3781
+main cases minus the reviewed retired set and the3511 retained cases, with
+no added or unexplained missing case. Current CTest inventory contains4307
+registrations; the retained796 explicit registrations are a separate scope.
+
+Review confirms the retained typed-encoder implementation bodies are identical
+to v0.8.0 after removing only the four research functions/helper functions and
+normalizing newlines. Retained source/test/tool files reference no retired
+research type. Shared and static libraries each now list672 translation units
+rather than688. The rebuilt CLI strictly restores and byte-identically
+re-encodes all102 saved schema92 archives. All224 public config/query
+observations and111 numeric ABI layouts match; all251 public export names
+are unchanged. Bare-initializer rejection observations are not substituted
+for the explicitly admitted direction-specific Dynamic Range queries.
+
+Documentation, offline CI-history and CI-partition CTests pass3/3. Shared-only
+and static-only configure/generation pass; these are not package consumer
+execution claims. The retained3511 main cases are still running at this entry.
+No full796-registration execution, Linux result, sanitizer campaign or hosted
+CI is claimed. The next hosted checkpoint requires complete Windows/Linux
+validation, package consumers and bundle generation at the committed revision.
+
+TVG-1635 local checkpoint closure: all3511 retained main cases pass in145.19
+seconds. Exact runtime test-name comparison accounts for all270 removed
+research cases. Eight tooling CTests pass in13.28 seconds on elevated rerun;
+the earlier sandbox invocation encountered temporary-directory write/cleanup
+permission failures and was interrupted, with its receipt retained separately.
+The three documentation/CI-history/partition CTests also pass. This is3522
+passing registrations, not the entire4307-registration suite. Shared/static
+production builds,102-archive verification, public snapshots/exports and both
+configure-only linkage modes pass as stated above. Complete hosted Windows/
+Linux and package/bundle execution at the committed checkpoint remain pending.

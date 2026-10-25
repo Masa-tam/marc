@@ -1,5 +1,15 @@
 # Architecture
 
+## Current refactoring boundary
+
+The v1.0 stage-one cleanup removes the unpublished Red-Black, Scapegoat, WAVL
+and HashTree/Sparse research implementations and their experiment entry points.
+HashChain Exact and BinaryTree Exact remain the two public encoder strategies;
+the exhaustive parser remains the independent correctness oracle. Historical
+foundation/admission descriptions below retain the decisions and measurements
+at their original revisions. Retired experiments can be inspected in tag v0.8.0.
+See the [active plan](design/v1-refactoring-stage-1.md) for verification gates.
+
 ## Baseline
 
 marc is a C++20 library of bounded, stateful byte-stream transforms. MSVC is

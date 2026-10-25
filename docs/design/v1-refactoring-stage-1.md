@@ -44,7 +44,7 @@ headers. These are starting observations, not deletion or line-count targets.
   and word8 after proving their isolation from public routes.
 - [ ] Remove superseded phase, search and old/new experimental drivers, runners,
   manifests and experiment-only tests with their build registrations.
-- [ ] Remove rejected Red-Black, Scapegoat, WAVL and Sparse HashTree research
+- [x] Remove rejected Red-Black, Scapegoat, WAVL and Sparse HashTree research
   implementations after verifying production references. Preserve adopted
   HashChain/BinaryTree strategies and the exhaustive correctness oracle.
 - [ ] Review prepared/finder_scratch paths individually: names do not prove
@@ -151,3 +151,26 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   224 configuration/query observations and 111 ABI layouts match the baseline
   exactly. This establishes phase 1's local comparison boundary, not a full
   repository test or hosted/external qualification of the refactoring.
+
+- Checkpoint B in progress: DD-1629/IR-1374 retire the rejected finder
+  implementations, private typed entry points/statistics and their campaign
+  dependency graph. HashChain/BinaryTree and exhaustive-oracle comparisons
+  remain. Rebuild and runtime comparison gates must pass before this checklist
+  item is marked complete; phase 2 has other experimental paths still pending.
+
+- Checkpoint B local qualification: all 3,511 retained main cases pass in
+  145.19 seconds; the exact 270-case difference is confined to retired research.
+  Eight tooling CTests and three documentation/CI-policy/partition CTests pass.
+  The first tooling attempt encountered sandbox temporary-directory permission
+  errors and was interrupted; an elevated rerun passes all eight. The current
+  4,307-test inventory remains subject to complete hosted execution.
+- Both libraries build with 672 production translation units. All 251 exports,
+  224 public config/query observations, 111 ABI layouts and 102 baseline archive
+  restoration/re-encoding results match v0.8.0. Static-only and shared-only
+  configurations generate successfully; installed consumers are a hosted gate.
+- Hosted checkpoint B: request a maintainer push of the commit carrying
+  TVG-1635, then a manual CI run with full_validation enabled at that exact
+  revision. Require complete Windows/Linux suites, installed-package jobs and
+  102-entry bundle generation. The full plan remains active and incomplete;
+  remaining experiments, benchmark consolidation, CMake and API/codec sharing
+  resume after the reported CI result. No push or hosted success is inferred.

@@ -7,6 +7,11 @@ phase-split, probe17, word4 and word8 experiment implementations, their own
 benchmarks and experiment-only tests. Historical measurements below describe
 the revisions at which they were run; their commands are not maintained entry
 points in the current tree. The complete implementations remain in tag v0.8.0.
+The legacy all-strategy match-finder benchmark, rejected ordered-tree and
+HashTree/Sparse implementations, and their private runner/manifests/tests are
+also retired. Their historical diagnostic reports do not describe a current
+benchmark selector. HashChain Exact and BinaryTree Exact remain public encoder
+strategies with their exhaustive-oracle correctness tests.
 Public codec implementations, maintained benchmark coverage and independent
 correctness oracles are separate from these retired experiments. Track further
 retirements in [the refactoring plan](design/v1-refactoring-stage-1.md).

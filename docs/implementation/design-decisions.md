@@ -35141,3 +35141,17 @@ contracts. Retain independent test oracles and historical provenance. Do not
 classify prepared/finder_scratch implementations as abandoned by name alone.
 Local commits are authorized; pushing remains the maintainer's action.
 Hosted CI is an explicit checkpoint, never inferred from local success.
+
+### DD-1629: remove rejected finder implementations and their experiment graph
+
+Under DD-1628 remove unpublished Red-Black, Scapegoat, WAVL and HashTree/Sparse
+implementations, typed-encoder research entry points and research statistics.
+Public strategies remain HashChain Exact and BinaryTree Exact; retain the
+exhaustive parser and all corresponding byte/token/failure comparisons. Retire
+the legacy all-strategy diagnostic benchmark and its dependent private campaign
+runners/manifests/tests. Keep historical result/provenance records and their
+v0.8.0 source reference. Retired-manifest validation is no longer a live build
+requirement. Preserve independent vector and current public-contract validation.
+Verify public-resource/layout snapshots after removing private result/statistic
+members; an unreviewed quota change is not accepted as cleanup. Existing ordinary
+benchmark and adopted strategy correctness coverage remain required.

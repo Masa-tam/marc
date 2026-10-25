@@ -57,18 +57,6 @@ struct LzssMatch {
     [[nodiscard]] bool operator==(const LzssMatch&) const noexcept = default;
 };
 
-struct LzssHashTreeComponentStatistics {
-    std::uint64_t key_comparison_count{};
-    std::uint64_t key_byte_comparison_count{};
-    std::uint64_t lcp_byte_comparison_count{};
-    std::uint64_t prefix_range_comparison_count{};
-    std::uint64_t prefix_range_byte_comparison_count{};
-    std::uint64_t lcp_skipped_byte_count{};
-    std::uint64_t rotation_count{};
-    std::uint64_t maximum_height{};
-    bool overflowed{};
-};
-
 struct LzssMatchFinderStatistics {
     // Optional diagnostics. Strategy-specific fields remain zero for other
     // strategies.
@@ -99,108 +87,6 @@ struct LzssMatchFinderStatistics {
     std::array<std::uint64_t,
                lzss_match_finder_depth_histogram_size>
         binary_tree_query_depth_histogram{};
-    std::uint64_t wavl_tree_key_comparison_count{};
-    std::uint64_t wavl_tree_key_byte_comparison_count{};
-    std::uint64_t wavl_tree_lcp_byte_comparison_count{};
-    std::uint64_t wavl_tree_prefix_range_comparison_count{};
-    std::uint64_t wavl_tree_maximum_nodes_per_query{};
-    std::array<std::uint64_t,
-               lzss_match_finder_depth_histogram_size>
-        wavl_tree_query_depth_histogram{};
-    std::uint64_t wavl_tree_insertion_promotion_count{};
-    std::uint64_t wavl_tree_insertion_single_rotation_count{};
-    std::uint64_t wavl_tree_insertion_double_rotation_count{};
-    std::uint64_t wavl_tree_insertion_fixup_step_count{};
-    std::uint64_t wavl_tree_maximum_insertion_fixup_steps{};
-    std::uint64_t wavl_tree_insertion_count{};
-    std::uint64_t wavl_tree_removal_demotion_count{};
-    std::uint64_t wavl_tree_removal_single_rotation_count{};
-    std::uint64_t wavl_tree_removal_double_rotation_count{};
-    std::uint64_t wavl_tree_removal_fixup_step_count{};
-    std::uint64_t wavl_tree_maximum_removal_fixup_steps{};
-    std::uint64_t wavl_tree_removal_preflight_node_count{};
-    std::uint64_t wavl_tree_maximum_removal_preflight_nodes{};
-    std::uint64_t wavl_tree_retirement_count{};
-    std::uint64_t red_black_tree_key_comparison_count{};
-    std::uint64_t red_black_tree_key_byte_comparison_count{};
-    std::uint64_t red_black_tree_lcp_byte_comparison_count{};
-    std::uint64_t red_black_tree_prefix_range_comparison_count{};
-    std::uint64_t red_black_tree_rotation_count{};
-    std::uint64_t red_black_tree_recoloring_count{};
-    std::uint64_t red_black_tree_insertion_fixup_step_count{};
-    std::uint64_t red_black_tree_removal_fixup_step_count{};
-    std::uint64_t red_black_tree_maximum_fixup_steps{};
-    std::uint64_t red_black_tree_insertion_count{};
-    std::uint64_t red_black_tree_retirement_count{};
-    std::uint64_t red_black_tree_maximum_nodes_per_query{};
-    std::array<std::uint64_t,
-               lzss_match_finder_depth_histogram_size>
-        red_black_tree_query_depth_histogram{};
-    std::uint64_t scapegoat_tree_key_comparison_count{};
-    std::uint64_t scapegoat_tree_key_byte_comparison_count{};
-    std::uint64_t scapegoat_tree_lcp_byte_comparison_count{};
-    std::uint64_t scapegoat_tree_prefix_range_comparison_count{};
-    std::uint64_t scapegoat_tree_insertion_count{};
-    std::uint64_t scapegoat_tree_retirement_count{};
-    std::uint64_t scapegoat_tree_depth_violation_count{};
-    std::uint64_t scapegoat_tree_ancestor_step_count{};
-    std::uint64_t scapegoat_tree_subtree_rebuild_count{};
-    std::uint64_t scapegoat_tree_whole_tree_rebuild_count{};
-    std::uint64_t scapegoat_tree_rebuilt_node_count{};
-    std::uint64_t scapegoat_tree_maximum_rebuilt_nodes{};
-    std::uint64_t scapegoat_tree_maximum_structural_nodes_per_update{};
-    std::uint64_t scapegoat_tree_maximum_nodes_per_query{};
-    std::array<std::uint64_t,
-               lzss_match_finder_depth_histogram_size>
-        scapegoat_tree_query_depth_histogram{};
-    std::uint64_t hash_tree_chain_query_count{};
-    std::uint64_t hash_tree_chain_candidate_count{};
-    std::uint64_t hash_tree_trigger_query_count{};
-    std::uint64_t hash_tree_tree_query_count{};
-    std::uint64_t hash_tree_promotion_count{};
-    std::uint64_t hash_tree_pool_rejection_count{};
-    std::uint64_t hash_tree_promotion_trigger_candidate_count{};
-    std::uint64_t hash_tree_promotion_maximum_trigger_candidates{};
-    std::uint64_t hash_tree_promotion_build_node_count{};
-    std::uint64_t hash_tree_tree_query_node_count{};
-    std::uint64_t hash_tree_maximum_nodes_per_query{};
-    std::uint64_t hash_tree_insertion_count{};
-    std::uint64_t hash_tree_retirement_count{};
-    std::uint64_t hash_tree_maximum_promoted_buckets{};
-    std::uint64_t hash_tree_maximum_promoted_nodes{};
-    std::uint64_t hash_tree_promotion_build_key_comparison_count{};
-    std::uint64_t hash_tree_promotion_build_key_byte_comparison_count{};
-    std::uint64_t hash_tree_promotion_build_rotation_count{};
-    std::uint64_t hash_tree_tree_query_key_comparison_count{};
-    std::uint64_t hash_tree_tree_query_key_byte_comparison_count{};
-    std::uint64_t hash_tree_tree_query_lcp_byte_comparison_count{};
-    std::uint64_t hash_tree_tree_query_prefix_range_comparison_count{};
-    std::uint64_t hash_tree_tree_query_prefix_range_byte_comparison_count{};
-    std::uint64_t hash_tree_tree_query_lcp_skipped_byte_count{};
-    std::uint64_t hash_tree_maintenance_key_comparison_count{};
-    std::uint64_t hash_tree_maintenance_key_byte_comparison_count{};
-    std::uint64_t hash_tree_rotation_count{};
-    std::uint64_t hash_tree_maximum_height{};
-    std::uint64_t hash_tree_snapshot_query_count{};
-    std::uint64_t hash_tree_snapshot_query_node_count{};
-    std::uint64_t hash_tree_snapshot_stale_subtree_prune_count{};
-    std::uint64_t hash_tree_snapshot_delta_query_count{};
-    std::uint64_t hash_tree_snapshot_delta_candidate_count{};
-    std::uint64_t hash_tree_snapshot_delta_maximum_candidates_per_query{};
-    std::uint64_t hash_tree_snapshot_delta_budget_query_count{};
-    std::uint64_t hash_tree_snapshot_delta_budget_breach_count{};
-    std::uint64_t hash_tree_snapshot_delta_budget_demotion_count{};
-    std::uint64_t
-        hash_tree_snapshot_delta_budget_maximum_candidates_at_breach{};
-    std::uint64_t hash_tree_snapshot_promotion_count{};
-    std::uint64_t hash_tree_snapshot_expiration_count{};
-    std::uint64_t hash_tree_snapshot_bulk_release_count{};
-    std::array<std::uint64_t,
-               lzss_match_finder_depth_histogram_size>
-        hash_tree_chain_query_depth_histogram{};
-    std::array<std::uint64_t,
-               lzss_match_finder_depth_histogram_size>
-        hash_tree_tree_query_depth_histogram{};
     bool overflowed{};
 };
 

@@ -43860,3 +43860,26 @@ actual target/hash/API/archive evidence, the corrected manifest-label failure
 and the build retry without representing failed attempts as success. This is
 an internal first-party cleanup, with no external implementation consulted,
 new stream representation, new corpus timing, sanitizer run or push.
+
+### CR-2014: 2026-10-26 — rejected Exact-finder implementation retirement
+
+Author/reviewer: Codex. DD-1629/IR-1374 remove the rejected research graph only
+after auditing public dispatch, direct includes and Python runner dependencies.
+Retain HashChain/BinaryTree implementations, exhaustive parsing and their
+assertions in the shared typed-encoder helper. Remove research-only assertions
+and cases with the implementation they exercise. Private result/statistic
+fields are removed with their users; public header declarations are unchanged.
+Historical documents remain, while active documentation no longer requires a
+retired JSON manifest. Compilation, API/resource and102-archive comparisons
+are pending at the first edit checkpoint and must be recorded before admission.
+No external implementation, new representation, corpus run, fuzz campaign or
+push is involved.
+
+CR-2014 local reconciliation: TVG-1635 records successful scoped compilation,
+3511 retained main tests,11 tooling/documentation/CI tests, unchanged public
+exports/configuration/resource/layout observations and102 archive comparisons.
+Sandbox permission failures are distinguished from the successful elevated
+tooling retry. All102 public profiles remain; the270 removed cases exercise
+only retired research code. Request maintainer-controlled complete hosted CI
+before continuing the next production refactoring boundary. No hosted result,
+whole-repository completion or push is claimed.

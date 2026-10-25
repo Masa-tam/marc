@@ -399,22 +399,6 @@ set(MARC_SOURCES
     src/dictionary/lzss_match_finder.cpp
     src/dictionary/lzss_hash_chain_match_finder.cpp
     src/dictionary/lzss_binary_tree_match_finder.cpp
-    src/dictionary/lzss_wavl_tree_match_finder.cpp
-    src/dictionary/lzss_red_black_tree_match_finder.cpp
-    src/dictionary/lzss_scapegoat_tree_match_finder.cpp
-    src/dictionary/lzss_hash_tree_promotion.cpp
-    src/dictionary/lzss_hash_tree_bucket_builder.cpp
-    src/dictionary/lzss_hash_tree_bucket_query.cpp
-    src/dictionary/lzss_hash_tree_bucket_mutation.cpp
-    src/dictionary/lzss_hash_tree_match_finder.cpp
-    src/dictionary/lzss_sparse_hash_tree_bucket_builder.cpp
-    src/dictionary/lzss_sparse_hash_tree_bucket_state.cpp
-    src/dictionary/lzss_sparse_hash_tree_controller.cpp
-    src/dictionary/lzss_sparse_hash_tree_snapshot_controller.cpp
-    src/dictionary/lzss_sparse_hash_tree_snapshot_lifecycle.cpp
-    src/dictionary/lzss_sparse_hash_tree_snapshot_query.cpp
-    src/dictionary/lzss_sparse_hash_tree_match_finder.cpp
-    src/dictionary/lzss_sparse_hash_tree_pool.cpp
     src/dictionary/lzss_typed_encoder.cpp
     src/dictionary/lzss_streaming_decoder.cpp
     src/dictionary/lzss_streaming_encoder.cpp
@@ -2432,79 +2416,6 @@ if(MARC_BUILD_BENCHMARKS)
         endif()
     endif()
 
-    add_executable(marc_lzss_match_finder_benchmark
-        benchmarks/lzss_match_finder_benchmark.cpp)
-    target_compile_features(marc_lzss_match_finder_benchmark PRIVATE cxx_std_20)
-    set_target_properties(marc_lzss_match_finder_benchmark
-        PROPERTIES CXX_EXTENSIONS OFF)
-    target_include_directories(marc_lzss_match_finder_benchmark
-        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    if(MSVC)
-        target_compile_options(marc_lzss_match_finder_benchmark
-            PRIVATE /W4 /permissive- /Zc:__cplusplus)
-    else()
-        target_compile_options(marc_lzss_match_finder_benchmark
-            PRIVATE -Wall -Wextra -Wpedantic)
-    endif()
-    if(TARGET marc_static)
-        target_link_libraries(marc_lzss_match_finder_benchmark
-            PRIVATE marc::static)
-    else()
-        target_link_libraries(marc_lzss_match_finder_benchmark
-            PRIVATE marc::shared)
-    endif()
-    if(MARC_BUILD_TESTS)
-        add_test(NAME marc_lzss_match_finder_benchmark_smoke
-            COMMAND ${CMAKE_COMMAND}
-                "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_match_finder_benchmark>"
-                "-DBENCHMARK_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
-                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_match_finder_production_benchmark.cmake)
-        set_tests_properties(marc_lzss_match_finder_benchmark_smoke
-            PROPERTIES LABELS benchmark-experimental-smoke)
-        add_test(NAME marc_lzss_match_finder_frame_benchmark_smoke
-            COMMAND ${CMAKE_COMMAND}
-                "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_match_finder_benchmark>"
-                "-DBENCHMARK_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
-                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_match_finder_frame_benchmark.cmake)
-        set_tests_properties(marc_lzss_match_finder_frame_benchmark_smoke
-            PROPERTIES LABELS benchmark-experimental-smoke)
-        add_test(NAME marc_lzss_match_finder_synthetic_benchmark_smoke
-            COMMAND ${CMAKE_COMMAND}
-                "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_match_finder_benchmark>"
-                "-DPOINTER_SIZE=${CMAKE_SIZEOF_VOID_P}"
-                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_match_finder_synthetic_benchmark.cmake)
-        set_tests_properties(marc_lzss_match_finder_synthetic_benchmark_smoke
-            PROPERTIES LABELS benchmark-experimental-smoke)
-        add_test(NAME marc_lzss_binary_tree_benchmark_smoke
-            COMMAND ${CMAKE_COMMAND}
-                "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_match_finder_benchmark>"
-                "-DBENCHMARK_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
-                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_binary_tree_benchmark.cmake)
-        set_tests_properties(marc_lzss_binary_tree_benchmark_smoke
-            PROPERTIES LABELS benchmark-experimental-smoke)
-        add_test(NAME marc_lzss_wavl_tree_benchmark_smoke
-            COMMAND ${CMAKE_COMMAND}
-                "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_match_finder_benchmark>"
-                "-DBENCHMARK_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
-                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_wavl_tree_benchmark.cmake)
-        set_tests_properties(marc_lzss_wavl_tree_benchmark_smoke
-            PROPERTIES LABELS benchmark-experimental-smoke)
-        add_test(NAME marc_lzss_hash_tree_benchmark_smoke
-            COMMAND ${CMAKE_COMMAND}
-                "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_match_finder_benchmark>"
-                "-DBENCHMARK_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
-                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_hash_tree_benchmark.cmake)
-        set_tests_properties(marc_lzss_hash_tree_benchmark_smoke
-            PROPERTIES LABELS benchmark-experimental-smoke)
-        add_test(NAME marc_lzss_sparse_snapshot_delta_budget_benchmark_smoke
-            COMMAND ${CMAKE_COMMAND}
-                "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_match_finder_benchmark>"
-                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_sparse_snapshot_delta_budget_benchmark.cmake)
-        set_tests_properties(
-            marc_lzss_sparse_snapshot_delta_budget_benchmark_smoke
-            PROPERTIES LABELS benchmark-experimental-smoke)
-    endif()
-
     add_executable(marc_contextual_huffman_estimator
         tools/contextual_huffman_estimator.cpp)
     target_compile_features(marc_contextual_huffman_estimator PRIVATE cxx_std_20)
@@ -4002,100 +3913,44 @@ if(MARC_BUILD_TESTS)
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_corpus_verifier_tests.py)
         set_tests_properties(marc_silesia_corpus_verifier_tests
             PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_match_finder_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_match_finder_runner_tests.py)
-        set_tests_properties(marc_silesia_match_finder_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_lzss_match_finder_synthetic_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_match_finder_synthetic_runner_tests.py)
-        set_tests_properties(marc_lzss_match_finder_synthetic_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_lzss_wavl_tree_synthetic_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_wavl_tree_synthetic_runner_tests.py)
-        set_tests_properties(marc_lzss_wavl_tree_synthetic_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_lzss_hash_tree_threshold_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_hash_tree_threshold_runner_tests.py)
-        set_tests_properties(marc_lzss_hash_tree_threshold_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_hash_tree_threshold_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_hash_tree_threshold_runner_tests.py)
-        set_tests_properties(marc_silesia_hash_tree_threshold_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_hash_tree_4m_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_hash_tree_4m_runner_tests.py)
-        set_tests_properties(marc_silesia_hash_tree_4m_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_sparse_hash_tree_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_sparse_hash_tree_runner_tests.py)
-        set_tests_properties(marc_silesia_sparse_hash_tree_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_sparse_hash_tree_large_window_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_sparse_hash_tree_large_window_runner_tests.py)
-        set_tests_properties(
-            marc_silesia_sparse_hash_tree_large_window_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_sparse_hash_tree_reuse_gate_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_sparse_hash_tree_reuse_gate_runner_tests.py)
-        set_tests_properties(
-            marc_silesia_sparse_hash_tree_reuse_gate_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_sparse_hash_tree_snapshot_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_sparse_hash_tree_snapshot_runner_tests.py)
-        set_tests_properties(
-            marc_silesia_sparse_hash_tree_snapshot_runner_tests
-            PROPERTIES LABELS tooling)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         add_test(NAME marc_lzss_snapshot_delta_synthetic_generator_tests
             COMMAND ${Python3_EXECUTABLE}
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_snapshot_delta_synthetic_generator_tests.py)
         set_tests_properties(
             marc_lzss_snapshot_delta_synthetic_generator_tests
             PROPERTIES LABELS tooling)
-        add_test(NAME marc_lzss_snapshot_delta_budget_synthetic_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_snapshot_delta_budget_synthetic_runner_tests.py)
-        set_tests_properties(
-            marc_lzss_snapshot_delta_budget_synthetic_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_lzss_hash_chain_prefix_mixer_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_hash_chain_prefix_mixer_runner_tests.py)
-        set_tests_properties(
-            marc_lzss_hash_chain_prefix_mixer_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_lzss_hash_chain_bucket_scaling_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_hash_chain_bucket_scaling_runner_tests.py)
-        set_tests_properties(
-            marc_lzss_hash_chain_bucket_scaling_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_hash_chain_bucket_scaling_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_hash_chain_bucket_scaling_runner_tests.py)
-        set_tests_properties(
-            marc_silesia_hash_chain_bucket_scaling_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_hash_chain_end_to_end_ab_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_hash_chain_end_to_end_ab_runner_tests.py)
-        set_tests_properties(
-            marc_silesia_hash_chain_end_to_end_ab_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_position_distance_streams_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_position_distance_streams_tests.py)
-        set_tests_properties(marc_silesia_position_distance_streams_tests
-            PROPERTIES LABELS tooling)
+
+
+
+
+
+
+
+
+
+
+
+
         add_test(NAME marc_silesia_contextual_rans_phase_pilot_tests
             COMMAND ${Python3_EXECUTABLE}
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_contextual_rans_phase_pilot_tests.py)
@@ -4114,11 +3969,8 @@ if(MARC_BUILD_TESTS)
         set_tests_properties(
             marc_silesia_contextual_rans_tokenize_full_runner_tests
             PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_hash_chain_best_length_probe_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_hash_chain_best_length_probe_runner_tests.py)
-        set_tests_properties(marc_silesia_hash_chain_best_length_probe_runner_tests
-            PROPERTIES LABELS tooling)
+
+
         add_test(NAME marc_silesia_contextual_rans_best_length_probe_runner_tests
             COMMAND ${Python3_EXECUTABLE}
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_contextual_rans_best_length_probe_runner_tests.py)
@@ -4129,31 +3981,16 @@ if(MARC_BUILD_TESTS)
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_contextual_rans_best_length_probe_full_runner_tests.py)
         set_tests_properties(marc_silesia_contextual_rans_best_length_probe_full_runner_tests
             PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_hash_chain_best_length_probe_full_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_hash_chain_best_length_probe_full_runner_tests.py)
-        set_tests_properties(marc_silesia_hash_chain_best_length_probe_full_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_binary_tree_16m_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_binary_tree_16m_runner_tests.py)
-        set_tests_properties(marc_silesia_binary_tree_16m_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_red_black_tree_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_red_black_tree_runner_tests.py)
-        set_tests_properties(marc_silesia_red_black_tree_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_scapegoat_tree_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_scapegoat_tree_runner_tests.py)
-        set_tests_properties(marc_silesia_scapegoat_tree_runner_tests
-            PROPERTIES LABELS tooling)
-        add_test(NAME marc_silesia_binary_tree_64m_runner_tests
-            COMMAND ${Python3_EXECUTABLE}
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_binary_tree_64m_runner_tests.py)
-        set_tests_properties(marc_silesia_binary_tree_64m_runner_tests
-            PROPERTIES LABELS tooling)
+
+
+
+
+
+
+
+
+
+
     endif()
     if(TARGET marc_c_roundtrip_example)
         add_test(NAME marc_c_roundtrip_example COMMAND marc_c_roundtrip_example)
@@ -4259,24 +4096,6 @@ if(MARC_BUILD_TESTS)
         tests/lzss_short_distance_policy_tests.cpp
         tests/lzss_prefix_hash_tests.cpp
         tests/lzss_binary_tree_match_finder_tests.cpp
-        tests/lzss_wavl_tree_match_finder_tests.cpp
-        tests/lzss_red_black_tree_match_finder_tests.cpp
-        tests/lzss_scapegoat_tree_match_finder_tests.cpp
-        tests/lzss_hash_tree_promotion_tests.cpp
-        tests/lzss_hash_tree_bucket_builder_tests.cpp
-        tests/lzss_hash_tree_bucket_query_tests.cpp
-        tests/lzss_hash_tree_bucket_mutation_tests.cpp
-        tests/lzss_hash_tree_match_finder_tests.cpp
-        tests/lzss_sparse_hash_tree_bucket_builder_tests.cpp
-        tests/lzss_sparse_hash_tree_bucket_mutation_tests.cpp
-        tests/lzss_sparse_hash_tree_bucket_state_tests.cpp
-        tests/lzss_sparse_hash_tree_controller_tests.cpp
-        tests/lzss_sparse_hash_tree_snapshot_controller_tests.cpp
-        tests/lzss_sparse_hash_tree_snapshot_differential_tests.cpp
-        tests/lzss_sparse_hash_tree_snapshot_lifecycle_tests.cpp
-        tests/lzss_sparse_hash_tree_snapshot_query_tests.cpp
-        tests/lzss_sparse_hash_tree_match_finder_tests.cpp
-        tests/lzss_sparse_hash_tree_pool_tests.cpp
         tests/lzss_streaming_decoder_tests.cpp
         tests/lzss_streaming_encoder_tests.cpp
         tests/lzss_validator_tests.cpp

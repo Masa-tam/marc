@@ -3,6 +3,17 @@
 This file records user-visible marc changes. Project release versions, stream
 format versions, and C ABI versions are independent namespaces.
 
+## Unreleased
+
+### Changed
+
+- Started the first refactoring stage toward v1.0. Removed isolated four-MiB
+  benchmark copies and unpublished Red-Black, Scapegoat, WAVL and HashTree/Sparse
+  research implementations with their experiment-only tools, manifests and
+  tests. Adopted HashChain/BinaryTree strategies and independent correctness
+  oracles remain. Local public API/resource snapshots and all 102 baseline
+  archive restoration/re-encoding comparisons retain v0.8.0 behavior.
+
 ## 0.8.0 - 2026-10-26
 
 ### Added

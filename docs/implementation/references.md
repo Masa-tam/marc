@@ -12145,3 +12145,13 @@ registrations. The maintained plan is docs/design/v1-refactoring-stage-1.md.
 Dependency analysis must distinguish public implementation paths, experimental
 copies and independent correctness oracles. No external codec implementation
 or new algorithm reference is consulted.
+
+### IR-1374: rejected match-finder retirement
+
+Use first-party DD-1628, the v0.8.0 Exact-finder contracts, retained exhaustive
+and HashChain/BinaryTree differential tests, and the recorded negative adoption
+results for Red-Black, Scapegoat, WAVL and HashTree/Sparse experiments. Inspect
+public strategy dispatch and all direct source/script consumers before removal.
+Keep the source baseline, generated target inventory, ABI/resource snapshots
+and schema92 archives as independent comparison receipts. No external algorithm
+or implementation reference is introduced.
