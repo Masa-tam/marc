@@ -27131,3 +27131,27 @@ saved v0.8.0 archives. Direct retained-source/script references to deleted files
 are absent. The rANS diagnostic/exporter remains as an active independent
 public-profile oracle. Keep ordinary public benchmarks/resource measurement
 programs for their separately validated common-driver replacement in phase3.
+
+### TVG-1638: prepared-role cleanup and retained four-MiB reference coverage
+
+Audit the current factory graph before retirement. None of the70 retired
+prototype files is a production translation unit or an adopted header. Remove
+six private prototype CTest registrations and rename the internal C baseline
+support to a three-source owning/reference support library. Retained main
+GoogleTest names are identical. The complete inventory changes4215->4209
+solely by the reviewed six private registrations. Two FUZZERS-only harnesses
+for discarded private interfaces retire separately; actual public-factory and
+stream harness sources match their previous hashes.
+
+Compile/link the retained4MiB test executable after removing16 duplicated
+production translation units; it now imports the ordinary static library's
+primitives and retains the three owning/reference wrapper sources separately.
+All161 cases pass through its single CTest registration in5.30 seconds
+(5.49 seconds CTest total). The main3480 cases are not redundantly rerun:
+their code, source list and registered names are unchanged from TVG-1637.
+
+The product library still has671 translation units and its DLL SHA-256 exactly
+matches TVG-1637's qualified artifact. Thus its224 config/query observations,
+111 ABI layouts and102 archive comparison results are retained product evidence,
+not new codec executions. All retained direct file dependencies resolve. Full
+hosted/installed-consumer qualification remains a separate later checkpoint.

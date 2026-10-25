@@ -13,6 +13,10 @@ format versions, and C ABI versions are independent namespaces.
   tests. Adopted HashChain/BinaryTree strategies and independent correctness
   oracles remain. Local public API/resource snapshots and all 102 baseline
   archive restoration/re-encoding comparisons retain v0.8.0 behavior.
+- Removed completed parser/phase/cost diagnostics and unadopted prepared,
+  allocation and private C-adapter prototypes. Adopted prepared paths, public
+  codec tests and independent wire/vector oracles remain. Test-only reference
+  owners now reuse production primitives instead of compiling duplicate copies.
 
 ## 0.8.0 - 2026-10-26
 

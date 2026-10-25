@@ -47,7 +47,7 @@ headers. These are starting observations, not deletion or line-count targets.
 - [x] Remove rejected Red-Black, Scapegoat, WAVL and Sparse HashTree research
   implementations after verifying production references. Preserve adopted
   HashChain/BinaryTree strategies and the exhaustive correctness oracle.
-- [ ] Review prepared/finder_scratch paths individually: names do not prove
+- [x] Review prepared/finder_scratch paths individually: names do not prove
   obsolescence. Preserve adopted public paths.
 - [ ] Keep provenance and historical results; identify retired reproduction
   commands and update current documentation/validators without rewriting history.
@@ -109,7 +109,9 @@ exchange contract, with historical restore-only exceptions kept explicit.
 Request a maintainer push at a committed checkpoint when hosted CI is needed;
 do not push. Wait for the actual result before marking that gate complete.
 Local sanitizer work remains separate from CI and is proportional to changed
-decoder behavior. Keep existing fuzz harnesses available.
+decoder behavior. Keep harnesses for retained public/reference paths available.
+Experiment-only harnesses retire with their obsolete interfaces, with the
+remaining public coverage explicitly accounted for (DD-1631).
 
 ## Completion audit
 
@@ -190,3 +192,24 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   estimator. Current inventory: 4,215 tests. Preserve the active independent
   rANS oracle/exporter and public measurement drivers pending consolidation.
   Remaining adopted/reference-path classification and phases 3–6 are open.
+
+- Checkpoint D: DD-1631/TVG-1638 classify the prepared cohorts by actual callers.
+  Retire 70 unadopted prototype files and six private registrations. All 161
+  retained four-MiB reference/public cases pass. Main test names and the exact
+  qualified production DLL remain unchanged. Sixteen duplicated production
+  compilations are replaced by ordinary static-library linking. Inventory:
+  4,209 tests. Retire two obsolete private-interface fuzz harnesses while keeping
+  the actual public-factory and stream harnesses unchanged.
+
+### Prepared/reference adoption map (checkpoint D)
+
+| Family | Current role and disposition |
+| --- | --- |
+| 1 MiB prepared model/frame and finder-scratch stream | Adopted public encoder dependencies and fallback: retain. |
+| 1 MiB older owning/reference companions | Active differential references: retain in tests where required. |
+| 1 MiB bounded18 | Unadopted allocation/search trial: retire with its tests. |
+| 4 MiB prepared/range-prepared/finder-scratch | Unadopted prototype graph: retire. |
+| 4 MiB private C candidate/baseline adapters | Uninstalled historical shims: retire; actual public C factory tests stay. |
+| 4 MiB owning/reference wrappers | Three-source test-only reference support, reusing production primitives. |
+| 8 MiB prepared-owning adapter/storage/stream | Adopted public encoder route: retain; operation/reference companions remain test oracles. |
+| 16/32/64 MiB public owning routes | Adopted public implementations: retain for later shared-mechanics refactoring. |

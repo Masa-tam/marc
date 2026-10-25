@@ -812,90 +812,29 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
         target_compile_options(marc_position_tans_8m_cli_candidate PRIVATE -Wall -Wextra -Wpedantic)
     endif()
     target_link_libraries(marc_position_tans_8m_cli_candidate PRIVATE marc::static)
-    add_library(marc_position_distance_4m_baseline_c_support STATIC
-        src/frame/lzss_position_distance_4m_workspace.cpp
-        src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
-        src/frame/lzss_position_distance_4m_owned_decoder.cpp
-        src/frame/lzss_position_distance_4m_frame.cpp
-        src/context/lzss_position_distance_4m_tokens.cpp
-        src/entropy/lzss_position_distance_4m_range_encoder.cpp
-        src/entropy/lzss_position_distance_4m_range_decoder.cpp
-        src/frame/lzss_position_distance_4m_encode_workspace.cpp
-        src/frame/lzss_position_distance_4m_frame_streaming_encoder.cpp
-        src/frame/lzss_position_distance_4m_raw_frame_encoder.cpp
-        src/dictionary/lzss_position_distance_4m_match_finder.cpp
-        src/dictionary/lzss_position_distance_4m_candidate.cpp
-        src/dictionary/lzss_position_distance_4m_five_prefix_finder.cpp
-        src/dictionary/lzss_position_distance_4m_five_prefix_candidate.cpp
-        src/frame/lzss_position_distance_4m_five_prefix_encode_workspace.cpp
-        src/frame/lzss_position_distance_4m_five_prefix_frame_streaming_encoder.cpp
-        src/frame/lzss_position_distance_4m_five_prefix_raw_frame_encoder.cpp
-        src/frame/lzss_position_distance_4m_baseline_c_adapter.cpp
-    )
-    target_compile_features(marc_position_distance_4m_baseline_c_support PRIVATE cxx_std_20)
-    target_include_directories(marc_position_distance_4m_baseline_c_support PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_link_libraries(marc_position_distance_4m_baseline_c_support PUBLIC marc::static)
-    add_executable(marc_position_distance_4m_baseline_c_consumer tests/lzss_position_distance_4m_baseline_c_consumer.c)
-    target_compile_features(marc_position_distance_4m_baseline_c_consumer PRIVATE c_std_17)
-    target_link_libraries(marc_position_distance_4m_baseline_c_consumer PRIVATE marc_position_distance_4m_baseline_c_support)
-    add_test(NAME marc_position_distance_4m_baseline_c_consumer COMMAND marc_position_distance_4m_baseline_c_consumer)
+    # Test-only independent owning reference; adopted stream primitives come
+    # from marc::static instead of compiling duplicate production sources.
+    add_library(marc_position_distance_4m_reference_support STATIC
+        src/frame/lzss_position_distance_4m_owned_encoder.cpp
+        src/frame/lzss_position_distance_4m_five_prefix_owned_encoder.cpp
+        src/frame/lzss_position_distance_4m_owned_decoder.cpp)
+    target_compile_features(marc_position_distance_4m_reference_support PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_4m_reference_support PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_4m_reference_support PUBLIC marc::static)
+
     add_executable(marc_position_distance_4m_frame_tests
         tests/lzss_position_distance_4m_public_c_tests.cpp
         tests/lzss_position_distance_4m_public_c_corpus_tests.cpp
-        tests/lzss_position_distance_4m_baseline_c_adapter_tests.cpp
-        tests/lzss_position_distance_4m_baseline_c_corpus_tests.cpp
-        src/frame/lzss_position_distance_4m_c_adapter.cpp
-        tests/lzss_position_distance_4m_c_adapter_tests.cpp
-        tests/lzss_position_distance_4m_c_corpus_tests.cpp
-        src/frame/lzss_position_distance_4m_finder_scratch_encode_workspace.cpp
-        src/frame/lzss_position_distance_4m_finder_scratch_frame_streaming_encoder.cpp
-        src/frame/lzss_position_distance_4m_finder_scratch_owned_encoder.cpp
-        tests/lzss_position_distance_4m_finder_scratch_streaming_tests.cpp
-        src/entropy/lzss_position_distance_4m_scratch_range_encoder.cpp
-        src/frame/lzss_position_distance_4m_finder_scratch_frame.cpp
-        src/frame/lzss_position_distance_4m_finder_scratch_raw_frame_encoder.cpp
-        tests/lzss_position_distance_4m_finder_scratch_tests.cpp
-        tests/lzss_position_distance_4m_scratch_range_tests.cpp
-        src/frame/lzss_position_distance_4m_range_prepared_encode_workspace.cpp
-        src/frame/lzss_position_distance_4m_range_prepared_frame_streaming_encoder.cpp
-        src/frame/lzss_position_distance_4m_range_prepared_owned_encoder.cpp
-        tests/lzss_position_distance_4m_range_prepared_streaming_tests.cpp
-        src/entropy/lzss_position_distance_4m_prepared_range_encoder.cpp
-        src/frame/lzss_position_distance_4m_range_prepared_frame.cpp
-        src/frame/lzss_position_distance_4m_range_prepared_raw_frame_encoder.cpp
-        tests/lzss_position_distance_4m_range_prepared_frame_tests.cpp
-        src/frame/lzss_position_distance_4m_prepared_frame_streaming_encoder.cpp
-        src/frame/lzss_position_distance_4m_prepared_owned_encoder.cpp
-        tests/lzss_position_distance_4m_prepared_streaming_tests.cpp
-        src/context/lzss_position_distance_4m_prepared_model.cpp
-        src/frame/lzss_position_distance_4m_prepared_frame.cpp
-        src/frame/lzss_position_distance_4m_prepared_raw_frame_encoder.cpp
-        tests/lzss_position_distance_4m_prepared_model_tests.cpp
-        tests/lzss_position_distance_4m_prepared_frame_tests.cpp
-        src/frame/lzss_position_distance_4m_five_prefix_encode_workspace.cpp
-        src/frame/lzss_position_distance_4m_five_prefix_frame_streaming_encoder.cpp
-        src/frame/lzss_position_distance_4m_five_prefix_owned_encoder.cpp
+
         tests/lzss_position_distance_4m_five_prefix_streaming_tests.cpp
-        src/dictionary/lzss_position_distance_4m_five_prefix_finder.cpp
-        src/dictionary/lzss_position_distance_4m_five_prefix_candidate.cpp
-        src/frame/lzss_position_distance_4m_five_prefix_raw_frame_encoder.cpp
+
         tests/lzss_position_distance_4m_five_prefix_tests.cpp
-        src/frame/lzss_position_distance_4m_encode_workspace.cpp
-        src/frame/lzss_position_distance_4m_workspace.cpp
-        src/frame/lzss_position_distance_4m_frame_streaming_encoder.cpp
-        src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
-        src/frame/lzss_position_distance_4m_owned_encoder.cpp
-        src/frame/lzss_position_distance_4m_owned_decoder.cpp
+
         tests/lzss_position_distance_4m_streaming_encoder_tests.cpp
         tests/lzss_position_distance_4m_streaming_tests.cpp
-        src/dictionary/lzss_position_distance_4m_match_finder.cpp
-        src/dictionary/lzss_position_distance_4m_candidate.cpp
-        src/frame/lzss_position_distance_4m_raw_frame_encoder.cpp
+
         tests/lzss_position_distance_4m_raw_tests.cpp
-        src/frame/lzss_position_distance_4m_frame.cpp
-        src/context/lzss_position_distance_4m_tokens.cpp
-        src/entropy/lzss_position_distance_4m_range_decoder.cpp
-        src/entropy/lzss_position_distance_4m_range_encoder.cpp
+
         tests/lzss_position_distance_4m_frame_tests.cpp
         tests/lzss_position_distance_4m_tokens_tests.cpp
         tests/lzss_position_distance_4m_range_tests.cpp
@@ -907,7 +846,7 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
     target_compile_features(marc_position_distance_4m_frame_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_distance_4m_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_4m_frame_tests PRIVATE marc::static GTest::gtest_main)
-    target_link_libraries(marc_position_distance_4m_frame_tests PRIVATE marc_position_distance_4m_baseline_c_support)
+    target_link_libraries(marc_position_distance_4m_frame_tests PRIVATE marc_position_distance_4m_reference_support)
     add_test(NAME marc_position_distance_4m_frame_tests COMMAND marc_position_distance_4m_frame_tests)
     add_executable(marc_position_distance_4m_tokens_tests
         src/context/lzss_position_distance_4m_tokens.cpp
@@ -923,16 +862,7 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
     target_include_directories(marc_position_distance_4m_tokens_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_4m_tokens_tests PRIVATE marc::static GTest::gtest_main)
     add_test(NAME marc_position_distance_4m_tokens_tests COMMAND marc_position_distance_4m_tokens_tests)
-    add_executable(marc_position_distance_4m_prepared_range_tests
-        src/entropy/lzss_position_distance_4m_range_decoder.cpp
-        src/entropy/lzss_position_distance_4m_range_encoder.cpp
-        src/entropy/lzss_position_distance_4m_prepared_range_encoder.cpp
-        tests/lzss_position_distance_4m_range_tests.cpp
-        tests/lzss_position_distance_4m_prepared_range_tests.cpp)
-    target_compile_features(marc_position_distance_4m_prepared_range_tests PRIVATE cxx_std_20)
-    target_include_directories(marc_position_distance_4m_prepared_range_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_link_libraries(marc_position_distance_4m_prepared_range_tests PRIVATE marc::static GTest::gtest_main)
-    add_test(NAME marc_position_distance_4m_prepared_range_tests COMMAND marc_position_distance_4m_prepared_range_tests)
+
     add_executable(marc_position_distance_4m_range_tests
         src/entropy/lzss_position_distance_4m_range_decoder.cpp
         src/entropy/lzss_position_distance_4m_range_encoder.cpp
@@ -1012,46 +942,7 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
     target_include_directories(marc_position_distance_1m_prepared_model_allocation_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_1m_prepared_model_allocation_tests PRIVATE marc::static )
     add_test(NAME marc_position_distance_1m_prepared_model_allocation_tests COMMAND marc_position_distance_1m_prepared_model_allocation_tests)
-    add_executable(marc_position_distance_1m_bounded18_stream_tests
-        tests/lzss_position_distance_1m_bounded18_stream_tests.cpp
-        src/frame/lzss_position_distance_1m_bounded18_encode_workspace.cpp
-        src/frame/lzss_position_distance_1m_bounded18_raw_frame_encoder.cpp
-        src/frame/lzss_position_distance_1m_bounded18_frame_streaming_encoder.cpp
-        src/frame/lzss_position_distance_1m_bounded18_owned_encoder.cpp
-        src/dictionary/lzss_position_distance_1m_bounded18_candidate.cpp
-        src/dictionary/lzss_position_distance_1m_bounded18_finder.cpp)
-    target_compile_features(marc_position_distance_1m_bounded18_stream_tests PRIVATE cxx_std_20)
-    target_include_directories(marc_position_distance_1m_bounded18_stream_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_link_libraries(marc_position_distance_1m_bounded18_stream_tests PRIVATE marc::static GTest::gtest_main)
-    add_test(NAME marc_position_distance_1m_bounded18_stream COMMAND marc_position_distance_1m_bounded18_stream_tests)
-    add_executable(marc_position_distance_1m_bounded18_stream_allocation_tests
-        tests/position_distance_1m_bounded18_stream_allocation_tests.cpp
-        src/frame/lzss_position_distance_1m_bounded18_encode_workspace.cpp
-        src/frame/lzss_position_distance_1m_bounded18_raw_frame_encoder.cpp
-        src/frame/lzss_position_distance_1m_bounded18_frame_streaming_encoder.cpp
-        src/frame/lzss_position_distance_1m_bounded18_owned_encoder.cpp
-        src/dictionary/lzss_position_distance_1m_bounded18_candidate.cpp
-        src/dictionary/lzss_position_distance_1m_bounded18_finder.cpp)
-    target_compile_features(marc_position_distance_1m_bounded18_stream_allocation_tests PRIVATE cxx_std_20)
-    target_include_directories(marc_position_distance_1m_bounded18_stream_allocation_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_link_libraries(marc_position_distance_1m_bounded18_stream_allocation_tests PRIVATE marc::static)
-    add_test(NAME marc_position_distance_1m_bounded18_stream_allocation COMMAND marc_position_distance_1m_bounded18_stream_allocation_tests)
-    add_executable(marc_position_distance_1m_bounded18_tests
-        tests/lzss_position_distance_1m_bounded18_tests.cpp
-        src/dictionary/lzss_position_distance_1m_bounded18_finder.cpp
-        src/dictionary/lzss_position_distance_1m_bounded18_candidate.cpp)
-    target_compile_features(marc_position_distance_1m_bounded18_tests PRIVATE cxx_std_20)
-    target_include_directories(marc_position_distance_1m_bounded18_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_link_libraries(marc_position_distance_1m_bounded18_tests PRIVATE marc::static GTest::gtest_main)
-    add_test(NAME marc_position_distance_1m_bounded18 COMMAND marc_position_distance_1m_bounded18_tests)
-    add_executable(marc_position_distance_1m_bounded18_allocation_tests
-        tests/position_distance_1m_bounded18_allocation_tests.cpp
-        src/dictionary/lzss_position_distance_1m_bounded18_finder.cpp
-        src/dictionary/lzss_position_distance_1m_bounded18_candidate.cpp)
-    target_compile_features(marc_position_distance_1m_bounded18_allocation_tests PRIVATE cxx_std_20)
-    target_include_directories(marc_position_distance_1m_bounded18_allocation_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_link_libraries(marc_position_distance_1m_bounded18_allocation_tests PRIVATE marc::static)
-    add_test(NAME marc_position_distance_1m_bounded18_allocation COMMAND marc_position_distance_1m_bounded18_allocation_tests)
+
     add_executable(marc_position_distance_8m_preflight_tests
         tests/lzss_position_distance_8m_preflight_tests.cpp
         src/frame/lzss_position_distance_8m_preflight.cpp src/core/limits.cpp)
@@ -2223,65 +2114,6 @@ if(MARC_BUILD_FUZZERS)
     target_compile_options(marc_fuzz_lzss_position_distance_4m_stream PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_position_distance_4m_stream PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_distance_4m_stream PRIVATE marc::static)
-
-    add_executable(marc_fuzz_lzss_position_distance_4m_encode_stream
-        fuzz/lzss_position_distance_4m_encode_stream_fuzz.cpp
-        src/frame/lzss_position_distance_4m_workspace.cpp
-        src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
-        src/frame/lzss_position_distance_4m_owned_decoder.cpp
-        src/frame/lzss_position_distance_4m_frame.cpp
-        src/context/lzss_position_distance_4m_tokens.cpp
-        src/entropy/lzss_position_distance_4m_range_encoder.cpp
-        src/entropy/lzss_position_distance_4m_range_decoder.cpp
-        src/frame/lzss_position_distance_4m_encode_workspace.cpp
-        src/frame/lzss_position_distance_4m_frame_streaming_encoder.cpp
-        src/frame/lzss_position_distance_4m_raw_frame_encoder.cpp
-        src/dictionary/lzss_position_distance_4m_match_finder.cpp
-        src/dictionary/lzss_position_distance_4m_candidate.cpp
-        src/dictionary/lzss_position_distance_4m_five_prefix_finder.cpp
-        src/dictionary/lzss_position_distance_4m_five_prefix_candidate.cpp
-        src/entropy/lzss_position_distance_4m_scratch_range_encoder.cpp
-        src/frame/lzss_position_distance_4m_finder_scratch_encode_workspace.cpp
-        src/frame/lzss_position_distance_4m_finder_scratch_frame.cpp
-        src/frame/lzss_position_distance_4m_finder_scratch_raw_frame_encoder.cpp
-        src/frame/lzss_position_distance_4m_finder_scratch_frame_streaming_encoder.cpp
-        src/frame/lzss_position_distance_4m_finder_scratch_owned_encoder.cpp
-    )
-    target_compile_features(marc_fuzz_lzss_position_distance_4m_encode_stream PRIVATE cxx_std_20)
-    target_include_directories(marc_fuzz_lzss_position_distance_4m_encode_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_distance_4m_encode_stream PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
-    target_link_options(marc_fuzz_lzss_position_distance_4m_encode_stream PRIVATE -fsanitize=fuzzer,address,undefined)
-    target_link_libraries(marc_fuzz_lzss_position_distance_4m_encode_stream PRIVATE marc::static)
-
-    add_executable(marc_fuzz_lzss_position_distance_4m_c
-        fuzz/lzss_position_distance_4m_c_fuzz.cpp
-        src/frame/lzss_position_distance_4m_c_adapter.cpp
-        src/frame/lzss_position_distance_4m_workspace.cpp
-        src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
-        src/frame/lzss_position_distance_4m_owned_decoder.cpp
-        src/frame/lzss_position_distance_4m_frame.cpp
-        src/context/lzss_position_distance_4m_tokens.cpp
-        src/entropy/lzss_position_distance_4m_range_encoder.cpp
-        src/entropy/lzss_position_distance_4m_range_decoder.cpp
-        src/frame/lzss_position_distance_4m_encode_workspace.cpp
-        src/frame/lzss_position_distance_4m_frame_streaming_encoder.cpp
-        src/frame/lzss_position_distance_4m_raw_frame_encoder.cpp
-        src/dictionary/lzss_position_distance_4m_match_finder.cpp
-        src/dictionary/lzss_position_distance_4m_candidate.cpp
-        src/dictionary/lzss_position_distance_4m_five_prefix_finder.cpp
-        src/dictionary/lzss_position_distance_4m_five_prefix_candidate.cpp
-        src/entropy/lzss_position_distance_4m_scratch_range_encoder.cpp
-        src/frame/lzss_position_distance_4m_finder_scratch_encode_workspace.cpp
-        src/frame/lzss_position_distance_4m_finder_scratch_frame.cpp
-        src/frame/lzss_position_distance_4m_finder_scratch_raw_frame_encoder.cpp
-        src/frame/lzss_position_distance_4m_finder_scratch_frame_streaming_encoder.cpp
-        src/frame/lzss_position_distance_4m_finder_scratch_owned_encoder.cpp
-    )
-    target_compile_features(marc_fuzz_lzss_position_distance_4m_c PRIVATE cxx_std_20)
-    target_include_directories(marc_fuzz_lzss_position_distance_4m_c PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    target_compile_options(marc_fuzz_lzss_position_distance_4m_c PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
-    target_link_options(marc_fuzz_lzss_position_distance_4m_c PRIVATE -fsanitize=fuzzer,address,undefined)
-    target_link_libraries(marc_fuzz_lzss_position_distance_4m_c PRIVATE marc::static)
 
     add_executable(marc_fuzz_lzss_position_distance_1m_frame
         fuzz/lzss_position_distance_1m_frame_fuzz.cpp)

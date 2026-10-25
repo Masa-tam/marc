@@ -12165,3 +12165,14 @@ unused eight-MiB drivers separately from adopted production paths. Preserve
 the rANS diagnostic module and exporter because current public differential
 tests import/use their independent arithmetic/fixtures; their names alone do
 not establish obsolescence. No external implementation reference is introduced.
+
+### IR-1376: prepared-path adoption and private prototype retirement
+
+Use current public factories and their concrete source dependencies, the
+first-party 1MiB prepared/finder-scratch admission records, the8MiB public
+encoder design, retained private reference comparisons and the generated
+source/target graph. Header names and historical pre-admission wording are
+not adoption evidence. Retain active1MiB prepared-model/fallback and8MiB
+prepared-owning dependencies; distinguish unadopted4MiB prototypes, bounded18
+and private C shims from installed public C declarations. No external source
+or new algorithm reference is consulted.

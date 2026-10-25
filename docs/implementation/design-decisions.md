@@ -35170,3 +35170,20 @@ corpus verifier. In particular retain position_distance_rans_diagnostic.py and
 its exporter: many current public rANS tests depend on their independent model.
 Account for all removed registrations against the generated solution/runtime
 inventories; keep historical recipes labelled as retired and available in v0.8.0.
+
+### DD-1631: explicit prepared-path roles and reference-only test support
+
+Keep the adopted1MiB finder-scratch path and its prepared-model/frame fallback,
+and the8MiB prepared-owning public route. Retain the clear operation/reference
+owners used by current differential tests. Retire unadopted4MiB prepared,
+range-prepared, scratch/finder-scratch implementations and the1MiB bounded18
+trial. Retire the obsolete private4MiB C adapters and their tests; installed
+public4MiB C factory tests remain unchanged. Preserve three owning/reference
+wrappers in one test-only support library, linking adopted primitives from
+marc::static rather than recompiling sixteen production sources in the test.
+
+Two fuzz harnesses exercise only the removed private adapter/finder-scratch
+interfaces and retire with those experiments. The current public-factory and
+stream decoder harnesses remain byte-identical. This applies the plan's
+experiment-test retirement rule; it does not remove a retained public codec's
+fuzz boundary or add any CI fuzz job. Document this distinction explicitly.

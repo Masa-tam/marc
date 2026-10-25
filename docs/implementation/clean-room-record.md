@@ -43907,3 +43907,17 @@ which have real public conformance clients. Historical experimental records
 remain accessible. TVG-1637 distinguishes local evidence and still-pending full
 hosted validation. No external implementation, new format, corpus timing run,
 fuzz campaign or push is involved.
+
+### CR-2017: 2026-10-26 — unadopted prepared prototypes and duplicate test sources
+
+Author/reviewer: Codex. DD-1631/IR-1376 trace current factories before retiring
+70 unadopted/test-only prototype files, including two harnesses for discarded
+private interfaces. Adopted1MiB and8MiB prepared/finder-scratch code remains,
+as do independent reference owners and current public/stream fuzz harnesses.
+The installed public header and every production translation unit remain
+unchanged. Replace the private C baseline support with a three-source reference
+support target and reuse16 production objects through marc::static. Retained
+public4MiB tests and reference comparison bodies are not rewritten. TVG-1638
+records targeted execution, exact inventory accounting and product identity.
+No external implementation, representation change, corpus benchmark, sanitizer
+campaign, hosted result or push is claimed.
