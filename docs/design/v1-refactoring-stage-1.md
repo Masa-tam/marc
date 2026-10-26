@@ -229,3 +229,19 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   build/API/codec sharing phases. Public measurement precursors are retained
   until their documented phase-three replacements are validated; remaining
   reference/profiling helpers require explicit role review before completion.
+
+
+- Checkpoint E hosted continuation: the maintainer reports successful push and
+  manual full_validation completion at 905bcdcc (TVG-1640/CR-2019). No workflow
+  URL or external exchange receipt was supplied. Continue phase 3; later edits
+  require their own qualification.
+
+
+- Phase-three intermediate change (DD-1633/TVG-1641): the67-selector common
+  benchmark now uses bounded file I/O, one directional workspace at a time and
+  byte verification on every iteration. All67 configurations match the v0.8.0
+  one-shot bytes at capacities1/17/65536;69 benchmark CTests pass. Existing
+  configuration/query/create bodies are unchanged. Report the new timing
+  contract explicitly. Full102-selector coverage, directional physical-memory
+  measurement and retirement of redundant public drivers remain open; phase3
+  is not complete. No further hosted qualification is inferred from checkpoint E.

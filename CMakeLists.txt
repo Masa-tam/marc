@@ -2903,6 +2903,27 @@ if(MARC_BUILD_TESTS)
     add_subdirectory(third_party/googletest EXCLUDE_FROM_ALL)
     include(GoogleTest)
 
+    if(TARGET marc_benchmark)
+        add_executable(marc_benchmark_stream_tests tests/benchmark_stream_tests.cpp)
+        target_compile_features(marc_benchmark_stream_tests PRIVATE cxx_std_20)
+        set_target_properties(marc_benchmark_stream_tests PROPERTIES CXX_EXTENSIONS OFF)
+        if(TARGET marc_static)
+            target_link_libraries(marc_benchmark_stream_tests PRIVATE marc::static GTest::gtest_main)
+        else()
+            target_link_libraries(marc_benchmark_stream_tests PRIVATE marc::shared GTest::gtest_main)
+        endif()
+        add_test(NAME marc_benchmark_stream_tests COMMAND marc_benchmark_stream_tests)
+        set_tests_properties(marc_benchmark_stream_tests PROPERTIES LABELS benchmark-smoke)
+        if(Python3_Interpreter_FOUND)
+            add_test(NAME marc_benchmark_stream_cli_tests
+                COMMAND ${Python3_EXECUTABLE}
+                    ${CMAKE_CURRENT_SOURCE_DIR}/tests/benchmark_stream_cli_tests.py
+                    $<TARGET_FILE:marc_benchmark>)
+            set_tests_properties(marc_benchmark_stream_cli_tests
+                PROPERTIES LABELS benchmark-smoke TIMEOUT 120)
+        endif()
+    endif()
+
     add_executable(marc_core_tests
         tests/lz77_decoder_tests.cpp
         tests/lz77_encoder_tests.cpp

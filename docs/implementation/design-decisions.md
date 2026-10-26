@@ -35200,3 +35200,24 @@ under explicit names. State fields, order, resource admission and all public
 API/format/default contracts remain unchanged. Remaining profiling/reference
 helpers and public measurement tools are reviewed in later common-mechanics
 and benchmark phases, not automatically classified as rejected candidates.
+
+
+### DD-1633: incrementally replace benchmark storage with a common file pump
+
+Preserve the current 67-profile benchmark's exact configuration function,
+workspace queries, report keys and process-only timing boundary. Use fixed
+64-KiB input/output buffers, explicit input length and checked output limits.
+Benchmark input is limited to 1 GiB; encoded output has an execution ceiling of
+1024 times input plus 1 MiB, not a codec-specific compression bound. Reject
+unexpected input changes, invalid process counts/statuses and stalled final
+processing. EndInput accompanies the actual final chunk and its unconsumed
+suffix. Never equate zero output with end of stream.
+
+Use an exclusively created private temporary directory and remove only its
+known files and the empty directory. Keep a baseline archive; compare every
+timed encoding byte for byte and every restored file against the input outside
+timed process calls. Hold only one directional workspace at a time. Logical
+workspace queries remain distinct from resident memory and exclude I/O buffers.
+Mark the new execution/timing contract explicitly; old throughput observations
+must not be silently treated as measurements of this chunked driver. This is
+an intermediate phase-three change, not complete 102-profile consolidation.

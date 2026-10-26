@@ -128,19 +128,37 @@ for meaningful throughput results.
 
 ## Measurement contract
 
-The tool verifies a complete round trip before timing. Each timed sample creates
-the transform before starting the clock, calls `marc_transform_process()` once
-with full input and sufficient output, stops the clock, and then destroys the
-transform. Workspace allocation, transform construction/destruction, file I/O,
-and verification are outside the timed region.
+The current driver reports `timing_contract=chunked-process-v1`. It uses fixed
+64-KiB input/output buffers and sums the duration of public
+`marc_transform_process()` calls. Workspace allocation, transform construction
+and destruction, file I/O, and byte comparisons are outside those intervals.
+Clock overhead occurs once per process call. Earlier observations using a
+single process call are historical measurements of a different driver.
+
+`marc_benchmark --list` lists its current 67 selectors. Optional
+`--io-size N` selects equal input/output capacities from 1 through 65,536 bytes;
+the default is 65,536. Record this value when comparing throughput. For example,
+use `marc_benchmark lzw corpus.bin 5 --io-size 4096`.
+
+Input is limited to 1 GiB. An encoded-output execution ceiling of 1024 times
+input bytes plus 1 MiB prevents unlimited temporary-file growth; this is a
+benchmark guard, not an encoded-size formula. Only one directional workspace
+is held at a time. The driver creates a private temporary directory, retains
+an untimed baseline archive, compares every timed encoding byte for byte, and
+checks every decoding against the original file. Each direction has an untimed
+warmup. It emits a successful report only after all verification passes, then
+removes its known temporary files and empty directory. Temporary disk space is
+required. Per-window public measurement tools remain pending 102-profile
+consolidation.
 
 `encoded_to_input_ratio` includes the complete canonical stream header,
 parameters, frame headers, and payload. Empty input reports ratio zero because
 division by zero has no useful interpretation. Throughput uses raw input bytes
 and binary MiB. `codec_peak_workspace_bytes` is the larger of the encoder and
 decoder caller-owned primary-plus-secondary-plus-views workspace requirements;
-it excludes the input, encoded, decoded, executable, and operating-system
-memory. Direction-specific views-workspace bytes are also reported separately.
+it excludes tool I/O buffers, allocator overhead, executable, stack, and
+operating-system memory. It is not peak RSS. Direction-specific views-workspace
+bytes are also reported separately.
 
 ### Large-file LZSS match-finder mode
 
@@ -13614,3 +13632,16 @@ and execution periods. No timing sample is discarded to favor either profile.
 All seven local measurement and artifact-audit campaigns are recorded. This
 synthesis is not a new benchmark run, hosted CI result or external verification.
 Fuzz remains explicitly deferred and is not counted as passing evidence.
+
+
+## BM-0274: Common benchmark bounded execution contract
+
+The stage-one refactoring introduces chunked-process-v1 for the existing67
+common-driver selectors. DD-1633 defines its fixed buffers, execution ceilings,
+temporary disk use and directional workspace lifetimes. TVG-1641 qualifies all
+67 settings against the v0.8.0 one-shot producer at three capacities and records
+69 passing CTests. Ratio and logical-workspace fields retain their definitions.
+Per-call timing overhead and chunk size must accompany future speed comparisons;
+historical one-shot timing observations remain historical. This entry records
+a driver contract, not a new corpus speed or peak-RSS measurement. Consolidation
+of all102 published selectors and public resource drivers remains open.

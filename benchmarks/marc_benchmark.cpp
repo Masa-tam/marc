@@ -1,5 +1,7 @@
 #include <marc/marc.h>
 
+#include "support/files.hpp"
+
 #include <algorithm>
 #include <charconv>
 #include <chrono>
@@ -18,7 +20,6 @@ namespace {
 
 constexpr std::uint64_t frame_size = UINT64_C(1) << 20;
 constexpr std::uint64_t frame_header_size = 56;
-constexpr std::uint64_t parameterized_stream_prefix_size = 80;
 constexpr std::uint64_t entropy_block_size = UINT64_C(1) << 16;
 constexpr std::uint64_t entropy_descriptor_size = 16;
 constexpr std::uint64_t lz77_adaptive_frame_size = UINT64_C(1) << 16;
@@ -292,6 +293,7 @@ enum class Codec {
     lzmw_dynamic_range,
     lzmw_rans,
     lzmw_tans,
+    count,
 };
 
 [[nodiscard]] constexpr bool is_lzss_contextual_dynamic_range(
@@ -2164,431 +2166,50 @@ struct Measurement {
     return true;
 }
 
-[[nodiscard]] bool maximum_encoded_size(const Codec codec,
-                                        const std::size_t input_size,
-                                        std::size_t& result) noexcept {
-    const auto selected_frame_size = codec == Codec::lz77_adaptive_huffman
-        ? lz77_adaptive_frame_size
-        : codec == Codec::lz77_dynamic_range
-            ? lz77_dynamic_range_frame_size
-        : codec == Codec::lz77_rans
-            ? lz77_rans_frame_size
-        : codec == Codec::lz77_tans
-            ? lz77_tans_frame_size
-        : codec == Codec::lzss_adaptive_huffman
-            ? lzss_adaptive_frame_size
-        : codec == Codec::lzss_dynamic_range
-            ? lzss_dynamic_range_frame_size
-        : is_lzss_contextual_dynamic_range(codec)
-            ? selected_lzss_contextual_dynamic_range_frame_size(codec)
-        : is_lzss_contextual_rans(codec)
-            ? selected_lzss_contextual_rans_frame_size(codec)
-        : is_lzss_contextual_tans(codec)
-            ? selected_lzss_contextual_tans_frame_size(codec)
-        : is_lzss_contextual_blocked_huffman(codec)
-            ? selected_lzss_contextual_blocked_huffman_frame_size(codec)
-        : is_lzss_contextual_adaptive_huffman(codec)
-            ? selected_lzss_contextual_adaptive_huffman_frame_size(codec)
-        : codec == Codec::lzss_rans
-            ? lzss_rans_frame_size
-        : codec == Codec::lzss_tans
-            ? lzss_tans_frame_size
-            : codec == Codec::lz78_adaptive_huffman
-                ? lz78_adaptive_frame_size
-                : codec == Codec::lz78_dynamic_range
-                    ? lz78_dynamic_range_frame_size
-                : codec == Codec::lz78_rans
-                    ? lz78_rans_frame_size
-                : codec == Codec::lz78_tans
-                    ? lz78_tans_frame_size
-                : codec == Codec::lzw_adaptive_huffman
-                    ? lzw_adaptive_frame_size
-                : codec == Codec::lzw_dynamic_range
-                    ? lzw_dynamic_range_frame_size
-                : codec == Codec::lzw_rans
-                    ? lzw_rans_frame_size
-                : codec == Codec::lzw_tans
-                    ? lzw_tans_frame_size
-                    : codec == Codec::lzd_adaptive_huffman
-                        ? lzd_adaptive_frame_size
-                        : codec == Codec::lzd_dynamic_range
-                            ? lzd_dynamic_range_frame_size
-                        : codec == Codec::lzd_rans
-                            ? lzd_rans_frame_size
-                        : codec == Codec::lzd_tans
-                            ? lzd_tans_frame_size
-                        : codec == Codec::lzmw_adaptive_huffman
-                            ? lzmw_adaptive_frame_size
-                        : codec == Codec::lzmw_dynamic_range
-                            ? lzmw_dynamic_range_frame_size
-                        : codec == Codec::lzmw_rans
-                            ? lzmw_rans_frame_size
-                        : codec == Codec::lzmw_tans
-                            ? lzmw_tans_frame_size : frame_size;
-    const auto frames = input_size == 0 ? std::size_t{0}
-        : std::size_t{1} + (input_size - 1)
-            / static_cast<std::size_t>(selected_frame_size);
-    if (is_lzss_contextual_dynamic_range(codec)) {
-        constexpr auto prefix_size = std::size_t{112};
-        const auto capacity_factor =
-            static_cast<std::size_t>(payload_factor(codec));
-        constexpr auto per_frame = std::size_t{85};
-        if (input_size > (std::numeric_limits<std::size_t>::max()
-                          - prefix_size) / capacity_factor)
-            return false;
-        const auto payload = input_size * capacity_factor;
-        if (frames > (std::numeric_limits<std::size_t>::max()
-                      - prefix_size - payload) / per_frame)
-            return false;
-        result = prefix_size + payload + frames * per_frame;
-        return true;
-    }
-    if (is_lzss_contextual_rans(codec)) {
-        constexpr auto prefix_size = std::size_t{112};
-        const auto capacity_factor =
-            codec == Codec::lzss_contextual_rans_64m
-            ? std::size_t{16}
-            : (codec == Codec::lzss_contextual_rans_4m
-               || codec == Codec::lzss_contextual_rans_16m)
-                ? std::size_t{14} : std::size_t{12};
-        const auto per_frame = codec == Codec::lzss_contextual_rans_64m
-            ? std::size_t{9257}
-            : codec == Codec::lzss_contextual_rans_16m
-            ? std::size_t{9225}
-            : codec == Codec::lzss_contextual_rans_4m
-                ? std::size_t{9193}
-                : codec == Codec::lzss_contextual_rans_1m
-                    ? std::size_t{9161} : std::size_t{9097};
-        if (input_size > (std::numeric_limits<std::size_t>::max()
-                          - prefix_size) / capacity_factor)
-            return false;
-        const auto payload = input_size * capacity_factor;
-        if (frames > (std::numeric_limits<std::size_t>::max()
-                      - prefix_size - payload) / per_frame)
-            return false;
-        result = prefix_size + payload + frames * per_frame;
-        return true;
-    }
-    if (is_lzss_contextual_tans(codec)) {
-        constexpr auto prefix_size = std::size_t{112};
-        const auto per_frame = codec == Codec::lzss_contextual_tans_64m
-            ? std::size_t{9255}
-            : codec == Codec::lzss_contextual_tans_16m
-            ? std::size_t{9223}
-            : codec == Codec::lzss_contextual_tans_4m
-                ? std::size_t{9191}
-            : codec == Codec::lzss_contextual_tans_1m
-                ? std::size_t{9159} : std::size_t{9095};
-        std::size_t payload{};
-        if (codec == Codec::lzss_contextual_tans_4m
-            || codec == Codec::lzss_contextual_tans_16m
-            || codec == Codec::lzss_contextual_tans_64m) {
-            constexpr auto paired_factor = std::size_t{21};
-            const auto pairs = input_size / std::size_t{2};
-            const auto remainder = input_size % std::size_t{2};
-            if (pairs > (std::numeric_limits<std::size_t>::max()
-                         - prefix_size) / paired_factor)
-                return false;
-            payload = pairs * paired_factor;
-            if (remainder != 0) {
-                if (payload > std::numeric_limits<std::size_t>::max()
-                              - prefix_size - std::size_t{11})
-                    return false;
-                payload += std::size_t{11};
-            }
-        } else {
-            constexpr auto integral_factor = std::size_t{9};
-            if (input_size > (std::numeric_limits<std::size_t>::max()
-                              - prefix_size) / integral_factor)
-                return false;
-            payload = input_size * integral_factor;
-        }
-        if (frames > (std::numeric_limits<std::size_t>::max()
-                      - prefix_size - payload) / per_frame) {
-            return false;
-        }
-        result = prefix_size + payload + frames * per_frame;
-        return true;
-    }
-    if (is_lzss_contextual_blocked_huffman(codec)) {
-        constexpr auto prefix_size = std::size_t{112};
-        const auto per_frame = codec == Codec::lzss_contextual_blocked_huffman_64m
-            ? std::size_t{2670}
-            : codec == Codec::lzss_contextual_blocked_huffman_16m
-            ? std::size_t{2661}
-            : codec == Codec::lzss_contextual_blocked_huffman_4m
-                ? std::size_t{2652}
-            : codec == Codec::lzss_contextual_blocked_huffman_1m
-                ? std::size_t{2643} : std::size_t{2625};
-        std::size_t payload{};
-        if (codec == Codec::lzss_contextual_blocked_huffman_4m
-            || codec == Codec::lzss_contextual_blocked_huffman_16m) {
-            constexpr auto bits_per_input = std::size_t{105};
-            if (input_size
-                > (std::numeric_limits<std::size_t>::max()
-                   - prefix_size - std::size_t{7}) / bits_per_input) {
-                return false;
-            }
-            payload = (input_size * bits_per_input + 7) / 8;
-        } else {
-            const auto payload_factor = codec == Codec::lzss_contextual_blocked_huffman_64m
-                ? std::size_t{15} : std::size_t{12};
-            if (input_size > (std::numeric_limits<std::size_t>::max()
-                              - prefix_size) / payload_factor) {
-                return false;
-            }
-            payload = input_size * payload_factor;
-        }
-        if (frames > (std::numeric_limits<std::size_t>::max()
-                      - prefix_size - payload) / per_frame) {
-            return false;
-        }
-        result = prefix_size + payload + frames * per_frame;
-        return true;
-    }
-    if (is_lzss_contextual_adaptive_huffman(codec)) {
-        constexpr auto prefix_size = std::size_t{112};
-        constexpr auto bits_per_input = std::size_t{267};
-        constexpr auto per_frame = std::size_t{80};
-        if (input_size > (std::numeric_limits<std::size_t>::max() - 7)
-                             / bits_per_input) {
-            return false;
-        }
-        const auto payload =
-            (input_size * bits_per_input + std::size_t{7}) / std::size_t{8};
-        if (payload > std::numeric_limits<std::size_t>::max() - prefix_size
-            || frames > (std::numeric_limits<std::size_t>::max()
-                          - prefix_size - payload) / per_frame) {
-            return false;
-        }
-        result = prefix_size + payload + frames * per_frame;
-        return true;
-    }
-    if (codec == Codec::tans) {
-        constexpr auto prefix_size = std::size_t{64};
-        const auto half = input_size / 2 + input_size % 2;
-        if (input_size > std::numeric_limits<std::size_t>::max() - half)
-            return false;
-        const auto payload = input_size + half;
-        const auto block_count = static_cast<std::size_t>(
-            frame_size / entropy_block_size);
-        const auto per_frame = static_cast<std::size_t>(frame_header_size)
-            + block_count * static_cast<std::size_t>(
-                tans_descriptor_size + tans_state_size);
-        if (payload > std::numeric_limits<std::size_t>::max() - prefix_size
-            || frames > (std::numeric_limits<std::size_t>::max()
-                          - prefix_size - payload) / per_frame)
-            return false;
-        result = prefix_size + payload + frames * per_frame;
-        return true;
-    }
-    if (codec == Codec::lzd_rans) {
-        constexpr auto prefix_size =
-            static_cast<std::size_t>(parameterized_stream_prefix_size);
-        constexpr auto token_size = std::size_t{8};
-        const auto token_pairs = input_size / 2 + input_size % 2;
-        if (token_pairs > (std::numeric_limits<std::size_t>::max()
-                           - prefix_size) / token_size)
-            return false;
-        const auto token_bytes = token_pairs * token_size;
-        constexpr auto per_frame = static_cast<std::size_t>(
-            frame_header_size
-            + lzd_rans_block_count
-                * (rans_descriptor_size + rans_state_size));
-        if (frames > (std::numeric_limits<std::size_t>::max()
-                      - prefix_size - token_bytes) / per_frame)
-            return false;
-        result = prefix_size + token_bytes + frames * per_frame;
-        return true;
-    }
-    if (codec == Codec::lzd_tans) {
-        constexpr auto prefix_size =
-            static_cast<std::size_t>(parameterized_stream_prefix_size);
-        const auto token_pairs = input_size / 2 + input_size % 2;
-        constexpr auto payload_bytes_per_pair = std::size_t{12};
-        if (token_pairs > (std::numeric_limits<std::size_t>::max()
-                           - prefix_size) / payload_bytes_per_pair)
-            return false;
-        const auto payload = token_pairs * payload_bytes_per_pair;
-        constexpr auto per_frame = static_cast<std::size_t>(
-            frame_header_size
-            + lzd_tans_block_count
-                * (tans_descriptor_size + tans_state_size));
-        if (frames > (std::numeric_limits<std::size_t>::max()
-                      - prefix_size - payload) / per_frame)
-            return false;
-        result = prefix_size + payload + frames * per_frame;
-        return true;
-    }
-    if (codec == Codec::lzmw_rans) {
-        constexpr auto prefix_size =
-            static_cast<std::size_t>(parameterized_stream_prefix_size);
-        constexpr auto reference_size = std::size_t{4};
-        if (input_size > (std::numeric_limits<std::size_t>::max()
-                          - prefix_size) / reference_size)
-            return false;
-        const auto reference_bytes = input_size * reference_size;
-        constexpr auto per_frame = static_cast<std::size_t>(
-            frame_header_size
-            + lzmw_rans_block_count
-                * (rans_descriptor_size + rans_state_size));
-        if (frames > (std::numeric_limits<std::size_t>::max()
-                      - prefix_size - reference_bytes) / per_frame)
-            return false;
-        result = prefix_size + reference_bytes + frames * per_frame;
-        return true;
-    }
-    if (codec == Codec::lzmw_tans) {
-        constexpr auto prefix_size =
-            static_cast<std::size_t>(parameterized_stream_prefix_size);
-        constexpr auto payload_bytes_per_input = std::size_t{6};
-        if (input_size > (std::numeric_limits<std::size_t>::max()
-                          - prefix_size) / payload_bytes_per_input)
-            return false;
-        const auto payload = input_size * payload_bytes_per_input;
-        constexpr auto per_frame = static_cast<std::size_t>(
-            frame_header_size
-            + lzmw_tans_block_count
-                * (tans_descriptor_size + tans_state_size));
-        if (frames > (std::numeric_limits<std::size_t>::max()
-                      - prefix_size - payload) / per_frame)
-            return false;
-        result = prefix_size + payload + frames * per_frame;
-        return true;
-    }
-    if (codec == Codec::lzd_adaptive_huffman) {
-        constexpr auto prefix_size =
-            static_cast<std::size_t>(parameterized_stream_prefix_size);
-        constexpr auto token_pair_payload = std::size_t{8}
-            * static_cast<std::size_t>(adaptive_payload_bytes_per_symbol);
-        const auto token_pairs = input_size / 2 + input_size % 2;
-        if (token_pairs > (std::numeric_limits<std::size_t>::max()
-                           - prefix_size) / token_pair_payload)
-            return false;
-        const auto payload = token_pairs * token_pair_payload;
-        constexpr auto per_frame = static_cast<std::size_t>(
-            frame_header_size + entropy_descriptor_size);
-        if (frames > (std::numeric_limits<std::size_t>::max()
-                      - prefix_size - payload) / per_frame)
-            return false;
-        result = prefix_size + payload + frames * per_frame;
-        return true;
-    }
-    if (codec == Codec::lzd_dynamic_range) {
-        constexpr auto prefix_size =
-            static_cast<std::size_t>(parameterized_stream_prefix_size);
-        constexpr auto token_pair_payload = std::size_t{16};
-        const auto token_pairs = input_size / 2 + input_size % 2;
-        if (token_pairs > (std::numeric_limits<std::size_t>::max()
-                           - prefix_size) / token_pair_payload)
-            return false;
-        const auto payload = token_pairs * token_pair_payload;
-        constexpr auto per_frame = static_cast<std::size_t>(
-            frame_header_size + entropy_descriptor_size + UINT64_C(5));
-        if (frames > (std::numeric_limits<std::size_t>::max()
-                      - prefix_size - payload) / per_frame)
-            return false;
-        result = prefix_size + payload + frames * per_frame;
-        return true;
-    }
-    const auto factor = static_cast<std::size_t>(payload_factor(codec));
-    const auto prefix_size = codec == Codec::blocked_huffman
-            || codec == Codec::adaptive_huffman
-            || codec == Codec::dynamic_range
-            || codec == Codec::rans
-        ? std::size_t{64}
-        : static_cast<std::size_t>(parameterized_stream_prefix_size);
-    if (input_size > (std::numeric_limits<std::size_t>::max()
-                      - prefix_size) / factor)
-        return false;
-    const auto payload = input_size * factor;
-    const auto per_frame = static_cast<std::size_t>(
-        frame_header_size + payload_overhead_per_frame(codec));
-    if (frames > (std::numeric_limits<std::size_t>::max()
-                  - prefix_size - payload) / per_frame)
-        return false;
-    result = prefix_size + payload + frames * per_frame;
-    return true;
-}
-
 [[nodiscard]] bool run_once(const CodecConfig& config, Workspace& workspace,
-                            const std::span<const std::uint8_t> input,
-                            const std::span<std::uint8_t> output,
-                            std::size_t& produced,
-                            double* elapsed_seconds) noexcept {
+                            const std::filesystem::path& source,
+                            const std::filesystem::path& destination,
+                            const std::uint64_t input_bytes,
+                            const std::uint64_t output_limit,
+                            const std::size_t capacity,
+                            marc::benchmark::PumpResult& result) {
+    std::ifstream input(source, std::ios::binary);
+    std::ofstream output(destination, std::ios::binary | std::ios::trunc);
+    if (!input || !output) {
+        std::cerr << "benchmark file open failed\n";
+        return false;
+    }
     marc_transform* raw{};
-    const auto create_status = create_transform(config, workspace, &raw);
-    if (create_status != MARC_STATUS_OK) {
-        std::cerr << "transform creation failed: "
-                  << marc_status_name(create_status) << '\n';
+    const auto status = create_transform(config, workspace, &raw);
+    if (status != MARC_STATUS_OK) {
+        std::cerr << "transform creation failed: " << marc_status_name(status)
+                  << '\n';
         return false;
     }
     TransformPtr transform{raw};
-    const auto start = std::chrono::steady_clock::now();
-    const auto process = marc_transform_process(
-        transform.get(), {input.data(), input.size()},
-        {output.data(), output.size()}, MARC_PROCESS_END_INPUT);
-    const auto finish = std::chrono::steady_clock::now();
-    if (process.status != MARC_STATUS_END_OF_STREAM
-        || process.input_consumed != input.size()) {
-        std::cerr << "transform failed: " << marc_status_name(process.status)
-                  << " at byte " << process.error_byte_position << '\n';
+    result = marc::benchmark::pump(
+        [&transform](marc_const_buffer bytes, marc_buffer space,
+                     marc_process_flags flags) {
+            return marc_transform_process(transform.get(), bytes, space, flags);
+        }, input, output, input_bytes, output_limit, capacity);
+    if (result.error != nullptr) {
+        std::cerr << result.error << ": " << marc_status_name(result.status)
+                  << " at byte " << result.error_byte_position << '\n';
         return false;
     }
-    produced = process.output_produced;
-    if (elapsed_seconds != nullptr)
-        *elapsed_seconds = std::chrono::duration<double>(finish - start).count();
+    output.close();
+    if (!output) {
+        std::cerr << "output close failed\n";
+        return false;
+    }
     return true;
 }
 
-[[nodiscard]] bool measure(const CodecConfig& config, Workspace& workspace,
-                           const std::span<const std::uint8_t> input,
-                           const std::span<std::uint8_t> output,
-                           const std::size_t expected_output,
-                           const std::size_t throughput_bytes,
-                           const std::uint32_t iterations,
-                           Measurement& result) noexcept {
-    double seconds{};
-    for (std::uint32_t index = 0; index < iterations; ++index) {
-        std::size_t produced{};
-        double elapsed{};
-        if (!run_once(config, workspace, input, output, produced, &elapsed)
-            || produced != expected_output)
-            return false;
-        seconds += elapsed;
-    }
-    result.seconds = seconds;
-    const auto total_mib = static_cast<double>(throughput_bytes)
-        * static_cast<double>(iterations) / (1024.0 * 1024.0);
-    result.mib_per_second = seconds == 0.0 ? 0.0 : total_mib / seconds;
-    return true;
-}
-
-[[nodiscard]] bool read_file(const std::filesystem::path& path,
-                             std::vector<std::uint8_t>& bytes) {
-    std::error_code error;
-    const auto file_size = std::filesystem::file_size(path, error);
-    if (error || file_size > std::numeric_limits<std::size_t>::max()
-        || file_size > static_cast<std::uintmax_t>(
-                           std::numeric_limits<std::streamsize>::max())) {
-        std::cerr << "input size is unavailable or unsupported\n";
-        return false;
-    }
-    bytes.resize(static_cast<std::size_t>(file_size));
-    std::ifstream input(path, std::ios::binary);
-    if (!input) {
-        std::cerr << "input open failed\n";
-        return false;
-    }
-    if (!bytes.empty()) {
-        input.read(reinterpret_cast<char*>(bytes.data()),
-                   static_cast<std::streamsize>(bytes.size()));
-        if (input.gcount() != static_cast<std::streamsize>(bytes.size())) {
-            std::cerr << "input read failed\n";
-            return false;
-        }
-    }
-    return true;
+void finish_measurement(const std::uint64_t bytes,
+                        const std::uint32_t iterations,
+                        Measurement& result) noexcept {
+    const auto mib = static_cast<double>(bytes) * iterations / (1024.0 * 1024.0);
+    result.mib_per_second = result.seconds == 0.0 ? 0.0 : mib / result.seconds;
 }
 
 [[nodiscard]] bool parse_iterations(const std::string_view text,
@@ -2601,111 +2222,104 @@ struct Measurement {
 }
 
 void print_usage() {
-    std::cerr << "usage: marc_benchmark <codec> <input> [iterations]\n"
-                 "codecs: checksum-raw, blocked-huffman, adaptive-huffman, "
-                 "dynamic-range, rans, tans, lz77, lz77-blocked-huffman, "
-                 "lz77-adaptive-huffman, lz77-dynamic-range, "
-                 "lz77-rans, lz77-tans, "
-                 "lzss, lzss-blocked-huffman, lzss-adaptive-huffman, "
-                 "lzss-dynamic-range, lzss-contextual-dynamic-range, "
-                 "lzss-contextual-dynamic-range-1m, "
-                 "lzss-contextual-dynamic-range-4m, "
-                 "lzss-contextual-dynamic-range-16m, "
-                 "lzss-contextual-dynamic-range-64m, "
-                 "lzss-contextual-rans, lzss-contextual-rans-1m, "
-                 "lzss-contextual-rans-4m, lzss-contextual-rans-16m, "
-                 "lzss-contextual-rans-64m, "
-                 "lzss-contextual-tans, lzss-contextual-tans-1m, "
-                 "lzss-contextual-tans-4m, lzss-contextual-tans-16m, "
-                 "lzss-contextual-tans-64m, "
-                 "lzss-contextual-blocked-huffman, "
-                 "lzss-contextual-blocked-huffman-1m, "
-                 "lzss-contextual-blocked-huffman-4m, "
-                 "lzss-contextual-blocked-huffman-16m, "
-                 "lzss-contextual-blocked-huffman-64m, "
-                 "lzss-contextual-adaptive-huffman, "
-                 "lzss-contextual-adaptive-huffman-1m, "
-                 "lzss-contextual-adaptive-huffman-4m, "
-                 "lzss-contextual-adaptive-huffman-16m, "
-                 "lzss-contextual-adaptive-huffman-64m, "
-                 "lzss-rans, lzss-tans, lz78, "
-                 "lz78-blocked-huffman, lz78-adaptive-huffman, "
-                 "lz78-dynamic-range, lz78-rans, lz78-tans, "
-                 "lzw, lzw-blocked-huffman, lzw-adaptive-huffman, "
-                 "lzw-dynamic-range, lzw-rans, lzw-tans, "
-                 "lzd, lzd-blocked-huffman, lzd-adaptive-huffman, "
-                 "lzd-dynamic-range, lzd-rans, lzd-tans, lzmw, "
-                 "lzmw-blocked-huffman, lzmw-adaptive-huffman, "
-                 "lzmw-dynamic-range, lzmw-rans, lzmw-tans\n";
+    std::cerr << "usage: marc_benchmark <codec> <input> [iterations] "
+                 "[--io-size 1..65536]\n"
+                 "       marc_benchmark --list\ncodecs: ";
+    for (unsigned i = 0; i < static_cast<unsigned>(Codec::count); ++i) {
+        if (i != 0) std::cerr << ", ";
+        std::cerr << codec_name(static_cast<Codec>(i));
+    }
+    std::cerr << '\n';
 }
 
 [[nodiscard]] int run(const Codec codec, const std::filesystem::path& path,
-                      const std::uint32_t iterations) {
-    std::vector<std::uint8_t> input;
-    if (!read_file(path, input)) return 1;
+                      const std::uint32_t iterations,
+                      const std::size_t capacity) {
+    std::error_code error;
+    const auto input_size = std::filesystem::file_size(path, error);
+    constexpr std::uint64_t maximum_input = UINT64_C(1) << 30;
+    if (error || input_size > maximum_input) {
+        std::cerr << "input size is unavailable or exceeds the 1-GiB benchmark limit\n";
+        return 1;
+    }
+    const auto output_limit = input_size * UINT64_C(1024) + (UINT64_C(1) << 20);
     CodecConfig encoder_config{};
     CodecConfig decoder_config{};
-    if (!configure(codec, MARC_DIRECTION_ENCODE, input.size(), encoder_config)
-        || !configure(codec, MARC_DIRECTION_DECODE, input.size(),
-                      decoder_config)) {
+    if (!configure(codec, MARC_DIRECTION_ENCODE, input_size, encoder_config)
+        || !configure(codec, MARC_DIRECTION_DECODE, input_size, decoder_config)) {
         std::cerr << "configuration failed\n";
         return 1;
     }
-    Workspace encoder_workspace{};
-    Workspace decoder_workspace{};
-    if (!prepare_workspace(encoder_config, encoder_workspace)
-        || !prepare_workspace(decoder_config, decoder_workspace))
-        return 1;
-    std::size_t encoded_capacity{};
-    if (!maximum_encoded_size(codec, input.size(), encoded_capacity)) {
-        std::cerr << "encoded capacity overflow\n";
-        return 1;
-    }
-    std::vector<std::uint8_t> encoded(encoded_capacity);
-    std::size_t encoded_size{};
-    if (!run_once(encoder_config, encoder_workspace, input, encoded,
-                  encoded_size, nullptr))
-        return 1;
-    encoded.resize(encoded_size);
-    std::vector<std::uint8_t> decoded(input.size());
-    std::size_t decoded_size{};
-    if (!run_once(decoder_config, decoder_workspace, encoded, decoded,
-                  decoded_size, nullptr)
-        || decoded_size != input.size() || decoded != input) {
-        std::cerr << "round trip verification failed\n";
-        return 1;
-    }
-    encoded.resize(encoded_capacity);
+    marc::benchmark::TemporaryFiles files;
+    marc_workspace_requirements encoder_requirements{};
+    marc_workspace_requirements decoder_requirements{};
+    std::uint64_t encoded_size{};
     Measurement encode{};
-    if (!measure(encoder_config, encoder_workspace, input, encoded,
-                 encoded_size, input.size(), iterations, encode))
-        return 1;
-    encoded.resize(encoded_size);
     Measurement decode{};
-    if (!measure(decoder_config, decoder_workspace, encoded, decoded,
-                 input.size(), input.size(), iterations, decode))
-        return 1;
+    {
+        Workspace workspace{};
+        if (!prepare_workspace(encoder_config, workspace)) return 1;
+        encoder_requirements = workspace.requirements;
+        marc::benchmark::PumpResult warmup{};
+        if (!run_once(encoder_config, workspace, path, files.archive(),
+                      input_size, output_limit, capacity, warmup)) return 1;
+        encoded_size = warmup.output_bytes;
+        for (std::uint32_t i = 0; i < iterations; ++i) {
+            marc::benchmark::PumpResult measured{};
+            if (!run_once(encoder_config, workspace, path, files.candidate(),
+                          input_size, output_limit, capacity, measured)
+                || measured.output_bytes != encoded_size
+                || !marc::benchmark::equal_files(files.archive(),
+                                                 files.candidate(), encoded_size)) {
+                std::cerr << "deterministic encoding verification failed\n";
+                return 1;
+            }
+            encode.seconds += measured.process_seconds;
+        }
+    }
+    {
+        Workspace workspace{};
+        if (!prepare_workspace(decoder_config, workspace)) return 1;
+        decoder_requirements = workspace.requirements;
+        // A warmup plus each measured iteration must restore the exact input.
+        for (std::uint64_t i = 0; i <= iterations; ++i) {
+            marc::benchmark::PumpResult measured{};
+            if (!run_once(decoder_config, workspace, files.archive(),
+                          files.restored(), encoded_size, input_size,
+                          capacity, measured)
+                || measured.output_bytes != input_size
+                || !marc::benchmark::equal_files(path, files.restored(), input_size)) {
+                std::cerr << "round trip verification failed\n";
+                return 1;
+            }
+            if (i != 0) decode.seconds += measured.process_seconds;
+        }
+    }
+    finish_measurement(input_size, iterations, encode);
+    finish_measurement(input_size, iterations, decode);
 
     const auto encoder_workspace_bytes =
         static_cast<std::uint64_t>(
-            encoder_workspace.requirements.primary_bytes)
+            encoder_requirements.primary_bytes)
         + static_cast<std::uint64_t>(
-            encoder_workspace.requirements.secondary_bytes)
+            encoder_requirements.secondary_bytes)
         + static_cast<std::uint64_t>(
-            encoder_workspace.requirements.views_bytes);
+            encoder_requirements.views_bytes);
     const auto decoder_workspace_bytes =
         static_cast<std::uint64_t>(
-            decoder_workspace.requirements.primary_bytes)
+            decoder_requirements.primary_bytes)
         + static_cast<std::uint64_t>(
-            decoder_workspace.requirements.secondary_bytes)
+            decoder_requirements.secondary_bytes)
         + static_cast<std::uint64_t>(
-            decoder_workspace.requirements.views_bytes);
-    const auto ratio = input.empty() ? 0.0
-        : static_cast<double>(encoded_size) / static_cast<double>(input.size());
+            decoder_requirements.views_bytes);
+    const auto ratio = input_size == 0 ? 0.0
+        : static_cast<double>(encoded_size) / static_cast<double>(input_size);
     std::cout << std::fixed << std::setprecision(3)
+              << "timing_contract=chunked-process-v1\n"
+              << "io_buffer_bytes=" << capacity << '\n'
               << "codec=" << codec_name(codec) << '\n'
               << "iterations=" << iterations << '\n'
-              << "input_bytes=" << input.size() << '\n'
+              << "input_bytes=" << input_size << '\n'
               << "encoded_bytes=" << encoded_size << '\n'
               << "encoded_to_input_ratio=" << ratio << '\n'
               << "encode_seconds=" << encode.seconds << '\n'
@@ -2713,17 +2327,17 @@ void print_usage() {
               << "decode_seconds=" << decode.seconds << '\n'
               << "decode_mib_per_second=" << decode.mib_per_second << '\n'
               << "encoder_primary_workspace_bytes="
-              << encoder_workspace.requirements.primary_bytes << '\n'
+              << encoder_requirements.primary_bytes << '\n'
               << "encoder_secondary_workspace_bytes="
-              << encoder_workspace.requirements.secondary_bytes << '\n'
+              << encoder_requirements.secondary_bytes << '\n'
               << "encoder_views_workspace_bytes="
-              << encoder_workspace.requirements.views_bytes << '\n'
+              << encoder_requirements.views_bytes << '\n'
               << "decoder_primary_workspace_bytes="
-              << decoder_workspace.requirements.primary_bytes << '\n'
+              << decoder_requirements.primary_bytes << '\n'
               << "decoder_secondary_workspace_bytes="
-              << decoder_workspace.requirements.secondary_bytes << '\n'
+              << decoder_requirements.secondary_bytes << '\n'
               << "decoder_views_workspace_bytes="
-              << decoder_workspace.requirements.views_bytes << '\n'
+              << decoder_requirements.views_bytes << '\n'
               << "codec_peak_workspace_bytes="
               << std::max(encoder_workspace_bytes, decoder_workspace_bytes)
               << '\n';
@@ -2733,142 +2347,48 @@ void print_usage() {
 } // namespace
 
 int main(const int argc, const char* const argv[]) {
-    if (argc != 3 && argc != 4) {
+    if (argc == 2 && std::string_view{argv[1]} == "--list") {
+        for (unsigned i = 0; i < static_cast<unsigned>(Codec::count); ++i)
+            std::cout << codec_name(static_cast<Codec>(i)) << '\n';
+        return 0;
+    }
+    if (argc < 3) {
         print_usage();
         return 2;
     }
-    Codec codec{};
-    const std::string_view name{argv[1]};
-    if (name == "checksum-raw") codec = Codec::checksum_raw;
-    else if (name == "blocked-huffman") codec = Codec::blocked_huffman;
-    else if (name == "adaptive-huffman") codec = Codec::adaptive_huffman;
-    else if (name == "dynamic-range") codec = Codec::dynamic_range;
-    else if (name == "rans") codec = Codec::rans;
-    else if (name == "tans") codec = Codec::tans;
-    else if (name == "lz77") codec = Codec::lz77;
-    else if (name == "lz77-blocked-huffman")
-        codec = Codec::lz77_blocked_huffman;
-    else if (name == "lz77-adaptive-huffman")
-        codec = Codec::lz77_adaptive_huffman;
-    else if (name == "lz77-dynamic-range")
-        codec = Codec::lz77_dynamic_range;
-    else if (name == "lz77-rans")
-        codec = Codec::lz77_rans;
-    else if (name == "lz77-tans")
-        codec = Codec::lz77_tans;
-    else if (name == "lzss") codec = Codec::lzss;
-    else if (name == "lzss-blocked-huffman")
-        codec = Codec::lzss_blocked_huffman;
-    else if (name == "lzss-adaptive-huffman")
-        codec = Codec::lzss_adaptive_huffman;
-    else if (name == "lzss-dynamic-range")
-        codec = Codec::lzss_dynamic_range;
-    else if (name == "lzss-contextual-dynamic-range")
-        codec = Codec::lzss_contextual_dynamic_range;
-    else if (name == "lzss-contextual-dynamic-range-1m")
-        codec = Codec::lzss_contextual_dynamic_range_1m;
-    else if (name == "lzss-contextual-dynamic-range-4m")
-        codec = Codec::lzss_contextual_dynamic_range_4m;
-    else if (name == "lzss-contextual-dynamic-range-16m")
-        codec = Codec::lzss_contextual_dynamic_range_16m;
-    else if (name == "lzss-contextual-dynamic-range-64m")
-        codec = Codec::lzss_contextual_dynamic_range_64m;
-    else if (name == "lzss-contextual-rans")
-        codec = Codec::lzss_contextual_rans;
-    else if (name == "lzss-contextual-rans-1m")
-        codec = Codec::lzss_contextual_rans_1m;
-    else if (name == "lzss-contextual-rans-4m")
-        codec = Codec::lzss_contextual_rans_4m;
-    else if (name == "lzss-contextual-rans-16m")
-        codec = Codec::lzss_contextual_rans_16m;
-    else if (name == "lzss-contextual-rans-64m")
-        codec = Codec::lzss_contextual_rans_64m;
-    else if (name == "lzss-contextual-tans")
-        codec = Codec::lzss_contextual_tans;
-    else if (name == "lzss-contextual-tans-1m")
-        codec = Codec::lzss_contextual_tans_1m;
-    else if (name == "lzss-contextual-tans-4m")
-        codec = Codec::lzss_contextual_tans_4m;
-    else if (name == "lzss-contextual-tans-16m")
-        codec = Codec::lzss_contextual_tans_16m;
-    else if (name == "lzss-contextual-tans-64m")
-        codec = Codec::lzss_contextual_tans_64m;
-    else if (name == "lzss-contextual-blocked-huffman")
-        codec = Codec::lzss_contextual_blocked_huffman;
-    else if (name == "lzss-contextual-blocked-huffman-1m")
-        codec = Codec::lzss_contextual_blocked_huffman_1m;
-    else if (name == "lzss-contextual-blocked-huffman-4m")
-        codec = Codec::lzss_contextual_blocked_huffman_4m;
-    else if (name == "lzss-contextual-blocked-huffman-16m")
-        codec = Codec::lzss_contextual_blocked_huffman_16m;
-    else if (name == "lzss-contextual-blocked-huffman-64m")
-        codec = Codec::lzss_contextual_blocked_huffman_64m;
-    else if (name == "lzss-contextual-adaptive-huffman")
-        codec = Codec::lzss_contextual_adaptive_huffman;
-    else if (name == "lzss-contextual-adaptive-huffman-1m")
-        codec = Codec::lzss_contextual_adaptive_huffman_1m;
-    else if (name == "lzss-contextual-adaptive-huffman-4m")
-        codec = Codec::lzss_contextual_adaptive_huffman_4m;
-    else if (name == "lzss-contextual-adaptive-huffman-16m")
-        codec = Codec::lzss_contextual_adaptive_huffman_16m;
-    else if (name == "lzss-contextual-adaptive-huffman-64m")
-        codec = Codec::lzss_contextual_adaptive_huffman_64m;
-    else if (name == "lzss-rans")
-        codec = Codec::lzss_rans;
-    else if (name == "lzss-tans")
-        codec = Codec::lzss_tans;
-    else if (name == "lz78") codec = Codec::lz78;
-    else if (name == "lz78-blocked-huffman")
-        codec = Codec::lz78_blocked_huffman;
-    else if (name == "lz78-adaptive-huffman")
-        codec = Codec::lz78_adaptive_huffman;
-    else if (name == "lz78-dynamic-range")
-        codec = Codec::lz78_dynamic_range;
-    else if (name == "lz78-rans")
-        codec = Codec::lz78_rans;
-    else if (name == "lz78-tans")
-        codec = Codec::lz78_tans;
-    else if (name == "lzw") codec = Codec::lzw;
-    else if (name == "lzw-blocked-huffman")
-        codec = Codec::lzw_blocked_huffman;
-    else if (name == "lzw-adaptive-huffman")
-        codec = Codec::lzw_adaptive_huffman;
-    else if (name == "lzw-dynamic-range")
-        codec = Codec::lzw_dynamic_range;
-    else if (name == "lzw-rans")
-        codec = Codec::lzw_rans;
-    else if (name == "lzw-tans")
-        codec = Codec::lzw_tans;
-    else if (name == "lzd") codec = Codec::lzd;
-    else if (name == "lzd-blocked-huffman")
-        codec = Codec::lzd_blocked_huffman;
-    else if (name == "lzd-adaptive-huffman")
-        codec = Codec::lzd_adaptive_huffman;
-    else if (name == "lzd-dynamic-range")
-        codec = Codec::lzd_dynamic_range;
-    else if (name == "lzd-rans")
-        codec = Codec::lzd_rans;
-    else if (name == "lzd-tans")
-        codec = Codec::lzd_tans;
-    else if (name == "lzmw") codec = Codec::lzmw;
-    else if (name == "lzmw-blocked-huffman")
-        codec = Codec::lzmw_blocked_huffman;
-    else if (name == "lzmw-adaptive-huffman")
-        codec = Codec::lzmw_adaptive_huffman;
-    else if (name == "lzmw-dynamic-range")
-        codec = Codec::lzmw_dynamic_range;
-    else if (name == "lzmw-rans")
-        codec = Codec::lzmw_rans;
-    else if (name == "lzmw-tans")
-        codec = Codec::lzmw_tans;
-    else {
-        print_usage();
-        return 2;
+    Codec codec{Codec::count};
+    for (unsigned i = 0; i < static_cast<unsigned>(Codec::count); ++i) {
+        if (std::string_view{argv[1]} == codec_name(static_cast<Codec>(i))) {
+            codec = static_cast<Codec>(i);
+            break;
+        }
     }
     std::uint32_t iterations = 3;
-    if (argc == 4 && !parse_iterations(argv[3], iterations)) {
+    std::uint32_t capacity = marc::benchmark::io_capacity;
+    int next = 3;
+    if (next < argc && std::string_view{argv[next]} != "--io-size") {
+        if (!parse_iterations(argv[next++], iterations)) {
+            print_usage();
+            return 2;
+        }
+    }
+    if (next < argc) {
+        if (argc - next != 2 || std::string_view{argv[next]} != "--io-size"
+            || !parse_iterations(argv[next + 1], capacity)
+            || capacity > marc::benchmark::io_capacity) {
+            print_usage();
+            return 2;
+        }
+        next += 2;
+    }
+    if (codec == Codec::count || next != argc) {
         print_usage();
         return 2;
     }
-    return run(codec, std::filesystem::path{argv[2]}, iterations);
+    try {
+        return run(codec, std::filesystem::path{argv[2]}, iterations, capacity);
+    } catch (const std::exception& error) {
+        std::cerr << "benchmark failed: " << error.what() << '\n';
+        return 1;
+    }
 }

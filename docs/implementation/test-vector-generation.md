@@ -27190,3 +27190,49 @@ exactly six private targets retire and one test-only support target is renamed;
 other source/dependency sets match. A first local checker compared path-sorted
 references with name-sorted references; comparing dependency sets corrects that
 receipt-checker assertion without requiring any product or build-graph change.
+
+
+### TVG-1640: checkpoint E hosted full-validation confirmation
+
+The maintainer reports pushing checkpoint E (905bcdcce0708ec5c5ba2caced61f5d47549c3df)
+and successful completion of the manual GitHub CI full_validation run.
+Record this as maintainer-reported hosted evidence at the requested checkpoint.
+No run URL, individual job logs or independent external exchange receipts were
+supplied. Resume the existing plan; this report does not qualify later edits.
+No additional local execution or push is claimed by this confirmation.
+
+
+### TVG-1641: bounded common benchmark pump qualification
+
+Build the public-API benchmark and its separate pump contract executable with
+MSVC. All69 selected CTests pass in7.25 seconds: the original67 smoke tests,
+one executable containing9 process-contract cases and one CLI integration
+campaign. Contract cases cover final-input suffixes, output-only draining,
+empty finalization, invalid counts, stalled statuses, premature end, changed
+input length, output limits, stable transform failure and sink failure. CLI
+checks cover multiple64-KiB buffers with a final partial chunk,17-byte buffers,
+one-byte buffers and empty streams through actual entropy/dictionary factories,
+repeated verification, source preservation, private temporary cleanup and
+invalid/missing arguments. These are scoped benchmark tests, not a new full
+codec-suite execution.
+
+An ignored local comparison executable includes the unchanged v0.8.0 benchmark
+source and its one-shot sizing/creation code. For each67 settings, generate an
+8193-byte mixed deterministic xorshift/pattern fixture, then compare complete
+archive bytes with the new pump at capacities1,17 and65536. All201 comparisons
+pass. Compare the complete configure, query, create and workspace-preparation
+function bodies with v0.8.0: all four are identical after newline normalization.
+No codec implementation, public header or library source changes. Existing
+workspace reports retain their values and meaning; only the explicit chunked
+timing contract changes. No corpus throughput or physical-RSS result is claimed.
+
+The first documentation check counted an added command example as a43rd entry
+in the historical42-command matrix. Move the extra example inline; the existing
+documentation validator then passes without relaxing its matrix assertion.
+
+After recording the change, documentation, CI-history policy, CI partition
+and corpus-verifier CTests pass4/4 in2.73 seconds. The complete inventory
+changes4189->4191 through the two explicit benchmark test registrations;
+the new contract executable contains9 cases inside one registration.
+git diff --check passes. Hosted qualification of later refactoring checkpoints
+remains separate from the maintainer-reported checkpoint E result.

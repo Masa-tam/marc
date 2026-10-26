@@ -43933,3 +43933,27 @@ reference algorithm/helper bodies and the HashChain state fields are unchanged.
 TVG-1639 records runtime inventory, relevant execution, public observations and
 configure-only fuzz availability. No external implementation, format change,
 new corpus measurement, fuzz execution, hosted result or push is claimed.
+
+
+### CR-2019: 2026-10-26 — checkpoint E hosted continuation
+
+Author/reviewer: Codex. Record the maintainer's explicit successful manual
+full_validation report for checkpoint E in TVG-1640. Continue the authorized
+six-phase refactoring plan. Preserve the distinction between the maintainer's
+hosted report and locally inspected evidence; no external implementation,
+new algorithm reference, source change, local test or push is involved.
+
+
+### CR-2020: 2026-10-26 — bounded public benchmark execution
+
+Author/reviewer: Codex. Follow DD-1633/IR-1378. Replace the existing common
+benchmark's whole-file allocation, worst-case encoded-size formulas and
+single-call assumption with an independently written fixed-buffer file pump.
+Keep67 existing configurations, public queries and factory dispatch unchanged;
+hold one directional workspace at a time. Every timed encoding is compared
+with a saved baseline and every decode with the original outside process
+timing. Centralize temporary-file ownership and document the timing contract.
+Retain all other public measurement drivers pending complete102-profile
+replacement. TVG-1641 records actual contract/integration and one-shot byte
+comparisons. No external implementation source, corpus campaign, format/API
+change, new physical-memory observation, hosted run or push is involved.

@@ -12186,3 +12186,13 @@ exhaustive parser, BinaryTree and explicit no-probe control. Inspect mixed
 differential helpers before deleting candidate assertions: probe/control
 input recipes remain valuable even when their original test names mention
 the rejected mixer. No external hash, codec or implementation source is used.
+
+
+### IR-1378: bounded common benchmark execution
+
+Use this repository's public process contract, existing marc_benchmark settings,
+workspace queries and report tests as the execution/compatibility references.
+Replace whole-file storage and per-codec worst-case output allocation with a
+bounded file pump. No external codec source, algorithm or corpus is consulted.
+Existing per-window public measurement drivers remain until their reporting
+and complete 102-profile coverage are replaced and qualified.
