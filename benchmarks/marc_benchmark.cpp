@@ -1,6 +1,8 @@
 #include <marc/marc.h>
 
 #include "support/files.hpp"
+#include "support/position_profiles.hpp"
+#include "support/resident_memory.hpp"
 
 #include <algorithm>
 #include <charconv>
@@ -2166,7 +2168,63 @@ struct Measurement {
     return true;
 }
 
-[[nodiscard]] bool run_once(const CodecConfig& config, Workspace& workspace,
+class LegacySession final : public marc::benchmark::Session {
+public:
+    bool prepare(const Codec codec, const marc::benchmark::SessionOptions& options) {
+        if (!configure(codec, options.direction, options.original_size, config_)
+            || !prepare_workspace(config_, workspace_)) return false;
+        resources.workspace = workspace_.requirements;
+        resources.three_spans = true;
+        resources.scope = "caller-workspace";
+        resources.bytes = resources.caller_bytes =
+            marc::benchmark::workspace_bytes(resources.workspace);
+        return true;
+    }
+
+    marc_status create(marc_transform** transform) override {
+        return create_transform(config_, workspace_, transform);
+    }
+
+private:
+    CodecConfig config_{};
+    Workspace workspace_{};
+};
+
+[[nodiscard]] bool known_profile(const std::string_view name) {
+    for (unsigned i = 0; i < static_cast<unsigned>(Codec::count); ++i)
+        if (name == codec_name(static_cast<Codec>(i))) return true;
+    return marc::benchmark::find_position_profile(name) != nullptr;
+}
+
+[[nodiscard]] std::unique_ptr<marc::benchmark::Session> make_session(
+    const std::string_view name, const marc_direction direction,
+    const std::uint64_t original_size) {
+    const marc::benchmark::SessionOptions options{direction, original_size};
+    if (const auto* profile = marc::benchmark::find_position_profile(name)) {
+        marc_status status{};
+        auto session = profile->make(options, profile->selector, status);
+        if (!session)
+            std::cerr << "resource admission failed: " << marc_status_name(status) << '\n';
+        return session;
+    }
+    for (unsigned i = 0; i < static_cast<unsigned>(Codec::count); ++i) {
+        const auto codec = static_cast<Codec>(i);
+        if (name != codec_name(codec)) continue;
+        auto session = std::make_unique<LegacySession>();
+        if (!session->prepare(codec, options)) return nullptr;
+        return session;
+    }
+    return nullptr;
+}
+
+void print_resources(const char* prefix, const marc::benchmark::ResourceReport& r) {
+    std::cout << prefix << "resource_scope=" << r.scope << '\n'
+              << prefix << "resource_bytes=" << r.bytes << '\n'
+              << prefix << "resource_limit_bytes=" << r.limit_bytes << '\n'
+              << prefix << "caller_workspace_bytes=" << r.caller_bytes << '\n';
+}
+
+[[nodiscard]] bool run_once(marc::benchmark::Session& session,
                             const std::filesystem::path& source,
                             const std::filesystem::path& destination,
                             const std::uint64_t input_bytes,
@@ -2180,7 +2238,7 @@ struct Measurement {
         return false;
     }
     marc_transform* raw{};
-    const auto status = create_transform(config, workspace, &raw);
+    const auto status = session.create(&raw);
     if (status != MARC_STATUS_OK) {
         std::cerr << "transform creation failed: " << marc_status_name(status)
                   << '\n';
@@ -2224,15 +2282,19 @@ void finish_measurement(const std::uint64_t bytes,
 void print_usage() {
     std::cerr << "usage: marc_benchmark <codec> <input> [iterations] "
                  "[--io-size 1..65536]\n"
-                 "       marc_benchmark --list\ncodecs: ";
+                 "       marc_benchmark --list\n"
+                 "       marc_benchmark --worker <encode|decode> <codec> <input> "
+                 "<new-directory> <original-bytes>\ncodecs: ";
     for (unsigned i = 0; i < static_cast<unsigned>(Codec::count); ++i) {
         if (i != 0) std::cerr << ", ";
         std::cerr << codec_name(static_cast<Codec>(i));
     }
+    for (const auto& profile : marc::benchmark::position_profiles)
+        std::cerr << ", " << profile.name;
     std::cerr << '\n';
 }
 
-[[nodiscard]] int run(const Codec codec, const std::filesystem::path& path,
+[[nodiscard]] int run(const std::string_view name, const std::filesystem::path& path,
                       const std::uint32_t iterations,
                       const std::size_t capacity) {
     std::error_code error;
@@ -2243,30 +2305,23 @@ void print_usage() {
         return 1;
     }
     const auto output_limit = input_size * UINT64_C(1024) + (UINT64_C(1) << 20);
-    CodecConfig encoder_config{};
-    CodecConfig decoder_config{};
-    if (!configure(codec, MARC_DIRECTION_ENCODE, input_size, encoder_config)
-        || !configure(codec, MARC_DIRECTION_DECODE, input_size, decoder_config)) {
-        std::cerr << "configuration failed\n";
-        return 1;
-    }
     marc::benchmark::TemporaryFiles files;
-    marc_workspace_requirements encoder_requirements{};
-    marc_workspace_requirements decoder_requirements{};
+    marc::benchmark::ResourceReport encoder_resources{};
+    marc::benchmark::ResourceReport decoder_resources{};
     std::uint64_t encoded_size{};
     Measurement encode{};
     Measurement decode{};
     {
-        Workspace workspace{};
-        if (!prepare_workspace(encoder_config, workspace)) return 1;
-        encoder_requirements = workspace.requirements;
+        auto session = make_session(name, MARC_DIRECTION_ENCODE, input_size);
+        if (!session) return 1;
+        encoder_resources = session->resources;
         marc::benchmark::PumpResult warmup{};
-        if (!run_once(encoder_config, workspace, path, files.archive(),
+        if (!run_once(*session, path, files.archive(),
                       input_size, output_limit, capacity, warmup)) return 1;
         encoded_size = warmup.output_bytes;
         for (std::uint32_t i = 0; i < iterations; ++i) {
             marc::benchmark::PumpResult measured{};
-            if (!run_once(encoder_config, workspace, path, files.candidate(),
+            if (!run_once(*session, path, files.candidate(),
                           input_size, output_limit, capacity, measured)
                 || measured.output_bytes != encoded_size
                 || !marc::benchmark::equal_files(files.archive(),
@@ -2278,13 +2333,13 @@ void print_usage() {
         }
     }
     {
-        Workspace workspace{};
-        if (!prepare_workspace(decoder_config, workspace)) return 1;
-        decoder_requirements = workspace.requirements;
+        auto session = make_session(name, MARC_DIRECTION_DECODE, input_size);
+        if (!session) return 1;
+        decoder_resources = session->resources;
         // A warmup plus each measured iteration must restore the exact input.
         for (std::uint64_t i = 0; i <= iterations; ++i) {
             marc::benchmark::PumpResult measured{};
-            if (!run_once(decoder_config, workspace, files.archive(),
+            if (!run_once(*session, files.archive(),
                           files.restored(), encoded_size, input_size,
                           capacity, measured)
                 || measured.output_bytes != input_size
@@ -2298,26 +2353,17 @@ void print_usage() {
     finish_measurement(input_size, iterations, encode);
     finish_measurement(input_size, iterations, decode);
 
-    const auto encoder_workspace_bytes =
-        static_cast<std::uint64_t>(
-            encoder_requirements.primary_bytes)
-        + static_cast<std::uint64_t>(
-            encoder_requirements.secondary_bytes)
-        + static_cast<std::uint64_t>(
-            encoder_requirements.views_bytes);
-    const auto decoder_workspace_bytes =
-        static_cast<std::uint64_t>(
-            decoder_requirements.primary_bytes)
-        + static_cast<std::uint64_t>(
-            decoder_requirements.secondary_bytes)
-        + static_cast<std::uint64_t>(
-            decoder_requirements.views_bytes);
+    const auto& encoder_requirements = encoder_resources.workspace;
+    const auto& decoder_requirements = decoder_resources.workspace;
+    const bool three_spans = encoder_resources.three_spans && decoder_resources.three_spans;
+    const auto peak_workspace = three_spans
+        ? std::max(encoder_resources.caller_bytes, decoder_resources.caller_bytes) : 0;
     const auto ratio = input_size == 0 ? 0.0
         : static_cast<double>(encoded_size) / static_cast<double>(input_size);
     std::cout << std::fixed << std::setprecision(3)
               << "timing_contract=chunked-process-v1\n"
               << "io_buffer_bytes=" << capacity << '\n'
-              << "codec=" << codec_name(codec) << '\n'
+              << "codec=" << name << '\n'
               << "iterations=" << iterations << '\n'
               << "input_bytes=" << input_size << '\n'
               << "encoded_bytes=" << encoded_size << '\n'
@@ -2339,8 +2385,56 @@ void print_usage() {
               << "decoder_views_workspace_bytes="
               << decoder_requirements.views_bytes << '\n'
               << "codec_peak_workspace_bytes="
-              << std::max(encoder_workspace_bytes, decoder_workspace_bytes)
-              << '\n';
+              << peak_workspace << '\n'
+              << "codec_peak_workspace_available=" << (three_spans ? 1 : 0) << '\n';
+    print_resources("encoder_", encoder_resources);
+    print_resources("decoder_", decoder_resources);
+    return 0;
+}
+
+[[nodiscard]] int run_worker(const std::string_view direction,
+                             const std::string_view name,
+                             const std::filesystem::path& source,
+                             const std::filesystem::path& destination,
+                             const std::uint64_t original_size) {
+    constexpr std::uint64_t maximum_input = UINT64_C(1) << 30;
+    std::error_code error;
+    const auto input_bytes = std::filesystem::file_size(source, error);
+    if (error || original_size > maximum_input
+        || (direction == "encode" && input_bytes != original_size)
+        || input_bytes > original_size * UINT64_C(1024) + (UINT64_C(1) << 20)) {
+        std::cerr << "unsupported worker input size\n";
+        return 1;
+    }
+    if (!std::filesystem::create_directory(destination, error) || error) {
+        std::cerr << "worker requires a new output directory\n";
+        return 1;
+    }
+    const auto start = std::chrono::steady_clock::now();
+    auto session = make_session(name, direction == "encode"
+        ? MARC_DIRECTION_ENCODE : MARC_DIRECTION_DECODE, original_size);
+    if (!session) return 1;
+    const auto resources = session->resources;
+    marc::benchmark::PumpResult result{};
+    const auto limit = direction == "encode"
+        ? original_size * UINT64_C(1024) + (UINT64_C(1) << 20) : original_size;
+    if (!run_once(*session, source, destination / "output", input_bytes, limit,
+                  marc::benchmark::io_capacity, result)
+        || (direction == "decode" && result.output_bytes != original_size)) return 1;
+    session.reset();
+    const auto finish = std::chrono::steady_clock::now();
+    std::cout << std::fixed << std::setprecision(9)
+              << "timing_contract=chunked-process-v1\n"
+              << "codec=" << name << '\n'
+              << "direction=" << direction << '\n'
+              << "input_bytes=" << input_bytes << '\n'
+              << "output_bytes=" << result.output_bytes << '\n'
+              << "io_buffer_bytes=" << marc::benchmark::io_capacity << '\n'
+              << "process_seconds=" << result.process_seconds << '\n'
+              << "lifecycle_seconds="
+              << std::chrono::duration<double>(finish - start).count() << '\n'
+              << "peak_resident_bytes=" << marc::benchmark::peak_resident_bytes() << '\n';
+    print_resources("", resources);
     return 0;
 }
 
@@ -2350,19 +2444,39 @@ int main(const int argc, const char* const argv[]) {
     if (argc == 2 && std::string_view{argv[1]} == "--list") {
         for (unsigned i = 0; i < static_cast<unsigned>(Codec::count); ++i)
             std::cout << codec_name(static_cast<Codec>(i)) << '\n';
+        for (const auto& profile : marc::benchmark::position_profiles)
+            std::cout << profile.name << '\n';
         return 0;
+    }
+    if (argc >= 2 && std::string_view{argv[1]} == "--worker") {
+        if (argc != 7) {
+            print_usage();
+            return 2;
+        }
+        std::uint64_t original{};
+        const std::string_view text{argv[6]};
+        const auto parsed = std::from_chars(text.data(), text.data() + text.size(), original);
+        if (argc != 7 || (std::string_view{argv[2]} != "encode"
+                         && std::string_view{argv[2]} != "decode")
+            || !known_profile(argv[3]) || text.empty() || parsed.ec != std::errc{}
+            || parsed.ptr != text.data() + text.size()) {
+            print_usage();
+            return 2;
+        }
+        return marc::benchmark::fresh_worker([&]() {
+            try {
+                return run_worker(argv[2], argv[3], argv[4], argv[5], original);
+            } catch (const std::exception& error) {
+                std::cerr << "benchmark worker failed: " << error.what() << '\n';
+                return 1;
+            }
+        });
     }
     if (argc < 3) {
         print_usage();
         return 2;
     }
-    Codec codec{Codec::count};
-    for (unsigned i = 0; i < static_cast<unsigned>(Codec::count); ++i) {
-        if (std::string_view{argv[1]} == codec_name(static_cast<Codec>(i))) {
-            codec = static_cast<Codec>(i);
-            break;
-        }
-    }
+    const std::string_view name{argv[1]};
     std::uint32_t iterations = 3;
     std::uint32_t capacity = marc::benchmark::io_capacity;
     int next = 3;
@@ -2381,12 +2495,12 @@ int main(const int argc, const char* const argv[]) {
         }
         next += 2;
     }
-    if (codec == Codec::count || next != argc) {
+    if (!known_profile(name) || next != argc) {
         print_usage();
         return 2;
     }
     try {
-        return run(codec, std::filesystem::path{argv[2]}, iterations, capacity);
+        return run(name, std::filesystem::path{argv[2]}, iterations, capacity);
     } catch (const std::exception& error) {
         std::cerr << "benchmark failed: " << error.what() << '\n';
         return 1;

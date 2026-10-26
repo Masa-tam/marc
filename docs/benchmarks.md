@@ -135,7 +135,7 @@ and destruction, file I/O, and byte comparisons are outside those intervals.
 Clock overhead occurs once per process call. Earlier observations using a
 single process call are historical measurements of a different driver.
 
-`marc_benchmark --list` lists its current 67 selectors. Optional
+`marc_benchmark --list` lists all 102 public selectors. Optional
 `--io-size N` selects equal input/output capacities from 1 through 65,536 bytes;
 the default is 65,536. Record this value when comparing throughput. For example,
 use `marc_benchmark lzw corpus.bin 5 --io-size 4096`.
@@ -148,8 +148,10 @@ an untimed baseline archive, compares every timed encoding byte for byte, and
 checks every decoding against the original file. Each direction has an untimed
 warmup. It emits a successful report only after all verification passes, then
 removes its known temporary files and empty directory. Temporary disk space is
-required. Per-window public measurement tools remain pending 102-profile
-consolidation.
+required. Per-window public measurement tools remain temporarily while their
+additional reporting and historical campaign roles are reviewed for retirement.
+Those historical tools require a static library; the common public-API driver
+supports both static and shared-only configurations.
 
 `encoded_to_input_ratio` includes the complete canonical stream header,
 parameters, frame headers, and payload. Empty input reports ratio zero because
@@ -159,6 +161,70 @@ decoder caller-owned primary-plus-secondary-plus-views workspace requirements;
 it excludes tool I/O buffers, allocator overhead, executable, stack, and
 operating-system memory. It is not peak RSS. Direction-specific views-workspace
 bytes are also reported separately.
+
+For three-span APIs, `codec_peak_workspace_available=1`. For owning or five-span
+APIs, the historical six span fields and peak field are zero and
+`codec_peak_workspace_available=0`. Use `encoder_resource_scope` and
+`decoder_resource_scope` to interpret their queried `resource_bytes`:
+
+- `caller-workspace`: sum of three caller-owned span requirements.
+- `aggregate-admission`: the public owning resource query's minimum aggregate.
+- `initial-only`: the direction-specific Range encoder's initial admission;
+  this is not a complete peak or a maximum dynamic allocation.
+- `capacity-only`: the five-span Range decoder's public minimum aggregate.
+
+Directional `caller_workspace_bytes` reports borrowed spans, including all five
+where applicable; it is zero for owning factories. `resource_limit_bytes` is the
+configured admission policy for native adapters. It is zero for the retained
+67-selector adapter, which reports caller workspace rather than an aggregate
+policy. These values exclude operating-system resident accounting.
+
+### Fresh directional measurement
+
+Use the common runner for repeated measurements with separate processes:
+
+```console
+python tools/run_public_benchmark.py --benchmark build/Release/marc_benchmark.exe --input corpus.bin --codec lzss-position-distance-rans-1m --iterations 3 --output new-results
+```
+
+Repeat `--codec` and `--input` to select multiple profiles and files. Omitting
+`--codec` selects all 102. The output directory must be new. The runner hashes
+the executable and inputs, verifies every archive's determinism and every
+restoration, and writes metadata, raw `samples.jsonl`, and a final `report.json`.
+Only verified campaigns receive a final report. Each direction uses one warmup
+and three measured workers by default. `--warmups 0..10` and
+`--iterations 1..100` are explicit controls.
+
+The worker mode is `--worker encode|decode CODEC INPUT NEW_DIRECTORY ORIGINAL_BYTES`.
+Its output is `NEW_DIRECTORY/output`; an existing directory is refused. It
+reports process-only seconds, lifecycle seconds including query/allocation,
+creation, file I/O and destruction, and physical `peak_resident_bytes`.
+Windows uses peak working set. Linux uses a post-exec child before allocating
+codec state, so the peak RSS does not inherit the launcher's earlier high-water
+history. The worker uses the full 64-KiB I/O buffers and native CLI frame/decoder
+limits, with a 64-KiB control reserve admitted separately from the I/O arrays.
+The old 67 selectors retain their existing benchmark settings.
+
+The runner reports per-input median process/lifecycle timings and the maximum
+observed resident bytes for each direction. Whole-selection ratio uses summed
+archive bytes divided by summed raw bytes; aggregate throughput uses summed
+raw bytes divided by the sum of per-input median process times. It is not an
+average of file ratios or throughputs. Aggregate physical peak is the largest
+directional observation. Raw records preserve the exact statistics.
+
+Verified archive/restored files are removed after each pair by default; their
+hashes and sizes remain in the journal. `--keep-artifacts` retains them and
+requires disk space for every iteration. The runner never downloads inputs.
+For the local Silesia Corpus, `--silesia` runs the retained size/MD5/SHA-256
+verifier first and treats each of the twelve files independently:
+
+```console
+python tools/run_public_benchmark.py --benchmark build/Release/marc_benchmark.exe --silesia benchmarks/data/silesia/corpus --codec lzss-position-distance-rans-1m --output benchmarks/data/silesia/results/new-public-run
+```
+
+Use a new directory under the ignored results area; do not commit corpus files
+or measurement outputs. This shared recipe replaces ad hoc execution mechanics;
+historical measurements retain their original timing/admission conventions.
 
 ### Large-file LZSS match-finder mode
 
@@ -13645,3 +13711,26 @@ Per-call timing overhead and chunk size must accompany future speed comparisons;
 historical one-shot timing observations remain historical. This entry records
 a driver contract, not a new corpus speed or peak-RSS measurement. Consolidation
 of all102 published selectors and public resource drivers remains open.
+
+
+## BM-0275: Shared102-profile measurement surface and corpus workflow
+
+DD-1634/TVG-1642 qualify all102 selectors through the common public-API driver,
+including owning and direction-specific Range adapters. All102 full archive
+hashes match v0.8.0 and restore exactly. All35 native selectors also pass empty
+input. The common runner records process/lifecycle medians and maximum physical
+resident observations per direction, retaining the exact logical query scope.
+The same campaign passes for static and DLL consumption on Windows. Clang
+compiles the driver; Linux runtime qualification is not inferred.
+
+Local Silesia integration uses checksum-raw only, one measured worker per file
+and direction, no warmup:12 files/24 observations,211938580 input bytes and
+211951960 archived bytes, ratio1.0000631314978141. The summed process intervals
+are1.7553342 seconds encode and1.7671564 seconds decode; observed directional
+peak working sets are6070272 bytes each. These are single observations per
+file, not a repeated performance study or an improvement claim. Input corpus
+size/MD5/SHA-256 verification and exact restorations pass; generated output
+files are removed after verification. Metadata/raw results remain ignored in
+out/refactoring/silesia-common-run-1. Earlier measurements keep their own
+conventions. Public per-window drivers remain until their additional reporting
+roles are explicitly classified for replacement; phase3 is not complete.

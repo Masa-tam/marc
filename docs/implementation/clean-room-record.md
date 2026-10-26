@@ -43957,3 +43957,27 @@ Retain all other public measurement drivers pending complete102-profile
 replacement. TVG-1641 records actual contract/integration and one-shot byte
 comparisons. No external implementation source, corpus campaign, format/API
 change, new physical-memory observation, hosted run or push is involved.
+
+
+### CR-2021: 2026-10-26 — all-profile common benchmark and resource runner
+
+Author/reviewer: Codex. Task: continue the authorized stage-one plan by adapting
+all35 native public profiles to the common67-profile process loop and replacing
+ad hoc execution mechanics with fresh directional workers. Follow DD-1634 and
+IR-1379. Use only current public declarations, first-party CLI admission limits,
+existing fresh-process conventions and frozen v0.8.0 artifacts. Keep owning,
+three-span, five-span, InitialOnly and CapacityOnly contracts explicit. New
+typed harness adapters do not implement or generate compression algorithms.
+
+Record provenance for the frozen102 release archive hashes and deterministic
+8193-byte recipe in TVG-1642. Add benchmark integration tests without replacing
+codec malformed-input/independent-oracle coverage. Logical admission remains
+separate from physical resident observations; the fresh runner preserves raw
+samples, input/executable hashes, weighted totals and explicit timing scopes.
+Correct historical static-only target guards after a failed shared-only
+configuration, preserving ordinary builds. Shared linked consumption is tested
+locally; Unix worker execution remains a future hosted gate. The small local
+Silesia checksum workflow is integration evidence only. No external algorithm
+source, format/default/API change, comparative codec speed claim, fuzz campaign,
+hosted qualification or push is involved. All per-window role review remains
+open; do not retire independent diagnostic/vector oracles by name alone.

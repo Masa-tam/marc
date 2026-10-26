@@ -27236,3 +27236,60 @@ changes4189->4191 through the two explicit benchmark test registrations;
 the new contract executable contains9 cases inside one registration.
 git diff --check passes. Hosted qualification of later refactoring checkpoints
 remains separate from the maintainer-reported checkpoint E result.
+
+
+### TVG-1642: all102 common benchmark selectors and directional workers
+
+Freeze tests/data/benchmark-v080.json from the phase-one schema92 bundle:
+source86af8bf2599075f7345e1a9aa01aebdb2c7e9b73, all102 archive sizes/SHA-256
+values and input hash. The8193-byte recipe remains the independently documented
+mixture from create_interoperability_bundle.ps1 (all byte values, zeros, fixed
+pattern and arithmetic suffix). No external corpus or third-party vectors are
+embedded. The permanent benchmark test reconstructs that recipe, checks the
+complete102-name inventory, compares every complete encoded archive with its
+frozen release hash and strictly restores each file. This catches incorrect
+profile bindings that a same-adapter round trip alone could hide.
+
+Each new35 selector also runs through the ordinary repeated benchmark/report
+path, with explicit resource scopes and historical-peak availability checks.
+All35 native selectors additionally encode/decode empty input. Test exclusive
+worker directories, original-size errors, invalid directions, source stability,
+physical-RSS presence, resource admission and lifecycle/process timing relation.
+A two-profile repeat campaign verifies12 raw samples, warmup exclusion,
+directional timing medians, resident maxima, output cleanup and refusal to
+overwrite a completed report. An invalid Silesia directory is refused before
+creating campaign output. The final70 selected CTests pass in21.80 seconds;
+the new102-profile campaign takes14.56 seconds. Complete inventory:4192,
+with3460 existing main cases unchanged. Main codec tests are not redundantly
+rerun because production implementations and public declarations are unchanged.
+
+MSVC Release static-linked benchmark builds. A separately compiled DLL consumer
+passes the same102-profile/vector/empty/runner campaign. Clang compiles the
+benchmark translation unit. These are Windows results, not Linux execution.
+Both configuration/query/factory/workspace bodies for the existing67 benchmark
+settings remain identical to v0.8.0 after newline normalization (four complete
+function comparisons). An additional ignored worker campaign matches all102
+saved release archives and restores all102 inputs independently of CTest.
+
+Shared-only plus BENCHMARKS initially fails generation:25 historical targets
+reference absent marc::static. Add explicit static-target guards around their
+eleven legacy registration blocks; shared-only benchmark generation then passes.
+Ordinary static/shared target availability is unchanged. The common benchmark
+continues to support either library; old per-window copies remain pending role
+review and retirement. No dedicated CI fuzz job is added or executed.
+
+Run the common --silesia path on the maintainer's existing twelve local files
+with checksum-raw, one iteration and no warmup: all size/MD5/SHA-256 checks,
+24 directional workers, restorations and cleanup pass. Totals are211938580 raw
+bytes and211951960 complete archive bytes. Reports remain ignored under out/;
+no corpus data is staged. This validates the corpus workflow and weighted
+aggregation, not comparative compression performance or a repeated timing study.
+
+Final documentation/CI-policy/CI-partition/corpus-verifier CTests pass4/4 in
+2.42 seconds, and git diff --check passes. A receipt helper initially used the
+Windows locale encoding when updating the UTF-8 plan after the ledgers had
+already been appended. Retry only the checklist update with explicit UTF-8;
+no duplicate ledger entries or product edits result. Request manual hosted
+full_validation at the commit carrying this record before retiring old public
+measurement tools: Unix worker/RSS execution and full retained package/codec
+qualification remain unproven locally.

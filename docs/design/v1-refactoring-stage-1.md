@@ -54,11 +54,11 @@ headers. These are starting observations, not deletion or line-count targets.
 
 ### 3. Consolidate maintained benchmarks
 
-- [ ] Provide a small public-API benchmark surface covering all published
+- [x] Provide a small public-API benchmark surface covering all published
   profiles through shared process, verification, timing and reporting code.
-- [ ] Keep compression ratio, directional throughput and logical workspace
+- [x] Keep compression ratio, directional throughput and logical workspace
   reporting; keep physical resident measurements distinct from logical grants.
-- [ ] Keep external corpus verification and repeatable measurement recipes.
+- [x] Keep external corpus verification and repeatable measurement recipes.
   Do not redistribute corpus inputs or local results.
 - [ ] Remove redundant per-window measurement implementations only after their
   required reporting and public-profile coverage have replacements.
@@ -245,3 +245,24 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   contract explicitly. Full102-selector coverage, directional physical-memory
   measurement and retirement of redundant public drivers remain open; phase3
   is not complete. No further hosted qualification is inferred from checkpoint E.
+
+
+- Phase-three public coverage (DD-1634/TVG-1642): all102 selectors use the
+  common process/verification loop, with explicit logical scopes and fresh
+  directional physical-RSS workers. All102 archives match frozen v0.8.0 bytes;
+  all35 native empty streams pass.70 benchmark CTests pass. Static and DLL
+  consumption pass on Windows; Clang compilation passes. Shared-only benchmark
+  configuration now gates historical static-only tools explicitly. The real
+  twelve-file Silesia checksum workflow verifies inputs, restorations, weighted
+  totals and cleanup. No corpus artifacts are tracked. Per-window reporting
+  role review/retirement and simplification of the retained67-profile setup
+  remain open; later CMake/API/codec phases and hosted gates remain required.
+
+- Hosted benchmark checkpoint: push the commit carrying TVG-1642 and run manual
+  full_validation. Require Windows/Linux complete retained tests, installed
+  package consumers and102-profile bundle gates, including the new common
+  benchmark test in ordinary CI. Windows static/DLL evidence does not prove
+  Unix post-exec worker/RSS behavior. Pause before retiring the old per-window
+  public measurement graph; resume that review after the reported hosted result.
+  The rest of the six-phase plan remains incomplete. Do not infer hosted success
+  for this checkpoint from the earlier checkpoint E report.

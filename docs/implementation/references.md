@@ -12196,3 +12196,14 @@ Replace whole-file storage and per-codec worst-case output allocation with a
 bounded file pump. No external codec source, algorithm or corpus is consulted.
 Existing per-window public measurement drivers remain until their reporting
 and complete 102-profile coverage are replaced and qualified.
+
+### IR-1379: shared public-profile benchmark adapters and directional workers
+
+Use installed marc.h declarations, current CLI initialization/admission policies,
+the schema92 inventory and saved v0.8.0 archives as first-party references.
+Retain the67 common-driver configurations and adapt the other35 public profiles
+without private codec APIs. Distinguish three borrowed spans, aggregate owning
+admission, initial-only encoders and five-span capacity-only decoders. Use the
+repository's existing fresh-process resource measurement convention, including
+the post-exec child on Unix, to avoid inherited launcher high-water marks.
+No external implementation source or new compression algorithm is consulted.

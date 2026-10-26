@@ -1176,7 +1176,7 @@ set(readme_document "${source_dir}/README.md")
 file(READ "${readme_document}" readme_content)
 foreach(required_readme_status IN ITEMS
         "All forty-two profiles are exposed"
-        "all forty-two benchmark-admitted"
+        "all 102 public profiles"
         "MARC_GTEST_DISCOVERY_TIMEOUT"
         "defaults to 60 seconds")
     string(FIND "${readme_content}" "${required_readme_status}"

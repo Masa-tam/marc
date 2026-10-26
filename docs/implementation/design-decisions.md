@@ -35221,3 +35221,36 @@ workspace queries remain distinct from resident memory and exclude I/O buffers.
 Mark the new execution/timing contract explicitly; old throughput observations
 must not be silently treated as measurements of this chunked driver. This is
 an intermediate phase-three change, not complete 102-profile consolidation.
+
+### DD-1634: all public profiles share benchmark execution and fresh workers
+
+Connect the35 Position-distance selectors through small typed adapters to the
+same bounded process/verification/timing loop as the67 existing selectors.
+Existing67 configuration bodies remain unchanged. Native profiles use public
+initializers/helpers; the four direction-specific Range pairs use the current
+explicit CLI grants. Reserve65536 bytes for control objects and charge both
+full64-KiB retained I/O arrays through input/output-capacity fields. Session
+sizes are statically bounded and borrowed spans outlive every created handle.
+
+Do not coerce resource contracts into one peak-memory number. Preserve the
+historical six workspace fields and peak value for three-span adapters. Mark
+that historical peak unavailable with value zero for other API shapes. Report
+directional scope, queried bytes, caller workspace bytes and configured grant
+separately. InitialOnly is not a complete peak; CapacityOnly includes its own
+admission definition. Logical resources are not physical RSS.
+
+Provide an explicit worker mode operating in a new output directory, with one
+direction per fresh process. Report process-only time, lifecycle time (query,
+allocation, create, file I/O, process and destruction) and physical process peak
+resident bytes. Unix workers fork after exec before codec allocations to reset
+the launcher's inherited RSS high-water history. Use a common Python runner to
+verify every round trip and deterministic archive, retain raw samples, summarize
+median directional timings and maximum observed resident bytes, and record the
+executable/input hashes and settings. Historical benchmark conventions remain
+historical. Qualify all102 selectors before retiring public measurement copies.
+
+Shared-only benchmarks initially fail generation because25 historical targets
+unconditionally reference marc::static. Until their role review/retirement,
+gate their eleven registration blocks on the actual static target. The common
+public-API benchmark remains available with either library. This does not
+change the ordinary static-plus-shared target inventory or public library code.
