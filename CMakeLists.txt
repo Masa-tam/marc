@@ -1386,98 +1386,8 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
     add_test(NAME marc_position_distance_1m_five_prefix_allocation
         COMMAND marc_position_distance_1m_five_prefix_allocation_tests)
 endif()
-if(MARC_BUILD_BENCHMARKS AND TARGET marc_static)
-    add_executable(marc_position_rans_64k_benchmark benchmarks/position_rans_64k_benchmark.cpp)
-    target_compile_features(marc_position_rans_64k_benchmark PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_rans_64k_benchmark PRIVATE marc::static)
-    if(MARC_BUILD_TOOLS)
-        add_executable(marc_position_rans_64k_cli_resources benchmarks/position_rans_1m_cli_resources.cpp)
-        target_compile_features(marc_position_rans_64k_cli_resources PRIVATE cxx_std_20)
-        target_link_libraries(marc_position_rans_64k_cli_resources PRIVATE marc::static)
-        if(WIN32)
-            target_link_libraries(marc_position_rans_64k_cli_resources PRIVATE psapi)
-        endif()
-    endif()
-endif()
+
 if(MARC_BUILD_BENCHMARKS)
-    if(TARGET marc_static)
-        add_executable(marc_position_rans_1m_benchmark benchmarks/position_rans_1m_benchmark.cpp)
-        target_compile_features(marc_position_rans_1m_benchmark PRIVATE cxx_std_20)
-        target_link_libraries(marc_position_rans_1m_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TOOLS)
-            add_executable(marc_position_rans_1m_cli_resources benchmarks/position_rans_1m_cli_resources.cpp)
-            target_compile_features(marc_position_rans_1m_cli_resources PRIVATE cxx_std_20)
-            target_link_libraries(marc_position_rans_1m_cli_resources PRIVATE marc::static)
-            if(WIN32)
-                target_link_libraries(marc_position_rans_1m_cli_resources PRIVATE psapi)
-            endif()
-        endif()
-
-        add_library(marc_position_distance_4m_control_support STATIC
-            src/frame/lzss_position_distance_4m_five_prefix_owned_encoder.cpp
-            src/frame/lzss_position_distance_4m_owned_decoder.cpp)
-        target_compile_features(marc_position_distance_4m_control_support PUBLIC cxx_std_20)
-        target_include_directories(marc_position_distance_4m_control_support PUBLIC
-            ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_position_distance_4m_control_support PUBLIC marc::static)
-
-        add_executable(marc_lzss_position_distance_public_benchmark
-            benchmarks/lzss_position_distance_public_benchmark.cpp)
-        target_compile_features(marc_lzss_position_distance_public_benchmark PRIVATE cxx_std_20)
-        target_include_directories(marc_lzss_position_distance_public_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-        target_link_libraries(marc_lzss_position_distance_public_benchmark PRIVATE marc::static)
-        if(MARC_BUILD_TESTS)
-            add_test(NAME marc_position_distance_public_benchmark_smoke
-                COMMAND ${CMAKE_COMMAND}
-                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_public_benchmark>"
-                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-public-benchmark-smoke"
-                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_public_benchmark_smoke.cmake)
-        endif()
-
-        if(MSVC)
-
-        else()
-
-        endif()
-
-        if(MSVC)
-
-        else()
-
-        endif()
-
-    endif()
-    if(TARGET marc_static)
-
-        if(MSVC)
-
-        else()
-
-        endif()
-
-    endif()
-
-    if(MSVC)
-
-    else()
-
-    endif()
-    if(TARGET marc_static)
-
-    else()
-
-    endif()
-
-    if(MSVC)
-
-    else()
-
-    endif()
-    if(TARGET marc_static)
-
-    else()
-
-    endif()
 
     add_executable(marc_benchmark benchmarks/marc_benchmark.cpp)
     target_compile_features(marc_benchmark PRIVATE cxx_std_20)
@@ -2930,6 +2840,17 @@ if(MARC_BUILD_TESTS)
                     $<TARGET_FILE:marc_benchmark>)
             set_tests_properties(marc_benchmark_public_profiles_tests
                 PROPERTIES LABELS benchmark-smoke TIMEOUT 240 RUN_SERIAL TRUE)
+            if(TARGET marc_cli)
+                foreach(section IN ITEMS blocked tans large literal)
+                    add_test(NAME marc_benchmark_boundaries_${section}
+                        COMMAND ${Python3_EXECUTABLE} -B
+                            ${CMAKE_CURRENT_SOURCE_DIR}/tests/benchmark_boundaries_tests.py
+                            --benchmark $<TARGET_FILE:marc_benchmark>
+                            --cli $<TARGET_FILE:marc_cli> --section ${section})
+                    set_tests_properties(marc_benchmark_boundaries_${section}
+                        PROPERTIES LABELS benchmark-smoke TIMEOUT 600 RUN_SERIAL TRUE)
+                endforeach()
+            endif()
         endif()
     endif()
 
@@ -7157,21 +7078,6 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_link_libraries(marc_fuzz_lzss_position_rans_4m_full_literal_public PRIVATE marc::static)
 endif()
 
-# Historical per-profile measurement tools require static linkage.
-# The common public-API benchmark supports either library.
-if(MARC_BUILD_BENCHMARKS AND TARGET marc_static)
-    add_executable(marc_position_rans_4m_benchmark benchmarks/position_rans_4m_benchmark.cpp)
-    target_compile_features(marc_position_rans_4m_benchmark PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_rans_4m_benchmark PRIVATE marc::static)
-    if(MARC_BUILD_TOOLS)
-        add_executable(marc_position_rans_4m_cli_resources benchmarks/position_rans_1m_cli_resources.cpp)
-        target_compile_features(marc_position_rans_4m_cli_resources PRIVATE cxx_std_20)
-        target_link_libraries(marc_position_rans_4m_cli_resources PRIVATE marc::static)
-        if(WIN32)
-            target_link_libraries(marc_position_rans_4m_cli_resources PRIVATE psapi)
-        endif()
-    endif()
-endif()
 
 # DD-1536 private eight-MiB qualification; public admission follows measurements.
 if(MARC_BUILD_TESTS)
@@ -7305,21 +7211,6 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_compile_options(marc_fuzz_lzss_position_rans_8m_full_literal_public PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_8m_full_literal_public PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_rans_8m_full_literal_public PRIVATE marc::static)
-endif()
-
-if(MARC_BUILD_BENCHMARKS AND TARGET marc_static)
-    add_executable(marc_position_rans_8m_benchmark benchmarks/position_rans_8m_benchmark.cpp)
-    target_compile_features(marc_position_rans_8m_benchmark PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_rans_8m_benchmark PRIVATE marc::static)
-endif()
-
-if(MARC_BUILD_BENCHMARKS AND TARGET marc_static)
-    add_executable(marc_position_rans_8m_resources benchmarks/position_rans_8m_resources.cpp)
-    target_compile_features(marc_position_rans_8m_resources PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_rans_8m_resources PRIVATE marc::static)
-    if(WIN32)
-        target_link_libraries(marc_position_rans_8m_resources PRIVATE psapi)
-    endif()
 endif()
 
 if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
@@ -7484,21 +7375,6 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_link_libraries(marc_fuzz_lzss_position_rans_16m_full_literal_public PRIVATE marc::static)
 endif()
 
-if(MARC_BUILD_BENCHMARKS AND TARGET marc_static)
-    add_executable(marc_position_rans_16m_benchmark benchmarks/position_rans_16m_benchmark.cpp)
-    target_compile_features(marc_position_rans_16m_benchmark PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_rans_16m_benchmark PRIVATE marc::static)
-endif()
-
-if(MARC_BUILD_BENCHMARKS AND TARGET marc_static)
-    add_executable(marc_position_rans_16m_resources benchmarks/position_rans_16m_resources.cpp)
-    target_compile_features(marc_position_rans_16m_resources PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_rans_16m_resources PRIVATE marc::static)
-    if(WIN32)
-        target_link_libraries(marc_position_rans_16m_resources PRIVATE psapi)
-    endif()
-endif()
-
 if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
     add_test(NAME marc_position_rans_32m_full_literal_vectors
         COMMAND ${Python3_EXECUTABLE} -B -X utf8
@@ -7594,15 +7470,7 @@ if(MARC_BUILD_TESTS)
     target_compile_features(marc_position_tans_64k_owned_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_64k_owned_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     # Normal resource precursor: no test allocation overrides or sanitizers.
-    add_executable(marc_position_tans_64k_resources
-        benchmarks/position_tans_64k_resources.cpp
-        src/frame/lzss_position_tans_64k_owned.cpp
-        ${position_tans_private_sources})
-    target_compile_features(marc_position_tans_64k_resources PRIVATE cxx_std_20)
-    target_include_directories(marc_position_tans_64k_resources PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    if(WIN32)
-        target_link_libraries(marc_position_tans_64k_resources PRIVATE psapi)
-    endif()
+
     add_test(NAME marc_position_tans_64k_owned COMMAND marc_position_tans_64k_owned_tests)
     add_executable(marc_position_tans_64k_api_tests tests/position_tans_64k_api_tests.cpp)
     target_compile_features(marc_position_tans_64k_api_tests PRIVATE cxx_std_20)
@@ -7630,12 +7498,7 @@ if(MARC_BUILD_TESTS)
                 ${CMAKE_CURRENT_BINARY_DIR}/position-tans-64k-owned-raw --owning)
         set_tests_properties(marc_position_tans_64k_owned_frame_differential
             marc_position_tans_64k_owned_raw_differential PROPERTIES TIMEOUT 120)
-        add_test(NAME marc_position_tans_64k_resources_smoke
-            COMMAND ${Python3_EXECUTABLE} -B -X utf8
-                ${CMAKE_CURRENT_SOURCE_DIR}/tools/run_position_tans_64k_resources.py
-                $<TARGET_FILE:marc_position_tans_64k_resources>
-                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-64k-resources-smoke)
-        set_tests_properties(marc_position_tans_64k_resources_smoke PROPERTIES TIMEOUT 30)
+
         add_test(NAME marc_position_tans_64k_public_frame_differential
             COMMAND ${Python3_EXECUTABLE} -B -X utf8
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_64k_frame_differential.py
@@ -7794,16 +7657,6 @@ if(MARC_BUILD_TESTS)
 endif()
 
 # Thirty-two-MiB benchmark and fully instrumented fuzz infrastructure.
-if(MARC_BUILD_TESTS AND MARC_BUILD_BENCHMARKS AND Python3_Interpreter_FOUND)
-    add_test(NAME marc_position_rans_32m_benchmark_boundaries
-        COMMAND ${Python3_EXECUTABLE} -B -X utf8
-            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_32m_benchmark_boundaries.py
-            $<TARGET_FILE:marc_position_rans_32m_benchmark>
-            $<TARGET_FILE:marc_position_rans_32m_resources>
-            ${CMAKE_CURRENT_BINARY_DIR}/position-rans-32m-benchmark-boundaries)
-    set_tests_properties(marc_position_rans_32m_benchmark_boundaries PROPERTIES
-        TIMEOUT 300 RESOURCE_LOCK marc_large_window)
-endif()
 
 if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_executable(marc_fuzz_position_rans_32m_full_literal_descriptor
@@ -7863,20 +7716,6 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_link_libraries(marc_fuzz_lzss_position_rans_32m_full_literal_public PRIVATE marc::static)
 endif()
 
-if(MARC_BUILD_BENCHMARKS AND TARGET marc_static)
-    add_executable(marc_position_rans_32m_benchmark benchmarks/position_rans_32m_benchmark.cpp)
-    target_compile_features(marc_position_rans_32m_benchmark PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_rans_32m_benchmark PRIVATE marc::static)
-endif()
-
-if(MARC_BUILD_BENCHMARKS AND TARGET marc_static)
-    add_executable(marc_position_rans_32m_resources benchmarks/position_rans_32m_resources.cpp)
-    target_compile_features(marc_position_rans_32m_resources PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_rans_32m_resources PRIVATE marc::static)
-    if(WIN32)
-        target_link_libraries(marc_position_rans_32m_resources PRIVATE psapi)
-    endif()
-endif()
 # DD-1552 private finite sixty-four-MiB entropy core, without public admission.
 if(MARC_BUILD_TESTS)
     add_executable(marc_position_rans_64m_full_literal_format_tests
@@ -8015,16 +7854,6 @@ if(MARC_BUILD_TESTS)
 endif()
 
 # Sixty-four-MiB benchmark and fully instrumented fuzz infrastructure.
-if(MARC_BUILD_TESTS AND MARC_BUILD_BENCHMARKS AND Python3_Interpreter_FOUND)
-    add_test(NAME marc_position_rans_64m_benchmark_boundaries
-        COMMAND ${Python3_EXECUTABLE} -B -X utf8
-            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_64m_benchmark_boundaries.py
-            $<TARGET_FILE:marc_position_rans_64m_benchmark>
-            $<TARGET_FILE:marc_position_rans_64m_resources>
-            ${CMAKE_CURRENT_BINARY_DIR}/position-rans-64m-benchmark-boundaries)
-    set_tests_properties(marc_position_rans_64m_benchmark_boundaries PROPERTIES
-        TIMEOUT 300 RESOURCE_LOCK marc_large_window)
-endif()
 
 if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_executable(marc_fuzz_position_rans_64m_full_literal_descriptor
@@ -8082,161 +7911,6 @@ if(MARC_BUILD_FUZZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_compile_options(marc_fuzz_lzss_position_rans_64m_full_literal_public PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_64m_full_literal_public PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_rans_64m_full_literal_public PRIVATE marc::static)
-endif()
-
-if(MARC_BUILD_BENCHMARKS AND TARGET marc_static)
-    add_executable(marc_position_rans_64m_benchmark benchmarks/position_rans_64m_benchmark.cpp)
-    target_compile_features(marc_position_rans_64m_benchmark PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_rans_64m_benchmark PRIVATE marc::static)
-endif()
-
-if(MARC_BUILD_BENCHMARKS AND TARGET marc_static)
-    add_executable(marc_position_tans_64k_benchmark benchmarks/position_tans_64k_benchmark.cpp)
-    target_compile_features(marc_position_tans_64k_benchmark PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_tans_64k_benchmark PRIVATE marc::static)
-    add_executable(marc_position_tans_64k_public_resources benchmarks/position_tans_64k_public_resources.cpp)
-    target_compile_features(marc_position_tans_64k_public_resources PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_tans_64k_public_resources PRIVATE marc::static)
-    if(WIN32)
-        target_link_libraries(marc_position_tans_64k_public_resources PRIVATE psapi)
-    endif()
-    if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND Python3_Interpreter_FOUND)
-        add_test(NAME marc_position_tans_64k_public_measurements
-            COMMAND ${Python3_EXECUTABLE} -B -X utf8
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_64k_public_measurements.py
-                $<TARGET_FILE:marc_position_tans_64k_benchmark>
-                $<TARGET_FILE:marc_position_tans_64k_public_resources>
-                $<TARGET_FILE:marc_cli>
-                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-64k-public-measurements)
-        set_tests_properties(marc_position_tans_64k_public_measurements PROPERTIES TIMEOUT 120)
-    endif()
-endif()
-
-if(MARC_BUILD_BENCHMARKS AND TARGET marc_static)
-    add_executable(marc_position_rans_64m_resources benchmarks/position_rans_64m_resources.cpp)
-    target_compile_features(marc_position_rans_64m_resources PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_rans_64m_resources PRIVATE marc::static)
-    if(WIN32)
-        target_link_libraries(marc_position_rans_64m_resources PRIVATE psapi)
-    endif()
-endif()
-
-if(MARC_BUILD_BENCHMARKS AND TARGET marc_static)
-    add_executable(marc_position_blocked_huffman_64k_diagnose
-        benchmarks/position_blocked_huffman_64k_diagnose.cpp)
-    target_compile_features(marc_position_blocked_huffman_64k_diagnose PRIVATE cxx_std_20)
-    target_include_directories(marc_position_blocked_huffman_64k_diagnose PRIVATE src)
-    target_link_libraries(marc_position_blocked_huffman_64k_diagnose PRIVATE marc::static)
-    add_executable(marc_position_blocked_huffman_large_measure
-        benchmarks/position_blocked_huffman_large_measure.cpp)
-    target_compile_features(marc_position_blocked_huffman_large_measure PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_blocked_huffman_large_measure PRIVATE marc::static)
-    if(WIN32)
-        target_link_libraries(marc_position_blocked_huffman_large_measure PRIVATE psapi)
-    endif()
-    if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
-        add_test(NAME marc_position_blocked_huffman_large_public_measurements
-            COMMAND ${Python3_EXECUTABLE} -B -X utf8
-                ${CMAKE_CURRENT_SOURCE_DIR}/tools/run_position_blocked_huffman_large_measurements.py
-                --probe $<TARGET_FILE:marc_position_blocked_huffman_large_measure>
-                --samples 1 --output ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-large-measurements)
-        set_tests_properties(marc_position_blocked_huffman_large_public_measurements
-            PROPERTIES TIMEOUT 180 RUN_SERIAL TRUE)
-    endif()
-    foreach(kind IN ITEMS benchmark public_resources)
-        add_executable(marc_position_blocked_huffman_64k_${kind}
-            benchmarks/position_blocked_huffman_64k_${kind}.cpp)
-        target_compile_features(marc_position_blocked_huffman_64k_${kind} PRIVATE cxx_std_20)
-        target_link_libraries(marc_position_blocked_huffman_64k_${kind} PRIVATE marc::static)
-    endforeach()
-    add_executable(marc_position_blocked_huffman_4m_resource_precursor
-        benchmarks/position_blocked_huffman_4m_resource_precursor.cpp)
-    add_executable(marc_position_blocked_huffman_8m_resource_precursor
-        benchmarks/position_blocked_huffman_8m_resource_precursor.cpp)
-    target_compile_features(marc_position_blocked_huffman_8m_resource_precursor PRIVATE cxx_std_20)
-    target_include_directories(marc_position_blocked_huffman_8m_resource_precursor PRIVATE src)
-    target_link_libraries(marc_position_blocked_huffman_8m_resource_precursor PRIVATE marc::static)
-    if(WIN32)
-        target_link_libraries(marc_position_blocked_huffman_8m_resource_precursor PRIVATE psapi)
-    endif()
-    target_compile_features(marc_position_blocked_huffman_4m_resource_precursor PRIVATE cxx_std_20)
-    target_include_directories(marc_position_blocked_huffman_4m_resource_precursor PRIVATE src)
-    target_link_libraries(marc_position_blocked_huffman_4m_resource_precursor PRIVATE marc::static)
-    if(WIN32)
-        target_link_libraries(marc_position_blocked_huffman_4m_resource_precursor PRIVATE psapi)
-    endif()
-    add_executable(marc_position_blocked_huffman_1m_resource_precursor
-        benchmarks/position_blocked_huffman_1m_resource_precursor.cpp)
-    target_compile_features(marc_position_blocked_huffman_1m_resource_precursor PRIVATE cxx_std_20)
-    target_include_directories(marc_position_blocked_huffman_1m_resource_precursor PRIVATE src)
-    target_link_libraries(marc_position_blocked_huffman_1m_resource_precursor PRIVATE marc::static)
-    if(WIN32)
-        target_link_libraries(marc_position_blocked_huffman_1m_resource_precursor PRIVATE psapi)
-    endif()
-    if(WIN32)
-        target_link_libraries(marc_position_blocked_huffman_64k_public_resources PRIVATE psapi)
-    endif()
-    foreach(kind IN ITEMS benchmark public_resources)
-        add_executable(marc_position_blocked_huffman_8m_${kind}
-            benchmarks/position_blocked_huffman_8m_${kind}.cpp)
-        target_compile_features(marc_position_blocked_huffman_8m_${kind} PRIVATE cxx_std_20)
-        target_link_libraries(marc_position_blocked_huffman_8m_${kind} PRIVATE marc::static)
-    endforeach()
-    if(WIN32)
-        target_link_libraries(marc_position_blocked_huffman_8m_public_resources PRIVATE psapi)
-    endif()
-    if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND Python3_Interpreter_FOUND)
-        add_test(NAME marc_position_blocked_huffman_8m_public_measurements
-            COMMAND ${Python3_EXECUTABLE} -B -X utf8
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_blocked_huffman_8m_public_measurements.py
-                $<TARGET_FILE:marc_position_blocked_huffman_8m_benchmark>
-                $<TARGET_FILE:marc_position_blocked_huffman_8m_public_resources>
-                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-8m-measurements)
-        set_tests_properties(marc_position_blocked_huffman_8m_public_measurements PROPERTIES TIMEOUT 180)
-    endif()
-    foreach(kind IN ITEMS benchmark public_resources)
-        add_executable(marc_position_blocked_huffman_4m_${kind}
-            benchmarks/position_blocked_huffman_4m_${kind}.cpp)
-        target_compile_features(marc_position_blocked_huffman_4m_${kind} PRIVATE cxx_std_20)
-        target_link_libraries(marc_position_blocked_huffman_4m_${kind} PRIVATE marc::static)
-    endforeach()
-    if(WIN32)
-        target_link_libraries(marc_position_blocked_huffman_4m_public_resources PRIVATE psapi)
-    endif()
-    if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND Python3_Interpreter_FOUND)
-        add_test(NAME marc_position_blocked_huffman_4m_public_measurements
-            COMMAND ${Python3_EXECUTABLE} -B -X utf8
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_blocked_huffman_4m_public_measurements.py
-                $<TARGET_FILE:marc_position_blocked_huffman_4m_benchmark>
-                $<TARGET_FILE:marc_position_blocked_huffman_4m_public_resources>
-                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-4m-measurements)
-        set_tests_properties(marc_position_blocked_huffman_4m_public_measurements PROPERTIES TIMEOUT 120)
-    endif()
-    foreach(kind IN ITEMS benchmark public_resources)
-        add_executable(marc_position_blocked_huffman_1m_${kind}
-            benchmarks/position_blocked_huffman_1m_${kind}.cpp)
-        target_compile_features(marc_position_blocked_huffman_1m_${kind} PRIVATE cxx_std_20)
-        target_link_libraries(marc_position_blocked_huffman_1m_${kind} PRIVATE marc::static)
-    endforeach()
-    if(WIN32)
-        target_link_libraries(marc_position_blocked_huffman_1m_public_resources PRIVATE psapi)
-    endif()
-    if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND Python3_Interpreter_FOUND)
-        add_test(NAME marc_position_blocked_huffman_1m_public_measurements
-            COMMAND ${Python3_EXECUTABLE} -B -X utf8
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_blocked_huffman_1m_public_measurements.py
-                $<TARGET_FILE:marc_position_blocked_huffman_1m_benchmark>
-                $<TARGET_FILE:marc_position_blocked_huffman_1m_public_resources>
-                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-1m-measurements)
-        set_tests_properties(marc_position_blocked_huffman_1m_public_measurements PROPERTIES TIMEOUT 120)
-        add_test(NAME marc_position_blocked_huffman_64k_public_measurements
-            COMMAND ${Python3_EXECUTABLE} -B -X utf8
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_blocked_huffman_64k_public_measurements.py
-                $<TARGET_FILE:marc_position_blocked_huffman_64k_benchmark>
-                $<TARGET_FILE:marc_position_blocked_huffman_64k_public_resources>
-                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-64k-measurements)
-        set_tests_properties(marc_position_blocked_huffman_64k_public_measurements PROPERTIES TIMEOUT 120)
-    endif()
 endif()
 
 if(MARC_BUILD_FUZZERS)
@@ -8436,21 +8110,7 @@ if(MARC_BUILD_TESTS)
     endif()
     get_target_property(position_tans_1m_owner_sources marc_position_tans_1m_owned_tests SOURCES)
     list(REMOVE_ITEM position_tans_1m_owner_sources tests/position_tans_1m_owned_tests.cpp)
-    add_executable(marc_position_tans_1m_resources
-        benchmarks/position_tans_1m_resources.cpp ${position_tans_1m_owner_sources})
-    target_compile_features(marc_position_tans_1m_resources PRIVATE cxx_std_20)
-    target_include_directories(marc_position_tans_1m_resources PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    if(WIN32)
-        target_link_libraries(marc_position_tans_1m_resources PRIVATE psapi)
-    endif()
-    if(Python3_Interpreter_FOUND)
-        add_test(NAME marc_position_tans_1m_resources_smoke
-            COMMAND ${Python3_EXECUTABLE} -B -X utf8
-                ${CMAKE_CURRENT_SOURCE_DIR}/tools/run_position_tans_1m_resources.py
-                $<TARGET_FILE:marc_position_tans_1m_resources>
-                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-1m-resources-smoke)
-        set_tests_properties(marc_position_tans_1m_resources_smoke PROPERTIES TIMEOUT 30)
-    endif()
+
     add_executable(marc_position_tans_1m_api_tests tests/position_tans_1m_api_tests.cpp)
     target_compile_features(marc_position_tans_1m_api_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_1m_api_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -8477,25 +8137,7 @@ if(MARC_BUILD_TESTS)
         set_tests_properties(marc_position_tans_1m_public_frame_differential
             marc_position_tans_1m_public_raw_differential PROPERTIES TIMEOUT 120 RESOURCE_LOCK marc_position_tans_1m_campaign)
     endif()
-    add_executable(marc_position_tans_1m_benchmark benchmarks/position_tans_1m_benchmark.cpp)
-    target_compile_features(marc_position_tans_1m_benchmark PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_tans_1m_benchmark PRIVATE marc::static)
-    add_executable(marc_position_tans_1m_public_resources benchmarks/position_tans_1m_public_resources.cpp)
-    target_compile_features(marc_position_tans_1m_public_resources PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_tans_1m_public_resources PRIVATE marc::static)
-    if(WIN32)
-        target_link_libraries(marc_position_tans_1m_public_resources PRIVATE psapi)
-    endif()
-    if(Python3_Interpreter_FOUND)
-        add_test(NAME marc_position_tans_1m_public_measurements
-            COMMAND ${Python3_EXECUTABLE} -B -X utf8
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_1m_public_measurements.py
-                $<TARGET_FILE:marc_position_tans_1m_benchmark>
-                $<TARGET_FILE:marc_position_tans_1m_public_resources>
-                $<TARGET_FILE:marc_cli>
-                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-1m-public-measurements)
-        set_tests_properties(marc_position_tans_1m_public_measurements PROPERTIES TIMEOUT 30 RESOURCE_LOCK marc_position_tans_1m_campaign)
-    endif()
+
     add_executable(marc_position_tans_4m_core_tests
         tests/position_tans_4m_core_tests.cpp
         src/entropy/position_tans_4m_format.cpp
@@ -8540,30 +8182,7 @@ if(MARC_BUILD_TESTS)
     add_test(NAME marc_position_tans_16m_api
         COMMAND marc_position_tans_16m_api_tests)
     set_tests_properties(marc_position_tans_16m_api PROPERTIES TIMEOUT 90)
-    add_executable(marc_position_tans_32m_benchmark benchmarks/position_tans_32m_benchmark.cpp)
-    target_compile_features(marc_position_tans_32m_benchmark PRIVATE cxx_std_20)
-    target_include_directories(marc_position_tans_32m_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-    target_link_libraries(marc_position_tans_32m_benchmark PRIVATE marc::static)
-    if(MARC_BUILD_TOOLS AND Python3_Interpreter_FOUND)
-        add_test(NAME marc_position_tans_32m_benchmark_smoke
-            COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_32m_benchmark_smoke.py
-                $<TARGET_FILE:marc_position_tans_32m_benchmark> ${CMAKE_CURRENT_BINARY_DIR}/position-tans-32m-benchmark)
-        set_tests_properties(marc_position_tans_32m_benchmark_smoke PROPERTIES TIMEOUT 300)
-    endif()
-    add_executable(marc_position_tans_64m_benchmark benchmarks/position_tans_64m_benchmark.cpp)
-    target_compile_features(marc_position_tans_64m_benchmark PRIVATE cxx_std_20)
-    target_include_directories(marc_position_tans_64m_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-    target_link_libraries(marc_position_tans_64m_benchmark PRIVATE marc::static)
-    if(WIN32)
-        target_link_libraries(marc_position_tans_64m_benchmark PRIVATE psapi)
-        target_link_libraries(marc_position_tans_32m_benchmark PRIVATE psapi)
-    endif()
-    if(Python3_Interpreter_FOUND)
-        add_test(NAME marc_position_tans_64m_benchmark_smoke
-            COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_64m_benchmark_smoke.py
-                $<TARGET_FILE:marc_position_tans_64m_benchmark> ${CMAKE_CURRENT_BINARY_DIR}/position-tans-64m-benchmark)
-        set_tests_properties(marc_position_tans_64m_benchmark_smoke PROPERTIES TIMEOUT 600)
-    endif()
+
     if(Python3_Interpreter_FOUND)
         add_test(NAME marc_position_tans_16m_vectors
             COMMAND ${Python3_EXECUTABLE} -B ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_16m_vectors.py)
@@ -8811,34 +8430,7 @@ if(MARC_BUILD_TESTS)
     target_link_libraries(marc_position_tans_4m_api_tests PRIVATE marc::static)
     add_test(NAME marc_position_tans_4m_api COMMAND marc_position_tans_4m_api_tests)
     set_tests_properties(marc_position_tans_4m_api PROPERTIES TIMEOUT 60)
-    add_executable(marc_position_tans_4m_benchmark benchmarks/position_tans_4m_benchmark.cpp)
-    target_compile_features(marc_position_tans_4m_benchmark PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_tans_4m_benchmark PRIVATE marc::static)
-    add_executable(marc_position_tans_8m_benchmark benchmarks/position_tans_8m_benchmark.cpp)
-    target_compile_features(marc_position_tans_8m_benchmark PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_tans_8m_benchmark PRIVATE marc::static)
-    add_executable(marc_position_tans_16m_benchmark benchmarks/position_tans_16m_benchmark.cpp)
-    target_compile_features(marc_position_tans_16m_benchmark PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_tans_16m_benchmark PRIVATE marc::static)
-    if(WIN32)
-        target_link_libraries(marc_position_tans_16m_benchmark PRIVATE psapi)
-    endif()
-    if(Python3_Interpreter_FOUND)
-        add_test(NAME marc_position_tans_8m_benchmark_smoke
-            COMMAND ${Python3_EXECUTABLE} -B -X utf8
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_8m_benchmark_smoke.py
-                $<TARGET_FILE:marc_position_tans_8m_benchmark>
-                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-8m-benchmark-smoke)
-        set_tests_properties(marc_position_tans_8m_benchmark_smoke PROPERTIES
-            TIMEOUT 120 RESOURCE_LOCK marc_position_tans_8m_campaign)
-        add_test(NAME marc_position_tans_16m_benchmark_smoke
-            COMMAND ${Python3_EXECUTABLE} -B -X utf8
-                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_tans_16m_benchmark_smoke.py
-                $<TARGET_FILE:marc_position_tans_16m_benchmark>
-                ${CMAKE_CURRENT_BINARY_DIR}/position-tans-16m-benchmark-smoke)
-        set_tests_properties(marc_position_tans_16m_benchmark_smoke PROPERTIES
-            TIMEOUT 180 RESOURCE_LOCK marc_position_tans_16m_campaign)
-    endif()
+
     add_executable(marc_position_tans_8m_contextual_probe tests/position_tans_8m_contextual_probe.cpp)
     target_compile_features(marc_position_tans_8m_contextual_probe PRIVATE cxx_std_20)
     target_link_libraries(marc_position_tans_8m_contextual_probe PRIVATE marc::static)
@@ -9620,64 +9212,6 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
     # Fresh64MiB owner runs observed below37 seconds; retain the large-window lock.
     set_tests_properties(marc_position_adaptive_huffman_64m_owned PROPERTIES TIMEOUT 180)
 
-    add_executable(marc_position_adaptive_huffman_64k_precursor
-        benchmarks/position_adaptive_huffman_64k_precursor.cpp ${position_adaptive_owned_sources})
-    target_compile_features(marc_position_adaptive_huffman_64k_precursor PRIVATE cxx_std_20)
-    target_include_directories(marc_position_adaptive_huffman_64k_precursor PRIVATE src)
-    target_link_libraries(marc_position_adaptive_huffman_64k_precursor PRIVATE marc::static)
-    if(WIN32)
-        target_link_libraries(marc_position_adaptive_huffman_64k_precursor PRIVATE psapi)
-    endif()
-    set_target_properties(marc_position_adaptive_huffman_64k_precursor PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
-    add_test(NAME marc_position_adaptive_huffman_64k_resource_smoke
-        COMMAND ${Python3_EXECUTABLE} -B -X utf8
-            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_precursor_smoke.py
-            $<TARGET_FILE:marc_position_adaptive_huffman_64k_precursor>
-            ${CMAKE_CURRENT_BINARY_DIR}/position-adaptive-huffman-resource-smoke)
-    add_executable(marc_position_adaptive_huffman_measure benchmarks/position_adaptive_huffman_measure.cpp)
-    target_compile_features(marc_position_adaptive_huffman_measure PRIVATE cxx_std_20)
-    target_link_libraries(marc_position_adaptive_huffman_measure PRIVATE marc::static)
-    if(WIN32)
-        target_link_libraries(marc_position_adaptive_huffman_measure PRIVATE psapi)
-    endif()
-    set_target_properties(marc_position_adaptive_huffman_measure PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
-    add_test(NAME marc_position_adaptive_huffman_64k_public_resource_smoke
-        COMMAND ${Python3_EXECUTABLE} -B -X utf8
-            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_precursor_smoke.py
-            $<TARGET_FILE:marc_position_adaptive_huffman_measure>
-            ${CMAKE_CURRENT_BINARY_DIR}/position-adaptive-huffman-public-resource-smoke --public)
-    add_test(NAME marc_position_adaptive_huffman_1m_public_resource_smoke
-        COMMAND ${Python3_EXECUTABLE} -B -X utf8
-            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_precursor_smoke.py
-            $<TARGET_FILE:marc_position_adaptive_huffman_measure>
-            ${CMAKE_CURRENT_BINARY_DIR}/position-adaptive-huffman-1m-public-resource-smoke --public --window=1m)
-    add_test(NAME marc_position_adaptive_huffman_4m_public_resource_smoke
-        COMMAND ${Python3_EXECUTABLE} -B -X utf8
-            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_precursor_smoke.py
-            $<TARGET_FILE:marc_position_adaptive_huffman_measure>
-            ${CMAKE_CURRENT_BINARY_DIR}/position-adaptive-huffman-4m-public-resource-smoke --public --window=4m)
-    add_test(NAME marc_position_adaptive_huffman_8m_public_resource_smoke
-        COMMAND ${Python3_EXECUTABLE} -B -X utf8
-            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_precursor_smoke.py
-            $<TARGET_FILE:marc_position_adaptive_huffman_measure>
-            ${CMAKE_CURRENT_BINARY_DIR}/position-adaptive-huffman-8m-public-resource-smoke --public --window=8m)
-    add_test(NAME marc_position_adaptive_huffman_16m_public_resource_smoke
-        COMMAND ${Python3_EXECUTABLE} -B -X utf8
-            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_precursor_smoke.py
-            $<TARGET_FILE:marc_position_adaptive_huffman_measure>
-            ${CMAKE_CURRENT_BINARY_DIR}/position-adaptive-huffman-16m-public-resource-smoke --public --window=16m)
-    add_test(NAME marc_position_adaptive_huffman_32m_public_resource_smoke
-        COMMAND ${Python3_EXECUTABLE} -B -X utf8
-            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_precursor_smoke.py
-            $<TARGET_FILE:marc_position_adaptive_huffman_measure>
-            ${CMAKE_CURRENT_BINARY_DIR}/position-adaptive-huffman-32m-public-resource-smoke --public --window=32m)
-    add_test(NAME marc_position_adaptive_huffman_64m_public_resource_smoke
-        COMMAND ${Python3_EXECUTABLE} -B -X utf8
-            ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_adaptive_huffman_precursor_smoke.py
-            $<TARGET_FILE:marc_position_adaptive_huffman_measure>
-            ${CMAKE_CURRENT_BINARY_DIR}/position-adaptive-huffman-64m-public-resource-smoke --public --window=64m)
     if(MARC_POWERSHELL_EXECUTABLE)
         add_test(NAME marc_position_adaptive_huffman_64k_bundle_headers
             COMMAND ${MARC_POWERSHELL_EXECUTABLE} -NoProfile -ExecutionPolicy Bypass
@@ -9730,22 +9264,19 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
     add_test(NAME marc_position_adaptive_huffman_64m_api COMMAND marc_position_adaptive_huffman_api_tests 64m)
     # Fresh64MiB API pilots observed below72 seconds, resource pilot below11.
     set_tests_properties(marc_position_adaptive_huffman_64m_api PROPERTIES TIMEOUT 300)
-    set_tests_properties(marc_position_adaptive_huffman_64m_public_resource_smoke PROPERTIES TIMEOUT 60)
+
     # Full32MiB API/resource/C pilots observed below31 seconds.
     set_tests_properties(marc_position_adaptive_huffman_32m_api PROPERTIES TIMEOUT 120)
-    set_tests_properties(marc_position_adaptive_huffman_32m_public_resource_smoke PROPERTIES TIMEOUT 30)
+
     # Full16MiB API/resource/C pilots observed below13 seconds.
     set_tests_properties(marc_position_adaptive_huffman_16m_api PROPERTIES TIMEOUT 60)
-    set_tests_properties(marc_position_adaptive_huffman_16m_public_resource_smoke PROPERTIES TIMEOUT 30)
+
     # Fresh API/C/resource pilots completed below6 seconds on both stacks.
-    set_tests_properties(marc_position_adaptive_huffman_8m_api
-        marc_position_adaptive_huffman_8m_public_resource_smoke PROPERTIES TIMEOUT 30)
+    set_tests_properties(marc_position_adaptive_huffman_8m_api PROPERTIES TIMEOUT 30)
     # Public4MiB API/resource pilots completed below2.5 seconds.
-    set_tests_properties(marc_position_adaptive_huffman_4m_api
-        marc_position_adaptive_huffman_4m_public_resource_smoke PROPERTIES TIMEOUT 30)
+    set_tests_properties(marc_position_adaptive_huffman_4m_api PROPERTIES TIMEOUT 30)
     # Public1MiB API/resource pilots completed below one second per registration.
-    set_tests_properties(marc_position_adaptive_huffman_1m_api
-        marc_position_adaptive_huffman_1m_public_resource_smoke PROPERTIES TIMEOUT 30)
+    set_tests_properties(marc_position_adaptive_huffman_1m_api PROPERTIES TIMEOUT 30)
     add_executable(marc_position_adaptive_huffman_cli_candidate tools/marc_cli.cpp)
     target_compile_features(marc_position_adaptive_huffman_cli_candidate PRIVATE cxx_std_20)
     target_link_libraries(marc_position_adaptive_huffman_cli_candidate PRIVATE marc::static)

@@ -27293,3 +27293,69 @@ no duplicate ledger entries or product edits result. Request manual hosted
 full_validation at the commit carrying this record before retiring old public
 measurement tools: Unix worker/RSS execution and full retained package/codec
 qualification remain unproven locally.
+
+
+### TVG-1643: hosted common-benchmark checkpoint confirmation
+
+The maintainer reports pushing10d685f1 and successful completion of manual
+GitHub CI full_validation. Record maintainer-reported evidence for the exact
+requested checkpoint; no workflow URL, job transcripts or independent external
+exchange receipts were supplied. Resume the authorized plan and qualify later
+edits separately. No additional local execution or push is inferred.
+
+
+### TVG-1644: measurement retirement with preserved public boundary recipes
+
+DD-1635/IR-1380 classify the actual464-project solution and its4192 registered
+tests before editing. Retire75 files:39 benchmark translation units,22 completed
+campaign/audit/precursor runners and14 driver-specific test scripts. Remove42
+targets, including the unconsumed four-MiB control-support library; its source
+wrappers remain available to the retained reference support. No surviving target
+links a retired one. Preserve public fuzz harnesses/runners, generic process
+auditing, corpus verification and the independent mathematical/vector tools.
+
+Replace24 measurement-specific registrations with four common worker suites.
+They preserve40 Blocked Huffman boundary cases,23 tANS cases,15 large-window
+rANS/Adaptive Huffman cases and two independently assembled full-literal4/8MiB
+Blocked Huffman streams. Check full canonical identities/frame/window/original
+sizes and exact producer bytes against the current public CLI. Exercise empty,
+singleton, below/equal/above complete-frame boundaries and final short frames.
+Retain late terminal/padding errors with zero failed-frame output. Canonical
+16/64MiB contextual boundaries replace historical private8/32MiB measurement
+controls; no configurable codec API behavior is changed or removed.
+
+The independent literal descriptors/frame recipes are ported from the former
+4/8MiB resource runners, preserving the211-byte finite archive form that expands
+to a full frame of literal A bytes and exercises maximum token occupancy. Do
+not substitute an encoder's overlapping-match choice for those decoder vectors.
+Private exact-grant/one-below admission assertions remain in the owner tests.
+Rebuild and run the retained64KiB/1MiB tANS and4/8MiB Blocked Huffman owner
+executables: all four pass in3.64 seconds.
+
+Post-removal MSVC common benchmark/CLI builds pass. All74 selected benchmark
+CTests pass in55.31 seconds, including all102 frozen v0.8.0 archive comparisons,
+native empty inputs, resource scopes and runner checks, plus the80 preserved
+boundary/vector cases. The four new CTests take3.71,3.31,25.75 and0.64 seconds.
+Compare actual generated project source/include/compile/dependency records:
+exactly42 targets retire (464->422), with every survivor unchanged. Compare
+registered names/commands/properties, excluding source-line backtraces:
+exactly24 retire and four are added (4192->4172); all4168 survivors are unchanged,
+including all3460 main cases. Production source/header and fuzz files are
+unchanged. Do not infer a new full4172-suite execution from this scoped evidence.
+
+Shared-only with benchmarks enabled generates successfully. Source-reference
+audits find no remaining executable/script clients of retired files; historical
+Markdown commands remain under explicit retirement notices. The initial XML
+inventory helper encountered a ProjectReference template without Include; use
+only concrete reference elements. CTest omits command for unbuilt executables,
+so consult generated registrations rather than silently missing those clients.
+Two sandbox process-setup sharing failures occurred before helper execution;
+the authorized elevated retry succeeds. These are audit/launch issues, not
+product/test failures. Final hosted validation remains a separate later gate.
+
+After the ledger updates, documentation/CI-policy/partition/corpus-verifier
+CTests pass4/4 in3.01 seconds. The retained standalone process-audit utility's
+13 regression tests also pass. git diff --check and the documentation ledger/
+link validator pass. Request manual full_validation at the committed retirement
+checkpoint before the next broad CMake split; prior hosted success qualifies
+the pre-retirement source, not this changed target/test graph.

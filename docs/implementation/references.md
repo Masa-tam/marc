@@ -12207,3 +12207,16 @@ admission, initial-only encoders and five-span capacity-only decoders. Use the
 repository's existing fresh-process resource measurement convention, including
 the post-exec child on Unix, to avoid inherited launcher high-water marks.
 No external implementation source or new compression algorithm is consulted.
+
+
+### IR-1380: superseded measurement roles and retained validation recipes
+
+Use the current solution/source/dependency graph, public102-profile benchmark,
+old per-window measurement tests and completed first-party campaign records.
+Keep mathematical rANS diagnostics/exporters, independently authored vectors,
+local corpus verification, generic process-audit validation and public fuzz
+harness/runners. Per-window timing/RSS executables, prototype admission probes
+and completed pool-refit/ratio campaign drivers are replaceable infrastructure.
+Move useful boundary, late-failure and independently assembled literal-only
+decoder recipes to common public-driver tests before retiring their clients.
+No external implementation or algorithm source is consulted.

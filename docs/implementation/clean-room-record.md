@@ -43981,3 +43981,31 @@ Silesia checksum workflow is integration evidence only. No external algorithm
 source, format/default/API change, comparative codec speed claim, fuzz campaign,
 hosted qualification or push is involved. All per-window role review remains
 open; do not retire independent diagnostic/vector oracles by name alone.
+
+
+### CR-2022: 2026-10-26 — hosted benchmark checkpoint continuation
+
+Author/reviewer: Codex. Record the maintainer's explicit successful push/manual
+full_validation report for10d685f1 in TVG-1643. Continue the stage-one plan by
+reviewing superseded measurement tools and retaining independent validation
+recipes. No external implementation source, new algorithm, local test result
+or push is involved in this confirmation.
+
+
+### CR-2023: 2026-10-26 — retire superseded per-window measurement graph
+
+Author/reviewer: Codex. Continue the authorized plan after TVG-1643's reported
+hosted success. Follow DD-1635/IR-1380: use the actual solution, CTest clients
+and first-party source recipes to distinguish redundant timing/RSS programs,
+completed non-production pool-refit studies and private admission measurements
+from independent correctness oracles. Retire75 reviewed files and42 targets.
+Keep public/reference production paths and fuzz coverage unchanged. Port useful
+boundary/withholding checks and independent full-literal vectors before deleting
+their old clients; verify the retained exact-grant owner tests separately.
+
+TVG-1644 records precise graph/test accounting and scoped execution. There is
+no codec implementation, installed-header, format, default or resource-policy
+change. Historical records/source remain available and retired commands are
+identified in current documentation. No external implementation reference,
+corpus timing campaign, fuzz execution, hosted result or push is claimed.
+Remaining profile-setup sharing and build/API/codec refactoring are still open.

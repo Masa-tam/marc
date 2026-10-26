@@ -35254,3 +35254,25 @@ unconditionally reference marc::static. Until their role review/retirement,
 gate their eleven registration blocks on the actual static target. The common
 public-API benchmark remains available with either library. This does not
 change the ordinary static-plus-shared target inventory or public library code.
+
+
+### DD-1635: retire per-window measurement copies after preserving validation
+
+The qualified common benchmark replaces canonical public-profile ratio,
+directional process/lifecycle timing, admission and physical-memory reporting.
+Retire superseded per-window benchmark/resource executables, their campaign
+runners/audits, precursor owners used only for historical measurement, and the
+non-production64KiB pool-refit diagnostic. Historical results and commands stay
+identified as historical and remain reproducible from the release tag.
+
+Do not discard meaningful recipes with those drivers: port full-frame boundary
+and final-short-frame checks, precise public identities, source preservation,
+exclusive destinations and late entropy-error withholding to a shared worker
+suite. Preserve independently assembled4/8MiB literal-only Blocked Huffman
+streams that stress maximum token occupancy. Private-owner exact-grant formulas
+are already covered by retained owner/public admission tests; keep those tests.
+Do not require non-canonical8/32MiB contextual measurement controls as public
+codec selectors. Keep actual public windows and their factories unchanged.
+Retain mathematical/token oracles and fuzz entry points rather than classifying
+files by the words diagnostic or precursor alone. Compare all surviving target
+source/compile/dependency sets and account explicitly for retired/new CTests.

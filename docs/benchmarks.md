@@ -14,9 +14,15 @@ benchmark selector. HashChain Exact and BinaryTree Exact remain public encoder
 strategies with their exhaustive-oracle correctness tests.
 The remaining private 1/4-MiB parser/owner/phase/counter and short-match cost
 studies, the Contextual rANS phase campaigns and unused eight-MiB diagnostic
-programs are also retired. Adopted codec implementations and public measurement
-drivers remain. The independently authored rANS diagnostic/exporter and vector
-tools are retained because current public-profile conformance tests use them.
+programs are also retired. The per-window public benchmark/resource executables,
+private admission precursors and completed pool-refit comparison/diagnostic
+campaigns are now retired too. Use the common102-profile driver and runner in
+the measurement contract below. Useful frame boundaries, late-error withholding
+and independently assembled literal-only vectors have moved to the common
+benchmark test suite. Adopted codec implementations remain unchanged. The
+independently authored rANS diagnostic/exporter and vector tools are retained
+because current public-profile conformance tests use them. Generic process
+auditing and public fuzz harnesses/runners also remain available.
 Public codec implementations, maintained benchmark coverage and independent
 correctness oracles are separate from these retired experiments. Track further
 retirements in [the refactoring plan](design/v1-refactoring-stage-1.md).
@@ -148,10 +154,10 @@ an untimed baseline archive, compares every timed encoding byte for byte, and
 checks every decoding against the original file. Each direction has an untimed
 warmup. It emits a successful report only after all verification passes, then
 removes its known temporary files and empty directory. Temporary disk space is
-required. Per-window public measurement tools remain temporarily while their
-additional reporting and historical campaign roles are reviewed for retirement.
-Those historical tools require a static library; the common public-API driver
-supports both static and shared-only configurations.
+required. The common public-API driver supports both static and shared-only
+configurations. Per-window measurement copies have been retired after replacing
+their public reporting and preserving their useful validation recipes in
+[the common boundary suite](../tests/benchmark_boundaries_tests.py).
 
 `encoded_to_input_ratio` includes the complete canonical stream header,
 parameters, frame headers, and payload. Empty input reports ratio zero because
@@ -225,6 +231,13 @@ python tools/run_public_benchmark.py --benchmark build/Release/marc_benchmark.ex
 Use a new directory under the ignored results area; do not commit corpus files
 or measurement outputs. This shared recipe replaces ad hoc execution mechanics;
 historical measurements retain their original timing/admission conventions.
+
+For a Windows performance campaign, the retained standalone preflight
+`python tools/benchmark_process_audit.py` records a read-only snapshot of the
+selected codec/build process names. Exit zero means enumeration succeeded and
+that selection was idle. It is a point-in-time observation rather than a lock;
+retain its receipt with performance evidence. This utility is independent of
+ordinary correctness/CTest runs and remains covered by its own regression tests.
 
 ### Large-file LZSS match-finder mode
 
@@ -13734,3 +13747,21 @@ files are removed after verification. Metadata/raw results remain ignored in
 out/refactoring/silesia-common-run-1. Earlier measurements keep their own
 conventions. Public per-window drivers remain until their additional reporting
 roles are explicitly classified for replacement; phase3 is not complete.
+
+
+## BM-0276: Retirement of redundant per-window measurement programs
+
+The common102-profile benchmark and fresh directional runner supersede39
+per-window timing/resource/precursor/diagnostic translation units and22 campaign
+scripts. Historical observations above keep their original settings, timing
+definitions and source revisions; their removed commands are not current entry
+points. The full release-tag source remains available for historical review.
+
+TVG-1644 preserves useful measurement-test recipes in four shared suites:
+80 frame-boundary, failed-frame-withholding and independently assembled
+literal-only decoder cases. Exact public stream bytes are checked against the
+CLI, and all102 frozen release vectors still pass. Four retained private owner
+tests separately pass exact-grant/one-below checks. Benchmark execution now has
+one maintained program plus common support, with the generic runner/corpus
+verifier/process-audit tooling retained. No new performance comparison or
+physical-memory improvement is asserted by removing duplicate code.

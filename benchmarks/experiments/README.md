@@ -7,6 +7,13 @@ executable or runner. The contextual phase/tokenization/probe campaigns are now
 also retired; no active JSON manifest remains here. See the
 [refactoring plan](../../docs/design/v1-refactoring-stage-1.md).
 
+Per-window public timing/resource programs, private admission precursors and
+completed pool-refit measurement/diagnostic campaigns are also retired. Their
+original source remains in v0.8.0. Current102-profile measurement uses the common
+driver and `tools/run_public_benchmark.py`; see the
+[current measurement contract](../../docs/benchmarks.md). Independent codec
+oracles and public fuzz tooling are retained separately from retired experiments.
+
 Historically this directory contained inert, versioned JSON descriptions of fixed benchmark
 experiments. A manifest contains only allowlisted strategy names, numeric
 conditions, expected workspace values, identity fields, and result

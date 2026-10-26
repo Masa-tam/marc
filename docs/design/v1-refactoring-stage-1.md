@@ -42,7 +42,7 @@ headers. These are starting observations, not deletion or line-count targets.
   correctness oracles from abandoned candidates.
 - [x] Remove diagnostic copies such as end_probe, phase_split, probe17, word4
   and word8 after proving their isolation from public routes.
-- [ ] Remove superseded phase, search and old/new experimental drivers, runners,
+- [x] Remove superseded phase, search and old/new experimental drivers, runners,
   manifests and experiment-only tests with their build registrations.
 - [x] Remove rejected Red-Black, Scapegoat, WAVL and Sparse HashTree research
   implementations after verifying production references. Preserve adopted
@@ -60,7 +60,7 @@ headers. These are starting observations, not deletion or line-count targets.
   reporting; keep physical resident measurements distinct from logical grants.
 - [x] Keep external corpus verification and repeatable measurement recipes.
   Do not redistribute corpus inputs or local results.
-- [ ] Remove redundant per-window measurement implementations only after their
+- [x] Remove redundant per-window measurement implementations only after their
   required reporting and public-profile coverage have replacements.
 
 ### 4. Split and simplify CMake
@@ -77,6 +77,8 @@ headers. These are starting observations, not deletion or line-count targets.
 
 - [ ] Share CLI input/output pumping, terminal handling, progress validation,
   transactional file behavior and error reporting; retain profile setup adapters.
+- [ ] Share applicable CLI/benchmark profile-setup adapters while keeping
+  execution-specific admission policies explicit.
 - [ ] Centralize the opaque internal handle definition and status/error mapping.
 - [ ] Share applicable validation/ownership helpers without merging different
   caller-workspace and owned-resource contracts.
@@ -266,3 +268,28 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   public measurement graph; resume that review after the reported hosted result.
   The rest of the six-phase plan remains incomplete. Do not infer hosted success
   for this checkpoint from the earlier checkpoint E report.
+
+
+- Hosted common-benchmark continuation: the maintainer reports successful push
+  and manual full_validation completion for10d685f1 (TVG-1643/CR-2022). No run
+  URL or independent external exchange receipt was supplied. Resume the legacy
+  measurement role review; later edits require their own qualification.
+
+
+- Measurement retirement (DD-1635/TVG-1644):75 files and42 targets retire;
+  four common suites preserve80 meaningful boundary/vector recipes while24
+  old driver-specific registrations retire. All74 benchmark CTests and four
+  retained exact-grant owner tests pass. Actual generated survivors retain
+  identical source/settings/dependency and test contracts:422 targets and4172
+  tests remain. Production/header/fuzz sources are unchanged. Shared-only
+  benchmark configuration still generates. Phase-three measurement/reporting
+  consolidation is locally qualified; legacy67-profile configuration setup
+  will share adapters with the CLI in phase5. Remaining internal profiling/
+  reference roles still require phase2/6 review. Phases4–6 remain open.
+
+- Hosted retirement gate: push the commit carrying TVG-1644 and run manual
+  full_validation before the CMake module split. Require complete retained
+  Windows/Linux tests, the new shared boundary suites, installed packages and
+  102-profile bundle validation. Pause at this committed boundary and resume
+  phase4 after the maintainer's result. Local scoped checks do not replace the
+  full4172-registration hosted gate; the six-phase objective is still incomplete.
