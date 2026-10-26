@@ -293,3 +293,18 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   102-profile bundle validation. Pause at this committed boundary and resume
   phase4 after the maintainer's result. Local scoped checks do not replace the
   full4172-registration hosted gate; the six-phase objective is still incomplete.
+
+
+- Hosted retirement continuation: the maintainer reports successful push and
+  manual full_validation at1f2fd81d (TVG-1645/CR-2024). No run URL or external
+  exchange receipt was supplied. Resume phase4 with fresh target/test/install
+  snapshots; subsequent edits need their own qualification.
+
+
+- Phase4 mechanical split (TVG-1646/CR-2025): root CMake now explicitly loads
+  responsibility modules and test families. Ordinary422 targets/4172 tests,
+  single-library configurations, diagnostic configuration, package exports and
+  generated install scripts match the pre-split receipts exactly. Optional
+  Clang fuzz retains1672 compile commands and149 link steps. These are generated
+  contracts, not runtime/fuzz/installed-consumer execution. Continue transparent
+  setup helpers and package/runtime gates before marking phase4 complete.

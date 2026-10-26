@@ -35276,3 +35276,21 @@ codec selectors. Keep actual public windows and their factories unchanged.
 Retain mathematical/token oracles and fuzz entry points rather than classifying
 files by the words diagnostic or precursor alone. Compare all surviving target
 source/compile/dependency sets and account explicitly for retired/new CTests.
+
+
+### DD-1636: separate CMake responsibilities before deduplicating setup
+
+Extract options, production sources/libraries, tools/examples, benchmarks,
+tests, fuzzers, diagnostics and install rules into explicit included modules.
+Keep source/binary directory context and public targets/aliases/options intact.
+Test-family fragments retain their internal command order. Load library/tool
+targets before consumers, test source inventories before optional fuzz users,
+and scheduling/CI-label policies after every test registration. Preserve the
+early global MSVC runtime/compile choices. Do not add a new directory scope.
+
+First compare generated contracts with moved command bodies unchanged. Then
+introduce small transparent target helpers only for identical existing setup;
+do not normalize previously different warning/visibility/ownership flags.
+Keep explicit source lists and profile limits. Validate ordinary and optional
+configurations, export/install layout and actual installed consumers before
+requesting the next hosted gate. No decoder or public API change is intended.

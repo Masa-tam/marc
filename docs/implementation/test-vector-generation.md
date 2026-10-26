@@ -27359,3 +27359,42 @@ CTests pass4/4 in3.01 seconds. The retained standalone process-audit utility's
 link validator pass. Request manual full_validation at the committed retirement
 checkpoint before the next broad CMake split; prior hosted success qualifies
 the pre-retirement source, not this changed target/test graph.
+
+
+### TVG-1645: hosted measurement-retirement checkpoint confirmation
+
+The maintainer reports pushing1f2fd81d and successful manual GitHub CI
+full_validation completion. Record this as maintainer-reported evidence at the
+requested retirement checkpoint. No workflow URL/job transcripts or independent
+external exchange receipts were supplied. Resume phase4; this does not qualify
+later CMake edits. No new local execution or push is inferred.
+
+
+### TVG-1646: mechanical CMake module split and configuration equivalence
+
+Move the original command bodies into explicit included modules, preserving
+root source/binary directory context. The root9575-line file becomes19 lines.
+Source/library/tool/benchmark/install/fuzz/diagnostic declarations and test
+families are separate; apply scheduling and CI labels after all registrations.
+All original declaration bodies are moved without changing their contents.
+Update the documentation validator to verify actual module includes and read
+the existing GoogleTest/interop timeout contracts from the loaded option/core
+modules; retain the timeout expressions and version checks themselves.
+
+Capture semantic generated MSVC projects, per-source properties, compile/link
+settings, include/reference sets, CTest names/commands/properties and seven
+generated package/export files. Compare before/after in the same build roots:
+ordinary422 targets/4172 tests, shared-only7/0, static-only7/0 and diagnostics
+423/713 all match exactly. The fresh diagnostic build's713 registrations include
+the undiscovered-main placeholder; this is configuration equivalence, not713
+executed or discovered main cases. All four generated install scripts and all
+seven export/config hashes per configuration match exactly.
+
+The optional Clang/Ninja fuzz configuration retains all1672 compile commands
+and149 executable/library link steps exactly. This is configure/generate and
+command comparison, not a fuzz build/campaign. Dedicated CI fuzz jobs remain
+absent. No production source, public header, fuzz source or CI workflow changes.
+An initial splitter classified only set(MARC_SOURCES), omitting its later
+list(APPEND); it refused before writing files. Include that explicit append and
+repeat the extraction. The subsequent complete configuration comparisons pass.
+Runtime and installed-consumer checks follow after transparent helper sharing.

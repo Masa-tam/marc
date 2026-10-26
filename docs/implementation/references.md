@@ -12220,3 +12220,14 @@ and completed pool-refit/ratio campaign drivers are replaceable infrastructure.
 Move useful boundary, late-failure and independently assembled literal-only
 decoder recipes to common public-driver tests before retiring their clients.
 No external implementation or algorithm source is consulted.
+
+
+### IR-1381: CMake structure and registration equivalence
+
+Use the repository's existing CMake commands, actual generated project/CTest
+records, optional fuzz/diagnostic configurations, installed exports and package
+consumer tests as first-party references. Preserve source/compile/link options,
+public dependencies, includes, resource test properties, labels and install
+paths. include() keeps the source/binary directory context; add_subdirectory()
+would change existing relative-path interpretation. No external codec source
+or new algorithm reference is consulted.

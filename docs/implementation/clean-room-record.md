@@ -44009,3 +44009,25 @@ change. Historical records/source remain available and retired commands are
 identified in current documentation. No external implementation reference,
 corpus timing campaign, fuzz execution, hosted result or push is claimed.
 Remaining profile-setup sharing and build/API/codec refactoring are still open.
+
+
+### CR-2024: 2026-10-27 — hosted retirement continuation
+
+Author/reviewer: Codex. TVG-1645 records the maintainer's successful push/manual
+full_validation report at1f2fd81d. Continue the authorized phase4 CMake split,
+preserving observed target/test/install contracts. No external implementation,
+new algorithm, local runtime result or push is involved in this confirmation.
+
+
+### CR-2025: 2026-10-27 — mechanical CMake responsibility split
+
+Author/reviewer: Codex. Follow DD-1636/IR-1381 and the authorized stage-one plan.
+Move original CMake declaration bodies without changing sources, flags, public
+targets/aliases, optional settings, install destinations or test contracts.
+Use include() rather than adding directory scopes. Preserve test-family order
+and shared inventories, then compare generated behavior rather than inferring
+equivalence from text movement. TVG-1646 records four MSVC configuration
+comparisons plus Clang/Ninja fuzz compile/link command identity. Adapt static
+documentation checks to the modules they now load. No external implementation,
+codec logic, API/format/default change, fuzz execution, new hosted result or
+push is involved. Helper deduplication and runtime/package validation remain.

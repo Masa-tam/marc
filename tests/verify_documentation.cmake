@@ -2018,12 +2018,36 @@ endforeach()
 
 file(READ "${source_dir}/CMakeLists.txt" root_cmake_content)
 string(REPLACE "\r\n" "\n" root_cmake_content "${root_cmake_content}")
+foreach(required_build_module IN ITEMS
+        MarcOptions MarcSources MarcLibraries MarcTools MarcBenchmarks
+        MarcInstall MarcTests MarcDiagnostics MarcFuzzers)
+    if(NOT EXISTS "${source_dir}/cmake/${required_build_module}.cmake")
+        message(FATAL_ERROR "Missing build module: ${required_build_module}")
+    endif()
+    string(FIND "${root_cmake_content}"
+        "include(cmake/${required_build_module}.cmake)" module_include_offset)
+    if(module_include_offset EQUAL -1)
+        message(FATAL_ERROR "Root does not load build module: ${required_build_module}")
+    endif()
+endforeach()
+file(READ "${source_dir}/cmake/MarcTests.cmake" test_modules_content)
+string(FIND "${test_modules_content}"
+    "include(\${CMAKE_CURRENT_LIST_DIR}/tests/MarcCoreTests.cmake)" core_tests_offset)
+if(core_tests_offset EQUAL -1)
+    message(FATAL_ERROR "Test registration must load MarcCoreTests")
+endif()
+set(cmake_contract_content "${root_cmake_content}")
+foreach(contract_file IN ITEMS cmake/MarcOptions.cmake cmake/tests/MarcCoreTests.cmake)
+    file(READ "${source_dir}/${contract_file}" contract_content)
+    string(REPLACE "\r\n" "\n" contract_content "${contract_content}")
+    string(APPEND cmake_contract_content "\n${contract_content}")
+endforeach()
 foreach(required_gtest_discovery_contract IN ITEMS
         "set(MARC_GTEST_DISCOVERY_TIMEOUT \"60\" CACHE STRING"
         "MARC_GTEST_DISCOVERY_TIMEOUT must be a positive integer"
         "DISCOVERY_MODE PRE_TEST"
         "DISCOVERY_TIMEOUT \"\${MARC_GTEST_DISCOVERY_TIMEOUT}\"")
-    string(FIND "${root_cmake_content}"
+    string(FIND "${cmake_contract_content}"
         "${required_gtest_discovery_contract}"
         gtest_discovery_contract_offset)
     if(gtest_discovery_contract_offset EQUAL -1)
@@ -2032,7 +2056,7 @@ foreach(required_gtest_discovery_contract IN ITEMS
             "${required_gtest_discovery_contract}")
     endif()
 endforeach()
-string(FIND "${root_cmake_content}"
+string(FIND "${cmake_contract_content}"
     "set_tests_properties(marc_interoperability_schema_compatibility\n                PROPERTIES TIMEOUT 1800 RUN_SERIAL TRUE\n                    PASS_REGULAR_EXPRESSION \"Verified interoperability schemas 1 through\")"
     interoperability_timeout_offset)
 if(interoperability_timeout_offset EQUAL -1)
