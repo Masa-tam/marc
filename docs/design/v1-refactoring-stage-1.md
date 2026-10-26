@@ -65,10 +65,10 @@ headers. These are starting observations, not deletion or line-count targets.
 
 ### 4. Split and simplify CMake
 
-- [ ] Separate production sources, tools, tests, benchmarks, fuzz and install
+- [x] Separate production sources, tools, tests, benchmarks, fuzz and install
   rules into explicit modules with unchanged behavior before deduplication.
-- [ ] Share repeated target setup/registration with small functions.
-- [ ] Compare generated targets, source/compile settings, install exports and
+- [x] Share repeated target setup/registration with small functions.
+- [x] Compare generated targets, source/compile settings, install exports and
   CTest names/labels; account for deliberate experiment removals explicitly.
 - [ ] Preserve shared-only/static-only builds, examples, package consumption
   and regular/deep CI partitioning. Do not revive dedicated CI fuzz jobs.
@@ -308,3 +308,21 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   Clang fuzz retains1672 compile commands and149 link steps. These are generated
   contracts, not runtime/fuzz/installed-consumer execution. Continue transparent
   setup helpers and package/runtime gates before marking phase4 complete.
+
+
+- Phase4 local qualification (TVG-1647/CR-2026):18 responsibility/helper/test
+  modules leave a20-line root. Two small helpers replace337 C++20 setup pairs
+  and59 identical fuzzer setups. All ordinary/single-library/diagnostic generated
+  contracts and seven package/export hashes per configuration match the original
+  root. Fuzz-only and combined configurations retain compile/link/test contracts.
+  Installed C consumers exercise both library linkages successfully; all74
+  benchmark CTests pass. The complete4172-test Windows/Linux and fresh
+  single-library package builds remain a hosted gate. Phase5 has not begun.
+
+- Hosted phase4 gate: push both the mechanical split commit63595f15 and the
+  following helper/qualification commit carrying TVG-1647, then run manual
+  full_validation. Confirm Windows/Linux complete4172-test coverage, static-only
+  and shared-only installed-package consumers, examples and102-profile bundles.
+  Pause before phase5; resolve the remaining phase4 preservation checkbox from
+  the maintainer's reported hosted result rather than local metadata alone.
+  The complete six-phase refactoring objective remains unfinished.

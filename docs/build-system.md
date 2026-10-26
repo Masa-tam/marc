@@ -7,6 +7,7 @@ profile identities remain explicit; the build does not discover codecs by glob.
 | Module | Responsibility |
 | --- | --- |
 | `cmake/MarcOptions.cmake` | Cache options, validation, early compiler/runtime policy. |
+| `cmake/MarcTargetHelpers.cmake` | Identical executable/fuzzer registration mechanics. |
 | `cmake/MarcSources.cmake` | Production translation-unit inventory. |
 | `cmake/MarcLibraries.cmake` | Static/shared targets, public aliases, compile visibility and includes. |
 | `cmake/MarcTools.cmake` | CLI and examples. |
@@ -23,6 +24,12 @@ source inventories before optional fuzz targets use them. Scheduling is deferred
 until all registrations exist, and CI labels are applied at the end. Installation
 keeps its existing targets, destinations and exported interface. Including a file
 does not create the different directory scope that `add_subdirectory()` would.
+
+`marc_add_cpp_executable` combines executable creation and the existing private
+C++20 feature. `marc_add_fuzzer` additionally shares one exact existing set of
+include, sanitizer, warning and static-link options. Other warning combinations,
+public/private dependencies, visibility and profile admission settings remain
+explicit; helpers do not impose new defaults on those targets.
 
 When changing registration mechanics, compare generated source/compile/link and
 dependency records, CTest names/properties, and installed package exports. Check

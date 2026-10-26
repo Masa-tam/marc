@@ -7,6 +7,7 @@ include(CMakePackageConfigHelpers)
 
 # Keep directory context while separating build responsibilities.
 include(cmake/MarcOptions.cmake)
+include(cmake/MarcTargetHelpers.cmake)
 include(cmake/MarcSources.cmake)
 include(cmake/MarcLibraries.cmake)
 include(cmake/MarcTools.cmake)

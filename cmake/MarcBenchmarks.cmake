@@ -1,8 +1,7 @@
 # MarcBenchmarks: explicit project declarations.
 if(MARC_BUILD_BENCHMARKS)
 
-    add_executable(marc_benchmark benchmarks/marc_benchmark.cpp)
-    target_compile_features(marc_benchmark PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_benchmark benchmarks/marc_benchmark.cpp)
     set_target_properties(marc_benchmark PROPERTIES CXX_EXTENSIONS OFF)
     if(WIN32)
         target_link_libraries(marc_benchmark PRIVATE psapi)

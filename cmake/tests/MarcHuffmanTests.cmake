@@ -28,9 +28,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
         COMMAND ${Python3_EXECUTABLE} -B -X utf8
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_blocked_huffman_8m_vectors.py)
     set_tests_properties(marc_position_blocked_huffman_8m_vectors PROPERTIES TIMEOUT 30)
-    add_executable(marc_position_blocked_huffman_64m_core_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_64m_core_tests
         tests/position_blocked_huffman_64m_core_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_64m_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_64m_core_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_64m_core_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_64m_core COMMAND marc_position_blocked_huffman_64m_core_tests)
@@ -41,9 +40,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_64m_core_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-64m-differential)
     set_tests_properties(marc_position_blocked_huffman_64m_differential PROPERTIES TIMEOUT 120 RUN_SERIAL TRUE)
-    add_executable(marc_position_blocked_huffman_32m_core_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_32m_core_tests
         tests/position_blocked_huffman_32m_core_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_32m_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_32m_core_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_32m_core_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_32m_core COMMAND marc_position_blocked_huffman_32m_core_tests)
@@ -54,9 +52,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_32m_core_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-32m-differential)
     set_tests_properties(marc_position_blocked_huffman_32m_differential PROPERTIES TIMEOUT 120)
-    add_executable(marc_position_blocked_huffman_16m_core_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_16m_core_tests
         tests/position_blocked_huffman_16m_core_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_16m_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_16m_core_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_16m_core_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_16m_core COMMAND marc_position_blocked_huffman_16m_core_tests)
@@ -67,9 +64,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_16m_core_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-16m-differential)
     set_tests_properties(marc_position_blocked_huffman_16m_differential PROPERTIES TIMEOUT 120)
-    add_executable(marc_position_blocked_huffman_8m_core_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_8m_core_tests
         tests/position_blocked_huffman_8m_core_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_8m_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_8m_core_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_8m_core_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_8m_core COMMAND marc_position_blocked_huffman_8m_core_tests)
@@ -80,9 +76,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_8m_core_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-8m-differential)
     set_tests_properties(marc_position_blocked_huffman_8m_differential PROPERTIES TIMEOUT 120)
-    add_executable(marc_position_blocked_huffman_64m_token_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_64m_token_tests
         tests/position_blocked_huffman_64m_token_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_64m_token_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_64m_token_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_64m_token_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_64m_tokens COMMAND marc_position_blocked_huffman_64m_token_tests)
@@ -95,9 +90,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
     # Full directed boundary set took 175.14 seconds; retain all cases and
     # leave more than three times that observed duration for slower runners.
     set_tests_properties(marc_position_blocked_huffman_64m_token_differential PROPERTIES TIMEOUT 600 RUN_SERIAL TRUE)
-    add_executable(marc_position_blocked_huffman_32m_token_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_32m_token_tests
         tests/position_blocked_huffman_32m_token_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_32m_token_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_32m_token_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_32m_token_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_32m_tokens COMMAND marc_position_blocked_huffman_32m_token_tests)
@@ -108,9 +102,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_32m_token_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-32m-token-differential)
     set_tests_properties(marc_position_blocked_huffman_32m_token_differential PROPERTIES TIMEOUT 300 RUN_SERIAL TRUE)
-    add_executable(marc_position_blocked_huffman_16m_token_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_16m_token_tests
         tests/position_blocked_huffman_16m_token_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_16m_token_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_16m_token_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_16m_token_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_16m_tokens COMMAND marc_position_blocked_huffman_16m_token_tests)
@@ -121,9 +114,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_16m_token_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-16m-token-differential)
     set_tests_properties(marc_position_blocked_huffman_16m_token_differential PROPERTIES TIMEOUT 120 RUN_SERIAL TRUE)
-    add_executable(marc_position_blocked_huffman_8m_token_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_8m_token_tests
         tests/position_blocked_huffman_8m_token_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_8m_token_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_8m_token_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_8m_token_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_8m_tokens COMMAND marc_position_blocked_huffman_8m_token_tests)
@@ -135,9 +127,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-8m-token-differential)
     set_tests_properties(marc_position_blocked_huffman_8m_token_differential PROPERTIES TIMEOUT 120)
     foreach(kind frame stream)
-        add_executable(marc_position_blocked_huffman_64m_${kind}_tests
+        marc_add_cpp_executable(marc_position_blocked_huffman_64m_${kind}_tests
             tests/position_blocked_huffman_64m_${kind}_tests.cpp)
-        target_compile_features(marc_position_blocked_huffman_64m_${kind}_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_blocked_huffman_64m_${kind}_tests PRIVATE src)
         target_link_libraries(marc_position_blocked_huffman_64m_${kind}_tests PRIVATE marc::static)
     endforeach()
@@ -153,9 +144,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
     # leave more than three times that duration for slower runners.
     set_tests_properties(marc_position_blocked_huffman_64m_frame_differential PROPERTIES TIMEOUT 600 RUN_SERIAL TRUE)
     foreach(kind frame stream)
-        add_executable(marc_position_blocked_huffman_32m_${kind}_tests
+        marc_add_cpp_executable(marc_position_blocked_huffman_32m_${kind}_tests
             tests/position_blocked_huffman_32m_${kind}_tests.cpp)
-        target_compile_features(marc_position_blocked_huffman_32m_${kind}_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_blocked_huffman_32m_${kind}_tests PRIVATE src)
         target_link_libraries(marc_position_blocked_huffman_32m_${kind}_tests PRIVATE marc::static)
     endforeach()
@@ -169,9 +159,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-32m-frame-differential)
     set_tests_properties(marc_position_blocked_huffman_32m_frame_differential PROPERTIES TIMEOUT 300 RUN_SERIAL TRUE)
     foreach(kind frame stream)
-        add_executable(marc_position_blocked_huffman_16m_${kind}_tests
+        marc_add_cpp_executable(marc_position_blocked_huffman_16m_${kind}_tests
             tests/position_blocked_huffman_16m_${kind}_tests.cpp)
-        target_compile_features(marc_position_blocked_huffman_16m_${kind}_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_blocked_huffman_16m_${kind}_tests PRIVATE src)
         target_link_libraries(marc_position_blocked_huffman_16m_${kind}_tests PRIVATE marc::static)
     endforeach()
@@ -185,9 +174,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-16m-frame-differential)
     set_tests_properties(marc_position_blocked_huffman_16m_frame_differential PROPERTIES TIMEOUT 120 RUN_SERIAL TRUE)
     foreach(kind frame stream)
-        add_executable(marc_position_blocked_huffman_8m_${kind}_tests
+        marc_add_cpp_executable(marc_position_blocked_huffman_8m_${kind}_tests
             tests/position_blocked_huffman_8m_${kind}_tests.cpp)
-        target_compile_features(marc_position_blocked_huffman_8m_${kind}_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_blocked_huffman_8m_${kind}_tests PRIVATE src)
         target_link_libraries(marc_position_blocked_huffman_8m_${kind}_tests PRIVATE marc::static)
     endforeach()
@@ -200,9 +188,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_8m_frame_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-8m-frame-differential)
     set_tests_properties(marc_position_blocked_huffman_8m_frame_differential PROPERTIES TIMEOUT 120)
-    add_executable(marc_position_blocked_huffman_64m_owned_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_64m_owned_tests
         tests/position_blocked_huffman_64m_owned_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_64m_owned_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_64m_owned_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_64m_owned_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_64m_owned COMMAND marc_position_blocked_huffman_64m_owned_tests)
@@ -215,9 +202,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
     # All 499 directed inputs took 273.51 seconds. Keep the full set serial
     # with more than four times that observed duration for slower runners.
     set_tests_properties(marc_position_blocked_huffman_64m_raw_differential PROPERTIES TIMEOUT 1200 RUN_SERIAL TRUE)
-    add_executable(marc_position_blocked_huffman_32m_owned_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_32m_owned_tests
         tests/position_blocked_huffman_32m_owned_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_32m_owned_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_32m_owned_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_32m_owned_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_32m_owned COMMAND marc_position_blocked_huffman_32m_owned_tests)
@@ -228,9 +214,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_32m_owned_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-32m-raw-differential)
     set_tests_properties(marc_position_blocked_huffman_32m_raw_differential PROPERTIES TIMEOUT 600 RUN_SERIAL TRUE)
-    add_executable(marc_position_blocked_huffman_16m_owned_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_16m_owned_tests
         tests/position_blocked_huffman_16m_owned_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_16m_owned_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_16m_owned_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_16m_owned_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_16m_owned COMMAND marc_position_blocked_huffman_16m_owned_tests)
@@ -241,9 +226,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_16m_owned_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-16m-raw-differential)
     set_tests_properties(marc_position_blocked_huffman_16m_raw_differential PROPERTIES TIMEOUT 180 RUN_SERIAL TRUE)
-    add_executable(marc_position_blocked_huffman_8m_owned_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_8m_owned_tests
         tests/position_blocked_huffman_8m_owned_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_8m_owned_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_8m_owned_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_8m_owned_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_8m_owned COMMAND marc_position_blocked_huffman_8m_owned_tests)
@@ -254,9 +238,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_8m_owned_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-8m-raw-differential)
     set_tests_properties(marc_position_blocked_huffman_8m_raw_differential PROPERTIES TIMEOUT 180)
-    add_executable(marc_position_blocked_huffman_4m_core_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_4m_core_tests
         tests/position_blocked_huffman_4m_core_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_4m_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_4m_core_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_4m_core_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_4m_core COMMAND marc_position_blocked_huffman_4m_core_tests)
@@ -267,9 +250,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_4m_core_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-4m-differential)
     set_tests_properties(marc_position_blocked_huffman_4m_differential PROPERTIES TIMEOUT 120)
-    add_executable(marc_position_blocked_huffman_1m_core_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_1m_core_tests
         tests/position_blocked_huffman_1m_core_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_1m_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_1m_core_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_1m_core_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_1m_core COMMAND marc_position_blocked_huffman_1m_core_tests)
@@ -280,9 +262,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_1m_core_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-1m-differential)
     set_tests_properties(marc_position_blocked_huffman_1m_differential PROPERTIES TIMEOUT 120)
-    add_executable(marc_position_blocked_huffman_64k_core_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_64k_core_tests
         tests/position_blocked_huffman_64k_core_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_64k_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_64k_core_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_64k_core_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_64k_core COMMAND marc_position_blocked_huffman_64k_core_tests)
@@ -293,9 +274,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_64k_core_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-64k-differential)
     set_tests_properties(marc_position_blocked_huffman_64k_differential PROPERTIES TIMEOUT 120)
-    add_executable(marc_position_blocked_huffman_64k_token_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_64k_token_tests
         tests/position_blocked_huffman_64k_token_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_64k_token_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_64k_token_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_64k_token_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_64k_tokens COMMAND marc_position_blocked_huffman_64k_token_tests)
@@ -306,9 +286,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_64k_token_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-64k-token-differential)
     set_tests_properties(marc_position_blocked_huffman_64k_token_differential PROPERTIES TIMEOUT 120)
-    add_executable(marc_position_blocked_huffman_1m_token_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_1m_token_tests
         tests/position_blocked_huffman_1m_token_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_1m_token_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_1m_token_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_1m_token_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_1m_tokens COMMAND marc_position_blocked_huffman_1m_token_tests)
@@ -319,9 +298,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_1m_token_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-1m-token-differential)
     set_tests_properties(marc_position_blocked_huffman_1m_token_differential PROPERTIES TIMEOUT 120)
-    add_executable(marc_position_blocked_huffman_4m_token_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_4m_token_tests
         tests/position_blocked_huffman_4m_token_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_4m_token_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_4m_token_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_4m_token_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_4m_tokens COMMAND marc_position_blocked_huffman_4m_token_tests)
@@ -332,9 +310,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_4m_token_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-4m-token-differential)
     set_tests_properties(marc_position_blocked_huffman_4m_token_differential PROPERTIES TIMEOUT 120)
-    add_executable(marc_position_blocked_huffman_64k_frame_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_64k_frame_tests
         tests/position_blocked_huffman_64k_frame_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_64k_frame_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_64k_frame_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_64k_frame_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_64k_frames COMMAND marc_position_blocked_huffman_64k_frame_tests)
@@ -345,16 +322,14 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_64k_frame_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-64k-frame-differential)
     set_tests_properties(marc_position_blocked_huffman_64k_frame_differential PROPERTIES TIMEOUT 120)
-    add_executable(marc_position_blocked_huffman_64k_stream_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_64k_stream_tests
         tests/position_blocked_huffman_64k_stream_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_64k_stream_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_64k_stream_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_64k_stream_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_64k_stream COMMAND marc_position_blocked_huffman_64k_stream_tests)
     set_tests_properties(marc_position_blocked_huffman_64k_stream PROPERTIES TIMEOUT 30)
-    add_executable(marc_position_blocked_huffman_1m_frame_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_1m_frame_tests
         tests/position_blocked_huffman_1m_frame_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_1m_frame_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_1m_frame_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_1m_frame_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_1m_frames COMMAND marc_position_blocked_huffman_1m_frame_tests)
@@ -365,17 +340,15 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_1m_frame_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-1m-frame-differential)
     set_tests_properties(marc_position_blocked_huffman_1m_frame_differential PROPERTIES TIMEOUT 120)
-    add_executable(marc_position_blocked_huffman_1m_stream_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_1m_stream_tests
         tests/position_blocked_huffman_1m_stream_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_1m_stream_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_1m_stream_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_1m_stream_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_1m_stream COMMAND marc_position_blocked_huffman_1m_stream_tests)
     set_tests_properties(marc_position_blocked_huffman_1m_stream PROPERTIES TIMEOUT 30)
     foreach(kind IN ITEMS frame stream)
-        add_executable(marc_position_blocked_huffman_4m_${kind}_tests
+        marc_add_cpp_executable(marc_position_blocked_huffman_4m_${kind}_tests
             tests/position_blocked_huffman_4m_${kind}_tests.cpp)
-        target_compile_features(marc_position_blocked_huffman_4m_${kind}_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_blocked_huffman_4m_${kind}_tests PRIVATE src)
         target_link_libraries(marc_position_blocked_huffman_4m_${kind}_tests PRIVATE marc::static)
     endforeach()
@@ -388,9 +361,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_4m_frame_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-4m-frame-differential)
     set_tests_properties(marc_position_blocked_huffman_4m_frame_differential PROPERTIES TIMEOUT 120)
-    add_executable(marc_position_blocked_huffman_4m_owned_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_4m_owned_tests
         tests/position_blocked_huffman_4m_owned_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_4m_owned_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_4m_owned_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_4m_owned_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_4m_owned COMMAND marc_position_blocked_huffman_4m_owned_tests)
@@ -401,9 +373,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_4m_owned_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-4m-raw-differential)
     set_tests_properties(marc_position_blocked_huffman_4m_raw_differential PROPERTIES TIMEOUT 180)
-    add_executable(marc_position_blocked_huffman_1m_owned_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_1m_owned_tests
         tests/position_blocked_huffman_1m_owned_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_1m_owned_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_1m_owned_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_1m_owned_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_1m_owned COMMAND marc_position_blocked_huffman_1m_owned_tests)
@@ -414,9 +385,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_1m_owned_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-1m-raw-differential)
     set_tests_properties(marc_position_blocked_huffman_1m_raw_differential PROPERTIES TIMEOUT 180)
-    add_executable(marc_position_blocked_huffman_64k_owned_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_64k_owned_tests
         tests/position_blocked_huffman_64k_owned_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_64k_owned_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_64k_owned_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_64k_owned_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_64k_owned COMMAND marc_position_blocked_huffman_64k_owned_tests)
@@ -427,9 +397,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_64k_owned_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-64k-raw-differential)
     set_tests_properties(marc_position_blocked_huffman_64k_raw_differential PROPERTIES TIMEOUT 120)
-    add_executable(marc_position_blocked_huffman_64k_api_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_64k_api_tests
         tests/position_blocked_huffman_64k_api_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_64k_api_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_64k_api_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_64k_api_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_64k_api COMMAND marc_position_blocked_huffman_64k_api_tests)
@@ -447,9 +416,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_64k_api_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-64k-public-raw --public)
     set_tests_properties(marc_position_blocked_huffman_64k_public_raw_differential PROPERTIES TIMEOUT 120)
-    add_executable(marc_position_blocked_huffman_4m_api_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_4m_api_tests
         tests/position_blocked_huffman_4m_api_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_4m_api_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_4m_api_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_4m_api_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_4m_api COMMAND marc_position_blocked_huffman_4m_api_tests)
@@ -467,9 +435,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_4m_api_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-4m-public-raw --public)
     set_tests_properties(marc_position_blocked_huffman_4m_public_raw_differential PROPERTIES TIMEOUT 180)
-    add_executable(marc_position_blocked_huffman_64m_api_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_64m_api_tests
         tests/position_blocked_huffman_64m_api_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_64m_api_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_64m_api_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_64m_api_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_64m_api COMMAND marc_position_blocked_huffman_64m_api_tests)
@@ -490,9 +457,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
     # All 499 directed public inputs took 290.01 seconds; retain every case
     # and more than four times that duration for slower runners.
     set_tests_properties(marc_position_blocked_huffman_64m_public_raw_differential PROPERTIES TIMEOUT 1200 RUN_SERIAL TRUE)
-    add_executable(marc_position_blocked_huffman_32m_api_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_32m_api_tests
         tests/position_blocked_huffman_32m_api_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_32m_api_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_32m_api_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_32m_api_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_32m_api COMMAND marc_position_blocked_huffman_32m_api_tests)
@@ -510,9 +476,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_32m_api_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-32m-public-raw --public)
     set_tests_properties(marc_position_blocked_huffman_32m_public_raw_differential PROPERTIES TIMEOUT 600 RUN_SERIAL TRUE)
-    add_executable(marc_position_blocked_huffman_16m_api_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_16m_api_tests
         tests/position_blocked_huffman_16m_api_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_16m_api_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_16m_api_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_16m_api_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_16m_api COMMAND marc_position_blocked_huffman_16m_api_tests)
@@ -530,9 +495,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_16m_api_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-16m-public-raw --public)
     set_tests_properties(marc_position_blocked_huffman_16m_public_raw_differential PROPERTIES TIMEOUT 180 RUN_SERIAL TRUE)
-    add_executable(marc_position_blocked_huffman_8m_api_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_8m_api_tests
         tests/position_blocked_huffman_8m_api_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_8m_api_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_8m_api_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_8m_api_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_8m_api COMMAND marc_position_blocked_huffman_8m_api_tests)
@@ -550,8 +514,7 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_8m_api_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-8m-public-raw --public)
     set_tests_properties(marc_position_blocked_huffman_8m_public_raw_differential PROPERTIES TIMEOUT 180)
-    add_executable(marc_position_blocked_huffman_64m_cli_candidate tools/marc_cli.cpp)
-    target_compile_features(marc_position_blocked_huffman_64m_cli_candidate PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_blocked_huffman_64m_cli_candidate tools/marc_cli.cpp)
     target_link_libraries(marc_position_blocked_huffman_64m_cli_candidate PRIVATE marc::static)
     add_test(NAME marc_cli_position_blocked_huffman_64m_static
         COMMAND ${Python3_EXECUTABLE} -B -X utf8
@@ -569,8 +532,7 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
                 ${CMAKE_CURRENT_BINARY_DIR}/cli-position-blocked-huffman-64m)
         set_tests_properties(marc_cli_position_blocked_huffman_64m PROPERTIES TIMEOUT 600 RUN_SERIAL TRUE)
     endif()
-    add_executable(marc_position_blocked_huffman_32m_cli_candidate tools/marc_cli.cpp)
-    target_compile_features(marc_position_blocked_huffman_32m_cli_candidate PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_blocked_huffman_32m_cli_candidate tools/marc_cli.cpp)
     target_link_libraries(marc_position_blocked_huffman_32m_cli_candidate PRIVATE marc::static)
     add_test(NAME marc_cli_position_blocked_huffman_32m_static
         COMMAND ${Python3_EXECUTABLE} -B -X utf8
@@ -586,8 +548,7 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
                 ${CMAKE_CURRENT_BINARY_DIR}/cli-position-blocked-huffman-32m)
         set_tests_properties(marc_cli_position_blocked_huffman_32m PROPERTIES TIMEOUT 300 RUN_SERIAL TRUE)
     endif()
-    add_executable(marc_position_blocked_huffman_16m_cli_candidate tools/marc_cli.cpp)
-    target_compile_features(marc_position_blocked_huffman_16m_cli_candidate PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_blocked_huffman_16m_cli_candidate tools/marc_cli.cpp)
     target_link_libraries(marc_position_blocked_huffman_16m_cli_candidate PRIVATE marc::static)
     add_test(NAME marc_cli_position_blocked_huffman_16m_static
         COMMAND ${Python3_EXECUTABLE} -B -X utf8
@@ -603,8 +564,7 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
                 ${CMAKE_CURRENT_BINARY_DIR}/cli-position-blocked-huffman-16m)
         set_tests_properties(marc_cli_position_blocked_huffman_16m PROPERTIES TIMEOUT 180 RUN_SERIAL TRUE)
     endif()
-    add_executable(marc_position_blocked_huffman_8m_cli_candidate tools/marc_cli.cpp)
-    target_compile_features(marc_position_blocked_huffman_8m_cli_candidate PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_blocked_huffman_8m_cli_candidate tools/marc_cli.cpp)
     target_link_libraries(marc_position_blocked_huffman_8m_cli_candidate PRIVATE marc::static)
     add_test(NAME marc_cli_position_blocked_huffman_8m_static
         COMMAND ${Python3_EXECUTABLE} -B -X utf8
@@ -620,9 +580,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
                 ${CMAKE_CURRENT_BINARY_DIR}/cli-position-blocked-huffman-8m)
         set_tests_properties(marc_cli_position_blocked_huffman_8m PROPERTIES TIMEOUT 180)
     endif()
-    add_executable(marc_position_blocked_huffman_1m_api_tests
+    marc_add_cpp_executable(marc_position_blocked_huffman_1m_api_tests
         tests/position_blocked_huffman_1m_api_tests.cpp)
-    target_compile_features(marc_position_blocked_huffman_1m_api_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_blocked_huffman_1m_api_tests PRIVATE src)
     target_link_libraries(marc_position_blocked_huffman_1m_api_tests PRIVATE marc::static)
     add_test(NAME marc_position_blocked_huffman_1m_api COMMAND marc_position_blocked_huffman_1m_api_tests)
@@ -640,8 +599,7 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             $<TARGET_FILE:marc_position_blocked_huffman_1m_api_tests>
             ${CMAKE_CURRENT_BINARY_DIR}/position-blocked-huffman-1m-public-raw --public)
     set_tests_properties(marc_position_blocked_huffman_1m_public_raw_differential PROPERTIES TIMEOUT 180)
-    add_executable(marc_position_blocked_huffman_4m_cli_candidate tools/marc_cli.cpp)
-    target_compile_features(marc_position_blocked_huffman_4m_cli_candidate PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_blocked_huffman_4m_cli_candidate tools/marc_cli.cpp)
     target_link_libraries(marc_position_blocked_huffman_4m_cli_candidate PRIVATE marc::static)
     add_test(NAME marc_cli_position_blocked_huffman_4m_static
         COMMAND ${Python3_EXECUTABLE} -B -X utf8
@@ -657,8 +615,7 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
                 ${CMAKE_CURRENT_BINARY_DIR}/cli-position-blocked-huffman-4m)
         set_tests_properties(marc_cli_position_blocked_huffman_4m PROPERTIES TIMEOUT 180)
     endif()
-    add_executable(marc_position_blocked_huffman_1m_cli_candidate tools/marc_cli.cpp)
-    target_compile_features(marc_position_blocked_huffman_1m_cli_candidate PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_blocked_huffman_1m_cli_candidate tools/marc_cli.cpp)
     target_link_libraries(marc_position_blocked_huffman_1m_cli_candidate PRIVATE marc::static)
     if(TARGET marc_cli)
         add_test(NAME marc_cli_position_blocked_huffman_1m
@@ -668,7 +625,7 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
                 ${CMAKE_CURRENT_BINARY_DIR}/cli-position-blocked-huffman-1m)
         set_tests_properties(marc_cli_position_blocked_huffman_1m PROPERTIES TIMEOUT 180)
     endif()
-    add_executable(marc_position_adaptive_huffman_stream_decoder_tests
+    marc_add_cpp_executable(marc_position_adaptive_huffman_stream_decoder_tests
         tests/position_adaptive_huffman_stream_decoder_tests.cpp
         src/frame/lzss_position_adaptive_huffman_stream_decoder.cpp
         src/frame/lzss_position_adaptive_huffman_frame.cpp src/frame/lzss_position_adaptive_huffman_format.cpp
@@ -677,7 +634,6 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
         src/entropy/contextual_adaptive_huffman_tree.cpp src/core/limits.cpp src/core/status.cpp
         src/context/lzss_short_length_escape.cpp src/dictionary/lzss_typed_token.cpp
         src/dictionary/lzss_typed_reconstructor.cpp src/dictionary/lzss_format.cpp)
-    target_compile_features(marc_position_adaptive_huffman_stream_decoder_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_adaptive_huffman_stream_decoder_tests PRIVATE src)
     set_target_properties(marc_position_adaptive_huffman_stream_decoder_tests PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
@@ -685,7 +641,7 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
 
     get_target_property(position_adaptive_private_sources marc_position_adaptive_huffman_stream_decoder_tests SOURCES)
     list(FILTER position_adaptive_private_sources EXCLUDE REGEX "^tests/")
-    add_executable(marc_position_adaptive_huffman_owned_tests
+    marc_add_cpp_executable(marc_position_adaptive_huffman_owned_tests
         tests/position_adaptive_huffman_owned_tests.cpp src/frame/lzss_position_adaptive_huffman_owned.cpp
         src/dictionary/lzss_position_distance_1m_five_prefix_candidate.cpp
         src/dictionary/lzss_position_distance_1m_five_prefix_finder.cpp
@@ -702,7 +658,6 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
         src/dictionary/lzss_short_match_candidate.cpp src/dictionary/lzss_short_prefix_match_finder.cpp
         src/dictionary/lzss_match_finder.cpp src/dictionary/lzss_hash_chain_match_finder.cpp
         src/dictionary/lzss_binary_tree_match_finder.cpp ${position_adaptive_private_sources})
-    target_compile_features(marc_position_adaptive_huffman_owned_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_adaptive_huffman_owned_tests PRIVATE src)
     set_target_properties(marc_position_adaptive_huffman_owned_tests PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
@@ -710,9 +665,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
 
     get_target_property(position_adaptive_owned_sources marc_position_adaptive_huffman_owned_tests SOURCES)
     list(FILTER position_adaptive_owned_sources EXCLUDE REGEX "^tests/")
-    add_executable(marc_position_adaptive_huffman_1m_owned_tests
+    marc_add_cpp_executable(marc_position_adaptive_huffman_1m_owned_tests
         tests/position_adaptive_huffman_large_owned_tests.cpp ${position_adaptive_owned_sources})
-    target_compile_features(marc_position_adaptive_huffman_1m_owned_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_adaptive_huffman_1m_owned_tests PRIVATE src)
     set_target_properties(marc_position_adaptive_huffman_1m_owned_tests PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
@@ -772,8 +726,7 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             PASS_REGULAR_EXPRESSION "Verified19 independent headers and rejected2147 directed header alterations")
     endif()
 
-    add_executable(marc_position_adaptive_huffman_api_tests tests/position_adaptive_huffman_api_tests.cpp)
-    target_compile_features(marc_position_adaptive_huffman_api_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_adaptive_huffman_api_tests tests/position_adaptive_huffman_api_tests.cpp)
     target_link_libraries(marc_position_adaptive_huffman_api_tests PRIVATE marc::static)
     set_target_properties(marc_position_adaptive_huffman_api_tests PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
@@ -799,8 +752,7 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
     set_tests_properties(marc_position_adaptive_huffman_4m_api PROPERTIES TIMEOUT 30)
     # Public1MiB API/resource pilots completed below one second per registration.
     set_tests_properties(marc_position_adaptive_huffman_1m_api PROPERTIES TIMEOUT 30)
-    add_executable(marc_position_adaptive_huffman_cli_candidate tools/marc_cli.cpp)
-    target_compile_features(marc_position_adaptive_huffman_cli_candidate PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_adaptive_huffman_cli_candidate tools/marc_cli.cpp)
     target_link_libraries(marc_position_adaptive_huffman_cli_candidate PRIVATE marc::static)
     set_target_properties(marc_position_adaptive_huffman_cli_candidate PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
@@ -907,7 +859,7 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
         endif()
     endforeach()
 
-    add_executable(marc_position_adaptive_huffman_frame_tests
+    marc_add_cpp_executable(marc_position_adaptive_huffman_frame_tests
         tests/position_adaptive_huffman_frame_tests.cpp
         src/frame/lzss_position_adaptive_huffman_frame.cpp src/frame/lzss_position_adaptive_huffman_format.cpp
         src/context/lzss_position_adaptive_huffman_tokens.cpp
@@ -915,7 +867,6 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
         src/entropy/contextual_adaptive_huffman_tree.cpp src/core/limits.cpp
         src/context/lzss_short_length_escape.cpp src/dictionary/lzss_typed_token.cpp
         src/dictionary/lzss_typed_reconstructor.cpp src/dictionary/lzss_format.cpp)
-    target_compile_features(marc_position_adaptive_huffman_frame_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_adaptive_huffman_frame_tests PRIVATE src)
     set_target_properties(marc_position_adaptive_huffman_frame_tests PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
@@ -973,12 +924,11 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
         marc_position_adaptive_huffman_64m_frame_vectors
         marc_position_adaptive_huffman_64m_boundary_vectors PROPERTIES TIMEOUT 60)
 
-    add_executable(marc_position_adaptive_huffman_frame_format_tests
+    marc_add_cpp_executable(marc_position_adaptive_huffman_frame_format_tests
         tests/position_adaptive_huffman_frame_format_tests.cpp
         src/frame/lzss_position_adaptive_huffman_format.cpp
         src/entropy/position_adaptive_huffman_format.cpp src/core/limits.cpp
         src/dictionary/lzss_typed_token.cpp src/dictionary/lzss_format.cpp)
-    target_compile_features(marc_position_adaptive_huffman_frame_format_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_adaptive_huffman_frame_format_tests PRIVATE src)
     set_target_properties(marc_position_adaptive_huffman_frame_format_tests PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
@@ -989,14 +939,13 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             --check ${CMAKE_CURRENT_SOURCE_DIR}/tests/data/position_adaptive_huffman_64k_frame_vectors.json
             --frame-tool $<TARGET_FILE:marc_position_adaptive_huffman_frame_format_tests>)
 
-    add_executable(marc_position_adaptive_huffman_token_tests
+    marc_add_cpp_executable(marc_position_adaptive_huffman_token_tests
         tests/position_adaptive_huffman_token_tests.cpp
         src/context/lzss_position_adaptive_huffman_tokens.cpp
         src/entropy/position_adaptive_huffman.cpp src/entropy/position_adaptive_huffman_format.cpp
         src/entropy/contextual_adaptive_huffman_tree.cpp src/core/limits.cpp
         src/context/lzss_short_length_escape.cpp src/dictionary/lzss_typed_token.cpp
         src/dictionary/lzss_typed_reconstructor.cpp src/dictionary/lzss_format.cpp)
-    target_compile_features(marc_position_adaptive_huffman_token_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_adaptive_huffman_token_tests PRIVATE src)
     set_target_properties(marc_position_adaptive_huffman_token_tests PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
@@ -1007,12 +956,11 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             --check ${CMAKE_CURRENT_SOURCE_DIR}/tests/data/position_adaptive_huffman_64k_vectors.json
             --token-tool $<TARGET_FILE:marc_position_adaptive_huffman_token_tests>)
 
-    add_executable(marc_position_adaptive_huffman_core_tests
+    marc_add_cpp_executable(marc_position_adaptive_huffman_core_tests
         tests/position_adaptive_huffman_core_tests.cpp
         src/entropy/position_adaptive_huffman.cpp
         src/entropy/position_adaptive_huffman_format.cpp
         src/entropy/contextual_adaptive_huffman_tree.cpp src/core/limits.cpp)
-    target_compile_features(marc_position_adaptive_huffman_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_adaptive_huffman_core_tests PRIVATE src)
     set_target_properties(marc_position_adaptive_huffman_core_tests PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
@@ -1023,10 +971,9 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             --check ${CMAKE_CURRENT_SOURCE_DIR}/tests/data/position_adaptive_huffman_64k_vectors.json
             --entropy-tool $<TARGET_FILE:marc_position_adaptive_huffman_core_tests>)
 
-    add_executable(marc_position_adaptive_huffman_format_tests
+    marc_add_cpp_executable(marc_position_adaptive_huffman_format_tests
         tests/position_adaptive_huffman_format_tests.cpp
         src/entropy/position_adaptive_huffman_format.cpp src/core/limits.cpp)
-    target_compile_features(marc_position_adaptive_huffman_format_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_adaptive_huffman_format_tests PRIVATE src)
     set_target_properties(marc_position_adaptive_huffman_format_tests PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
@@ -1037,20 +984,18 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
             --check ${CMAKE_CURRENT_SOURCE_DIR}/tests/data/position_adaptive_huffman_64k_vectors.json
             --format-tool $<TARGET_FILE:marc_position_adaptive_huffman_format_tests>)
 
-    add_executable(marc_position_ans_pool_applicability
+    marc_add_cpp_executable(marc_position_ans_pool_applicability
         tests/position_ans_pool_applicability.cpp
         src/entropy/position_rans_4m_format.cpp
         src/entropy/position_rans_4m_encoder.cpp
         src/entropy/position_rans_4m_decoder.cpp)
-    target_compile_features(marc_position_ans_pool_applicability PRIVATE cxx_std_20)
     target_include_directories(marc_position_ans_pool_applicability PRIVATE src)
     target_link_libraries(marc_position_ans_pool_applicability PRIVATE marc::static)
     set_target_properties(marc_position_ans_pool_applicability PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
     add_test(NAME marc_position_ans_pool_applicability COMMAND marc_position_ans_pool_applicability)
 
-    add_executable(marc_position_blocked_huffman_64k_cli_candidate tools/marc_cli.cpp)
-    target_compile_features(marc_position_blocked_huffman_64k_cli_candidate PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_blocked_huffman_64k_cli_candidate tools/marc_cli.cpp)
     target_link_libraries(marc_position_blocked_huffman_64k_cli_candidate PRIVATE marc::static)
     if(TARGET marc_cli)
         add_test(NAME marc_cli_position_blocked_huffman_64k
@@ -1062,9 +1007,8 @@ if(MARC_BUILD_TESTS AND Python3_Interpreter_FOUND)
 endif()
 
 if(MARC_BUILD_TESTS AND TARGET marc_static)
-    add_executable(marc_position_adaptive_huffman_hash_tap_tests
+    marc_add_cpp_executable(marc_position_adaptive_huffman_hash_tap_tests
         tests/position_adaptive_huffman_hash_tap_tests.cpp)
-    target_compile_features(marc_position_adaptive_huffman_hash_tap_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_adaptive_huffman_hash_tap_tests PRIVATE src)
     target_link_libraries(marc_position_adaptive_huffman_hash_tap_tests PRIVATE marc::static)
     set_target_properties(marc_position_adaptive_huffman_hash_tap_tests PROPERTIES

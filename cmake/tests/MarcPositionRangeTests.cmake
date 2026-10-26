@@ -1,35 +1,31 @@
 # MarcPositionRangeTests: explicit project declarations.
 if(MARC_BUILD_TESTS)
     if(TARGET marc_static)
-        add_executable(marc_position_distance_8m_public_encoder_tests
+        marc_add_cpp_executable(marc_position_distance_8m_public_encoder_tests
             tests/lzss_position_distance_8m_public_encoder_tests.cpp
             tests/lzss_position_distance_8m_owning_allocator_seam.cpp
             tests/lzss_position_distance_8m_late_fault_seam.cpp
             src/frame/lzss_position_distance_8m_stream_encoder.cpp
             src/frame/lzss_position_distance_8m_stream_decoder.cpp
             src/frame/lzss_position_distance_8m_frame_decoder.cpp)
-        target_compile_features(marc_position_distance_8m_public_encoder_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_distance_8m_public_encoder_tests PRIVATE src tests)
         target_link_libraries(marc_position_distance_8m_public_encoder_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_8m_public_encoder_tests
             COMMAND marc_position_distance_8m_public_encoder_tests)
-        add_executable(marc_position_distance_8m_public_decoder_tests
+        marc_add_cpp_executable(marc_position_distance_8m_public_decoder_tests
             tests/lzss_position_distance_8m_public_decoder_tests.cpp)
-        target_compile_features(marc_position_distance_8m_public_decoder_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_distance_8m_public_decoder_tests PRIVATE src)
         target_link_libraries(marc_position_distance_8m_public_decoder_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_8m_public_decoder_tests
             COMMAND marc_position_distance_8m_public_decoder_tests)
-        add_executable(marc_position_distance_8m_public_decoder_max_tests
+        marc_add_cpp_executable(marc_position_distance_8m_public_decoder_max_tests
             tests/lzss_position_distance_8m_public_decoder_max_tests.cpp)
-        target_compile_features(marc_position_distance_8m_public_decoder_max_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_distance_8m_public_decoder_max_tests PRIVATE src)
         target_link_libraries(marc_position_distance_8m_public_decoder_max_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_8m_public_decoder_max_tests
             COMMAND marc_position_distance_8m_public_decoder_max_tests)
-        add_executable(marc_position_distance_8m_public_decoder_fuzz_tests
+        marc_add_cpp_executable(marc_position_distance_8m_public_decoder_fuzz_tests
             tests/lzss_position_distance_8m_public_decoder_fuzz_tests.cpp)
-        target_compile_features(marc_position_distance_8m_public_decoder_fuzz_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_distance_8m_public_decoder_fuzz_tests PRIVATE src)
         target_link_libraries(marc_position_distance_8m_public_decoder_fuzz_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_8m_public_decoder_fuzz_tests
@@ -54,9 +50,8 @@ if(MARC_BUILD_TESTS)
 endif()
 
 if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
-    add_executable(marc_cli_position_distance_8m_allocation_tests
+    marc_add_cpp_executable(marc_cli_position_distance_8m_allocation_tests
         tests/cli_position_distance_8m_allocation_tests.cpp)
-    target_compile_features(marc_cli_position_distance_8m_allocation_tests PRIVATE cxx_std_20)
     target_link_libraries(marc_cli_position_distance_8m_allocation_tests PRIVATE marc::static)
     add_test(NAME marc_cli_position_distance_8m_allocation
         COMMAND marc_cli_position_distance_8m_allocation_tests
@@ -73,9 +68,8 @@ if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
 endif()
 
 if(MARC_BUILD_TESTS)
-    add_executable(marc_position_distance_16m_field_cursor_tests
+    marc_add_cpp_executable(marc_position_distance_16m_field_cursor_tests
         tests/lzss_position_distance_16m_field_cursor_tests.cpp)
-    target_compile_features(marc_position_distance_16m_field_cursor_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_distance_16m_field_cursor_tests PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include)
     add_test(NAME marc_position_distance_16m_field_cursor
@@ -85,9 +79,8 @@ endif()
 if(MARC_BUILD_TESTS AND TARGET marc_static)
     find_package(Python3 COMPONENTS Interpreter QUIET)
     if(Python3_Interpreter_FOUND)
-        add_executable(marc_position_distance_16m_core_tests
+        marc_add_cpp_executable(marc_position_distance_16m_core_tests
             tests/lzss_position_distance_16m_core_tests.cpp)
-        target_compile_features(marc_position_distance_16m_core_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_distance_16m_core_tests PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_position_distance_16m_core_tests PRIVATE marc::static)
@@ -103,9 +96,8 @@ endif()
 if(MARC_BUILD_TESTS AND TARGET marc_static)
     find_package(Python3 COMPONENTS Interpreter QUIET)
     if(Python3_Interpreter_FOUND)
-        add_executable(marc_position_distance_16m_frame_tests
+        marc_add_cpp_executable(marc_position_distance_16m_frame_tests
             tests/lzss_position_distance_16m_frame_tests.cpp)
-        target_compile_features(marc_position_distance_16m_frame_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_distance_16m_frame_tests PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_position_distance_16m_frame_tests PRIVATE marc::static)
@@ -121,9 +113,8 @@ endif()
 if(MARC_BUILD_TESTS AND TARGET marc_static)
     find_package(Python3 COMPONENTS Interpreter QUIET)
     if(Python3_Interpreter_FOUND)
-        add_executable(marc_position_distance_16m_stream_tests
+        marc_add_cpp_executable(marc_position_distance_16m_stream_tests
             tests/lzss_position_distance_16m_stream_tests.cpp)
-        target_compile_features(marc_position_distance_16m_stream_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_distance_16m_stream_tests PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_position_distance_16m_stream_tests PRIVATE marc::static)
@@ -137,7 +128,7 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
 endif()
 
 if(MARC_BUILD_TESTS)
-    add_executable(marc_position_distance_16m_reference_tests
+    marc_add_cpp_executable(marc_position_distance_16m_reference_tests
         tests/lzss_position_distance_16m_reference_tests.cpp
         src/dictionary/lzss_position_distance_16m_reference.cpp
         src/context/lzss_position_distance_16m_mapper.cpp
@@ -145,7 +136,6 @@ if(MARC_BUILD_TESTS)
         src/entropy/lzss_position_distance_16m_range_encoder.cpp
         src/entropy/lzss_position_distance_16m_range_decoder.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_distance_16m_reference_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_distance_16m_reference_tests PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_16m_reference_tests PRIVATE GTest::gtest_main)
@@ -155,7 +145,7 @@ if(MARC_BUILD_TESTS)
 endif()
 
 if(MARC_BUILD_TESTS)
-    add_executable(marc_position_distance_16m_indexed_tests
+    marc_add_cpp_executable(marc_position_distance_16m_indexed_tests
         tests/lzss_position_distance_16m_indexed_tests.cpp
         src/dictionary/lzss_position_distance_16m_indexed.cpp
         src/dictionary/lzss_position_distance_16m_reference.cpp
@@ -164,7 +154,6 @@ if(MARC_BUILD_TESTS)
         src/entropy/lzss_position_distance_16m_range_encoder.cpp
         src/entropy/lzss_position_distance_16m_range_decoder.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_distance_16m_indexed_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_distance_16m_indexed_tests PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_16m_indexed_tests PRIVATE GTest::gtest_main)
@@ -174,7 +163,7 @@ if(MARC_BUILD_TESTS)
 endif()
 
 if(MARC_BUILD_TESTS)
-    add_executable(marc_position_distance_16m_token_range_tests
+    marc_add_cpp_executable(marc_position_distance_16m_token_range_tests
         tests/lzss_position_distance_16m_token_range_tests.cpp
         src/entropy/lzss_position_distance_16m_token_range_encoder.cpp
         src/context/lzss_position_distance_16m_mapper.cpp
@@ -182,7 +171,6 @@ if(MARC_BUILD_TESTS)
         src/entropy/lzss_position_distance_16m_range_encoder.cpp
         src/entropy/lzss_position_distance_16m_range_decoder.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_distance_16m_token_range_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_distance_16m_token_range_tests PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_16m_token_range_tests PRIVATE GTest::gtest_main)
@@ -192,7 +180,7 @@ if(MARC_BUILD_TESTS)
 endif()
 
 if(MARC_BUILD_TESTS)
-    add_executable(marc_position_distance_16m_token_frame_tests
+    marc_add_cpp_executable(marc_position_distance_16m_token_frame_tests
         tests/lzss_position_distance_16m_token_frame_encoder_tests.cpp
         src/frame/lzss_position_distance_16m_token_frame_encoder.cpp
         src/frame/lzss_position_distance_16m_frame_encoder.cpp
@@ -206,7 +194,6 @@ if(MARC_BUILD_TESTS)
         src/entropy/lzss_position_distance_16m_range_encoder.cpp
         src/entropy/lzss_position_distance_16m_range_decoder.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_distance_16m_token_frame_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_distance_16m_token_frame_tests PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_16m_token_frame_tests PRIVATE GTest::gtest_main)
@@ -216,13 +203,12 @@ if(MARC_BUILD_TESTS)
 endif()
 
 if(MARC_BUILD_TESTS)
-    add_executable(marc_position_distance_16m_compact_tests
+    marc_add_cpp_executable(marc_position_distance_16m_compact_tests
         tests/lzss_position_distance_16m_compact_tests.cpp
         src/dictionary/lzss_position_distance_16m_compact.cpp
         src/context/lzss_position_distance_16m_tokens.cpp
         src/entropy/lzss_position_distance_16m_range_decoder.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_distance_16m_compact_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_distance_16m_compact_tests PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_16m_compact_tests PRIVATE GTest::gtest_main)
@@ -231,7 +217,7 @@ if(MARC_BUILD_TESTS)
 endif()
 
 if(MARC_BUILD_TESTS)
-    add_executable(marc_position_distance_16m_compact_frame_tests
+    marc_add_cpp_executable(marc_position_distance_16m_compact_frame_tests
         tests/lzss_position_distance_16m_compact_frame_tests.cpp
         tests/lzss_position_distance_16m_compact_range_tests.cpp
         src/entropy/lzss_position_distance_16m_compact_range_encoder.cpp
@@ -250,7 +236,6 @@ if(MARC_BUILD_TESTS)
         src/entropy/lzss_position_distance_16m_range_encoder.cpp
         src/entropy/lzss_position_distance_16m_range_decoder.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_distance_16m_compact_frame_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_distance_16m_compact_frame_tests PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_16m_compact_frame_tests PRIVATE GTest::gtest_main)
@@ -260,7 +245,7 @@ if(MARC_BUILD_TESTS)
 endif()
 
 if(MARC_BUILD_TESTS)
-    add_executable(marc_position_distance_16m_owned_tests
+    marc_add_cpp_executable(marc_position_distance_16m_owned_tests
         tests/lzss_position_distance_16m_owned_tests.cpp
         src/core/status.cpp
         src/frame/lzss_position_distance_16m_compact_owner.cpp
@@ -281,7 +266,6 @@ if(MARC_BUILD_TESTS)
         src/entropy/lzss_position_distance_16m_range_encoder.cpp
         src/entropy/lzss_position_distance_16m_range_decoder.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_distance_16m_owned_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_distance_16m_owned_tests PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_16m_owned_tests PRIVATE GTest::gtest_main)
@@ -292,9 +276,8 @@ endif()
 
 # Separate sixteen-MiB public factories; older API layouts stay unchanged.
 if(MARC_BUILD_TESTS AND MARC_BUILD_STATIC)
-    add_executable(marc_position_distance_16m_public_tests
+    marc_add_cpp_executable(marc_position_distance_16m_public_tests
         tests/lzss_position_distance_16m_public_tests.cpp)
-    target_compile_features(marc_position_distance_16m_public_tests PRIVATE cxx_std_20)
     target_link_libraries(marc_position_distance_16m_public_tests PRIVATE marc::static GTest::gtest_main)
     add_test(NAME marc_position_distance_16m_public COMMAND marc_position_distance_16m_public_tests)
     set_tests_properties(marc_position_distance_16m_public PROPERTIES TIMEOUT 60)
@@ -307,9 +290,8 @@ if(MARC_BUILD_TESTS AND MARC_BUILD_STATIC)
 endif()
 
 if(MARC_BUILD_TESTS AND MARC_BUILD_STATIC)
-    add_executable(marc_position_distance_16m_public_fault_tests
+    marc_add_cpp_executable(marc_position_distance_16m_public_fault_tests
         tests/lzss_position_distance_16m_public_fault_tests.cpp)
-    target_compile_features(marc_position_distance_16m_public_fault_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_distance_16m_public_fault_tests PRIVATE src)
     target_link_libraries(marc_position_distance_16m_public_fault_tests PRIVATE marc::static GTest::gtest_main)
     add_test(NAME marc_position_distance_16m_public_faults COMMAND marc_position_distance_16m_public_fault_tests)
@@ -317,9 +299,8 @@ if(MARC_BUILD_TESTS AND MARC_BUILD_STATIC)
 endif()
 
 if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
-    add_executable(marc_cli_position_distance_16m_allocation_tests
+    marc_add_cpp_executable(marc_cli_position_distance_16m_allocation_tests
         tests/cli_position_distance_16m_allocation_tests.cpp)
-    target_compile_features(marc_cli_position_distance_16m_allocation_tests PRIVATE cxx_std_20)
     target_link_libraries(marc_cli_position_distance_16m_allocation_tests PRIVATE marc::static)
     add_test(NAME marc_cli_position_distance_16m_allocation
         COMMAND marc_cli_position_distance_16m_allocation_tests ${CMAKE_CURRENT_BINARY_DIR}/cli16m-allocation)
@@ -334,9 +315,8 @@ if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
 endif()
 
 if(MARC_BUILD_TESTS)
-    add_executable(marc_position_distance_32m_field_cursor_tests
+    marc_add_cpp_executable(marc_position_distance_32m_field_cursor_tests
         tests/lzss_position_distance_32m_field_cursor_tests.cpp)
-    target_compile_features(marc_position_distance_32m_field_cursor_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_distance_32m_field_cursor_tests PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include)
     add_test(NAME marc_position_distance_32m_field_cursor
@@ -345,9 +325,8 @@ endif()
 if(MARC_BUILD_TESTS AND TARGET marc_static)
     find_package(Python3 COMPONENTS Interpreter QUIET)
     if(Python3_Interpreter_FOUND)
-        add_executable(marc_position_distance_32m_core_tests
+        marc_add_cpp_executable(marc_position_distance_32m_core_tests
             tests/lzss_position_distance_32m_core_tests.cpp)
-        target_compile_features(marc_position_distance_32m_core_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_distance_32m_core_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_position_distance_32m_core_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_32m_core_conformance
@@ -361,9 +340,8 @@ endif()
 if(MARC_BUILD_TESTS AND TARGET marc_static)
     find_package(Python3 COMPONENTS Interpreter QUIET)
     if(Python3_Interpreter_FOUND)
-        add_executable(marc_position_distance_32m_frame_tests
+        marc_add_cpp_executable(marc_position_distance_32m_frame_tests
             tests/lzss_position_distance_32m_frame_tests.cpp)
-        target_compile_features(marc_position_distance_32m_frame_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_distance_32m_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_position_distance_32m_frame_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_32m_frame_conformance
@@ -377,9 +355,8 @@ endif()
 if(MARC_BUILD_TESTS AND TARGET marc_static)
     find_package(Python3 COMPONENTS Interpreter QUIET)
     if(Python3_Interpreter_FOUND)
-        add_executable(marc_position_distance_32m_stream_tests
+        marc_add_cpp_executable(marc_position_distance_32m_stream_tests
             tests/lzss_position_distance_32m_stream_tests.cpp)
-        target_compile_features(marc_position_distance_32m_stream_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_distance_32m_stream_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_position_distance_32m_stream_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_32m_stream_conformance
@@ -391,9 +368,8 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
 endif()
 
 if(MARC_BUILD_TESTS AND TARGET marc_static)
-    add_executable(marc_position_distance_32m_stream_contract_tests
+    marc_add_cpp_executable(marc_position_distance_32m_stream_contract_tests
         tests/lzss_position_distance_32m_stream_contract_tests.cpp)
-    target_compile_features(marc_position_distance_32m_stream_contract_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_distance_32m_stream_contract_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_32m_stream_contract_tests PRIVATE marc::static)
     add_test(NAME marc_position_distance_32m_stream_contract
@@ -402,14 +378,12 @@ endif()
 
 # Thirty-two-MiB independent reference and full hash-chain differential.
 if(MARC_BUILD_TESTS AND TARGET marc_static)
-    add_executable(marc_position_distance_32m_reference_tests tests/lzss_position_distance_32m_reference_tests.cpp)
-    target_compile_features(marc_position_distance_32m_reference_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_32m_reference_tests tests/lzss_position_distance_32m_reference_tests.cpp)
     target_include_directories(marc_position_distance_32m_reference_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_32m_reference_tests PRIVATE marc_static GTest::gtest_main)
     add_test(NAME marc_position_distance_32m_reference COMMAND marc_position_distance_32m_reference_tests)
     set_tests_properties(marc_position_distance_32m_reference PROPERTIES TIMEOUT 900)
-    add_executable(marc_position_distance_32m_indexed_tests tests/lzss_position_distance_32m_indexed_tests.cpp)
-    target_compile_features(marc_position_distance_32m_indexed_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_32m_indexed_tests tests/lzss_position_distance_32m_indexed_tests.cpp)
     target_include_directories(marc_position_distance_32m_indexed_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_32m_indexed_tests PRIVATE marc_static GTest::gtest_main)
     add_test(NAME marc_position_distance_32m_indexed COMMAND marc_position_distance_32m_indexed_tests)
@@ -417,8 +391,7 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
 endif()
 
 if(MARC_BUILD_TESTS AND TARGET marc_static)
-    add_executable(marc_position_distance_32m_token_range_tests tests/lzss_position_distance_32m_token_range_tests.cpp)
-    target_compile_features(marc_position_distance_32m_token_range_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_32m_token_range_tests tests/lzss_position_distance_32m_token_range_tests.cpp)
     target_include_directories(marc_position_distance_32m_token_range_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_32m_token_range_tests PRIVATE marc_static GTest::gtest_main)
     add_test(NAME marc_position_distance_32m_token_range COMMAND marc_position_distance_32m_token_range_tests)
@@ -426,14 +399,12 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
 endif()
 
 if(MARC_BUILD_TESTS AND TARGET marc_static)
-    add_executable(marc_position_distance_32m_compact_tests tests/lzss_position_distance_32m_compact_tests.cpp)
-    target_compile_features(marc_position_distance_32m_compact_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_32m_compact_tests tests/lzss_position_distance_32m_compact_tests.cpp)
     target_include_directories(marc_position_distance_32m_compact_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_32m_compact_tests PRIVATE marc_static GTest::gtest_main)
     add_test(NAME marc_position_distance_32m_compact COMMAND marc_position_distance_32m_compact_tests)
     set_tests_properties(marc_position_distance_32m_compact PROPERTIES TIMEOUT 900)
-    add_executable(marc_position_distance_32m_compact_range_tests tests/lzss_position_distance_32m_compact_range_tests.cpp)
-    target_compile_features(marc_position_distance_32m_compact_range_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_32m_compact_range_tests tests/lzss_position_distance_32m_compact_range_tests.cpp)
     target_include_directories(marc_position_distance_32m_compact_range_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_32m_compact_range_tests PRIVATE marc_static GTest::gtest_main)
     add_test(NAME marc_position_distance_32m_compact_range COMMAND marc_position_distance_32m_compact_range_tests)
@@ -441,20 +412,17 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
 endif()
 
 if(MARC_BUILD_TESTS AND TARGET marc_static)
-    add_executable(marc_position_distance_32m_token_frame_encoder_tests tests/lzss_position_distance_32m_token_frame_encoder_tests.cpp)
-    target_compile_features(marc_position_distance_32m_token_frame_encoder_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_32m_token_frame_encoder_tests tests/lzss_position_distance_32m_token_frame_encoder_tests.cpp)
     target_include_directories(marc_position_distance_32m_token_frame_encoder_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_32m_token_frame_encoder_tests PRIVATE marc_static GTest::gtest_main)
     add_test(NAME marc_position_distance_32m_token_frame_encoder COMMAND marc_position_distance_32m_token_frame_encoder_tests)
     set_tests_properties(marc_position_distance_32m_token_frame_encoder PROPERTIES TIMEOUT 900)
-    add_executable(marc_position_distance_32m_compact_frame_tests tests/lzss_position_distance_32m_compact_frame_tests.cpp)
-    target_compile_features(marc_position_distance_32m_compact_frame_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_32m_compact_frame_tests tests/lzss_position_distance_32m_compact_frame_tests.cpp)
     target_include_directories(marc_position_distance_32m_compact_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_32m_compact_frame_tests PRIVATE marc_static GTest::gtest_main)
     add_test(NAME marc_position_distance_32m_compact_frame_encoder COMMAND marc_position_distance_32m_compact_frame_tests)
     set_tests_properties(marc_position_distance_32m_compact_frame_encoder PROPERTIES TIMEOUT 900)
-    add_executable(marc_position_distance_32m_frame_encode_conformance tests/lzss_position_distance_32m_frame_encode_conformance.cpp)
-    target_compile_features(marc_position_distance_32m_frame_encode_conformance PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_32m_frame_encode_conformance tests/lzss_position_distance_32m_frame_encode_conformance.cpp)
     target_include_directories(marc_position_distance_32m_frame_encode_conformance PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_32m_frame_encode_conformance PRIVATE marc_static)
     add_test(NAME marc_position_distance_32m_frame_encode_conformance
@@ -465,14 +433,12 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
 endif()
 
 if(MARC_BUILD_TESTS AND TARGET marc_static)
-    add_executable(marc_position_distance_32m_owned_tests tests/lzss_position_distance_32m_owned_tests.cpp)
-    target_compile_features(marc_position_distance_32m_owned_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_32m_owned_tests tests/lzss_position_distance_32m_owned_tests.cpp)
     target_include_directories(marc_position_distance_32m_owned_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_32m_owned_tests PRIVATE marc_static GTest::gtest_main)
     add_test(NAME marc_position_distance_32m_owned COMMAND marc_position_distance_32m_owned_tests)
     set_tests_properties(marc_position_distance_32m_owned PROPERTIES TIMEOUT 900)
-    add_executable(marc_position_distance_32m_owned_conformance tests/lzss_position_distance_32m_owned_conformance.cpp)
-    target_compile_features(marc_position_distance_32m_owned_conformance PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_32m_owned_conformance tests/lzss_position_distance_32m_owned_conformance.cpp)
     target_include_directories(marc_position_distance_32m_owned_conformance PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_32m_owned_conformance PRIVATE marc_static)
     add_test(NAME marc_position_distance_32m_owned_conformance
@@ -483,14 +449,12 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
 endif()
 
 if(MARC_BUILD_TESTS AND TARGET marc_static)
-    add_executable(marc_position_distance_32m_public_tests tests/lzss_position_distance_32m_public_tests.cpp)
-    target_compile_features(marc_position_distance_32m_public_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_32m_public_tests tests/lzss_position_distance_32m_public_tests.cpp)
     target_include_directories(marc_position_distance_32m_public_tests PRIVATE src)
     target_link_libraries(marc_position_distance_32m_public_tests PRIVATE marc_static GTest::gtest_main)
     add_test(NAME marc_position_distance_32m_public COMMAND marc_position_distance_32m_public_tests)
     set_tests_properties(marc_position_distance_32m_public PROPERTIES TIMEOUT 900)
-    add_executable(marc_position_distance_32m_public_fault_tests tests/lzss_position_distance_32m_public_fault_tests.cpp)
-    target_compile_features(marc_position_distance_32m_public_fault_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_32m_public_fault_tests tests/lzss_position_distance_32m_public_fault_tests.cpp)
     target_include_directories(marc_position_distance_32m_public_fault_tests PRIVATE src)
     target_link_libraries(marc_position_distance_32m_public_fault_tests PRIVATE marc_static GTest::gtest_main)
     add_test(NAME marc_position_distance_32m_public_faults COMMAND marc_position_distance_32m_public_fault_tests)
@@ -499,8 +463,7 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
     target_link_libraries(marc_position_distance_32m_public_c_consumer PRIVATE marc_static)
     set_target_properties(marc_position_distance_32m_public_c_consumer PROPERTIES LINKER_LANGUAGE CXX)
     add_test(NAME marc_position_distance_32m_public_c COMMAND marc_position_distance_32m_public_c_consumer)
-    add_executable(marc_position_distance_32m_public_conformance tests/lzss_position_distance_32m_public_conformance.cpp)
-    target_compile_features(marc_position_distance_32m_public_conformance PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_32m_public_conformance tests/lzss_position_distance_32m_public_conformance.cpp)
     target_link_libraries(marc_position_distance_32m_public_conformance PRIVATE marc_static)
     add_test(NAME marc_position_distance_32m_public_conformance
         COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_position_distance_32m_owned_conformance.py
@@ -510,9 +473,8 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
 endif()
 
 if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
-    add_executable(marc_cli_position_distance_32m_allocation_tests
+    marc_add_cpp_executable(marc_cli_position_distance_32m_allocation_tests
         tests/cli_position_distance_32m_allocation_tests.cpp)
-    target_compile_features(marc_cli_position_distance_32m_allocation_tests PRIVATE cxx_std_20)
     target_link_libraries(marc_cli_position_distance_32m_allocation_tests PRIVATE marc::static)
     add_test(NAME marc_cli_position_distance_32m_allocation
         COMMAND marc_cli_position_distance_32m_allocation_tests ${CMAKE_CURRENT_BINARY_DIR}/cli32m-allocation)
@@ -527,9 +489,8 @@ if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
 endif()
 
 if(MARC_BUILD_TESTS)
-    add_executable(marc_position_distance_64m_field_cursor_tests
+    marc_add_cpp_executable(marc_position_distance_64m_field_cursor_tests
         tests/lzss_position_distance_64m_field_cursor_tests.cpp)
-    target_compile_features(marc_position_distance_64m_field_cursor_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_distance_64m_field_cursor_tests PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include)
     add_test(NAME marc_position_distance_64m_field_cursor
@@ -538,9 +499,8 @@ endif()
 if(MARC_BUILD_TESTS AND TARGET marc_static)
     find_package(Python3 COMPONENTS Interpreter QUIET)
     if(Python3_Interpreter_FOUND)
-        add_executable(marc_position_distance_64m_core_tests
+        marc_add_cpp_executable(marc_position_distance_64m_core_tests
             tests/lzss_position_distance_64m_core_tests.cpp)
-        target_compile_features(marc_position_distance_64m_core_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_distance_64m_core_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_position_distance_64m_core_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_64m_core_conformance
@@ -554,8 +514,7 @@ endif()
 if(MARC_BUILD_TESTS AND TARGET marc_static)
     find_package(Python3 COMPONENTS Interpreter QUIET)
     if(Python3_Interpreter_FOUND)
-        add_executable(marc_position_distance_64m_frame_tests tests/lzss_position_distance_64m_frame_tests.cpp)
-        target_compile_features(marc_position_distance_64m_frame_tests PRIVATE cxx_std_20)
+        marc_add_cpp_executable(marc_position_distance_64m_frame_tests tests/lzss_position_distance_64m_frame_tests.cpp)
         target_include_directories(marc_position_distance_64m_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_position_distance_64m_frame_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_64m_frame_conformance
@@ -567,15 +526,13 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
 endif()
 
 if(MARC_BUILD_TESTS AND TARGET marc_static)
-    add_executable(marc_position_distance_64m_stream_contract_tests tests/lzss_position_distance_64m_stream_contract_tests.cpp)
-    target_compile_features(marc_position_distance_64m_stream_contract_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_64m_stream_contract_tests tests/lzss_position_distance_64m_stream_contract_tests.cpp)
     target_include_directories(marc_position_distance_64m_stream_contract_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_64m_stream_contract_tests PRIVATE marc::static)
     add_test(NAME marc_position_distance_64m_stream_contract COMMAND marc_position_distance_64m_stream_contract_tests)
     find_package(Python3 COMPONENTS Interpreter QUIET)
     if(Python3_Interpreter_FOUND)
-        add_executable(marc_position_distance_64m_stream_tests tests/lzss_position_distance_64m_stream_tests.cpp)
-        target_compile_features(marc_position_distance_64m_stream_tests PRIVATE cxx_std_20)
+        marc_add_cpp_executable(marc_position_distance_64m_stream_tests tests/lzss_position_distance_64m_stream_tests.cpp)
         target_include_directories(marc_position_distance_64m_stream_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_position_distance_64m_stream_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_64m_stream_conformance
@@ -587,20 +544,17 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
 endif()
 
 if(MARC_BUILD_TESTS AND TARGET marc_static)
-    add_executable(marc_position_distance_64m_reference_tests tests/lzss_position_distance_64m_reference_tests.cpp)
-    target_compile_features(marc_position_distance_64m_reference_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_64m_reference_tests tests/lzss_position_distance_64m_reference_tests.cpp)
     target_include_directories(marc_position_distance_64m_reference_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_64m_reference_tests PRIVATE marc::static GTest::gtest_main)
     add_test(NAME marc_position_distance_64m_reference COMMAND marc_position_distance_64m_reference_tests)
     set_tests_properties(marc_position_distance_64m_reference PROPERTIES TIMEOUT 600)
-    add_executable(marc_position_distance_64m_indexed_tests tests/lzss_position_distance_64m_indexed_tests.cpp)
-    target_compile_features(marc_position_distance_64m_indexed_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_64m_indexed_tests tests/lzss_position_distance_64m_indexed_tests.cpp)
     target_include_directories(marc_position_distance_64m_indexed_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_64m_indexed_tests PRIVATE marc::static GTest::gtest_main)
     add_test(NAME marc_position_distance_64m_indexed COMMAND marc_position_distance_64m_indexed_tests)
     set_tests_properties(marc_position_distance_64m_indexed PROPERTIES TIMEOUT 600)
-    add_executable(marc_position_distance_64m_compact_tests tests/lzss_position_distance_64m_compact_tests.cpp)
-    target_compile_features(marc_position_distance_64m_compact_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_64m_compact_tests tests/lzss_position_distance_64m_compact_tests.cpp)
     target_include_directories(marc_position_distance_64m_compact_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_64m_compact_tests PRIVATE marc::static GTest::gtest_main)
     add_test(NAME marc_position_distance_64m_compact COMMAND marc_position_distance_64m_compact_tests)
@@ -608,34 +562,29 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
 endif()
 
 if(MARC_BUILD_TESTS AND TARGET marc_static)
-    add_executable(marc_position_distance_64m_token_range_tests tests/lzss_position_distance_64m_token_range_tests.cpp)
-    target_compile_features(marc_position_distance_64m_token_range_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_64m_token_range_tests tests/lzss_position_distance_64m_token_range_tests.cpp)
     target_include_directories(marc_position_distance_64m_token_range_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_64m_token_range_tests PRIVATE marc::static GTest::gtest_main)
     add_test(NAME marc_position_distance_64m_token_range COMMAND marc_position_distance_64m_token_range_tests)
     set_tests_properties(marc_position_distance_64m_token_range PROPERTIES TIMEOUT 900)
-    add_executable(marc_position_distance_64m_compact_range_tests tests/lzss_position_distance_64m_compact_range_tests.cpp)
-    target_compile_features(marc_position_distance_64m_compact_range_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_64m_compact_range_tests tests/lzss_position_distance_64m_compact_range_tests.cpp)
     target_include_directories(marc_position_distance_64m_compact_range_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_64m_compact_range_tests PRIVATE marc::static GTest::gtest_main)
     add_test(NAME marc_position_distance_64m_compact_range COMMAND marc_position_distance_64m_compact_range_tests)
     set_tests_properties(marc_position_distance_64m_compact_range PROPERTIES TIMEOUT 900)
-    add_executable(marc_position_distance_64m_token_frame_encoder_tests tests/lzss_position_distance_64m_token_frame_encoder_tests.cpp)
-    target_compile_features(marc_position_distance_64m_token_frame_encoder_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_64m_token_frame_encoder_tests tests/lzss_position_distance_64m_token_frame_encoder_tests.cpp)
     target_include_directories(marc_position_distance_64m_token_frame_encoder_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_64m_token_frame_encoder_tests PRIVATE marc::static GTest::gtest_main)
     add_test(NAME marc_position_distance_64m_token_frame_encoder COMMAND marc_position_distance_64m_token_frame_encoder_tests)
     set_tests_properties(marc_position_distance_64m_token_frame_encoder PROPERTIES TIMEOUT 900)
-    add_executable(marc_position_distance_64m_compact_frame_tests tests/lzss_position_distance_64m_compact_frame_tests.cpp)
-    target_compile_features(marc_position_distance_64m_compact_frame_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_64m_compact_frame_tests tests/lzss_position_distance_64m_compact_frame_tests.cpp)
     target_include_directories(marc_position_distance_64m_compact_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_64m_compact_frame_tests PRIVATE marc::static GTest::gtest_main)
     add_test(NAME marc_position_distance_64m_compact_frame_encoder COMMAND marc_position_distance_64m_compact_frame_tests)
     set_tests_properties(marc_position_distance_64m_compact_frame_encoder PROPERTIES TIMEOUT 900)
     find_package(Python3 COMPONENTS Interpreter QUIET)
     if(Python3_Interpreter_FOUND)
-        add_executable(marc_position_distance_64m_frame_encode_conformance tests/lzss_position_distance_64m_frame_encode_conformance.cpp)
-        target_compile_features(marc_position_distance_64m_frame_encode_conformance PRIVATE cxx_std_20)
+        marc_add_cpp_executable(marc_position_distance_64m_frame_encode_conformance tests/lzss_position_distance_64m_frame_encode_conformance.cpp)
         target_include_directories(marc_position_distance_64m_frame_encode_conformance PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_position_distance_64m_frame_encode_conformance PRIVATE marc::static)
         add_test(NAME marc_position_distance_64m_frame_encode_conformance
@@ -647,16 +596,14 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
 endif()
 
 if(MARC_BUILD_TESTS AND TARGET marc_static)
-    add_executable(marc_position_distance_64m_owned_tests tests/lzss_position_distance_64m_owned_tests.cpp)
-    target_compile_features(marc_position_distance_64m_owned_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_64m_owned_tests tests/lzss_position_distance_64m_owned_tests.cpp)
     target_include_directories(marc_position_distance_64m_owned_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_64m_owned_tests PRIVATE marc::static GTest::gtest_main)
     add_test(NAME marc_position_distance_64m_owned COMMAND marc_position_distance_64m_owned_tests)
     set_tests_properties(marc_position_distance_64m_owned PROPERTIES TIMEOUT 900)
     find_package(Python3 COMPONENTS Interpreter QUIET)
     if(Python3_Interpreter_FOUND)
-        add_executable(marc_position_distance_64m_owned_conformance tests/lzss_position_distance_64m_owned_conformance.cpp)
-        target_compile_features(marc_position_distance_64m_owned_conformance PRIVATE cxx_std_20)
+        marc_add_cpp_executable(marc_position_distance_64m_owned_conformance tests/lzss_position_distance_64m_owned_conformance.cpp)
         target_include_directories(marc_position_distance_64m_owned_conformance PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_position_distance_64m_owned_conformance PRIVATE marc::static)
         add_test(NAME marc_position_distance_64m_owned_conformance
@@ -668,14 +615,12 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
 endif()
 
 if(MARC_BUILD_TESTS AND TARGET marc_static)
-    add_executable(marc_position_distance_64m_public_tests tests/lzss_position_distance_64m_public_tests.cpp)
-    target_compile_features(marc_position_distance_64m_public_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_64m_public_tests tests/lzss_position_distance_64m_public_tests.cpp)
     target_include_directories(marc_position_distance_64m_public_tests PRIVATE src)
     target_link_libraries(marc_position_distance_64m_public_tests PRIVATE marc_static GTest::gtest_main)
     add_test(NAME marc_position_distance_64m_public COMMAND marc_position_distance_64m_public_tests)
     set_tests_properties(marc_position_distance_64m_public PROPERTIES TIMEOUT 900)
-    add_executable(marc_position_distance_64m_public_fault_tests tests/lzss_position_distance_64m_public_fault_tests.cpp)
-    target_compile_features(marc_position_distance_64m_public_fault_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_64m_public_fault_tests tests/lzss_position_distance_64m_public_fault_tests.cpp)
     target_include_directories(marc_position_distance_64m_public_fault_tests PRIVATE src)
     target_link_libraries(marc_position_distance_64m_public_fault_tests PRIVATE marc_static GTest::gtest_main)
     add_test(NAME marc_position_distance_64m_public_faults COMMAND marc_position_distance_64m_public_fault_tests)
@@ -684,8 +629,7 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
     target_link_libraries(marc_position_distance_64m_public_c_consumer PRIVATE marc_static)
     set_target_properties(marc_position_distance_64m_public_c_consumer PROPERTIES LINKER_LANGUAGE CXX)
     add_test(NAME marc_position_distance_64m_public_c COMMAND marc_position_distance_64m_public_c_consumer)
-    add_executable(marc_position_distance_64m_public_conformance tests/lzss_position_distance_64m_public_conformance.cpp)
-    target_compile_features(marc_position_distance_64m_public_conformance PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_distance_64m_public_conformance tests/lzss_position_distance_64m_public_conformance.cpp)
     target_link_libraries(marc_position_distance_64m_public_conformance PRIVATE marc_static)
     add_test(NAME marc_position_distance_64m_public_conformance
         COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_position_distance_64m_owned_conformance.py
@@ -695,9 +639,8 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
 endif()
 
 if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
-    add_executable(marc_cli_position_distance_64m_allocation_tests
+    marc_add_cpp_executable(marc_cli_position_distance_64m_allocation_tests
         tests/cli_position_distance_64m_allocation_tests.cpp)
-    target_compile_features(marc_cli_position_distance_64m_allocation_tests PRIVATE cxx_std_20)
     target_link_libraries(marc_cli_position_distance_64m_allocation_tests PRIVATE marc::static)
     add_test(NAME marc_cli_position_distance_64m_allocation
         COMMAND marc_cli_position_distance_64m_allocation_tests ${CMAKE_CURRENT_BINARY_DIR}/cli64m-allocation)

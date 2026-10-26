@@ -33,8 +33,7 @@ if(MARC_BUILD_TESTS)
     include(GoogleTest)
 
     if(TARGET marc_benchmark)
-        add_executable(marc_benchmark_stream_tests tests/benchmark_stream_tests.cpp)
-        target_compile_features(marc_benchmark_stream_tests PRIVATE cxx_std_20)
+        marc_add_cpp_executable(marc_benchmark_stream_tests tests/benchmark_stream_tests.cpp)
         set_target_properties(marc_benchmark_stream_tests PROPERTIES CXX_EXTENSIONS OFF)
         if(TARGET marc_static)
             target_link_libraries(marc_benchmark_stream_tests PRIVATE marc::static GTest::gtest_main)
@@ -70,7 +69,7 @@ if(MARC_BUILD_TESTS)
         endif()
     endif()
 
-    add_executable(marc_core_tests
+    marc_add_cpp_executable(marc_core_tests
         tests/lz77_decoder_tests.cpp
         tests/lz77_encoder_tests.cpp
         tests/lz77_format_tests.cpp
@@ -558,7 +557,6 @@ if(MARC_BUILD_TESTS)
         tests/lzss_short_length_escape_stream_encoder_tests.cpp
         tests/lzss_short_length_escape_raw_stream_encoder_tests.cpp
     )
-    target_compile_features(marc_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_core_tests
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
                 )
@@ -666,9 +664,8 @@ if(MARC_BUILD_TESTS)
     endif()
 
     if(TARGET marc_static)
-        add_executable(marc_position_distance_fuzz_smoke
+        marc_add_cpp_executable(marc_position_distance_fuzz_smoke
             fuzz/lzss_position_distance_stream_fuzz.cpp)
-        target_compile_features(marc_position_distance_fuzz_smoke PRIVATE cxx_std_20)
         target_compile_definitions(marc_position_distance_fuzz_smoke
             PRIVATE MARC_POSITION_DISTANCE_FUZZ_SMOKE)
         target_include_directories(marc_position_distance_fuzz_smoke
@@ -1366,29 +1363,25 @@ if(MARC_BUILD_TESTS)
         endif()
     endforeach()
     if(TARGET marc_static)
-        add_executable(marc_position_distance_allocation_tests
+        marc_add_cpp_executable(marc_position_distance_allocation_tests
             tests/position_distance_allocation_tests.cpp)
-        target_compile_features(marc_position_distance_allocation_tests PRIVATE cxx_std_20)
         target_link_libraries(marc_position_distance_allocation_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_allocation_tests
             COMMAND marc_position_distance_allocation_tests)
-        add_executable(marc_position_distance_1m_c_allocation_tests
+        marc_add_cpp_executable(marc_position_distance_1m_c_allocation_tests
             tests/position_distance_1m_c_allocation_tests.cpp)
-        target_compile_features(marc_position_distance_1m_c_allocation_tests PRIVATE cxx_std_20)
         target_link_libraries(marc_position_distance_1m_c_allocation_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_1m_c_allocation_tests
             COMMAND marc_position_distance_1m_c_allocation_tests)
-        add_executable(marc_position_distance_1m_allocation_tests
+        marc_add_cpp_executable(marc_position_distance_1m_allocation_tests
             tests/position_distance_1m_allocation_tests.cpp)
-        target_compile_features(marc_position_distance_1m_allocation_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_distance_1m_allocation_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_position_distance_1m_allocation_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_1m_allocation_tests
             COMMAND marc_position_distance_1m_allocation_tests)
 
-        add_executable(marc_position_distance_1m_encode_allocation_tests
+        marc_add_cpp_executable(marc_position_distance_1m_encode_allocation_tests
             tests/position_distance_1m_encode_allocation_tests.cpp)
-        target_compile_features(marc_position_distance_1m_encode_allocation_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_distance_1m_encode_allocation_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_position_distance_1m_encode_allocation_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_1m_encode_allocation_tests

@@ -44031,3 +44031,18 @@ comparisons plus Clang/Ninja fuzz compile/link command identity. Adapt static
 documentation checks to the modules they now load. No external implementation,
 codec logic, API/format/default change, fuzz execution, new hosted result or
 push is involved. Helper deduplication and runtime/package validation remain.
+
+
+### CR-2026: 2026-10-27 — identical CMake setup sharing and package checks
+
+Author/reviewer: Codex. Continue DD-1636/IR-1381 after the separately committed
+mechanical split. Share only the identical C++20 executable creation and exact
+common fuzzer setup, preserving differing target policies at call sites. Keep
+profile limits and library APIs explicit. TVG-1647 compares all ordinary and
+optional generated contracts against pre-refactoring receipts, including the
+combined test/fuzz configuration, and records actual installed static/shared
+C-consumer execution plus the74 benchmark CTests. The source root is restored
+exactly after the temporary original-root comparison; no concurrent source
+build/test runs during that receipt operation. No external implementation,
+codec/format/default change, fuzz campaign, hosted result or push is claimed.
+Linux and complete hosted validation remain required before phase5.

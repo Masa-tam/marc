@@ -2019,7 +2019,7 @@ endforeach()
 file(READ "${source_dir}/CMakeLists.txt" root_cmake_content)
 string(REPLACE "\r\n" "\n" root_cmake_content "${root_cmake_content}")
 foreach(required_build_module IN ITEMS
-        MarcOptions MarcSources MarcLibraries MarcTools MarcBenchmarks
+        MarcOptions MarcTargetHelpers MarcSources MarcLibraries MarcTools MarcBenchmarks
         MarcInstall MarcTests MarcDiagnostics MarcFuzzers)
     if(NOT EXISTS "${source_dir}/cmake/${required_build_module}.cmake")
         message(FATAL_ERROR "Missing build module: ${required_build_module}")

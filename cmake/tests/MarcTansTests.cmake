@@ -1,12 +1,11 @@
 # MarcTansTests: explicit project declarations.
 if(MARC_BUILD_TESTS)
-    add_executable(marc_position_tans_64k_core_tests
+    marc_add_cpp_executable(marc_position_tans_64k_core_tests
         tests/position_tans_64k_core_tests.cpp
         src/entropy/position_tans_64k_format.cpp
         src/entropy/position_tans_64k.cpp
         src/entropy/tans_tables.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_64k_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_64k_core_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_64k_core COMMAND marc_position_tans_64k_core_tests)
     set_tests_properties(marc_position_tans_64k_core PROPERTIES TIMEOUT 30)
@@ -21,18 +20,17 @@ if(MARC_BUILD_TESTS)
 endif()
 
 if(MARC_BUILD_TESTS)
-    add_executable(marc_position_tans_64k_frame_format_tests
+    marc_add_cpp_executable(marc_position_tans_64k_frame_format_tests
         tests/position_tans_64k_frame_format_tests.cpp
         src/frame/lzss_position_tans_64k_format.cpp
         src/entropy/position_tans_64k_format.cpp
         src/dictionary/lzss_typed_token.cpp
         src/dictionary/lzss_format.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_64k_frame_format_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_64k_frame_format_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_64k_frame_format COMMAND marc_position_tans_64k_frame_format_tests)
     set_tests_properties(marc_position_tans_64k_frame_format PROPERTIES TIMEOUT 30)
-    add_executable(marc_position_tans_64k_frame_tests
+    marc_add_cpp_executable(marc_position_tans_64k_frame_tests
         tests/position_tans_64k_frame_tests.cpp
         tests/position_tans_64k_stream_tests.cpp
         src/frame/lzss_position_tans_64k_stream_decoder.cpp
@@ -52,7 +50,6 @@ if(MARC_BUILD_TESTS)
         src/dictionary/lzss_typed_reconstructor.cpp
         src/dictionary/lzss_format.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_64k_frame_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_64k_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_64k_frames COMMAND marc_position_tans_64k_frame_tests)
     set_tests_properties(marc_position_tans_64k_frames PROPERTIES TIMEOUT 30)
@@ -60,17 +57,15 @@ if(MARC_BUILD_TESTS)
     set_tests_properties(marc_position_tans_64k_stream PROPERTIES TIMEOUT 30)
     get_target_property(position_tans_private_sources marc_position_tans_64k_frame_tests SOURCES)
     list(FILTER position_tans_private_sources EXCLUDE REGEX "^tests/")
-    add_executable(marc_position_tans_64k_owned_tests
+    marc_add_cpp_executable(marc_position_tans_64k_owned_tests
         tests/position_tans_64k_owned_tests.cpp
         src/frame/lzss_position_tans_64k_owned.cpp
         ${position_tans_private_sources})
-    target_compile_features(marc_position_tans_64k_owned_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_64k_owned_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     # Normal resource precursor: no test allocation overrides or sanitizers.
 
     add_test(NAME marc_position_tans_64k_owned COMMAND marc_position_tans_64k_owned_tests)
-    add_executable(marc_position_tans_64k_api_tests tests/position_tans_64k_api_tests.cpp)
-    target_compile_features(marc_position_tans_64k_api_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_tans_64k_api_tests tests/position_tans_64k_api_tests.cpp)
     target_include_directories(marc_position_tans_64k_api_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_tans_64k_api_tests PRIVATE marc::static)
     add_test(NAME marc_position_tans_64k_api COMMAND marc_position_tans_64k_api_tests)
@@ -123,7 +118,7 @@ if(MARC_BUILD_TESTS)
                 ${CMAKE_CURRENT_BINARY_DIR}/position-tans-64k-raw)
         set_tests_properties(marc_position_tans_64k_raw_differential PROPERTIES TIMEOUT 120)
     endif()
-    add_executable(marc_position_tans_64k_token_tests
+    marc_add_cpp_executable(marc_position_tans_64k_token_tests
         tests/position_tans_64k_token_tests.cpp
         src/context/lzss_position_tans_64k_tokens.cpp
         src/context/lzss_short_length_escape.cpp
@@ -133,7 +128,6 @@ if(MARC_BUILD_TESTS)
         src/dictionary/lzss_typed_token.cpp
         src/dictionary/lzss_format.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_64k_token_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_64k_token_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_64k_tokens COMMAND marc_position_tans_64k_token_tests)
     set_tests_properties(marc_position_tans_64k_tokens PROPERTIES TIMEOUT 30)
@@ -148,13 +142,12 @@ if(MARC_BUILD_TESTS)
 endif()
 
 if(MARC_BUILD_TESTS)
-    add_executable(marc_position_tans_1m_core_tests
+    marc_add_cpp_executable(marc_position_tans_1m_core_tests
         tests/position_tans_1m_core_tests.cpp
         src/entropy/position_tans_1m_format.cpp
         src/entropy/position_tans_1m.cpp
         src/entropy/tans_tables.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_1m_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_1m_core_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_1m_core COMMAND marc_position_tans_1m_core_tests)
     set_tests_properties(marc_position_tans_1m_core PROPERTIES TIMEOUT 30)
@@ -169,7 +162,7 @@ if(MARC_BUILD_TESTS)
 endif()
 
 if(MARC_BUILD_TESTS)
-    add_executable(marc_position_tans_1m_token_tests
+    marc_add_cpp_executable(marc_position_tans_1m_token_tests
         tests/position_tans_1m_token_tests.cpp
         src/context/lzss_position_tans_1m_tokens.cpp
         src/context/lzss_short_length_escape.cpp
@@ -179,7 +172,6 @@ if(MARC_BUILD_TESTS)
         src/dictionary/lzss_typed_token.cpp
         src/dictionary/lzss_format.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_1m_token_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_1m_token_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_1m_tokens COMMAND marc_position_tans_1m_token_tests)
     set_tests_properties(marc_position_tans_1m_tokens PROPERTIES TIMEOUT 30)
@@ -194,21 +186,20 @@ if(MARC_BUILD_TESTS)
 endif()
 
 if(MARC_BUILD_TESTS)
-    add_executable(marc_position_tans_1m_frame_format_tests
+    marc_add_cpp_executable(marc_position_tans_1m_frame_format_tests
         tests/position_tans_1m_frame_format_tests.cpp
         src/frame/lzss_position_tans_1m_format.cpp
         src/entropy/position_tans_1m_format.cpp
         src/dictionary/lzss_typed_token.cpp
         src/dictionary/lzss_format.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_1m_frame_format_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_1m_frame_format_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_1m_frame_format COMMAND marc_position_tans_1m_frame_format_tests)
     set_tests_properties(marc_position_tans_1m_frame_format PROPERTIES TIMEOUT 30)
 endif()
 
 if(MARC_BUILD_TESTS)
-    add_executable(marc_position_tans_1m_frame_tests
+    marc_add_cpp_executable(marc_position_tans_1m_frame_tests
         tests/position_tans_1m_frame_tests.cpp
         tests/position_tans_1m_stream_tests.cpp
         src/frame/lzss_position_tans_1m_stream_decoder.cpp
@@ -223,7 +214,6 @@ if(MARC_BUILD_TESTS)
         src/dictionary/lzss_typed_reconstructor.cpp
         src/dictionary/lzss_format.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_1m_frame_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_1m_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_1m_frames COMMAND marc_position_tans_1m_frame_tests)
     set_tests_properties(marc_position_tans_1m_frames PROPERTIES TIMEOUT 30)
@@ -237,7 +227,7 @@ if(MARC_BUILD_TESTS)
                 ${CMAKE_CURRENT_BINARY_DIR}/position-tans-1m-frames)
         set_tests_properties(marc_position_tans_1m_frame_differential PROPERTIES TIMEOUT 120)
     endif()
-    add_executable(marc_position_tans_1m_owned_tests
+    marc_add_cpp_executable(marc_position_tans_1m_owned_tests
         tests/position_tans_1m_owned_tests.cpp
         src/frame/lzss_position_tans_1m_owned.cpp
         src/frame/lzss_position_tans_1m_stream_decoder.cpp
@@ -254,7 +244,6 @@ if(MARC_BUILD_TESTS)
         src/dictionary/lzss_typed_reconstructor.cpp
         src/dictionary/lzss_format.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_1m_owned_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_1m_owned_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_1m_owned COMMAND marc_position_tans_1m_owned_tests)
     set_tests_properties(marc_position_tans_1m_owned PROPERTIES TIMEOUT 120)
@@ -275,8 +264,7 @@ if(MARC_BUILD_TESTS)
     get_target_property(position_tans_1m_owner_sources marc_position_tans_1m_owned_tests SOURCES)
     list(REMOVE_ITEM position_tans_1m_owner_sources tests/position_tans_1m_owned_tests.cpp)
 
-    add_executable(marc_position_tans_1m_api_tests tests/position_tans_1m_api_tests.cpp)
-    target_compile_features(marc_position_tans_1m_api_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_tans_1m_api_tests tests/position_tans_1m_api_tests.cpp)
     target_include_directories(marc_position_tans_1m_api_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_tans_1m_api_tests PRIVATE marc::static)
     add_test(NAME marc_position_tans_1m_api COMMAND marc_position_tans_1m_api_tests)
@@ -302,45 +290,40 @@ if(MARC_BUILD_TESTS)
             marc_position_tans_1m_public_raw_differential PROPERTIES TIMEOUT 120 RESOURCE_LOCK marc_position_tans_1m_campaign)
     endif()
 
-    add_executable(marc_position_tans_4m_core_tests
+    marc_add_cpp_executable(marc_position_tans_4m_core_tests
         tests/position_tans_4m_core_tests.cpp
         src/entropy/position_tans_4m_format.cpp
         src/entropy/position_tans_4m.cpp
         src/entropy/tans_tables.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_4m_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_4m_core_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_4m_core COMMAND marc_position_tans_4m_core_tests)
     set_tests_properties(marc_position_tans_4m_core PROPERTIES TIMEOUT 30)
     foreach(layer IN ITEMS core token frame_format)
-        add_executable(marc_position_tans_16m_${layer}_tests
+        marc_add_cpp_executable(marc_position_tans_16m_${layer}_tests
             tests/position_tans_16m_${layer}_tests.cpp)
-        target_compile_features(marc_position_tans_16m_${layer}_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_tans_16m_${layer}_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_position_tans_16m_${layer}_tests PRIVATE marc::static)
         add_test(NAME marc_position_tans_16m_${layer}
             COMMAND marc_position_tans_16m_${layer}_tests)
         set_tests_properties(marc_position_tans_16m_${layer} PROPERTIES TIMEOUT 30)
     endforeach()
-    add_executable(marc_position_tans_16m_frame_tests
+    marc_add_cpp_executable(marc_position_tans_16m_frame_tests
         tests/position_tans_16m_frame_tests.cpp)
-    target_compile_features(marc_position_tans_16m_frame_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_16m_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_tans_16m_frame_tests PRIVATE marc::static)
     add_test(NAME marc_position_tans_16m_frame
         COMMAND marc_position_tans_16m_frame_tests)
     set_tests_properties(marc_position_tans_16m_frame PROPERTIES TIMEOUT 60)
-    add_executable(marc_position_tans_16m_stream_tests
+    marc_add_cpp_executable(marc_position_tans_16m_stream_tests
         tests/position_tans_16m_stream_tests.cpp)
-    target_compile_features(marc_position_tans_16m_stream_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_16m_stream_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_tans_16m_stream_tests PRIVATE marc::static)
     add_test(NAME marc_position_tans_16m_stream
         COMMAND marc_position_tans_16m_stream_tests)
     set_tests_properties(marc_position_tans_16m_stream PROPERTIES TIMEOUT 60)
-    add_executable(marc_position_tans_16m_api_tests
+    marc_add_cpp_executable(marc_position_tans_16m_api_tests
         tests/position_tans_16m_api_tests.cpp)
-    target_compile_features(marc_position_tans_16m_api_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_16m_api_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_tans_16m_api_tests PRIVATE marc::static)
     add_test(NAME marc_position_tans_16m_api
@@ -358,34 +341,30 @@ if(MARC_BUILD_TESTS)
             PROPERTIES TIMEOUT 120)
     endif()
     foreach(layer IN ITEMS core token frame_format)
-        add_executable(marc_position_tans_32m_${layer}_tests
+        marc_add_cpp_executable(marc_position_tans_32m_${layer}_tests
             tests/position_tans_32m_${layer}_tests.cpp)
-        target_compile_features(marc_position_tans_32m_${layer}_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_tans_32m_${layer}_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_position_tans_32m_${layer}_tests PRIVATE marc::static)
         add_test(NAME marc_position_tans_32m_${layer}
             COMMAND marc_position_tans_32m_${layer}_tests)
         set_tests_properties(marc_position_tans_32m_${layer} PROPERTIES TIMEOUT 30)
     endforeach()
-    add_executable(marc_position_tans_32m_frame_tests
+    marc_add_cpp_executable(marc_position_tans_32m_frame_tests
         tests/position_tans_32m_frame_tests.cpp)
-    target_compile_features(marc_position_tans_32m_frame_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_32m_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_tans_32m_frame_tests PRIVATE marc::static)
     add_test(NAME marc_position_tans_32m_frame
         COMMAND marc_position_tans_32m_frame_tests)
     set_tests_properties(marc_position_tans_32m_frame PROPERTIES TIMEOUT 60)
-    add_executable(marc_position_tans_32m_stream_tests
+    marc_add_cpp_executable(marc_position_tans_32m_stream_tests
         tests/position_tans_32m_stream_tests.cpp)
-    target_compile_features(marc_position_tans_32m_stream_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_32m_stream_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_tans_32m_stream_tests PRIVATE marc::static)
     add_test(NAME marc_position_tans_32m_stream
         COMMAND marc_position_tans_32m_stream_tests)
     set_tests_properties(marc_position_tans_32m_stream PROPERTIES TIMEOUT 60)
-    add_executable(marc_position_tans_32m_api_tests
+    marc_add_cpp_executable(marc_position_tans_32m_api_tests
         tests/position_tans_32m_api_tests.cpp)
-    target_compile_features(marc_position_tans_32m_api_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_32m_api_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_link_libraries(marc_position_tans_32m_api_tests PRIVATE marc::static)
     add_test(NAME marc_position_tans_32m_api COMMAND marc_position_tans_32m_api_tests)
@@ -405,26 +384,23 @@ if(MARC_BUILD_TESTS)
             PROPERTIES TIMEOUT 120)
     endif()
     foreach(layer IN ITEMS core token frame_format)
-        add_executable(marc_position_tans_64m_${layer}_tests
+        marc_add_cpp_executable(marc_position_tans_64m_${layer}_tests
             tests/position_tans_64m_${layer}_tests.cpp)
-        target_compile_features(marc_position_tans_64m_${layer}_tests PRIVATE cxx_std_20)
         target_include_directories(marc_position_tans_64m_${layer}_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_position_tans_64m_${layer}_tests PRIVATE marc::static)
         add_test(NAME marc_position_tans_64m_${layer}
             COMMAND marc_position_tans_64m_${layer}_tests)
         set_tests_properties(marc_position_tans_64m_${layer} PROPERTIES TIMEOUT 30)
     endforeach()
-    add_executable(marc_position_tans_64m_frame_tests
+    marc_add_cpp_executable(marc_position_tans_64m_frame_tests
         tests/position_tans_64m_frame_tests.cpp)
-    target_compile_features(marc_position_tans_64m_frame_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_64m_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_tans_64m_frame_tests PRIVATE marc::static)
     add_test(NAME marc_position_tans_64m_frame
         COMMAND marc_position_tans_64m_frame_tests)
     set_tests_properties(marc_position_tans_64m_frame PROPERTIES TIMEOUT 60)
-    add_executable(marc_position_tans_64m_stream_tests
+    marc_add_cpp_executable(marc_position_tans_64m_stream_tests
         tests/position_tans_64m_stream_tests.cpp)
-    target_compile_features(marc_position_tans_64m_stream_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_64m_stream_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_tans_64m_stream_tests PRIVATE marc::static)
     add_test(NAME marc_position_tans_64m_stream
@@ -434,9 +410,8 @@ if(MARC_BUILD_TESTS)
         tests/position_tans_64m_stream_fuzz.cpp)
     target_compile_features(marc_position_tans_64m_stream_fuzz_compile_smoke PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_64m_stream_fuzz_compile_smoke PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    add_executable(marc_position_tans_64m_api_tests
+    marc_add_cpp_executable(marc_position_tans_64m_api_tests
         tests/position_tans_64m_api_tests.cpp)
-    target_compile_features(marc_position_tans_64m_api_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_64m_api_tests PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_link_libraries(marc_position_tans_64m_api_tests PRIVATE marc::static)
@@ -452,13 +427,12 @@ if(MARC_BUILD_TESTS)
         set_tests_properties(marc_position_tans_64m_vectors marc_position_tans_64m_differential
             PROPERTIES TIMEOUT 120)
     endif()
-    add_executable(marc_position_tans_8m_core_tests
+    marc_add_cpp_executable(marc_position_tans_8m_core_tests
         tests/position_tans_8m_core_tests.cpp
         src/entropy/position_tans_8m_format.cpp
         src/entropy/position_tans_8m.cpp
         src/entropy/tans_tables.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_8m_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_8m_core_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_8m_core COMMAND marc_position_tans_8m_core_tests)
     set_tests_properties(marc_position_tans_8m_core PROPERTIES TIMEOUT 30)
@@ -469,7 +443,7 @@ if(MARC_BUILD_TESTS)
                 ${CMAKE_CURRENT_BINARY_DIR}/position-tans-8m-differential)
         set_tests_properties(marc_position_tans_8m_differential PROPERTIES TIMEOUT 120)
     endif()
-    add_executable(marc_position_tans_8m_token_tests
+    marc_add_cpp_executable(marc_position_tans_8m_token_tests
         tests/position_tans_8m_token_tests.cpp
         src/context/lzss_position_tans_8m_tokens.cpp
         src/context/lzss_short_length_escape.cpp
@@ -479,11 +453,10 @@ if(MARC_BUILD_TESTS)
         src/dictionary/lzss_typed_token.cpp
         src/dictionary/lzss_format.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_8m_token_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_8m_token_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_8m_tokens COMMAND marc_position_tans_8m_token_tests)
     set_tests_properties(marc_position_tans_8m_tokens PROPERTIES TIMEOUT 30)
-    add_executable(marc_position_tans_4m_token_tests
+    marc_add_cpp_executable(marc_position_tans_4m_token_tests
         tests/position_tans_4m_token_tests.cpp
         src/context/lzss_position_tans_4m_tokens.cpp
         src/context/lzss_short_length_escape.cpp
@@ -493,33 +466,30 @@ if(MARC_BUILD_TESTS)
         src/dictionary/lzss_typed_token.cpp
         src/dictionary/lzss_format.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_4m_token_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_4m_token_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_4m_tokens COMMAND marc_position_tans_4m_token_tests)
     set_tests_properties(marc_position_tans_4m_tokens PROPERTIES TIMEOUT 30)
-    add_executable(marc_position_tans_4m_frame_format_tests
+    marc_add_cpp_executable(marc_position_tans_4m_frame_format_tests
         tests/position_tans_4m_frame_format_tests.cpp
         src/frame/lzss_position_tans_4m_format.cpp
         src/entropy/position_tans_4m_format.cpp
         src/dictionary/lzss_typed_token.cpp
         src/dictionary/lzss_format.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_4m_frame_format_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_4m_frame_format_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_4m_frame_format COMMAND marc_position_tans_4m_frame_format_tests)
     set_tests_properties(marc_position_tans_4m_frame_format PROPERTIES TIMEOUT 30)
-    add_executable(marc_position_tans_8m_frame_format_tests
+    marc_add_cpp_executable(marc_position_tans_8m_frame_format_tests
         tests/position_tans_8m_frame_format_tests.cpp
         src/frame/lzss_position_tans_8m_format.cpp
         src/entropy/position_tans_8m_format.cpp
         src/dictionary/lzss_typed_token.cpp
         src/dictionary/lzss_format.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_8m_frame_format_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_8m_frame_format_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_8m_frame_format COMMAND marc_position_tans_8m_frame_format_tests)
     set_tests_properties(marc_position_tans_8m_frame_format PROPERTIES TIMEOUT 30)
-    add_executable(marc_position_tans_8m_frame_tests
+    marc_add_cpp_executable(marc_position_tans_8m_frame_tests
         tests/position_tans_8m_frame_tests.cpp
         tests/position_tans_8m_stream_tests.cpp
         src/frame/lzss_position_tans_8m_stream_decoder.cpp
@@ -534,13 +504,12 @@ if(MARC_BUILD_TESTS)
         src/dictionary/lzss_typed_reconstructor.cpp
         src/dictionary/lzss_format.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_8m_frame_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_8m_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_8m_frames COMMAND marc_position_tans_8m_frame_tests)
     set_tests_properties(marc_position_tans_8m_frames PROPERTIES TIMEOUT 30)
     add_test(NAME marc_position_tans_8m_stream COMMAND marc_position_tans_8m_frame_tests --stream)
     set_tests_properties(marc_position_tans_8m_stream PROPERTIES TIMEOUT 30)
-    add_executable(marc_position_tans_8m_owned_tests
+    marc_add_cpp_executable(marc_position_tans_8m_owned_tests
         tests/position_tans_8m_owned_tests.cpp
         src/frame/lzss_position_tans_8m_owned.cpp
         src/frame/lzss_position_tans_8m_stream_decoder.cpp
@@ -557,17 +526,15 @@ if(MARC_BUILD_TESTS)
         src/dictionary/lzss_typed_reconstructor.cpp
         src/dictionary/lzss_format.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_8m_owned_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_8m_owned_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_8m_owned COMMAND marc_position_tans_8m_owned_tests)
     set_tests_properties(marc_position_tans_8m_owned PROPERTIES TIMEOUT 30)
-    add_executable(marc_position_tans_8m_api_tests tests/position_tans_8m_api_tests.cpp)
-    target_compile_features(marc_position_tans_8m_api_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_tans_8m_api_tests tests/position_tans_8m_api_tests.cpp)
     target_include_directories(marc_position_tans_8m_api_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_tans_8m_api_tests PRIVATE marc::static)
     add_test(NAME marc_position_tans_8m_api COMMAND marc_position_tans_8m_api_tests)
     set_tests_properties(marc_position_tans_8m_api PROPERTIES TIMEOUT 60)
-    add_executable(marc_position_tans_4m_frame_tests
+    marc_add_cpp_executable(marc_position_tans_4m_frame_tests
         tests/position_tans_4m_frame_tests.cpp
         tests/position_tans_4m_stream_tests.cpp
         src/frame/lzss_position_tans_4m_stream_decoder.cpp
@@ -582,21 +549,18 @@ if(MARC_BUILD_TESTS)
         src/dictionary/lzss_typed_reconstructor.cpp
         src/dictionary/lzss_format.cpp
         src/core/limits.cpp)
-    target_compile_features(marc_position_tans_4m_frame_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_tans_4m_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     add_test(NAME marc_position_tans_4m_frames COMMAND marc_position_tans_4m_frame_tests)
     set_tests_properties(marc_position_tans_4m_frames PROPERTIES TIMEOUT 30)
     add_test(NAME marc_position_tans_4m_stream COMMAND marc_position_tans_4m_frame_tests --stream)
     set_tests_properties(marc_position_tans_4m_stream PROPERTIES TIMEOUT 30)
-    add_executable(marc_position_tans_4m_api_tests tests/position_tans_4m_api_tests.cpp)
-    target_compile_features(marc_position_tans_4m_api_tests PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_tans_4m_api_tests tests/position_tans_4m_api_tests.cpp)
     target_include_directories(marc_position_tans_4m_api_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_tans_4m_api_tests PRIVATE marc::static)
     add_test(NAME marc_position_tans_4m_api COMMAND marc_position_tans_4m_api_tests)
     set_tests_properties(marc_position_tans_4m_api PROPERTIES TIMEOUT 60)
 
-    add_executable(marc_position_tans_8m_contextual_probe tests/position_tans_8m_contextual_probe.cpp)
-    target_compile_features(marc_position_tans_8m_contextual_probe PRIVATE cxx_std_20)
+    marc_add_cpp_executable(marc_position_tans_8m_contextual_probe tests/position_tans_8m_contextual_probe.cpp)
     target_link_libraries(marc_position_tans_8m_contextual_probe PRIVATE marc::static)
     add_test(NAME marc_position_tans_8m_contextual_probe COMMAND marc_position_tans_8m_contextual_probe)
     set_tests_properties(marc_position_tans_8m_contextual_probe PROPERTIES TIMEOUT 30)
@@ -607,10 +571,9 @@ if(MARC_BUILD_TESTS)
         set_tests_properties(marc_position_tans_4m_c_${linkage} PROPERTIES TIMEOUT 60)
     endforeach()
     foreach(window IN ITEMS 8m 16m 32m 64m)
-        add_executable(marc_position_tans_${window}_public_fuzz_smoke
+        marc_add_cpp_executable(marc_position_tans_${window}_public_fuzz_smoke
             fuzz/lzss_position_tans_large_public_fuzz.cpp
             tests/position_tans_large_public_fuzz_smoke.cpp)
-        target_compile_features(marc_position_tans_${window}_public_fuzz_smoke PRIVATE cxx_std_20)
         target_compile_definitions(marc_position_tans_${window}_public_fuzz_smoke PRIVATE
             MARC_TANS_WINDOW=${window})
         target_link_libraries(marc_position_tans_${window}_public_fuzz_smoke PRIVATE marc::static)
@@ -618,9 +581,8 @@ if(MARC_BUILD_TESTS)
             COMMAND marc_position_tans_${window}_public_fuzz_smoke)
         set_tests_properties(marc_position_tans_${window}_public_fuzz_smoke PROPERTIES
             TIMEOUT 120 RESOURCE_LOCK marc_position_tans_public_fuzz_campaign)
-        add_executable(marc_position_tans_${window}_full_frame_probe
+        marc_add_cpp_executable(marc_position_tans_${window}_full_frame_probe
             tests/position_tans_large_full_frame_probe.cpp)
-        target_compile_features(marc_position_tans_${window}_full_frame_probe PRIVATE cxx_std_20)
         target_compile_definitions(marc_position_tans_${window}_full_frame_probe PRIVATE
             MARC_TANS_WINDOW=${window})
         target_link_libraries(marc_position_tans_${window}_full_frame_probe PRIVATE marc::static)

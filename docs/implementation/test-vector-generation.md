@@ -27398,3 +27398,50 @@ An initial splitter classified only set(MARC_SOURCES), omitting its later
 list(APPEND); it refused before writing files. Include that explicit append and
 repeat the extraction. The subsequent complete configuration comparisons pass.
 Runtime and installed-consumer checks follow after transparent helper sharing.
+
+
+### TVG-1647: transparent CMake target helpers and installed consumption
+
+Replace337 identical executable/C++20 setup pairs with marc_add_cpp_executable.
+Replace59 exact fuzzer include/sanitizer/warning/static-link sequences with
+marc_add_fuzzer. Keep differing flags, public interfaces and all source lists
+explicit. The helper file adds no directory scope or profile configuration.
+The root is now20 lines. Reconfigure and compare against the pre-extraction
+receipts, not merely the immediately preceding text: ordinary422 targets/4172
+tests, shared-only7/0, static-only7/0 and diagnostics423/713 retain identical
+source/per-source/compile/link/include/dependency, test and generated export/
+configuration contracts. Generated install scripts also match exactly. The
+fresh diagnostic registration count still includes an undiscovered-main
+placeholder; no diagnostic runtime execution is claimed.
+
+Optional fuzz-only Clang/Ninja retains1672 compile commands and149 link steps.
+Also compare the original monolithic root with the final modules under TESTS,
+BENCHMARKS and FUZZERS all enabled:3782 compile commands,513 link steps and718
+test registrations/properties match exactly. The fresh unbuilt-main placeholder
+is present in both receipts. The original root is used only while obtaining
+that same-directory baseline; a try/finally guard restores the exact pending
+root before the final configuration. This checks chronological shared-variable
+dependencies that the default configuration would not expose. No fuzz campaign
+or combined-mode runtime qualification is inferred.
+
+Build current CLI, benchmark and C example. Install the current static/shared
+libraries and public artifacts to a new ignored prefix, then configure/build
+the installed examples from that prefix alone with EXPECTED_LINKAGE=both.
+All three installed C-consumer tests pass in0.53 seconds (baseline, static
+Position-distance and shared Position-distance). Single-library configurations
+have generated-contract evidence; their fresh runtime builds and Linux
+execution remain hosted gates. No library recompilation is needed for unchanged
+production sources/flags; do not describe these checks as new codec optimization.
+
+All74 benchmark CTests pass in55.35 seconds, covering102 frozen release-byte
+comparisons, native empty streams, logical/physical scopes and80 boundary/vector
+recipes. Full4172-suite execution is not claimed locally. Production/header/
+fuzz/workflow files remain unchanged. Scheduling, labels and timeouts match the
+baseline; dedicated CI fuzz jobs remain absent. Complete hosted/package evidence
+is required before the next broad CLI/C-API change.
+
+Final documentation/CI-policy/partition/corpus-verifier CTests pass4/4 in
+2.54 seconds. The documentation link/ordered-ledger check and git diff --check
+pass. No new whole-suite, Linux, fresh single-library runtime build or fuzz
+execution is inferred from the generated-contract comparisons. Request manual
+full_validation at the committed phase4 boundary before changing CLI/C APIs.
