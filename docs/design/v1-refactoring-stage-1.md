@@ -365,3 +365,18 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   package consumers and102-profile bundles. Pause at this production boundary
   before further factory/ownership or root API changes. The full six-phase
   objective, remaining phase5 items and phase6 are still incomplete.
+
+
+- Hosted phase5 continuation: the maintainer reports successful push/manual
+  full_validation through03fdba3a (TVG-1651/CR-2030). Resume the21 identical native
+  boundaries and stateless CLI/benchmark profile initialization/bindings, retaining
+  execution-specific admission/ownership policies. Later edits need fresh checks.
+
+
+- Native boundary extraction (DD-1639/TVG-1652/CR-2031):21 identical owned
+  guards/predicates use shared private headers with the same object shape and
+  sticky capacity/overlap/error behavior. Source expansions, both Windows
+  compiler layout/trace checks,3552 core/API tests and frozen224 records/111
+  layouts/251 exports pass. All102 release archives match. Nine distinct native
+  guards and the four-MiB guard remain explicit. Root validation/ownership and
+  API decomposition still require review; later hosted qualification is pending.

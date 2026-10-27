@@ -35331,3 +35331,44 @@ and the existing no-progress policy. Keep root transactional rename/removal
 unchanged. Other CLI policies and CLI/benchmark profile setup remain open rather
 than silently adopting these native semantics. Qualify against the existing
 release-byte, empty, boundary, rejection and transaction tests after rebuilding.
+
+
+### DD-1639: exact owning boundaries and stateless public-profile bindings
+
+Extract the21 identical C-API Boundary classes to a private OwnedBoundary with
+the same base, field types/order, constructor, virtual contract and sticky terminal
+behavior. Share their exact disjoint-buffer predicate. Preserve capacity-before-
+overlap checks, accepted-input overflow handling, final counts, byte positions,
+allocation/publication order and sizeof-based resource charges. Use local type
+aliases to retain explicit factory formulas; do not merge the nine differing
+boundaries or four-MiB guard. Compare old/new class tokens and concrete sizeof/
+alignof, then frozen queries and existing public failure/ownership tests.
+
+Share stateless public-profile function bindings, query argument/result types,
+and the existing init -> optional apply -> original_size sequence between native
+CLI helpers and benchmark sessions. The adapter holds no config, query, workspace,
+transform, buffers or clock. Keep retention grants and I/O capacities, Range
+limit policy, query initialization/admission, allocation, diagnostics and process
+loops in their existing callers and order. Native CLI continues setting only its
+external reserve; benchmark continues its explicit capacity/retention setup.
+Borrowed three/five-span, owning and initial-only admission scopes remain distinct.
+Do not use a benchmark Session object as a CLI owner or change its retained size.
+
+
+### DD-1640: share the identical CLI file setup around stateless profile bindings
+
+Move the21 identical native owning CLI file bodies into a private function
+parameterized by the public profile binding and the existing empty deleter type.
+Keep function bindings explicit in each thin profile wrapper. The CLI helper owns
+the same local config/resources, handle and two65536-byte arrays in the same
+sequence, with the same reserve, query/create refusal and diagnostics. Its pump
+continues borrowing those arrays. Passing the original deleter type preserves
+unique_ptr shape without introducing a new ownership representation.
+
+This helper is a CLI execution adapter; benchmark sessions do not use its file
+storage or diagnostics. PublicProfile remains stateless initialization/bindings
+shared by both clients. Adaptive keeps its distinct pump/setup body and uses
+only PublicProfile initialization. Range keeps its separate CLI policies; its
+benchmark initialization uses PublicProfile with limits/retention still applied
+in the same caller order. Verify full expansion back to every original body,
+not just successful round trips. Do not merge those execution-specific policies.

@@ -27526,3 +27526,44 @@ qualification is inferred. No new dedicated CI fuzz job is introduced.
 Final documentation, CI-policy, test-partition and corpus-verifier CTests
 pass4/4 in2.42 seconds. The documentation/ordered-ledger check and
 git diff --check pass. Complete hosted qualification remains required.
+
+
+### TVG-1651: hosted private C-API and CLI pump checkpoint confirmation
+
+The maintainer reports successful push and manual GitHub full_validation through
+03fdba3a, including preceding C-API commit0adf4e15. Treat this as maintainer-reported
+hosted qualification, not independently retrieved job logs or a supplied run URL.
+Resume boundary validation and configuration adapters as explicitly requested.
+Subsequent production changes require their own local and hosted qualification.
+
+
+### TVG-1652: identical native owning boundary and overlap extraction
+
+Extract21 token-identical Boundary classes and their21 identical disjoint-buffer
+predicates into private OwnedBoundary/buffer-validation headers. Local aliases
+preserve every factory allocation and sizeof-based formula. Reverse only class/
+predicate names, type qualification, aliases and new includes: all21 class bodies,
+predicates and complete surrounding factory implementations match03fdba3a.
+
+Compile old classes alongside the shared class with both MSVC19.51 and Clang-cl:
+all21 sizeof/alignof comparisons pass. Compare20 active old/new boundary traces,
+covering capacity-before-overlap refusal, handle/self overlap on both buffers,
+error/EOS stickiness, zero-length buffers, accepted-count overflow and forwarded
+flags/call counts. Both compilers produce identical observed counts, status,
+error category/byte/bit position and downstream-call behavior. These Windows
+checks do not prove Linux execution or a whole fuzz campaign.
+
+Rebuild both libraries and86 public API/consumer test executables, plus core,
+CLI/benchmark and existing static CLI candidates. All3552 selected core/API
+CTests pass in325.60 seconds, including allocation-failure/ownership/overlap,
+exact-admission, malformed streams, chunking and large-window API cases.
+The frozen public header and224 configuration/query records,111 public layouts
+and251 exported marc_* names match v0.8.0 exactly (excluding the binary hash).
+The final rebuilt CLI restores/re-encodes all102 release archives byte-for-byte;
+its stateless setup adapter is separately qualified in the next record.
+
+The nine distinct native Boundary classes and four-MiB BoundaryGuard are unchanged.
+No public header, profile default, resource formula, codec/format implementation,
+CMake registration or workflow changes. All4172 retained registrations remain.
+Do not infer fresh installed-package, complete4172-suite, Linux, hosted or new
+fuzz execution from these local checks. Further ownership/root API work remains.

@@ -12253,3 +12253,29 @@ benchmark boundary recipes. Confirm all21 loop bodies are token-identical before
 extraction. Adaptive Huffman, borrowed/initial-only Range adapters and the root
 CLI have distinct error/publication/control-object policies and are separate
 follow-up work. No external source, algorithm or stream format is consulted.
+
+
+### IR-1384: identical owning C-API boundaries and public setup adapters
+
+Use the21 token-identical native rANS/tANS/Blocked Huffman Boundary classes and
+their disjoint-buffer predicates at03fdba3a. Use their factory admission formulas,
+allocation order and retained API failure/overlap/chunking tests. Keep the nine
+different Boundary implementations and four-MiB BoundaryGuard separate.
+
+Use existing native CLI adapters, benchmark PublicSession initialization and
+QueryTypes bindings, including Adaptive profile application and direction-specific
+Range initializer signatures. The shared public API is the only codec dependency.
+Keep resource retention, limits, query/create validation, storage ownership,
+diagnostics and timing in their existing execution-specific callers. Frozen
+v0.8.0 API/layout/export and102-profile archives remain the comparison boundary.
+No external implementation source or algorithm reference is involved.
+
+
+### IR-1385: identical native owning CLI file setup
+
+After replacing only typed public initialization/bindings, compare the complete
+21 native rANS/tANS/Blocked Huffman CLI setup bodies: they are token-identical,
+including query/admission checks, creation diagnostics, deleter/handle ownership,
+two65536-byte arrays and shared pump invocation. Use these first-party bodies
+and the original03fdba3a adapters as the extraction reference. No external source
+or new algorithm is consulted; Adaptive and Range differences remain explicit.

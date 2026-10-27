@@ -44082,3 +44082,25 @@ plus102 release-byte comparisons. No algorithm, external implementation source,
 format, public header or license input changes. The architecture description and
 plan identify the shared boundaries and remaining phase5/6 work; this record
 does not claim full refactoring completion or a legal guarantee.
+
+
+### CR-2030: 2026-10-27 — hosted continuation into boundaries and adapters
+
+Author/reviewer: Codex. TVG-1651 records the maintainer's successful push/manual
+full_validation report through03fdba3a. Continue phase5 with first-party boundary
+and public profile setup code. No external implementation source, new format or
+license input is consulted. Later edits do not inherit this hosted qualification.
+
+
+### CR-2031: 2026-10-27 — exact shared owning C-API boundary
+
+Author/reviewer: Codex. IR-1384/DD-1639 identify only existing first-party boundary
+classes, overlap predicates, public contracts and frozen release observations.
+The21 identical native owning guards share one implementation while differing
+guards retain their policies. Full factory/class/predicate token comparisons,
+old/new layout and20 execution traces agree; MSVC and Clang-cl checks pass.
+TVG-1652 records3552 passing core/API tests, unchanged224 configuration/query
+records/111 layouts/251 exports and102 release-byte comparisons. No external
+implementation source, algorithm, format or license input is involved. This
+records the refactoring process and evidence, not a legal guarantee or completion
+of the remaining phase5/6 responsibilities.
