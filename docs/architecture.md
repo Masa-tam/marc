@@ -532,6 +532,18 @@ accept allocator callbacks and does not return variable-sized library-owned
 buffers. Caller-provided input, output, and diagnostic buffers retain caller
 ownership.
 
+The private `src/c_api/transform_handle.hpp` defines that opaque handle once as
+one `core::Transform` pointer. `src/c_api/status.hpp` preserves separate process,
+ordinary-factory and profile-factory status policies; factory failures do not
+automatically inherit every process-error category. These headers are not
+installed and do not change the public ABI or resource accounting.
+
+The native owning-profile CLI adapters for Position-distance rANS, tANS and
+Blocked Huffman share `tools/support/owned_profile_pump.hpp`. Each adapter keeps
+its own configuration, resource query, transform ownership and two fixed I/O
+buffers. The helper borrows those buffers and preserves their existing progress
+and diagnostic policy. Other CLI admission policies remain explicit.
+
 ## Initial stream-size policy
 
 The baseline framed format requires the original uncompressed size to be known

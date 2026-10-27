@@ -337,7 +337,31 @@ user data and must not be staged, moved or deleted as part of this refactoring.
 - Phase5 C-API extraction (DD-1637/TVG-1649/CR-2028):32 repeated private
   handles and32 converters now use shared private headers with exact existing
   layout and distinct error policies. All3552 selected core/API CTests pass;
- 224 queries,111 public layouts,251 exports and102 release archives match.
+  224 queries,111 public layouts,251 exports and102 release archives match.
   This closes the handle/status item locally. Other validation/ownership,
   CLI/benchmark adapters, root API decomposition and phase6 remain open; no
   full hosted qualification of these production edits is inferred.
+
+
+- Phase5 CLI extraction (DD-1638/TVG-1650/CR-2029):21 owning-profile pumps
+  now borrow the adapters' existing buffers through one private helper. Full
+  setup/ownership prefixes and loop policies are equivalent. All125 CLI and74
+  benchmark contracts pass across the original run and seven startup retries
+  after building missing candidate executables; all102 final release archives
+  restore/re-encode identically. Other CLI policies and adapter setup still
+  need consolidation, so the broad CLI item remains open.
+
+- Next native boundary candidate: among30 factory classes named Boundary,
+  21 (the seven rANS/tANS/Blocked Huffman windows) form one exact token group.
+  Nine others differ; the four-MiB Range BoundaryGuard is a separate contract.
+  Review/extract the identical group with unchanged object layout/resource
+  charges, allocation/publication order and sticky error/overlap behavior.
+  Continue applicable CLI/benchmark setup sharing and root API decomposition
+  after fresh hosted qualification. Do not merge the different native policies.
+
+- Hosted phase5 intermediate gate: push the C-API commit0adf4e15 and the
+  following CLI/log commit carrying TVG-1650, then run manual full_validation.
+  Require complete retained Windows/Linux tests, installed static/shared
+  package consumers and102-profile bundles. Pause at this production boundary
+  before further factory/ownership or root API changes. The full six-phase
+  objective, remaining phase5 items and phase6 are still incomplete.

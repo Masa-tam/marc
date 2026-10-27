@@ -44068,3 +44068,17 @@ tests, unchanged224 queries/111 layouts/251 exports and102 release archives.
 No external source, algorithm, format or new license input is involved. This
 review supports the documented refactoring process, not a legal guarantee or
 completion of the remaining CLI/C-API/codec-family refactoring.
+
+
+### CR-2029: 2026-10-27 — native owning-profile CLI pump sharing
+
+Author/reviewer: Codex. IR-1383/DD-1638 use only21 first-party CLI implementations
+and existing public qualification recipes. Exact loop and complete setup-prefix
+comparisons preserve control flow, errors, ownership, resource policy and I/O
+array lifetime while moving the repeated loop to one private helper. Other CLI
+policies remain explicit. TVG-1650 records all199 CLI/benchmark contracts passing
+across the initial run and seven corrected auxiliary-binary startup failures,
+plus102 release-byte comparisons. No algorithm, external implementation source,
+format, public header or license input changes. The architecture description and
+plan identify the shared boundaries and remaining phase5/6 work; this record
+does not claim full refactoring completion or a legal guarantee.

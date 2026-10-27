@@ -1,6 +1,7 @@
 #ifndef MARC_TOOLS_POSITION_BLOCKED_HUFFMAN_64M_CLI_HPP
 #define MARC_TOOLS_POSITION_BLOCKED_HUFFMAN_64M_CLI_HPP
 #include <marc/marc.h>
+#include "support/owned_profile_pump.hpp"
 #include <algorithm>
 #include <array>
 #include <fstream>
@@ -28,32 +29,8 @@ inline bool process_file(marc_direction direction,std::uint64_t size,std::ifstre
     if (status!=MARC_STATUS_OK) { std::cerr<<"marc: creation failed: "<<status<<'\n'; return false; }
     std::unique_ptr<marc_transform,Destroy> handle(raw_handle);
     std::array<std::uint8_t,capacity> input{},output{};
-    std::uint64_t loaded{};
-    std::size_t used{},available{};
-    while (true) {
-        if (used==available && loaded<size) {
-            available=static_cast<std::size_t>(std::min<std::uint64_t>(capacity,size-loaded)); used=0;
-            if (!source.read(reinterpret_cast<char*>(input.data()),static_cast<std::streamsize>(available))) {
-                std::cerr<<"marc: input read failed\n"; return false;
-            }
-            loaded+=available;
-        }
-        const auto r=marc_transform_process(handle.get(),{input.data()+used,available-used},
-            {output.data(),output.size()},loaded==size ? MARC_PROCESS_END_INPUT : MARC_PROCESS_NONE);
-        if (r.input_consumed>available-used || r.output_produced>output.size()) return false;
-        used+=r.input_consumed;
-        if (r.output_produced && !sink.write(reinterpret_cast<const char*>(output.data()),static_cast<std::streamsize>(r.output_produced))) {
-            std::cerr<<"marc: output write failed\n"; return false;
-        }
-        if (r.status>=MARC_STATUS_INVALID_ARGUMENT) {
-            std::cerr<<"marc: transform failed at byte "<<r.error_byte_position<<": "<<r.status<<'\n'; return false;
-        }
-        if (r.status==MARC_STATUS_END_OF_STREAM) return loaded==size && used==available;
-        if (!r.input_consumed && !r.output_produced) {
-            if (r.status==MARC_STATUS_NEED_INPUT && used==available && loaded<size) continue;
-            std::cerr<<"marc: transform made no progress\n"; return false;
-        }
-    }
+    return marc::cli::pump_owned_profile(handle.get(), size, source, sink,
+                                         input, output);
 }
 }
 #endif

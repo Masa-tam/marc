@@ -27486,3 +27486,43 @@ The public bundle also passes after the later CLI extraction; that extraction
 has its own qualification record. CMake remains unchanged with4172 registrations.
 Do not infer complete4172-suite, Linux, installed-package, hosted or fuzz execution
 from this scoped Windows run. Later phase5 responsibilities remain open.
+
+
+### TVG-1650: identical owning-profile CLI pump extraction
+
+Extract21 token-identical Position-distance rANS/tANS/Blocked Huffman CLI loops
+to tools/support/owned_profile_pump.hpp. Recompare each original loop with the
+shared body after substituting only the borrowed handle expression; all21 agree
+after whitespace removal. Compare the complete setup/ownership prefix for each
+adapter, ignoring only its new private helper include: all21 are unchanged.
+Each still owns the same two65536-byte arrays and transform; the helper borrows
+their spans and owns no additional I/O buffers. Root transactional rename/removal,
+Adaptive and Range pump policies remain unchanged.
+
+Rebuild the DLL CLI plus six existing static candidate CLI targets and the
+Adaptive static candidate. Run125 CLI and74 benchmark CTests. The initial199-test
+selection finishes in2170.39 seconds with192 passing and seven startup failures:
+the required auxiliary executables were initially unbuilt, producing WinError2
+before test processing. Build the missing targets; all seven registered tests
+pass on rerun in75.80 seconds. All199 selected contracts therefore pass across
+the initial and corrective runs. Preserve the initial failure log; do not call
+it an initially clean199/199 run. No production/test/CMake change was needed to
+resolve those startup failures, and no actual compression assertion failed.
+
+The74 benchmark registrations cover102 frozen archive hashes,35 native empty
+streams, logical/physical reporting and80 retained boundary/vector recipes.
+The125 CLI registrations cover static/DLL consumers, exact identities, malformed
+streams, wrong-profile/trailing-input rejection, protected output/temporary
+files, allocation accounting and large-window boundaries/stress. The explicit
+64MiB Range stress runs its existing two-full-frame incompressible encode/decode/
+re-encode checks; do not weaken it to accelerate this local qualification.
+
+The final rebuilt CLI independently restores/re-encodes all102 v0.8.0 release
+archives byte-for-byte. TVG-1649's224 configuration/query records,111 public
+layouts and251 exports remain the C-API preservation evidence for this batch.
+No installed-package rebuild, Linux execution, complete4172-suite or new hosted
+qualification is inferred. No new dedicated CI fuzz job is introduced.
+
+Final documentation, CI-policy, test-partition and corpus-verifier CTests
+pass4/4 in2.42 seconds. The documentation/ordered-ledger check and
+git diff --check pass. Complete hosted qualification remains required.
