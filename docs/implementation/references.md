@@ -12291,3 +12291,20 @@ Use static direct-query and forwarding-create functions instead; check full clie
 translation units in both import modes plus initialization/argument/status traces.
 This is a local compiler observation and first-party refactoring decision, not an
 external implementation reference or a new codec/format requirement.
+
+
+### IR-1387: legacy application configuration and root C-API dependencies
+
+Use CLI configure overloads, benchmark legacy configuration branches and their
+explicit constants/policy calculations at454843b4. Share initializer/profile
+application and repeated field groups without equating different client grants.
+Use semantic per-field configuration captures and old-body expansion checks.
+
+Use src/marc.cpp's74 private functions and159 C-linkage definitions, including
+two static Position Range preparation helpers. Inventory157 public definitions
+by core/entropy/dictionary/Contextual/Position Range family. Preserve complete
+function bodies, overload resolution, allocation and public-call order. The
+existing public header supplies cross-translation-unit declarations. Four
+shared buffer/publication helpers have no state and can be private inline code.
+Use frozen224 configuration/query records,111 layouts,251 exports,102 release
+archives and retained tests as preservation evidence. No external source is used.

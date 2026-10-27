@@ -35390,3 +35390,36 @@ client qualification after rebuilding every affected executable. The private
 C-API boundary/library component is unchanged by this application-header fix;
 its completed API/layout/export/package evidence remains applicable. Check
 Clang full CLI/benchmark clients in both DLL-import and ordinary modes first.
+
+
+### DD-1642: responsibility split with unchanged C-API bodies and private helpers
+
+Keep version/status/process/destruction in src/marc.cpp. Move entropy, each of
+the six dictionary families, Contextual and existing64KiB/1MiB Position Range
+entry points to nine explicit private implementation files. Keep family-specific
+load_config overloads, mapping/layout/preparation helpers beside their consumers.
+Move only the four stateless buffer/alignment/disjoint/publication functions to
+a private inline header, with unchanged bodies. Preserve static linkage of the
+two Position preparation helpers, C linkage/export declarations and all function
+bodies, ordering within each family, allocation/failure/publication behavior.
+
+Select existing family includes rather than copying the entire implementation
+into headers or compiling a monolithic include under feature macros. Extend the
+explicit production source list by nine translation units; do not change target
+flags, package/public headers, fuzz scheduling or any existing test registration.
+Prove every definition's body is preserved once, then qualify generated contracts,
+ABI/resources/exports, release bytes, public failure/ownership and package clients.
+
+
+### DD-1643: explicit client policy with shared initialization and field groups
+
+Share public initializer/optional-profile application without moving original_size
+or client policy assignments across their existing positions. Retain CLI status
+diagnostics and benchmark refusal behavior. Common stateless field setters may
+replace only repeated assignment groups, with each old policy expression passed
+explicitly at its caller. Keep payload/buffer/window/table limits, direction,
+selector mapping, storage and resource scopes visible and independently valued.
+Do not replace legacy settings with native defaults or a universal config schema.
+Compare all captured scalar configuration fields for directions/profiles/input
+boundaries against original clients, in addition to exact source expansions and
+102-profile archives. Native/Range special contracts remain explicit.

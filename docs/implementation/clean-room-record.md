@@ -44120,3 +44120,24 @@ package/archive checks (TVG-1653). No external implementation source, algorithm,
 format, public header or license input changes. Remaining legacy setup/root API
 and phase6 work is not complete; the record gives process/evidence, not a legal
 guarantee or inferred hosted qualification.
+
+
+### CR-2033: 2026-10-27 — hosted continuation into legacy settings and API split
+
+Author/reviewer: Codex. TVG-1654 records the maintainer's successful push/manual
+full_validation report through454843b4. Continue existing first-party application
+configuration and C-API code, preserving format, ABI, admission, ownership and
+error order. No external implementation, algorithm or license input is consulted.
+
+
+### CR-2034: 2026-10-27 — first-party root C-API family decomposition
+
+Author/reviewer: Codex. IR-1387/DD-1642 use only the original root implementation,
+family headers, explicit build graph and frozen public contracts. Move157 public
+definitions, two static helpers and74 private functions with full bodies intact;
+share only four stateless primitives. TVG-1655 records source-once comparisons,
+both-library MSVC builds, Clang syntax,3552 passing tests and unchanged ABI,
+resource/export/archive observations. All existing target/test/install contracts
+survive the explicit nine-source addition. No external source, new algorithm,
+format, public API or license input changes. This is documented process/evidence,
+not a legal guarantee or completion of the remaining refactoring/hosted gates.

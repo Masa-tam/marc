@@ -664,6 +664,15 @@ set(MARC_SOURCES
     src/frame/lzss_position_distance_64m_c_factory.cpp
     src/frame/lzss_position_distance_64m_decoder_c_factory.cpp
     src/marc.cpp
+    src/c_api/entropy.cpp
+    src/c_api/dictionary_lz77.cpp
+    src/c_api/dictionary_lzss.cpp
+    src/c_api/contextual.cpp
+    src/c_api/dictionary_lz78.cpp
+    src/c_api/dictionary_lzw.cpp
+    src/c_api/dictionary_lzd.cpp
+    src/c_api/dictionary_lzmw.cpp
+    src/c_api/position_range.cpp
 )
 
 list(APPEND MARC_SOURCES

@@ -82,7 +82,7 @@ headers. These are starting observations, not deletion or line-count targets.
 - [x] Centralize the opaque internal handle definition and status/error mapping.
 - [ ] Share applicable validation/ownership helpers without merging different
   caller-workspace and owned-resource contracts.
-- [ ] Split src/marc.cpp by responsibility/profile family; preserve public ABI,
+- [x] Split src/marc.cpp by responsibility/profile family; preserve public ABI,
   initialization defaults, allocation-failure behavior and resource admission.
 
 ### 6. Share codec-family internals incrementally
@@ -401,3 +401,19 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   installed consumers and102-profile bundles. Pause at this qualified local
   boundary before further legacy/root API changes. Phase5 and phase6 remain
   incomplete; do not treat scoped local/Clang Windows checks as hosted success.
+
+
+- Hosted continuation through454843b4: the maintainer reports successful push
+  and manual full_validation (TVG-1654/CR-2033). Resume remaining legacy settings
+  sharing and root C-API responsibility split; qualify the new source graph and
+  preserve the existing ABI/resource/format and execution-policy boundaries.
+
+
+- Root API split (DD-1642/TVG-1655/CR-2034): src/marc.cpp is71 lines,
+  with nine explicit family files and four shared stateless primitives. All
+  74 private/159 C-linkage definitions are preserved exactly once. Source count
+  is680;422 ordinary targets/4172 tests, single-library and diagnostic contracts,
+  seven exports/configurations and install scripts survive the nine-source
+  addition.3552 core/API tests and frozen224 records/111 layouts/251 exports/
+  102 archives pass. Decomposition is locally qualified; hosted validation is
+  pending. Other phase5 sharing/ownership work and phase6 remain open.

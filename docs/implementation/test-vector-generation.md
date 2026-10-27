@@ -27628,3 +27628,48 @@ No dedicated CI fuzz job is added, and no new fuzz campaign is claimed.
 Final documentation, CI-policy, partition and corpus-verifier checks pass4/4
 in2.89 seconds. Relative links and ordered provenance ledgers remain valid;
 git diff --check passes. Manual full_validation remains the next gate.
+
+
+### TVG-1654: hosted native guard and settings checkpoint confirmation
+
+The maintainer reports successful push and manual GitHub full_validation through
+454843b4, including native boundary commitdf64093d. Record maintainer-reported
+evidence, not independently retrieved jobs or an unsupplied run URL. Resume the
+requested remaining settings sharing and root C-API decomposition. Later edits
+need fresh qualification and do not inherit this reported hosted success.
+
+
+### TVG-1655: root C-API responsibility decomposition
+
+Move src/marc.cpp's157 public C definitions and two static Position preparation
+helpers into the core file and nine family files. Keep70 family-private functions
+beside consumers and four stateless buffer/alignment/publication functions inline
+in a private common header. Compare all74 old private definitions and159 old
+C-linkage definitions against the new files: every full signature/body is present
+exactly once. No universal schema, generated codec or monolithic implementation
+include is introduced. The root shrinks from9858 to71 lines; largest family is
+1761 lines. The first dependency build identifies a previously transitive overlap
+header; making that existing primitive explicit resolves it without body changes.
+
+MSVC19.51 Release static/shared builds pass. Clang-cl syntax checks pass for all
+ten C-API translation units with shared-export declarations. All3552 selected
+core/API CTests pass in312.64 seconds, including malformed/chunking, allocation
+failure, ownership, exact-admission and large-window cases. The frozen224 public
+configuration/query records,111 layouts, public header hash and251 exported
+marc_* names match v0.8.0. The final CLI restores/re-encodes all102 release
+archives byte-for-byte; application settings have their own qualification below.
+
+The explicit source list grows671 ->680 translation units, adding nine only to
+the existing libraries. All422 ordinary target settings, surviving per-source
+properties, references, seven package/export hashes and generated install script
+match the earlier contracts after removing only the nine new default-setting
+sources per library. Shared-only and static-only benchmark configurations retain
+7 targets/0 tests each; diagnostics retain423/713, including its unbuilt-main
+placeholder. Their tests, target contracts, exports and install scripts also
+match after that same precise source addition. These are generated contracts,
+not fresh single-library/diagnostic runtime builds. All4172 ordinary registrations
+remain; no test, public header, format, profile default or workflow changes.
+
+Do not infer Linux, complete4172-suite, optional-fuzz builds or new hosted
+qualification from this scoped local evidence. The remaining phase5/6 work and
+fresh installed-package/hosted gates are tracked explicitly.

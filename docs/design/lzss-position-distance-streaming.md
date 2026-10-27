@@ -361,7 +361,7 @@ The only candidate is format 2.0, dictionary 2/8, context 1/9, entropy 3/2.
 
 | Boundary | Implementation and decision | Evidence |
 |---|---|---|
-| C configuration | `prepare_position_distance_config` in `src/marc.cpp` fixes the identity and derives storage from local limits, not stream fields | Config/query, exact aggregate and allocation-failure tests |
+| C configuration | `prepare_position_distance_config` in `src/c_api/position_range.cpp` fixes the identity and derives storage from local limits, not stream fields | Config/query, exact aggregate and allocation-failure tests |
 | Serialized header | `parse_lzss_position_distance_stream_header` selects the position-distance branch of `parse_stream_impl` in `src/frame/lzss_short_match_preflight.cpp` | Header mutations/truncation tests and C identity-grid rejection |
 | Incremental decode | `LzssPositionDistanceFrameStreamingDecoder` calls the strict header parser before frame handling; errors are sticky and frame output is private until validation | Streaming, C factory and HashTap tests |
 | Legacy field-context parser | `parse_typed_context_stream_header` is specific to the older field-context family, not a universal dispatcher; keep its accepted set unchanged | Legacy parser rejects the new header without publishing metadata |
