@@ -44141,3 +44141,17 @@ resource/export/archive observations. All existing target/test/install contracts
 survive the explicit nine-source addition. No external source, new algorithm,
 format, public API or license input changes. This is documented process/evidence,
 not a legal guarantee or completion of the remaining refactoring/hosted gates.
+
+
+### CR-2035: 2026-10-27 — explicit-policy legacy settings sharing
+
+Author/reviewer: Codex. IR-1387/DD-1643 use only first-party client configuration,
+public contracts and independently saved pre-edit client captures. Share94 init
+sites and140 field groups without equating different caller policies. All2919
+full scalar records and574 CLI diagnostic lines match the original clients;
+source expansion, compiler checks and final194-test selection pass (TVG-1656).
+Clang DLL clients preserve102-profile bytes and installed static/shared C clients
+pass. No external implementation, algorithm, format, public header or license
+input is introduced. Remaining policy differences are explicit, not silently
+normalized. This documents process/evidence, not a legal guarantee or completion
+of remaining CLI/ownership/codec-family and hosted-validation work.

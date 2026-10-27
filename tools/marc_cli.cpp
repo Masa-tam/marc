@@ -1,4 +1,5 @@
 #include <marc/marc.h>
+#include "support/configuration.hpp"
 #include "lzss_position_distance_8m_cli.hpp"
 #include "lzss_position_distance_16m_cli.hpp"
 #include "lzss_position_distance_32m_cli.hpp"
@@ -524,25 +525,26 @@ void print_status(const char* operation, const marc_status status) {
 
 bool configure(const marc_direction direction, const std::uint64_t original_size,
                marc_checksum_raw_config& config) {
-    const auto status = marc_checksum_raw_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_checksum_raw_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
-    config.original_size = original_size;
-    config.frame_size = static_cast<std::uint32_t>(frame_size);
-    config.max_frame_size = frame_size;
-    config.max_compressed_payload_size = frame_size;
-    config.max_dictionary_serialized_size = frame_size;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::checksum_raw);
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(frame_size),
+        frame_size);
+    marc::app::set_payload_limits(config,
+        frame_size,
+        frame_size,
+        maximum_buffered_bytes(Codec::checksum_raw));
     return true;
 }
 
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_blocked_huffman_config& config) {
-    const auto status = marc_blocked_huffman_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_blocked_huffman_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -564,14 +566,15 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_adaptive_huffman_config& config) {
-    const auto status = marc_adaptive_huffman_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_adaptive_huffman_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
-    config.original_size = original_size;
-    config.frame_size = static_cast<std::uint32_t>(frame_size);
-    config.max_frame_size = frame_size;
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(frame_size),
+        frame_size);
     config.max_compressed_payload_size =
         maximum_frame_payload(Codec::adaptive_huffman);
     config.max_internal_buffered_bytes =
@@ -582,14 +585,15 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_dynamic_range_config& config) {
-    const auto status = marc_dynamic_range_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_dynamic_range_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
-    config.original_size = original_size;
-    config.frame_size = static_cast<std::uint32_t>(frame_size);
-    config.max_frame_size = frame_size;
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(frame_size),
+        frame_size);
     config.max_compressed_payload_size =
         maximum_frame_payload(Codec::dynamic_range);
     config.max_internal_buffered_bytes =
@@ -601,7 +605,7 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_rans_config& config) {
-    const auto status = marc_rans_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_rans_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -621,7 +625,7 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_tans_config& config) {
-    const auto status = marc_tans_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_tans_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -640,27 +644,29 @@ bool configure(
 
 bool configure(const marc_direction direction, const std::uint64_t original_size,
                marc_lz77_config& config) {
-    const auto status = marc_lz77_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lz77_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
-    config.original_size = original_size;
-    config.frame_size = static_cast<std::uint32_t>(frame_size);
-    config.max_frame_size = frame_size;
-    config.max_compressed_payload_size = maximum_frame_payload(Codec::lz77);
-    config.max_dictionary_serialized_size = maximum_frame_payload(Codec::lz77);
-    config.max_internal_buffered_bytes = maximum_buffered_bytes(Codec::lz77);
-    config.max_lz_distance = UINT64_C(1) << 16;
-    config.max_lz_match_length = 258;
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(frame_size),
+        frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lz77),
+        maximum_frame_payload(Codec::lz77),
+        maximum_buffered_bytes(Codec::lz77));
+    marc::app::set_match_limits(config,
+        UINT64_C(1) << 16,
+        258);
     return true;
 }
 
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lz77_blocked_huffman_config& config) {
-    const auto status =
-        marc_lz77_blocked_huffman_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lz77_blocked_huffman_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -671,74 +677,71 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lz77_blocked_huffman);
-    config.max_dictionary_serialized_size =
-        maximum_frame_payload(Codec::lz77_blocked_huffman);
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lz77_blocked_huffman);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lz77_blocked_huffman),
+        maximum_frame_payload(Codec::lz77_blocked_huffman),
+        maximum_buffered_bytes(Codec::lz77_blocked_huffman));
     config.max_blocks_per_frame = static_cast<std::uint32_t>(
         maximum_frame_payload(Codec::lz77_blocked_huffman)
         / entropy_block_size);
-    config.max_lz_distance = UINT64_C(1) << 16;
-    config.max_lz_match_length = 258;
+    marc::app::set_match_limits(config,
+        UINT64_C(1) << 16,
+        258);
     return true;
 }
 
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lz77_adaptive_huffman_config& config) {
-    const auto status =
-        marc_lz77_adaptive_huffman_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lz77_adaptive_huffman_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
     const auto dictionary_bytes =
         lz77_adaptive_frame_size * UINT64_C(16);
-    config.original_size = original_size;
-    config.frame_size =
-        static_cast<std::uint32_t>(lz77_adaptive_frame_size);
-    config.max_frame_size = lz77_adaptive_frame_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lz77_adaptive_huffman);
-    config.max_dictionary_serialized_size = dictionary_bytes;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lz77_adaptive_huffman);
-    config.max_lz_distance = UINT64_C(1) << 16;
-    config.max_lz_match_length = 258;
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(lz77_adaptive_frame_size),
+        lz77_adaptive_frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lz77_adaptive_huffman),
+        dictionary_bytes,
+        maximum_buffered_bytes(Codec::lz77_adaptive_huffman));
+    marc::app::set_match_limits(config,
+        UINT64_C(1) << 16,
+        258);
     return true;
 }
 
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lz77_dynamic_range_config& config) {
-    const auto status =
-        marc_lz77_dynamic_range_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lz77_dynamic_range_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
     const auto dictionary_bytes =
         lz77_dynamic_range_frame_size * UINT64_C(16);
-    config.original_size = original_size;
-    config.frame_size =
-        static_cast<std::uint32_t>(lz77_dynamic_range_frame_size);
-    config.max_frame_size = lz77_dynamic_range_frame_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lz77_dynamic_range);
-    config.max_dictionary_serialized_size = dictionary_bytes;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lz77_dynamic_range);
-    config.max_lz_distance = UINT64_C(1) << 16;
-    config.max_lz_match_length = 258;
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(lz77_dynamic_range_frame_size),
+        lz77_dynamic_range_frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lz77_dynamic_range),
+        dictionary_bytes,
+        maximum_buffered_bytes(Codec::lz77_dynamic_range));
+    marc::app::set_match_limits(config,
+        UINT64_C(1) << 16,
+        258);
     return true;
 }
 
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lz77_rans_config& config) {
-    const auto status = marc_lz77_rans_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lz77_rans_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -750,22 +753,22 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = lz77_rans_frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lz77_rans);
-    config.max_dictionary_serialized_size = lz77_rans_dictionary_size;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lz77_rans);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lz77_rans),
+        lz77_rans_dictionary_size,
+        maximum_buffered_bytes(Codec::lz77_rans));
     config.max_blocks_per_frame = static_cast<std::uint32_t>(
         lz77_rans_block_count);
-    config.max_lz_distance = UINT64_C(1) << 16;
-    config.max_lz_match_length = 258;
+    marc::app::set_match_limits(config,
+        UINT64_C(1) << 16,
+        258);
     return true;
 }
 
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lz77_tans_config& config) {
-    const auto status = marc_lz77_tans_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lz77_tans_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -777,41 +780,43 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = lz77_tans_frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lz77_tans);
-    config.max_dictionary_serialized_size = lz77_tans_dictionary_size;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lz77_tans);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lz77_tans),
+        lz77_tans_dictionary_size,
+        maximum_buffered_bytes(Codec::lz77_tans));
     config.max_blocks_per_frame = static_cast<std::uint32_t>(
         lz77_tans_block_count);
-    config.max_lz_distance = UINT64_C(1) << 16;
-    config.max_lz_match_length = 258;
+    marc::app::set_match_limits(config,
+        UINT64_C(1) << 16,
+        258);
     return true;
 }
 
 bool configure(const marc_direction direction, const std::uint64_t original_size,
                marc_lzss_config& config) {
-    const auto status = marc_lzss_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzss_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
-    config.original_size = original_size;
-    config.frame_size = static_cast<std::uint32_t>(frame_size);
-    config.max_frame_size = frame_size;
-    config.max_compressed_payload_size = maximum_frame_payload(Codec::lzss);
-    config.max_dictionary_serialized_size = maximum_frame_payload(Codec::lzss);
-    config.max_internal_buffered_bytes = maximum_buffered_bytes(Codec::lzss);
-    config.max_lz_distance = UINT64_C(1) << 16;
-    config.max_lz_match_length = 258;
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(frame_size),
+        frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzss),
+        maximum_frame_payload(Codec::lzss),
+        maximum_buffered_bytes(Codec::lzss));
+    marc::app::set_match_limits(config,
+        UINT64_C(1) << 16,
+        258);
     return true;
 }
 
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzss_blocked_huffman_config& config) {
-    const auto status =
-        marc_lzss_blocked_huffman_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzss_blocked_huffman_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -822,67 +827,64 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzss_blocked_huffman);
-    config.max_dictionary_serialized_size =
-        maximum_frame_payload(Codec::lzss_blocked_huffman);
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzss_blocked_huffman);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzss_blocked_huffman),
+        maximum_frame_payload(Codec::lzss_blocked_huffman),
+        maximum_buffered_bytes(Codec::lzss_blocked_huffman));
     config.max_blocks_per_frame = static_cast<std::uint32_t>(
         maximum_frame_payload(Codec::lzss_blocked_huffman)
         / entropy_block_size);
-    config.max_lz_distance = UINT64_C(1) << 16;
-    config.max_lz_match_length = 258;
+    marc::app::set_match_limits(config,
+        UINT64_C(1) << 16,
+        258);
     return true;
 }
 
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzss_adaptive_huffman_config& config) {
-    const auto status =
-        marc_lzss_adaptive_huffman_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzss_adaptive_huffman_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
     const auto dictionary_bytes =
         lzss_adaptive_frame_size * UINT64_C(2);
-    config.original_size = original_size;
-    config.frame_size =
-        static_cast<std::uint32_t>(lzss_adaptive_frame_size);
-    config.max_frame_size = lzss_adaptive_frame_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzss_adaptive_huffman);
-    config.max_dictionary_serialized_size = dictionary_bytes;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzss_adaptive_huffman);
-    config.max_lz_distance = UINT64_C(1) << 16;
-    config.max_lz_match_length = 258;
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(lzss_adaptive_frame_size),
+        lzss_adaptive_frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzss_adaptive_huffman),
+        dictionary_bytes,
+        maximum_buffered_bytes(Codec::lzss_adaptive_huffman));
+    marc::app::set_match_limits(config,
+        UINT64_C(1) << 16,
+        258);
     return true;
 }
 
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzss_dynamic_range_config& config) {
-    const auto status =
-        marc_lzss_dynamic_range_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzss_dynamic_range_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
     const auto dictionary_bytes =
         lzss_dynamic_range_frame_size * UINT64_C(2);
-    config.original_size = original_size;
-    config.frame_size =
-        static_cast<std::uint32_t>(lzss_dynamic_range_frame_size);
-    config.max_frame_size = lzss_dynamic_range_frame_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzss_dynamic_range);
-    config.max_dictionary_serialized_size = dictionary_bytes;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzss_dynamic_range);
-    config.max_lz_distance = UINT64_C(1) << 16;
-    config.max_lz_match_length = 258;
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(lzss_dynamic_range_frame_size),
+        lzss_dynamic_range_frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzss_dynamic_range),
+        dictionary_bytes,
+        maximum_buffered_bytes(Codec::lzss_dynamic_range));
+    marc::app::set_match_limits(config,
+        UINT64_C(1) << 16,
+        258);
     return true;
 }
 
@@ -891,17 +893,9 @@ bool configure(
     marc_lzss_contextual_dynamic_range_config& config,
     const marc_lzss_contextual_profile profile =
         MARC_LZSS_CONTEXTUAL_PROFILE_64K) {
-    const auto status = marc_lzss_contextual_dynamic_range_config_init(
-        direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzss_contextual_dynamic_range_config_init, marc_lzss_contextual_dynamic_range_config_apply_profile>(config, direction, profile);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
-        return false;
-    }
-    const auto apply_status =
-        marc_lzss_contextual_dynamic_range_config_apply_profile(
-            &config, profile);
-    if (apply_status != MARC_STATUS_OK) {
-        print_status("configuration failed", apply_status);
         return false;
     }
     config.original_size = original_size;
@@ -912,16 +906,9 @@ bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzss_contextual_rans_config& config,
     const marc_lzss_contextual_profile profile) {
-    const auto status =
-        marc_lzss_contextual_rans_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzss_contextual_rans_config_init, marc_lzss_contextual_rans_config_apply_profile>(config, direction, profile);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
-        return false;
-    }
-    const auto apply_status =
-        marc_lzss_contextual_rans_config_apply_profile(&config, profile);
-    if (apply_status != MARC_STATUS_OK) {
-        print_status("configuration failed", apply_status);
         return false;
     }
     config.original_size = original_size;
@@ -932,16 +919,9 @@ bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzss_contextual_tans_config& config,
     const marc_lzss_contextual_profile profile) {
-    const auto status =
-        marc_lzss_contextual_tans_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzss_contextual_tans_config_init, marc_lzss_contextual_tans_config_apply_profile>(config, direction, profile);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
-        return false;
-    }
-    const auto apply_status =
-        marc_lzss_contextual_tans_config_apply_profile(&config, profile);
-    if (apply_status != MARC_STATUS_OK) {
-        print_status("configuration failed", apply_status);
         return false;
     }
     config.original_size = original_size;
@@ -952,17 +932,9 @@ bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzss_contextual_blocked_huffman_config& config,
     const marc_lzss_contextual_profile profile) {
-    const auto status =
-        marc_lzss_contextual_blocked_huffman_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzss_contextual_blocked_huffman_config_init, marc_lzss_contextual_blocked_huffman_config_apply_profile>(config, direction, profile);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
-        return false;
-    }
-    const auto apply_status =
-        marc_lzss_contextual_blocked_huffman_config_apply_profile(
-            &config, profile);
-    if (apply_status != MARC_STATUS_OK) {
-        print_status("configuration failed", apply_status);
         return false;
     }
     config.original_size = original_size;
@@ -973,17 +945,9 @@ bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzss_contextual_adaptive_huffman_config& config,
     const marc_lzss_contextual_profile profile) {
-    const auto status =
-        marc_lzss_contextual_adaptive_huffman_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzss_contextual_adaptive_huffman_config_init, marc_lzss_contextual_adaptive_huffman_config_apply_profile>(config, direction, profile);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
-        return false;
-    }
-    const auto apply_status =
-        marc_lzss_contextual_adaptive_huffman_config_apply_profile(
-            &config, profile);
-    if (apply_status != MARC_STATUS_OK) {
-        print_status("configuration failed", apply_status);
         return false;
     }
     config.original_size = original_size;
@@ -993,7 +957,7 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzss_rans_config& config) {
-    const auto status = marc_lzss_rans_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzss_rans_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -1005,22 +969,22 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = lzss_rans_frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzss_rans);
-    config.max_dictionary_serialized_size = lzss_rans_dictionary_size;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzss_rans);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzss_rans),
+        lzss_rans_dictionary_size,
+        maximum_buffered_bytes(Codec::lzss_rans));
     config.max_blocks_per_frame = static_cast<std::uint32_t>(
         lzss_rans_block_count);
-    config.max_lz_distance = UINT64_C(1) << 16;
-    config.max_lz_match_length = 258;
+    marc::app::set_match_limits(config,
+        UINT64_C(1) << 16,
+        258);
     return true;
 }
 
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzss_tans_config& config) {
-    const auto status = marc_lzss_tans_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzss_tans_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -1032,32 +996,33 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = lzss_tans_frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzss_tans);
-    config.max_dictionary_serialized_size = lzss_tans_dictionary_size;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzss_tans);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzss_tans),
+        lzss_tans_dictionary_size,
+        maximum_buffered_bytes(Codec::lzss_tans));
     config.max_blocks_per_frame = static_cast<std::uint32_t>(
         lzss_tans_block_count);
-    config.max_lz_distance = UINT64_C(1) << 16;
-    config.max_lz_match_length = 258;
+    marc::app::set_match_limits(config,
+        UINT64_C(1) << 16,
+        258);
     return true;
 }
 
 bool configure(const marc_direction direction, const std::uint64_t original_size,
                marc_lz78_config& config) {
-    const auto status = marc_lz78_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lz78_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
-    config.original_size = original_size;
-    config.frame_size = static_cast<std::uint32_t>(frame_size);
-    config.max_frame_size = frame_size;
-    config.max_compressed_payload_size = maximum_frame_payload(Codec::lz78);
-    config.max_dictionary_serialized_size =
-        maximum_frame_payload(Codec::lz78);
-    config.max_internal_buffered_bytes = maximum_buffered_bytes(Codec::lz78);
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(frame_size),
+        frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lz78),
+        maximum_frame_payload(Codec::lz78),
+        maximum_buffered_bytes(Codec::lz78));
     config.max_dictionary_entries = config.maximum_entries;
     return true;
 }
@@ -1065,8 +1030,7 @@ bool configure(const marc_direction direction, const std::uint64_t original_size
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lz78_blocked_huffman_config& config) {
-    const auto status =
-        marc_lz78_blocked_huffman_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lz78_blocked_huffman_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -1077,12 +1041,10 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lz78_blocked_huffman);
-    config.max_dictionary_serialized_size =
-        maximum_frame_payload(Codec::lz78_blocked_huffman);
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lz78_blocked_huffman);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lz78_blocked_huffman),
+        maximum_frame_payload(Codec::lz78_blocked_huffman),
+        maximum_buffered_bytes(Codec::lz78_blocked_huffman));
     config.max_dictionary_entries = config.maximum_entries;
     config.max_blocks_per_frame = static_cast<std::uint32_t>(
         maximum_frame_payload(Codec::lz78_blocked_huffman)
@@ -1093,23 +1055,21 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lz78_adaptive_huffman_config& config) {
-    const auto status =
-        marc_lz78_adaptive_huffman_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lz78_adaptive_huffman_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
     const auto dictionary_bytes =
         lz78_adaptive_frame_size * UINT64_C(8);
-    config.original_size = original_size;
-    config.frame_size =
-        static_cast<std::uint32_t>(lz78_adaptive_frame_size);
-    config.max_frame_size = lz78_adaptive_frame_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lz78_adaptive_huffman);
-    config.max_dictionary_serialized_size = dictionary_bytes;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lz78_adaptive_huffman);
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(lz78_adaptive_frame_size),
+        lz78_adaptive_frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lz78_adaptive_huffman),
+        dictionary_bytes,
+        maximum_buffered_bytes(Codec::lz78_adaptive_huffman));
     config.max_dictionary_entries = config.maximum_entries;
     return true;
 }
@@ -1117,23 +1077,21 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lz78_dynamic_range_config& config) {
-    const auto status =
-        marc_lz78_dynamic_range_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lz78_dynamic_range_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
     const auto dictionary_bytes =
         lz78_dynamic_range_frame_size * UINT64_C(8);
-    config.original_size = original_size;
-    config.frame_size =
-        static_cast<std::uint32_t>(lz78_dynamic_range_frame_size);
-    config.max_frame_size = lz78_dynamic_range_frame_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lz78_dynamic_range);
-    config.max_dictionary_serialized_size = dictionary_bytes;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lz78_dynamic_range);
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(lz78_dynamic_range_frame_size),
+        lz78_dynamic_range_frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lz78_dynamic_range),
+        dictionary_bytes,
+        maximum_buffered_bytes(Codec::lz78_dynamic_range));
     config.max_dictionary_entries = config.maximum_entries;
     return true;
 }
@@ -1141,7 +1099,7 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lz78_rans_config& config) {
-    const auto status = marc_lz78_rans_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lz78_rans_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -1152,11 +1110,10 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = lz78_rans_frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lz78_rans);
-    config.max_dictionary_serialized_size = lz78_rans_dictionary_size;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lz78_rans);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lz78_rans),
+        lz78_rans_dictionary_size,
+        maximum_buffered_bytes(Codec::lz78_rans));
     config.max_dictionary_entries = config.maximum_entries;
     config.max_blocks_per_frame =
         static_cast<std::uint32_t>(lz78_rans_block_count);
@@ -1166,7 +1123,7 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lz78_tans_config& config) {
-    const auto status = marc_lz78_tans_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lz78_tans_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -1177,11 +1134,10 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = lz78_tans_frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lz78_tans);
-    config.max_dictionary_serialized_size = lz78_tans_dictionary_size;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lz78_tans);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lz78_tans),
+        lz78_tans_dictionary_size,
+        maximum_buffered_bytes(Codec::lz78_tans));
     config.max_dictionary_entries = config.maximum_entries;
     config.max_blocks_per_frame =
         static_cast<std::uint32_t>(lz78_tans_block_count);
@@ -1190,18 +1146,19 @@ bool configure(
 
 bool configure(const marc_direction direction, const std::uint64_t original_size,
                marc_lzw_config& config) {
-    const auto status = marc_lzw_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzw_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
-    config.original_size = original_size;
-    config.frame_size = static_cast<std::uint32_t>(frame_size);
-    config.max_frame_size = frame_size;
-    config.max_compressed_payload_size = maximum_frame_payload(Codec::lzw);
-    config.max_dictionary_serialized_size =
-        maximum_frame_payload(Codec::lzw);
-    config.max_internal_buffered_bytes = maximum_buffered_bytes(Codec::lzw);
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(frame_size),
+        frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzw),
+        maximum_frame_payload(Codec::lzw),
+        maximum_buffered_bytes(Codec::lzw));
     config.max_dictionary_entries =
         (UINT64_C(1) << config.maximum_code_width) - 256;
     return true;
@@ -1210,8 +1167,7 @@ bool configure(const marc_direction direction, const std::uint64_t original_size
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzw_blocked_huffman_config& config) {
-    const auto status =
-        marc_lzw_blocked_huffman_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzw_blocked_huffman_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -1222,12 +1178,10 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzw_blocked_huffman);
-    config.max_dictionary_serialized_size =
-        maximum_frame_payload(Codec::lzw_blocked_huffman);
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzw_blocked_huffman);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzw_blocked_huffman),
+        maximum_frame_payload(Codec::lzw_blocked_huffman),
+        maximum_buffered_bytes(Codec::lzw_blocked_huffman));
     config.max_dictionary_entries =
         (UINT64_C(1) << config.maximum_code_width) - UINT64_C(256);
     config.max_blocks_per_frame = static_cast<std::uint32_t>(
@@ -1239,23 +1193,21 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzw_adaptive_huffman_config& config) {
-    const auto status =
-        marc_lzw_adaptive_huffman_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzw_adaptive_huffman_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
     const auto dictionary_bytes =
         lzw_adaptive_frame_size * UINT64_C(2);
-    config.original_size = original_size;
-    config.frame_size =
-        static_cast<std::uint32_t>(lzw_adaptive_frame_size);
-    config.max_frame_size = lzw_adaptive_frame_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzw_adaptive_huffman);
-    config.max_dictionary_serialized_size = dictionary_bytes;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzw_adaptive_huffman);
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(lzw_adaptive_frame_size),
+        lzw_adaptive_frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzw_adaptive_huffman),
+        dictionary_bytes,
+        maximum_buffered_bytes(Codec::lzw_adaptive_huffman));
     config.max_dictionary_entries =
         (UINT64_C(1) << config.maximum_code_width) - UINT64_C(256);
     return true;
@@ -1264,23 +1216,21 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzw_dynamic_range_config& config) {
-    const auto status =
-        marc_lzw_dynamic_range_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzw_dynamic_range_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
     const auto dictionary_bytes =
         lzw_dynamic_range_frame_size * UINT64_C(2);
-    config.original_size = original_size;
-    config.frame_size =
-        static_cast<std::uint32_t>(lzw_dynamic_range_frame_size);
-    config.max_frame_size = lzw_dynamic_range_frame_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzw_dynamic_range);
-    config.max_dictionary_serialized_size = dictionary_bytes;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzw_dynamic_range);
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(lzw_dynamic_range_frame_size),
+        lzw_dynamic_range_frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzw_dynamic_range),
+        dictionary_bytes,
+        maximum_buffered_bytes(Codec::lzw_dynamic_range));
     config.max_dictionary_entries =
         (UINT64_C(1) << config.maximum_code_width) - UINT64_C(256);
     return true;
@@ -1289,7 +1239,7 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzw_rans_config& config) {
-    const auto status = marc_lzw_rans_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzw_rans_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -1300,11 +1250,10 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = lzw_rans_frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzw_rans);
-    config.max_dictionary_serialized_size = lzw_rans_dictionary_size;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzw_rans);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzw_rans),
+        lzw_rans_dictionary_size,
+        maximum_buffered_bytes(Codec::lzw_rans));
     config.max_dictionary_entries =
         (UINT64_C(1) << config.maximum_code_width) - UINT64_C(256);
     config.max_blocks_per_frame =
@@ -1315,7 +1264,7 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzw_tans_config& config) {
-    const auto status = marc_lzw_tans_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzw_tans_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -1326,11 +1275,10 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = lzw_tans_frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzw_tans);
-    config.max_dictionary_serialized_size = lzw_tans_dictionary_size;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzw_tans);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzw_tans),
+        lzw_tans_dictionary_size,
+        maximum_buffered_bytes(Codec::lzw_tans));
     config.max_dictionary_entries =
         (UINT64_C(1) << config.maximum_code_width) - UINT64_C(256);
     config.max_blocks_per_frame =
@@ -1340,18 +1288,19 @@ bool configure(
 
 bool configure(const marc_direction direction, const std::uint64_t original_size,
                marc_lzd_config& config) {
-    const auto status = marc_lzd_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzd_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
-    config.original_size = original_size;
-    config.frame_size = static_cast<std::uint32_t>(frame_size);
-    config.max_frame_size = frame_size;
-    config.max_compressed_payload_size = maximum_frame_payload(Codec::lzd);
-    config.max_dictionary_serialized_size =
-        maximum_frame_payload(Codec::lzd);
-    config.max_internal_buffered_bytes = maximum_buffered_bytes(Codec::lzd);
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(frame_size),
+        frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzd),
+        maximum_frame_payload(Codec::lzd),
+        maximum_buffered_bytes(Codec::lzd));
     config.max_dictionary_entries = config.maximum_entries;
     return true;
 }
@@ -1359,8 +1308,7 @@ bool configure(const marc_direction direction, const std::uint64_t original_size
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzd_blocked_huffman_config& config) {
-    const auto status =
-        marc_lzd_blocked_huffman_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzd_blocked_huffman_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -1371,12 +1319,10 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzd_blocked_huffman);
-    config.max_dictionary_serialized_size =
-        maximum_frame_payload(Codec::lzd_blocked_huffman);
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzd_blocked_huffman);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzd_blocked_huffman),
+        maximum_frame_payload(Codec::lzd_blocked_huffman),
+        maximum_buffered_bytes(Codec::lzd_blocked_huffman));
     config.max_dictionary_entries = config.maximum_entries;
     config.max_blocks_per_frame = static_cast<std::uint32_t>(
         maximum_frame_payload(Codec::lzd_blocked_huffman)
@@ -1387,41 +1333,40 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzd_adaptive_huffman_config& config) {
-    const auto status =
-        marc_lzd_adaptive_huffman_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzd_adaptive_huffman_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
     const auto dictionary_bytes =
         lzd_adaptive_frame_size * UINT64_C(4);
-    config.original_size = original_size;
-    config.frame_size =
-        static_cast<std::uint32_t>(lzd_adaptive_frame_size);
-    config.max_frame_size = lzd_adaptive_frame_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzd_adaptive_huffman);
-    config.max_dictionary_serialized_size = dictionary_bytes;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzd_adaptive_huffman);
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(lzd_adaptive_frame_size),
+        lzd_adaptive_frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzd_adaptive_huffman),
+        dictionary_bytes,
+        maximum_buffered_bytes(Codec::lzd_adaptive_huffman));
     config.max_dictionary_entries = config.maximum_entries;
     return true;
 }
 
 bool configure(const marc_direction direction, const std::uint64_t original_size,
                marc_lzmw_config& config) {
-    const auto status = marc_lzmw_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzmw_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
-    config.original_size = original_size;
-    config.frame_size = static_cast<std::uint32_t>(frame_size);
-    config.max_frame_size = frame_size;
-    config.max_compressed_payload_size = maximum_frame_payload(Codec::lzmw);
-    config.max_dictionary_serialized_size =
-        maximum_frame_payload(Codec::lzmw);
-    config.max_internal_buffered_bytes = maximum_buffered_bytes(Codec::lzmw);
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(frame_size),
+        frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzmw),
+        maximum_frame_payload(Codec::lzmw),
+        maximum_buffered_bytes(Codec::lzmw));
     config.max_dictionary_entries = config.maximum_entries;
     return true;
 }
@@ -1429,23 +1374,21 @@ bool configure(const marc_direction direction, const std::uint64_t original_size
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzd_dynamic_range_config& config) {
-    const auto status =
-        marc_lzd_dynamic_range_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzd_dynamic_range_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
     const auto dictionary_bytes =
         lzd_dynamic_range_frame_size * UINT64_C(4);
-    config.original_size = original_size;
-    config.frame_size =
-        static_cast<std::uint32_t>(lzd_dynamic_range_frame_size);
-    config.max_frame_size = lzd_dynamic_range_frame_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzd_dynamic_range);
-    config.max_dictionary_serialized_size = dictionary_bytes;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzd_dynamic_range);
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(lzd_dynamic_range_frame_size),
+        lzd_dynamic_range_frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzd_dynamic_range),
+        dictionary_bytes,
+        maximum_buffered_bytes(Codec::lzd_dynamic_range));
     config.max_dictionary_entries = config.maximum_entries;
     return true;
 }
@@ -1453,7 +1396,7 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzd_rans_config& config) {
-    const auto status = marc_lzd_rans_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzd_rans_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -1464,11 +1407,10 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = lzd_rans_frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzd_rans);
-    config.max_dictionary_serialized_size = lzd_rans_dictionary_size;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzd_rans);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzd_rans),
+        lzd_rans_dictionary_size,
+        maximum_buffered_bytes(Codec::lzd_rans));
     config.max_dictionary_entries = config.maximum_entries;
     config.max_blocks_per_frame =
         static_cast<std::uint32_t>(lzd_rans_block_count);
@@ -1478,7 +1420,7 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzd_tans_config& config) {
-    const auto status = marc_lzd_tans_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzd_tans_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -1489,11 +1431,10 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = lzd_tans_frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzd_tans);
-    config.max_dictionary_serialized_size = lzd_tans_dictionary_size;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzd_tans);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzd_tans),
+        lzd_tans_dictionary_size,
+        maximum_buffered_bytes(Codec::lzd_tans));
     config.max_dictionary_entries = config.maximum_entries;
     config.max_blocks_per_frame =
         static_cast<std::uint32_t>(lzd_tans_block_count);
@@ -1503,8 +1444,7 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzmw_blocked_huffman_config& config) {
-    const auto status =
-        marc_lzmw_blocked_huffman_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzmw_blocked_huffman_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -1515,12 +1455,10 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzmw_blocked_huffman);
-    config.max_dictionary_serialized_size =
-        maximum_frame_payload(Codec::lzmw_blocked_huffman);
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzmw_blocked_huffman);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzmw_blocked_huffman),
+        maximum_frame_payload(Codec::lzmw_blocked_huffman),
+        maximum_buffered_bytes(Codec::lzmw_blocked_huffman));
     config.max_dictionary_entries = config.maximum_entries;
     config.max_blocks_per_frame = static_cast<std::uint32_t>(
         maximum_frame_payload(Codec::lzmw_blocked_huffman)
@@ -1531,23 +1469,21 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzmw_adaptive_huffman_config& config) {
-    const auto status =
-        marc_lzmw_adaptive_huffman_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzmw_adaptive_huffman_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
     const auto dictionary_bytes =
         lzmw_adaptive_frame_size * UINT64_C(4);
-    config.original_size = original_size;
-    config.frame_size =
-        static_cast<std::uint32_t>(lzmw_adaptive_frame_size);
-    config.max_frame_size = lzmw_adaptive_frame_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzmw_adaptive_huffman);
-    config.max_dictionary_serialized_size = dictionary_bytes;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzmw_adaptive_huffman);
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(lzmw_adaptive_frame_size),
+        lzmw_adaptive_frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzmw_adaptive_huffman),
+        dictionary_bytes,
+        maximum_buffered_bytes(Codec::lzmw_adaptive_huffman));
     config.max_dictionary_entries = config.maximum_entries;
     return true;
 }
@@ -1555,23 +1491,21 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzmw_dynamic_range_config& config) {
-    const auto status =
-        marc_lzmw_dynamic_range_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzmw_dynamic_range_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
     const auto dictionary_bytes =
         lzmw_dynamic_range_frame_size * UINT64_C(4);
-    config.original_size = original_size;
-    config.frame_size =
-        static_cast<std::uint32_t>(lzmw_dynamic_range_frame_size);
-    config.max_frame_size = lzmw_dynamic_range_frame_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzmw_dynamic_range);
-    config.max_dictionary_serialized_size = dictionary_bytes;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzmw_dynamic_range);
+    marc::app::set_frame_limits(config,
+        original_size,
+        static_cast<std::uint32_t>(lzmw_dynamic_range_frame_size),
+        lzmw_dynamic_range_frame_size);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzmw_dynamic_range),
+        dictionary_bytes,
+        maximum_buffered_bytes(Codec::lzmw_dynamic_range));
     config.max_dictionary_entries = config.maximum_entries;
     return true;
 }
@@ -1579,7 +1513,7 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzmw_rans_config& config) {
-    const auto status = marc_lzmw_rans_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzmw_rans_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -1590,11 +1524,10 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = lzmw_rans_frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzmw_rans);
-    config.max_dictionary_serialized_size = lzmw_rans_dictionary_size;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzmw_rans);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzmw_rans),
+        lzmw_rans_dictionary_size,
+        maximum_buffered_bytes(Codec::lzmw_rans));
     config.max_dictionary_entries = config.maximum_entries;
     config.max_blocks_per_frame =
         static_cast<std::uint32_t>(lzmw_rans_block_count);
@@ -1604,7 +1537,7 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzmw_tans_config& config) {
-    const auto status = marc_lzmw_tans_config_init(direction, &config);
+    const auto status = marc::app::initialize_config<marc_lzmw_tans_config_init>(config, direction);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -1615,11 +1548,10 @@ bool configure(
         static_cast<std::uint32_t>(entropy_block_size);
     config.max_frame_size = lzmw_tans_frame_size;
     config.max_block_size = entropy_block_size;
-    config.max_compressed_payload_size =
-        maximum_frame_payload(Codec::lzmw_tans);
-    config.max_dictionary_serialized_size = lzmw_tans_dictionary_size;
-    config.max_internal_buffered_bytes =
-        maximum_buffered_bytes(Codec::lzmw_tans);
+    marc::app::set_payload_limits(config,
+        maximum_frame_payload(Codec::lzmw_tans),
+        lzmw_tans_dictionary_size,
+        maximum_buffered_bytes(Codec::lzmw_tans));
     config.max_dictionary_entries = config.maximum_entries;
     config.max_blocks_per_frame =
         static_cast<std::uint32_t>(lzmw_tans_block_count);

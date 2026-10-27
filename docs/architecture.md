@@ -544,11 +544,25 @@ Its member shape and size-based admission charge match the previous guards.
 `src/c_api/buffer_validation.hpp` supplies their common disjoint-buffer predicate.
 The distinct Adaptive and Range guards retain their own policies.
 
+The public C entry points are implemented by responsibility. `src/marc.cpp`
+contains version/status queries and transform process/destruction. Private
+`src/c_api/entropy.cpp`, six `dictionary_*.cpp` files, `contextual.cpp` and
+`position_range.cpp` contain their family initialization, workspace queries and
+factories, with family-specific validators beside them. Four unchanged stateless
+buffer/alignment/publication helpers are shared through `src/c_api/common.hpp`.
+These files preserve the public declarations, allocation order and C linkage.
+
 The stateless `tools/support/public_profile.hpp` binds public initialization,
 query and creation functions and shares initialization/profile application with
 benchmark sessions. It owns no configuration, workspace, transform or clock.
 Retention, capacities, limits, admission and ownership stay in the execution
 adapters; borrowed and initial-only Range contracts remain distinct.
+
+Legacy CLI and benchmark preparation also use `tools/support/configuration.hpp`
+for public initialization/profile application and repeated frame, payload and
+match-limit assignment groups. Each caller supplies its existing policy
+expressions; original-size placement, limits, selectors and refusal diagnostics
+remain explicit. This shares mechanics without equating the two clients' grants.
 
 The native owning-profile CLI adapters for Position-distance rANS, tANS and
 Blocked Huffman bind their public functions explicitly and use

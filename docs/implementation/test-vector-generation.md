@@ -27673,3 +27673,52 @@ remain; no test, public header, format, profile default or workflow changes.
 Do not infer Linux, complete4172-suite, optional-fuzz builds or new hosted
 qualification from this scoped local evidence. The remaining phase5/6 work and
 fresh installed-package/hosted gates are tracked explicitly.
+
+
+### TVG-1656: legacy initialization and explicit-policy field sharing
+
+Share public init/optional profile application through a stateless helper used
+by PublicProfile and the remaining47 CLI configuration overloads/47 legacy
+benchmark configuration branches (67 selectors). Preserve original_size at its
+prior caller position. CLI init/apply refusals keep the same status-name output;
+benchmark refusals remain false. Shared frame/payload/match setters replace140
+repeated field groups, passing each old caller expression explicitly. They do
+not infer new limits, merge grants, allocate storage or change selectors/scopes.
+All94 initializer and140 field-group replacements expand to the original whole
+client source. The shared initializer is the prior PublicProfile sequence.
+
+Before editing, build independently saved original CLI/benchmark configuration
+probes. Capture every scalar field of each active public config, direction0/1/2,
+seven sizes (0,1,8193,65535,65536,1048576,1099511627775), all five Contextual
+profiles and an unsupported profile. CLI has1512 observations; benchmark has1407.
+Rebuild probes against the final clients and split DLL: all2919 complete records
+match byte-for-byte, including success/refusal. All574 CLI diagnostic lines and
+the benchmark's empty diagnostic stream also match. Padding bytes are not used
+as evidence. The probes record actual independently retained old policy, rather
+than comparing the clients with each other or deriving expectations from setters.
+
+MSVC final client/static-candidate builds pass. Clang-cl full CLI/benchmark syntax
+checks pass with and without DLL imports. Existing40 initializer and12 argument/
+status-forwarding comparisons pass with MSVC and Clang. Build Clang DLL clients
+and run all102 benchmark frozen-vector/restoration cases plus102 CLI release
+bundle restore/re-encode comparisons: all pass against the final MSVC DLL. This
+is client ABI execution and C-API syntax evidence, not Linux or Clang-codec runtime.
+
+All194 selected final CLI/benchmark CTests pass in1063.09 seconds (120 CLI,
+74 benchmark). They retain static/DLL identity, malformed/late failure, protected
+output/temporary cleanup, allocation accounting, native large-window,102-profile
+hash/empty-stream and80 shared boundary/vector contracts. Five unchanged large
+8/16/32/64MiB Range CLI campaigns remain outside this local selection and required
+in manual full_validation; no CTest registration is removed or weakened.
+
+Install the final split libraries and clients to a fresh ignored prefix and build
+C examples exclusively from its installed package, requiring static/shared
+targets. All three package consumer tests pass in0.48 seconds. TVG-1655 supplies
+the3552 core/API, ABI/resources/exports and new-source graph evidence. All4172
+ordinary registrations remain. Fresh single-library package runtime, Linux,
+complete4172-suite and hosted qualification remain gates; no new fuzz campaign
+or dedicated CI fuzz job is inferred or added.
+
+Final documentation, CI-policy, partition and corpus-verifier checks pass4/4
+in2.52 seconds. Ordered ledgers, relative links and git diff --check pass.
+The complete hosted source-graph/package/test gate remains pending.

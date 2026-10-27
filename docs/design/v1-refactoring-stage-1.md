@@ -77,7 +77,7 @@ headers. These are starting observations, not deletion or line-count targets.
 
 - [ ] Share CLI input/output pumping, terminal handling, progress validation,
   transactional file behavior and error reporting; retain profile setup adapters.
-- [ ] Share applicable CLI/benchmark profile-setup adapters while keeping
+- [x] Share applicable CLI/benchmark profile-setup adapters while keeping
   execution-specific admission policies explicit.
 - [x] Centralize the opaque internal handle definition and status/error mapping.
 - [ ] Share applicable validation/ownership helpers without merging different
@@ -417,3 +417,21 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   addition.3552 core/API tests and frozen224 records/111 layouts/251 exports/
   102 archives pass. Decomposition is locally qualified; hosted validation is
   pending. Other phase5 sharing/ownership work and phase6 remain open.
+
+
+- Legacy settings qualification (DD-1643/TVG-1656/CR-2035):94 remaining
+  init sites and140 field groups share stateless code while keeping their
+  explicit caller expressions/diagnostics. All2919 pre-edit scalar observations
+  and574 CLI diagnostic lines match;194 selected CLI/benchmark tests, Clang
+  102-profile clients and installed C consumers pass. Native/Range special
+  storage/admission policies remain explicit. Applicable settings sharing and
+  root API decomposition are locally complete; broader CLI pump/ownership
+  review and phase6 remain open, with fresh hosted qualification pending.
+
+- Hosted legacy/API-split gate: push the source decomposition commite1c29a77
+  and the following settings/log commit carrying TVG-1656, then run manual
+  full_validation. Require all4172 retained Windows/Linux tests (including
+  the five unchanged large Range CLI campaigns), static-only/shared-only
+  installed consumers and102-profile bundles. Pause at this source-graph and
+  settings boundary before further CLI ownership or codec-family changes.
+  The six-phase refactoring objective remains incomplete.

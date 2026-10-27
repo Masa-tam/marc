@@ -2,6 +2,7 @@
 #define MARC_TOOLS_PUBLIC_PROFILE_HPP
 
 #include <marc/marc.h>
+#include "configuration.hpp"
 
 #include <cstddef>
 #include <cstdint>
@@ -33,18 +34,8 @@ template <auto Init, auto Query, auto Create, auto Apply = nullptr> struct Publi
     [[nodiscard]] static marc_status initialize(Config& config, const marc_direction direction,
                                                 const std::uint64_t original_size,
                                                 const std::uint32_t profile = 0) noexcept {
-        marc_status status{};
-        if constexpr (std::is_invocable_v<decltype(Init), marc_direction, Config*>)
-            status = Init(direction, &config);
-        else
-            status = Init(&config);
-        if (status != MARC_STATUS_OK)
-            return status;
-        if constexpr (!std::is_same_v<decltype(Apply), std::nullptr_t>) {
-            status = Apply(&config, profile);
-            if (status != MARC_STATUS_OK)
-                return status;
-        }
+        const auto status = initialize_config<Init, Apply>(config, direction, profile);
+        if (status != MARC_STATUS_OK) return status;
         config.original_size = original_size;
         return MARC_STATUS_OK;
     }
