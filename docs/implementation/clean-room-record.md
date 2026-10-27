@@ -44155,3 +44155,24 @@ pass. No external implementation, algorithm, format, public header or license
 input is introduced. Remaining policy differences are explicit, not silently
 normalized. This documents process/evidence, not a legal guarantee or completion
 of remaining CLI/ownership/codec-family and hosted-validation work.
+
+
+### CR-2036: 2026-10-27 — hosted source-split/settings continuation
+
+Author/reviewer: Codex. Record the maintainer's successful push/manual
+full_validation through b19af77d (TVG-1657). Continue first-party configuration
+adapter cleanup using IR-1388/DD-1644. No external implementation consulted;
+the reported hosted result does not qualify later production edits.
+
+
+### CR-2037: 2026-10-27 — split C-API configuration mechanics
+
+Author/reviewer: Codex. User requests remaining configuration sharing and C-API
+decomposition after reporting the preceding hosted gate. IR-1388/DD-1644 use
+only first-party split adapters, public configuration and DecoderLimits. Share
+54 header checks and110 field groups; whole-file expansion preserves existing
+validation/assignment order and explicit policy. TVG-1658 records3552 API/core
+passes, frozen ABI/resource/export equality,102 archive comparisons and compiler/
+tooling checks. Similarity review is limited to the repository's own before/after
+source. No external implementation or format change is introduced. This records
+the implementation process, not a legal guarantee or completion of all phases.

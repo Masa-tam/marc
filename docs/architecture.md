@@ -552,6 +552,11 @@ factories, with family-specific validators beside them. Four unchanged stateless
 buffer/alignment/publication helpers are shared through `src/c_api/common.hpp`.
 These files preserve the public declarations, allocation order and C linkage.
 
+The private `src/c_api/configuration.hpp` shares configuration header validation
+and frame, payload and match-limit transfers. Dictionary-byte bounds remain
+explicit arguments. Reserved/profile/direction checks, block/model/table limits,
+clamping and resource charges remain in their original family adapters.
+
 The stateless `tools/support/public_profile.hpp` binds public initialization,
 query and creation functions and shares initialization/profile application with
 benchmark sessions. It owns no configuration, workspace, transform or clock.

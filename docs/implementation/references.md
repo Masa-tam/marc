@@ -12308,3 +12308,11 @@ existing public header supplies cross-translation-unit declarations. Four
 shared buffer/publication helpers have no state and can be private inline code.
 Use frozen224 configuration/query records,111 layouts,251 exports,102 release
 archives and retained tests as preservation evidence. No external source is used.
+
+
+### IR-1388: split C-API configuration adapters
+
+Use only the first-party family adapters at b19af77d, core DecoderLimits and
+public configuration definitions. Compare entire pre-edit family files after
+expanding shared checks/assignments; preserve short-circuit order, dictionary
+limit expressions and profile-specific validation. No external reference used.

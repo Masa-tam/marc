@@ -1,4 +1,5 @@
 #include "c_api/common.hpp"
+#include "c_api/configuration.hpp"
 #include "frame/lzss_typed_context_frame_streaming_decoder.hpp"
 #include "frame/lzss_typed_context_frame_streaming_encoder.hpp"
 #include "frame/lzss_typed_context_profile.hpp"
@@ -270,10 +271,7 @@ internal_lzss_match_finder_strategy(
 bool load_config(
     const marc_lzss_contextual_dynamic_range_config* config,
     marc::core::DecoderLimits& limits) noexcept {
-    if (config == nullptr
-        || config->struct_size
-            != sizeof(marc_lzss_contextual_dynamic_range_config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || !known_lzss_match_finder_strategy(
             config->match_finder_strategy)
         || config->reserved2 != 0
@@ -284,15 +282,13 @@ bool load_config(
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64M)) {
         return false;
     }
-    limits.max_total_output_size = config->max_total_output_size;
-    limits.max_frame_size = config->max_frame_size;
+    copy_frame_limits(*config, limits);
     limits.max_block_size = config->max_block_size;
     limits.max_compressed_payload_size =
         config->max_compressed_payload_size;
     limits.max_internal_buffered_bytes =
         config->max_internal_buffered_bytes;
-    limits.max_lz_distance = config->max_lz_distance;
-    limits.max_lz_match_length = config->max_lz_match_length;
+    copy_match_limits(*config, limits);
     limits.max_entropy_table_entries =
         config->max_entropy_table_entries;
     limits.max_range_model_total = config->max_range_model_total;
@@ -302,9 +298,7 @@ bool load_config(
 bool load_config(
     const marc_lzss_contextual_rans_config* config,
     marc::core::DecoderLimits& limits) noexcept {
-    if (config == nullptr
-        || config->struct_size != sizeof(marc_lzss_contextual_rans_config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || !known_lzss_match_finder_strategy(
             config->match_finder_strategy)
         || config->reserved2 != 0
@@ -315,15 +309,13 @@ bool load_config(
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64M)) {
         return false;
     }
-    limits.max_total_output_size = config->max_total_output_size;
-    limits.max_frame_size = config->max_frame_size;
+    copy_frame_limits(*config, limits);
     limits.max_block_size = config->max_block_size;
     limits.max_compressed_payload_size =
         config->max_compressed_payload_size;
     limits.max_internal_buffered_bytes =
         config->max_internal_buffered_bytes;
-    limits.max_lz_distance = config->max_lz_distance;
-    limits.max_lz_match_length = config->max_lz_match_length;
+    copy_match_limits(*config, limits);
     limits.max_entropy_table_entries =
         config->max_entropy_table_entries;
     return true;
@@ -332,9 +324,7 @@ bool load_config(
 bool load_config(
     const marc_lzss_contextual_tans_config* config,
     marc::core::DecoderLimits& limits) noexcept {
-    if (config == nullptr
-        || config->struct_size != sizeof(marc_lzss_contextual_tans_config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || !known_lzss_match_finder_strategy(
             config->match_finder_strategy)
         || config->reserved2 != 0
@@ -345,15 +335,13 @@ bool load_config(
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64M)) {
         return false;
     }
-    limits.max_total_output_size = config->max_total_output_size;
-    limits.max_frame_size = config->max_frame_size;
+    copy_frame_limits(*config, limits);
     limits.max_block_size = config->max_block_size;
     limits.max_compressed_payload_size =
         config->max_compressed_payload_size;
     limits.max_internal_buffered_bytes =
         config->max_internal_buffered_bytes;
-    limits.max_lz_distance = config->max_lz_distance;
-    limits.max_lz_match_length = config->max_lz_match_length;
+    copy_match_limits(*config, limits);
     limits.max_entropy_table_entries =
         config->max_entropy_table_entries;
     return true;
@@ -362,10 +350,7 @@ bool load_config(
 bool load_config(
     const marc_lzss_contextual_adaptive_huffman_config* config,
     marc::core::DecoderLimits& limits) noexcept {
-    if (config == nullptr
-        || config->struct_size
-            != sizeof(marc_lzss_contextual_adaptive_huffman_config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || !known_lzss_match_finder_strategy(
             config->match_finder_strategy)
         || config->reserved2 != 0
@@ -376,15 +361,13 @@ bool load_config(
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64M)) {
         return false;
     }
-    limits.max_total_output_size = config->max_total_output_size;
-    limits.max_frame_size = config->max_frame_size;
+    copy_frame_limits(*config, limits);
     limits.max_block_size = config->max_block_size;
     limits.max_compressed_payload_size =
         config->max_compressed_payload_size;
     limits.max_internal_buffered_bytes =
         config->max_internal_buffered_bytes;
-    limits.max_lz_distance = config->max_lz_distance;
-    limits.max_lz_match_length = config->max_lz_match_length;
+    copy_match_limits(*config, limits);
     limits.max_entropy_table_entries =
         config->max_entropy_table_entries;
     return true;
@@ -393,10 +376,7 @@ bool load_config(
 bool load_config(
     const marc_lzss_contextual_blocked_huffman_config* config,
     marc::core::DecoderLimits& limits) noexcept {
-    if (config == nullptr
-        || config->struct_size
-            != sizeof(marc_lzss_contextual_blocked_huffman_config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || !known_lzss_match_finder_strategy(
             config->match_finder_strategy)
         || config->reserved2 != 0
@@ -407,15 +387,13 @@ bool load_config(
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64M)) {
         return false;
     }
-    limits.max_total_output_size = config->max_total_output_size;
-    limits.max_frame_size = config->max_frame_size;
+    copy_frame_limits(*config, limits);
     limits.max_block_size = config->max_block_size;
     limits.max_compressed_payload_size =
         config->max_compressed_payload_size;
     limits.max_internal_buffered_bytes =
         config->max_internal_buffered_bytes;
-    limits.max_lz_distance = config->max_lz_distance;
-    limits.max_lz_match_length = config->max_lz_match_length;
+    copy_match_limits(*config, limits);
     limits.max_entropy_table_entries =
         config->max_entropy_table_entries;
     return true;
@@ -1154,10 +1132,7 @@ marc_status marc_lzss_contextual_dynamic_range_config_init(
 marc_status marc_lzss_contextual_dynamic_range_config_apply_profile(
     marc_lzss_contextual_dynamic_range_config* const config,
     const marc_lzss_contextual_profile profile) noexcept {
-    if (config == nullptr
-        || config->struct_size
-            != sizeof(marc_lzss_contextual_dynamic_range_config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || (config->direction != MARC_DIRECTION_ENCODE
             && config->direction != MARC_DIRECTION_DECODE)
         || !known_lzss_match_finder_strategy(
@@ -1397,9 +1372,7 @@ marc_status marc_lzss_contextual_rans_config_init(
 marc_status marc_lzss_contextual_rans_config_apply_profile(
     marc_lzss_contextual_rans_config* const config,
     const marc_lzss_contextual_profile profile) noexcept {
-    if (config == nullptr
-        || config->struct_size != sizeof(marc_lzss_contextual_rans_config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || (config->direction != MARC_DIRECTION_ENCODE
             && config->direction != MARC_DIRECTION_DECODE)
         || !known_lzss_match_finder_strategy(
@@ -1488,9 +1461,7 @@ marc_status marc_lzss_contextual_tans_config_init(
 marc_status marc_lzss_contextual_tans_config_apply_profile(
     marc_lzss_contextual_tans_config* const config,
     const marc_lzss_contextual_profile profile) noexcept {
-    if (config == nullptr
-        || config->struct_size != sizeof(marc_lzss_contextual_tans_config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || (config->direction != MARC_DIRECTION_ENCODE
             && config->direction != MARC_DIRECTION_DECODE)
         || !known_lzss_match_finder_strategy(
@@ -1580,10 +1551,7 @@ marc_status
 marc_lzss_contextual_adaptive_huffman_config_apply_profile(
     marc_lzss_contextual_adaptive_huffman_config* const config,
     const marc_lzss_contextual_profile profile) noexcept {
-    if (config == nullptr
-        || config->struct_size
-            != sizeof(marc_lzss_contextual_adaptive_huffman_config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || (config->direction != MARC_DIRECTION_ENCODE
             && config->direction != MARC_DIRECTION_DECODE)
         || !known_lzss_match_finder_strategy(
@@ -1677,10 +1645,7 @@ marc_status marc_lzss_contextual_blocked_huffman_config_init(
 marc_status marc_lzss_contextual_blocked_huffman_config_apply_profile(
     marc_lzss_contextual_blocked_huffman_config* const config,
     const marc_lzss_contextual_profile profile) noexcept {
-    if (config == nullptr
-        || config->struct_size
-            != sizeof(marc_lzss_contextual_blocked_huffman_config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || (config->direction != MARC_DIRECTION_ENCODE
             && config->direction != MARC_DIRECTION_DECODE)
         || !known_lzss_match_finder_strategy(

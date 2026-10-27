@@ -435,3 +435,23 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   installed consumers and102-profile bundles. Pause at this source-graph and
   settings boundary before further CLI ownership or codec-family changes.
   The six-phase refactoring objective remains incomplete.
+
+
+- Hosted continuation through b19af77d: the maintainer reports successful push
+  and manual full_validation (TVG-1657/CR-2036). The nine-family C-API split and
+  client settings gate is reported complete. Continue shared C-API configuration
+  checks/transfers under DD-1644; preserve policy-specific ownership/validation.
+
+
+- Split C-API configuration cleanup (DD-1644/TVG-1658/CR-2037):54 header checks
+  and110 frame/payload/match transfer groups share one private helper header.
+  Nine responsibility files retain policy validation, clamping and ownership.
+  Whole-source expansions,3552 core/API tests, frozen ABI/resource/export
+  receipts and102 release archives pass. The preceding nine-file decomposition
+  remains intact; no further source-graph or public API change is needed here.
+  Broader CLI pump/ownership review and phase6 remain open.
+
+- Hosted configuration-transfer gate: push the commit carrying TVG-1658 and run
+  manual full_validation. Require all4172 retained Windows/Linux tests,
+  static-only/shared-only installed consumers and102-profile bundles. Pause at
+  this production boundary before further CLI ownership or codec-family edits.

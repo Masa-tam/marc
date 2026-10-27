@@ -1,4 +1,5 @@
 #include "c_api/common.hpp"
+#include "c_api/configuration.hpp"
 #include "entropy/blocked_huffman_controller.hpp"
 #include "frame/blocked_huffman_frame_streaming_decoder.hpp"
 #include "frame/blocked_huffman_frame_streaming_encoder.hpp"
@@ -31,21 +32,13 @@ using namespace marc::c_api::detail;
 
 bool load_config(const marc_checksum_raw_config* config,
                  marc::core::DecoderLimits& limits) noexcept {
-    if (config == nullptr
-        || config->struct_size != sizeof(marc_checksum_raw_config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || config->reserved != 0 || config->reserved2 != 0
         || config->reserved3 != 0) {
         return false;
     }
-    limits.max_total_output_size = config->max_total_output_size;
-    limits.max_frame_size = config->max_frame_size;
-    limits.max_compressed_payload_size =
-        config->max_compressed_payload_size;
-    limits.max_dictionary_serialized_size =
-        config->max_dictionary_serialized_size;
-    limits.max_internal_buffered_bytes =
-        config->max_internal_buffered_bytes;
+    copy_frame_limits(*config, limits);
+    copy_payload_limits(*config, limits, config->max_dictionary_serialized_size);
     limits.max_block_size = std::min(
         limits.max_block_size, limits.max_internal_buffered_bytes);
     return true;
@@ -53,34 +46,23 @@ bool load_config(const marc_checksum_raw_config* config,
 
 bool load_config(const marc_blocked_huffman_config* config,
                  marc::core::DecoderLimits& limits) noexcept {
-    if (config == nullptr
-        || config->struct_size != sizeof(marc_blocked_huffman_config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || config->reserved != 0 || config->reserved2 != 0) {
         return false;
     }
-    limits.max_total_output_size = config->max_total_output_size;
-    limits.max_frame_size = config->max_frame_size;
+    copy_frame_limits(*config, limits);
     limits.max_block_size = config->max_block_size;
-    limits.max_compressed_payload_size =
-        config->max_compressed_payload_size;
-    limits.max_dictionary_serialized_size = config->max_frame_size;
-    limits.max_internal_buffered_bytes = config->max_internal_buffered_bytes;
+    copy_payload_limits(*config, limits, config->max_frame_size);
     limits.max_blocks_per_frame = config->max_blocks_per_frame;
     return true;
 }
 
 bool load_config(const marc_adaptive_huffman_config* config,
                  marc::core::DecoderLimits& limits) noexcept {
-    if (config == nullptr
-        || config->struct_size != sizeof(marc_adaptive_huffman_config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || config->reserved != 0 || config->reserved2 != 0) return false;
-    limits.max_total_output_size = config->max_total_output_size;
-    limits.max_frame_size = config->max_frame_size;
-    limits.max_compressed_payload_size = config->max_compressed_payload_size;
-    limits.max_dictionary_serialized_size = config->max_frame_size;
-    limits.max_internal_buffered_bytes = config->max_internal_buffered_bytes;
+    copy_frame_limits(*config, limits);
+    copy_payload_limits(*config, limits, config->max_frame_size);
     limits.max_block_size = std::min(
         limits.max_block_size, limits.max_internal_buffered_bytes);
     return true;
@@ -88,15 +70,10 @@ bool load_config(const marc_adaptive_huffman_config* config,
 
 bool load_config(const marc_dynamic_range_config* config,
                  marc::core::DecoderLimits& limits) noexcept {
-    if (config == nullptr
-        || config->struct_size != sizeof(marc_dynamic_range_config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || config->reserved != 0 || config->reserved2 != 0) return false;
-    limits.max_total_output_size = config->max_total_output_size;
-    limits.max_frame_size = config->max_frame_size;
-    limits.max_compressed_payload_size = config->max_compressed_payload_size;
-    limits.max_dictionary_serialized_size = config->max_frame_size;
-    limits.max_internal_buffered_bytes = config->max_internal_buffered_bytes;
+    copy_frame_limits(*config, limits);
+    copy_payload_limits(*config, limits, config->max_frame_size);
     limits.max_range_model_total = config->max_range_model_total;
     limits.max_block_size = std::min(
         limits.max_block_size, limits.max_internal_buffered_bytes);
@@ -105,32 +82,22 @@ bool load_config(const marc_dynamic_range_config* config,
 
 bool load_config(const marc_rans_config* config,
                  marc::core::DecoderLimits& limits) noexcept {
-    if (config == nullptr
-        || config->struct_size != sizeof(marc_rans_config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || config->reserved != 0 || config->reserved2 != 0) return false;
-    limits.max_total_output_size = config->max_total_output_size;
-    limits.max_frame_size = config->max_frame_size;
+    copy_frame_limits(*config, limits);
     limits.max_block_size = config->max_block_size;
-    limits.max_compressed_payload_size = config->max_compressed_payload_size;
-    limits.max_dictionary_serialized_size = config->max_frame_size;
-    limits.max_internal_buffered_bytes = config->max_internal_buffered_bytes;
+    copy_payload_limits(*config, limits, config->max_frame_size);
     limits.max_blocks_per_frame = config->max_blocks_per_frame;
     return true;
 }
 
 bool load_config(const marc_tans_config* config,
                  marc::core::DecoderLimits& limits) noexcept {
-    if (config == nullptr
-        || config->struct_size != sizeof(marc_tans_config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || config->reserved != 0 || config->reserved2 != 0) return false;
-    limits.max_total_output_size = config->max_total_output_size;
-    limits.max_frame_size = config->max_frame_size;
+    copy_frame_limits(*config, limits);
     limits.max_block_size = config->max_block_size;
-    limits.max_compressed_payload_size = config->max_compressed_payload_size;
-    limits.max_dictionary_serialized_size = config->max_frame_size;
-    limits.max_internal_buffered_bytes = config->max_internal_buffered_bytes;
+    copy_payload_limits(*config, limits, config->max_frame_size);
     limits.max_blocks_per_frame = config->max_blocks_per_frame;
     return true;
 }

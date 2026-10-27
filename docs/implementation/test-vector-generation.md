@@ -27722,3 +27722,37 @@ or dedicated CI fuzz job is inferred or added.
 Final documentation, CI-policy, partition and corpus-verifier checks pass4/4
 in2.52 seconds. Ordered ledgers, relative links and git diff --check pass.
 The complete hosted source-graph/package/test gate remains pending.
+
+
+### TVG-1657: maintainer-reported hosted gate through b19af77d
+
+The maintainer reports pushing e1c29a77/b19af77d and successful manual
+full_validation on 2026-10-27. This supplies the requested hosted continuation
+for the C-API source split and client settings. No workflow URL or logs were
+independently retrieved; do not attribute subsequent edits to that run.
+
+
+### TVG-1658: split C-API configuration transfer qualification
+
+In the nine family implementation files, replace54 repeated null/size/ABI checks
+and110 assignment groups (49 frame,42 payload,19 match) with private stateless
+helpers. Expanding every replacement recovers all nine pre-edit files at
+b19af77d after whitespace normalization. Header checks retain the same
+short-circuit conditions; reserved/profile/direction checks stay at their
+original positions. Payload transfers preserve explicit dictionary-byte bounds.
+Block/model/table assignments, clamps and resource charges keep their order.
+No ownership, public initializer, factory allocation or status policy changes.
+
+MSVC19.51 Release rebuilds static/shared libraries, CLI/benchmark, core and86
+API test executables. Clang-cl syntax checks pass for all ten split C-API
+translation units with DLL exports. All3552 retained core/API CTests pass in
+306.84 seconds, including malformed configuration, exact grants, allocation
+failure, ownership and chunking cases. All224 frozen configuration/query records,
+111 public layouts, header hash and251 exported names match v0.8.0. The final
+CLI/DLL restores and re-encodes all102 frozen archives byte-for-byte.
+
+All four documentation/corpus-verifier/CI-policy/partition tooling checks pass
+in2.76 seconds. The production source list, target graph and4172 CTest registrations
+are unchanged; one private, non-installed header is added. No new fuzz campaign
+is claimed. Complete Windows/Linux tests and fresh installed single-library
+consumers remain the next manual full_validation gate for this production edit.

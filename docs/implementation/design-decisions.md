@@ -35423,3 +35423,15 @@ Do not replace legacy settings with native defaults or a universal config schema
 Compare all captured scalar configuration fields for directions/profiles/input
 boundaries against original clients, in addition to exact source expansions and
 102-profile archives. Native/Range special contracts remain explicit.
+
+
+### DD-1644: private C-API configuration checks and explicit limit transfers
+
+Keep the nine responsibility files established by DD-1642. Place the repeated
+null/size/ABI header check and frame/payload/match limit assignment groups in
+c_api/configuration.hpp. Call only after the same preceding validation; retain
+all reserved/profile/direction checks in their original short-circuit order.
+Pass dictionary-byte policy explicitly, including entropy's frame-size bound.
+Keep block/model/table limits, clamping, resource charges and ownership local.
+No helper initializes storage, allocates or infers policy from member presence.
+Prove source expansion against b19af77d and run retained public API contracts.

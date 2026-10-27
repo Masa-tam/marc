@@ -1,4 +1,5 @@
 #include "c_api/common.hpp"
+#include "c_api/configuration.hpp"
 #include "frame/lzss_position_distance_1m_encode_workspace.hpp"
 #include "frame/lzss_position_distance_1m_workspace.hpp"
 #include "frame/lzss_position_distance_1m_frame_streaming_encoder.hpp"
@@ -56,20 +57,17 @@ static marc_status prepare_position_distance_config(
     marc::frame::internal::TypedContextStreamHeader& stream,
     marc::frame::internal::LzssPositionDistanceWorkspaceRequirements& r) noexcept {
     using namespace marc::frame::internal;
-    if (config == nullptr || config->struct_size != sizeof(*config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || config->reserved != 0 || config->reserved2 != 0
         || (config->direction != MARC_DIRECTION_ENCODE
             && config->direction != MARC_DIRECTION_DECODE))
         return MARC_STATUS_INVALID_ARGUMENT;
     limits = {};
-    limits.max_total_output_size = config->max_total_output_size;
-    limits.max_frame_size = config->max_frame_size;
+    copy_frame_limits(*config, limits);
     limits.max_block_size = config->max_block_size;
     limits.max_compressed_payload_size = config->max_compressed_payload_size;
     limits.max_internal_buffered_bytes = config->max_internal_buffered_bytes;
-    limits.max_lz_distance = config->max_lz_distance;
-    limits.max_lz_match_length = config->max_lz_match_length;
+    copy_match_limits(*config, limits);
     limits.max_entropy_table_entries = config->max_entropy_table_entries;
     limits.max_range_model_total = config->max_range_model_total;
     limits.max_expansion_ratio = config->max_expansion_ratio;
@@ -214,20 +212,17 @@ static marc_status prepare_position_distance_1m_config(
     marc::frame::internal::TypedContextStreamHeader& stream,
     marc::frame::internal::LzssPositionDistanceWorkspaceRequirements& r) noexcept {
     using namespace marc::frame::internal;
-    if (config == nullptr || config->struct_size != sizeof(*config)
-        || config->abi_version != MARC_ABI_VERSION
+    if (!valid_config_header(config)
         || config->reserved != 0 || config->reserved2 != 0
         || (config->direction != MARC_DIRECTION_ENCODE
             && config->direction != MARC_DIRECTION_DECODE))
         return MARC_STATUS_INVALID_ARGUMENT;
     limits = {};
-    limits.max_total_output_size = config->max_total_output_size;
-    limits.max_frame_size = config->max_frame_size;
+    copy_frame_limits(*config, limits);
     limits.max_block_size = config->max_block_size;
     limits.max_compressed_payload_size = config->max_compressed_payload_size;
     limits.max_internal_buffered_bytes = config->max_internal_buffered_bytes;
-    limits.max_lz_distance = config->max_lz_distance;
-    limits.max_lz_match_length = config->max_lz_match_length;
+    copy_match_limits(*config, limits);
     limits.max_entropy_table_entries = config->max_entropy_table_entries;
     limits.max_range_model_total = config->max_range_model_total;
     limits.max_expansion_ratio = config->max_expansion_ratio;
