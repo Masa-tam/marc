@@ -538,11 +538,25 @@ ordinary-factory and profile-factory status policies; factory failures do not
 automatically inherit every process-error category. These headers are not
 installed and do not change the public ABI or resource accounting.
 
+The21 native owning rANS/tANS/Blocked Huffman factories share the private
+`src/c_api/owned_boundary.hpp` capacity, buffer-overlap and terminal-state guard.
+Its member shape and size-based admission charge match the previous guards.
+`src/c_api/buffer_validation.hpp` supplies their common disjoint-buffer predicate.
+The distinct Adaptive and Range guards retain their own policies.
+
+The stateless `tools/support/public_profile.hpp` binds public initialization,
+query and creation functions and shares initialization/profile application with
+benchmark sessions. It owns no configuration, workspace, transform or clock.
+Retention, capacities, limits, admission and ownership stay in the execution
+adapters; borrowed and initial-only Range contracts remain distinct.
+
 The native owning-profile CLI adapters for Position-distance rANS, tANS and
-Blocked Huffman share `tools/support/owned_profile_pump.hpp`. Each adapter keeps
-its own configuration, resource query, transform ownership and two fixed I/O
-buffers. The helper borrows those buffers and preserves their existing progress
-and diagnostic policy. Other CLI admission policies remain explicit.
+Blocked Huffman bind their public functions explicitly and use
+`tools/support/owned_profile_file.hpp` for their identical setup, resource query,
+transform ownership and two fixed I/O buffers. Its shared pump in
+`tools/support/owned_profile_pump.hpp` borrows those buffers and preserves their
+existing progress and diagnostic policy. Adaptive CLI shares initialization only;
+other CLI admission and output/error policies remain explicit.
 
 ## Initial stream-size policy
 

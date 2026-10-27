@@ -380,3 +380,24 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   layouts/251 exports pass. All102 release archives match. Nine distinct native
   guards and the four-MiB guard remain explicit. Root validation/ownership and
   API decomposition still require review; later hosted qualification is pending.
+
+
+- Native settings/file adapters (DD-1639/1640/1641, TVG-1653/CR-2032): a
+  stateless public binding/initializer serves22 CLI helpers and benchmark
+  PublicSession. One CLI helper owns the21 identical setup/query/create/file
+  bodies with their original deleter types and I/O arrays. Execution-specific
+  retention, storage, limits, diagnostics and scopes remain explicit. Source
+  expansion and initialization/forwarding traces match; the Clang DLL-import
+  constexpr issue is resolved with static forwarding before final qualification.
+  All194 selected CLI/benchmark tests pass, plus102-profile Clang client and
+  installed-package/archive checks. The remaining five unchanged large Range
+  CLI campaigns stay in hosted validation. Other CLI policies, legacy setup
+  sharing, root validation/ownership and API decomposition remain open.
+
+- Hosted boundary/settings gate: push the native guard commitdf64093d and
+  the following adapter/log commit carrying TVG-1653, then run manual
+  full_validation. Confirm all4172 retained Windows/Linux tests, including
+  the five unchanged large Range CLI campaigns, static-only/shared-only
+  installed consumers and102-profile bundles. Pause at this qualified local
+  boundary before further legacy/root API changes. Phase5 and phase6 remain
+  incomplete; do not treat scoped local/Clang Windows checks as hosted success.

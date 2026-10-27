@@ -44104,3 +44104,19 @@ records/111 layouts/251 exports and102 release-byte comparisons. No external
 implementation source, algorithm, format or license input is involved. This
 records the refactoring process and evidence, not a legal guarantee or completion
 of the remaining phase5/6 responsibilities.
+
+
+### CR-2032: 2026-10-27 — stateless application profile and CLI setup sharing
+
+Author/reviewer: Codex. IR-1384/1385/1386 and DD-1639/1640/1641 identify existing
+first-party setup bodies, public C contracts and actual compiler observations.
+Shared public bindings/initialization and21 identical CLI file bodies retain
+ownership, admission, data members, diagnostics and process policy. Source
+expansions,40 initialization and12 forwarding traces agree. A preliminary
+Clang DLL-import constant-expression failure is fixed with static forwarding;
+the partial preliminary test run is retained without a success claim. The final
+194-test selection passes, alongside102-profile Clang clients and installed
+package/archive checks (TVG-1653). No external implementation source, algorithm,
+format, public header or license input changes. Remaining legacy setup/root API
+and phase6 work is not complete; the record gives process/evidence, not a legal
+guarantee or inferred hosted qualification.

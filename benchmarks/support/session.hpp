@@ -2,6 +2,7 @@
 #define MARC_BENCHMARK_SESSION_HPP
 
 #include "stream_pump.hpp"
+#include "../../tools/support/public_profile.hpp"
 
 #include <array>
 #include <cstddef>
@@ -87,12 +88,7 @@ private:
     bool extended_{};
 };
 
-template<class> struct QueryTypes;
-template<class C, class R>
-struct QueryTypes<marc_status (*)(const C*, R*) noexcept> {
-    using Config = C;
-    using Result = R;
-};
+using marc::app::QueryTypes;
 
 template<class> struct DecoderBuffers;
 template<class C, class B>
@@ -132,23 +128,16 @@ void configure_retention(C& config) {
 
 template<auto Init, auto Query, auto Create, auto Apply = nullptr>
 class PublicSession final : public Session {
-    using C = typename QueryTypes<decltype(Query)>::Config;
-    using R = typename QueryTypes<decltype(Query)>::Result;
+    using Profile = marc::app::PublicProfile<Init, Query, Create, Apply>;
+    using C = typename Profile::Config;
+    using R = typename Profile::Resources;
 public:
     marc_status prepare(const SessionOptions& options, const std::uint32_t profile,
                         const RangeLimits* limits) {
         static_assert(sizeof(PublicSession) < 16384);
-        marc_status status{};
-        if constexpr (std::is_invocable_v<decltype(Init), marc_direction, C*>)
-            status = Init(options.direction, &config_);
-        else
-            status = Init(&config_);
+        auto status = Profile::initialize(
+            config_, options.direction, options.original_size, profile);
         if (status != MARC_STATUS_OK) return status;
-        if constexpr (!std::is_same_v<decltype(Apply), std::nullptr_t>) {
-            status = Apply(&config_, profile);
-            if (status != MARC_STATUS_OK) return status;
-        }
-        config_.original_size = options.original_size;
         configure_retention(config_);
         // Only the explicit direction-specific Range session receives limits.
         if constexpr (!std::is_invocable_v<decltype(Init), marc_direction, C*>) {
@@ -159,7 +148,7 @@ public:
             query_.struct_size = sizeof(query_);
             query_.abi_version = MARC_ABI_VERSION;
         }
-        status = Query(&config_, &query_);
+        status = Profile::query(&config_, &query_);
         if (status != MARC_STATUS_OK) return status;
         resources.limit_bytes = config_.max_internal_buffered_bytes;
         if constexpr (std::is_same_v<R, marc_workspace_requirements>) {
@@ -186,10 +175,10 @@ public:
             storage_[0].allocate(query_.primary_bytes, alignof(std::max_align_t));
             storage_[1].allocate(query_.secondary_bytes, alignof(std::max_align_t));
             storage_[2].allocate(query_.views_bytes, query_.views_alignment);
-            return Create(&config_, storage_[0].view(), storage_[1].view(),
+            return Profile::create(&config_, storage_[0].view(), storage_[1].view(),
                           storage_[2].view(), transform);
         } else {
-            return Create(&config_, transform);
+            return Profile::create(&config_, transform);
         }
     }
 

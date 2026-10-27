@@ -35372,3 +35372,21 @@ only PublicProfile initialization. Range keeps its separate CLI policies; its
 benchmark initialization uses PublicProfile with limits/retention still applied
 in the same caller order. Verify full expansion back to every original body,
 not just successful round trips. Do not merge those execution-specific policies.
+
+
+### DD-1641: stateless forwarding for imported public functions
+
+Bind public functions as template parameters and call them through static methods.
+Do not materialize DLL-imported Query/Create addresses as constexpr data members:
+the Clang-cl client check rejects that preliminary expression. A typed query
+method and perfectly forwarding create method preserve the existing argument
+shapes, public noexcept/status contract and absence of runtime adapter state.
+Owned two-argument and borrowed three-span creation remain distinct calls; no
+storage is allocated or admission interpreted by these forwarding methods.
+
+Stop the preliminary MSVC CLI run before rebuilding the final helper, preserve
+its partial log without claiming it passed, then repeat the complete selected
+client qualification after rebuilding every affected executable. The private
+C-API boundary/library component is unchanged by this application-header fix;
+its completed API/layout/export/package evidence remains applicable. Check
+Clang full CLI/benchmark clients in both DLL-import and ordinary modes first.

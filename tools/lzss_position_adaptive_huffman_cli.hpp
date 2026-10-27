@@ -1,6 +1,7 @@
 #ifndef MARC_TOOLS_POSITION_ADAPTIVE_HUFFMAN_CLI_HPP
 #define MARC_TOOLS_POSITION_ADAPTIVE_HUFFMAN_CLI_HPP
 #include <marc/marc.h>
+#include "support/public_profile.hpp"
 #include <algorithm>
 #include <array>
 #include <fstream>
@@ -11,18 +12,21 @@ struct Destroy {void operator()(marc_transform* p) const noexcept {marc_transfor
 inline bool process_file(marc_direction direction,std::uint64_t size,std::ifstream& source,std::ofstream& sink,
     marc_lzss_position_distance_adaptive_huffman_profile profile) {
     constexpr std::size_t capacity=65536;
-    marc_lzss_position_distance_adaptive_huffman_config config{};
-    auto status=marc_lzss_position_distance_adaptive_huffman_config_init(direction,&config);
+    using Profile = marc::app::PublicProfile<
+        marc_lzss_position_distance_adaptive_huffman_config_init,
+        marc_lzss_position_distance_adaptive_huffman_resource_requirements,
+        marc_lzss_position_distance_adaptive_huffman_create,
+        marc_lzss_position_distance_adaptive_huffman_config_apply_profile>;
+    Profile::Config config{};
+    auto status=Profile::initialize(config, direction, size, profile);
     if (status!=MARC_STATUS_OK) return false;
-    status=marc_lzss_position_distance_adaptive_huffman_config_apply_profile(&config,profile);
-    if (status!=MARC_STATUS_OK) return false;
-    config.original_size=size;config.external_retained_bytes=65536;
-    marc_lzss_position_distance_adaptive_huffman_resources resources{};
-    status=marc_lzss_position_distance_adaptive_huffman_resource_requirements(&config,&resources);
+    config.external_retained_bytes=65536;
+    Profile::Resources resources{};
+    status=Profile::query(&config,&resources);
     if (status!=MARC_STATUS_OK || resources.minimum_aggregate_bytes>config.max_internal_buffered_bytes) {
         std::cerr<<"marc: resource admission failed: "<<status<<'\n';return false;
     }
-    marc_transform* p{};status=marc_lzss_position_distance_adaptive_huffman_create(&config,&p);
+    marc_transform* p{};status=Profile::create(&config,&p);
     if (status!=MARC_STATUS_OK) {std::cerr<<"marc: creation failed: "<<status<<'\n';return false;}
     std::unique_ptr<marc_transform,Destroy> transform(p);
     std::array<std::uint8_t,capacity> input{},output{};

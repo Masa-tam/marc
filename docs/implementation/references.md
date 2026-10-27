@@ -12279,3 +12279,15 @@ including query/admission checks, creation diagnostics, deleter/handle ownership
 two65536-byte arrays and shared pump invocation. Use these first-party bodies
 and the original03fdba3a adapters as the extraction reference. No external source
 or new algorithm is consulted; Adaptive and Range differences remain explicit.
+
+
+### IR-1386: imported-function binding compiler observations
+
+Use actual Clang-cl CLI/benchmark syntax checks with and without MARC_USING_SHARED.
+The preliminary helper's constexpr Query/Create pointer members are rejected for
+DLL-imported functions, although calls through non-type template parameters are
+accepted. Retain the diagnostic and interrupted preliminary CLI test receipt.
+Use static direct-query and forwarding-create functions instead; check full client
+translation units in both import modes plus initialization/argument/status traces.
+This is a local compiler observation and first-party refactoring decision, not an
+external implementation reference or a new codec/format requirement.

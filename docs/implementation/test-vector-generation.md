@@ -27567,3 +27567,64 @@ No public header, profile default, resource formula, codec/format implementation
 CMake registration or workflow changes. All4172 retained registrations remain.
 Do not infer fresh installed-package, complete4172-suite, Linux, hosted or new
 fuzz execution from these local checks. Further ownership/root API work remains.
+
+
+### TVG-1653: shared stateless setup and identical native CLI file adapters
+
+PublicProfile shares the existing public function bindings, query/configuration
+types and init -> optional profile apply -> original_size sequence. It owns no
+runtime state. Twenty-one identical native rANS/tANS/Blocked Huffman CLI setup
+bodies now use one file helper, retaining their original deleter types, config/
+resource/handle lifetime, admission refusal, diagnostics and two65536-byte arrays.
+Adaptive CLI shares initialization only; its pump remains distinct. Benchmark
+sessions retain their fields, limits, retention/capacity setup, queries, storage,
+ownership, resource scopes and timing. Borrowed and initial-only Range policies
+are not merged with owned CLI policies.
+
+Expand the helpers and type/function aliases back to03fdba3a: all22 CLI bodies
+and the complete benchmark surrounding implementation match after the specified
+substitutions. The actual shared initializer/QueryTypes match the old first-party
+sequence; query/create wrappers only forward arguments and return status. Both
+MSVC and Clang-cl pass40 initialization traces and12 query/owned/three-span
+forwarding cases, including init/apply failures, pointer/span identity, returned
+statuses and unchanged caller retention/capacity fields.
+
+The preliminary constexpr Query/Create pointer members fail Clang-cl DLL-import
+client syntax checks. Preserve that diagnostic and the interrupted preliminary
+MSVC test log; do not count that partial run as qualified. DD-1641 replaces the
+members with stateless static forwarding methods. Full CLI and benchmark syntax
+checks then pass with and without DLL imports. Rebuild all affected MSVC clients
+and static candidates before restarting the complete local selection.
+
+The final194 selected CTests pass194/194 in1066.07 seconds:120 CLI registrations
+and74 benchmark registrations. No startup failure or test weakening is involved
+in this final run. Preserve all4172 repository registrations. Only five unchanged
+large Range CLI campaigns (8/16/32/64MiB boundary campaigns and64MiB stress) are
+outside this local selection and remain required at the hosted gate. Range CLI
+sources are unchanged; benchmark Range initialization retains its old sequence
+and caller policies. Normal profile smoke/byte coverage remains in the selection.
+
+The74 benchmark tests cover102 frozen release archives,35 native empty streams,
+resource/timing reports and80 boundary/vector recipes. The120 CLI tests cover
+static/DLL use, exact profile identity, malformed/late failures, protected output
+and temporary-file cleanup, allocation accounting and native large-window cases.
+The final MSVC CLI restores/re-encodes all102 release archives byte-for-byte.
+
+Also build Clang-cl DLL-import CLI/benchmark clients against the final MSVC DLL:
+both pass all102 public frozen byte comparisons and restorations. This is actual
+Clang client/DLL ABI execution, not Clang-built codec or Linux runtime evidence.
+The application-only forwarding fix leaves the library SHA256 unchanged, so
+TVG-1652's3552 API/core tests and224 records/111 layouts/251 exports remain valid.
+
+Install both final libraries to a new ignored prefix and configure examples from
+that installed package alone, requiring both linkage targets. All three C-consumer
+tests pass3/3 in0.54 seconds. The installed DLL hash matches the tested DLL; after
+the application fix refresh the installed CLI and verify its binary hash plus
+all102 release archives through the installed executable. No private application
+header is installed or required by consumers. Fresh single-library package builds,
+complete4172 Windows/Linux execution and new hosted qualification remain pending.
+No dedicated CI fuzz job is added, and no new fuzz campaign is claimed.
+
+Final documentation, CI-policy, partition and corpus-verifier checks pass4/4
+in2.89 seconds. Relative links and ordered provenance ledgers remain valid;
+git diff --check passes. Manual full_validation remains the next gate.
