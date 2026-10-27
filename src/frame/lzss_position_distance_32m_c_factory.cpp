@@ -1,3 +1,5 @@
+#include "c_api/status.hpp"
+#include "c_api/transform_handle.hpp"
 #include "core/buffer_overlap.hpp"
 #include "core/checked_math.hpp"
 #include "frame/lzss_position_distance_32m_owning_adapter.hpp"
@@ -7,11 +9,10 @@
 #include <memory>
 #include <new>
 
-// Token-identical to the existing shared C handle definition.
-struct marc_transform {
-  marc::core::Transform *implementation;
-};
+
 namespace {
+using marc::c_api::factory_status;
+
 using namespace marc;
 using namespace frame::internal;
 using Config = marc_lzss_position_distance_dynamic_range_32m_config;
@@ -74,17 +75,7 @@ constexpr std::size_t public_controls =
     2 * sizeof(LzssPositionDistance32mOwningRequirements) +
     4 * sizeof(core::ProcessResult) + 12 * sizeof(Region) +
     16 * sizeof(std::size_t) + 8 * sizeof(void *);
-marc_status status(core::ErrorCode e) noexcept {
-  if (e == core::ErrorCode::none)
-    return MARC_STATUS_OK;
-  if (e == core::ErrorCode::limit_exceeded)
-    return MARC_STATUS_LIMIT_EXCEEDED;
-  if (e == core::ErrorCode::out_of_memory)
-    return MARC_STATUS_OUT_OF_MEMORY;
-  if (e == core::ErrorCode::invalid_argument)
-    return MARC_STATUS_INVALID_ARGUMENT;
-  return MARC_STATUS_INTERNAL_ERROR;
-}
+
 marc_status prepare(const Config *c, LzssPositionDistance32mOwningConfig &p,
                     LzssPositionDistance32mOwningRequirements &r) noexcept {
   if (!c || c->struct_size != sizeof(*c) ||
@@ -126,7 +117,7 @@ marc_status prepare(const Config *c, LzssPositionDistance32mOwningConfig &p,
   p.input_capacity = static_cast<std::size_t>(c->input_capacity_bytes);
   p.output_capacity = static_cast<std::size_t>(c->output_capacity_bytes);
   r = LzssPositionDistance32mOwningAdapter::query(p);
-  return status(r.error);
+  return factory_status(r.error);
 }
 } // namespace
 marc_status
@@ -183,7 +174,7 @@ marc_status marc_lzss_position_distance_dynamic_range_32m_create_encoder(
   // consuming input or exposing even a stream-header byte.
   const auto ready = guard->ready();
   if (ready.status == core::StreamStatus::error)
-    return status(ready.error.code);
+    return factory_status(ready.error.code);
   if (ready.status != core::StreamStatus::need_output || ready.input_consumed ||
       ready.output_produced)
     return MARC_STATUS_INTERNAL_ERROR;

@@ -44046,3 +44046,25 @@ exactly after the temporary original-root comparison; no concurrent source
 build/test runs during that receipt operation. No external implementation,
 codec/format/default change, fuzz campaign, hosted result or push is claimed.
 Linux and complete hosted validation remain required before phase5.
+
+
+### CR-2027: 2026-10-27 — hosted CMake continuation into CLI/C API sharing
+
+Author/reviewer: Codex. TVG-1648 records the maintainer's successful push/manual
+full_validation report through b39be876. Continue phase5 as explicitly requested,
+preserving wire bytes, ABI/layouts, admission queries and error/ownership policy.
+No external implementation source or new algorithm is involved in this report.
+
+
+### CR-2028: 2026-10-27 — private C-API representation and status policies
+
+Author/reviewer: Codex. IR-1382/DD-1637 identify only first-party definitions,
+public contracts and frozen v0.8.0 observations. One private one-pointer handle
+and explicitly distinct full/factory/profile status conversions replace32
+duplicated definitions and32 conversion bodies. All surrounding implementation
+tokens remain unchanged after the specified extraction substitutions. All old
+maps agree across defined and unknown enum values. TVG-1649 records3552 passing
+tests, unchanged224 queries/111 layouts/251 exports and102 release archives.
+No external source, algorithm, format or new license input is involved. This
+review supports the documented refactoring process, not a legal guarantee or
+completion of the remaining CLI/C-API/codec-family refactoring.

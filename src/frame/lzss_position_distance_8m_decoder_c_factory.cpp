@@ -1,3 +1,5 @@
+#include "c_api/status.hpp"
+#include "c_api/transform_handle.hpp"
 #include "core/buffer_overlap.hpp"
 #include "core/checked_math.hpp"
 #include "frame/lzss_position_distance_8m_stream_decoder.hpp"
@@ -10,10 +12,10 @@
 #include <optional>
 #include <type_traits>
 
-struct marc_transform {
-  marc::core::Transform *implementation;
-};
+
 namespace {
+using marc::c_api::factory_status;
+
 using namespace marc;
 using namespace frame::internal;
 using Config = marc_lzss_position_distance_dynamic_range_8m_decoder_config;
@@ -133,17 +135,7 @@ constexpr std::size_t public_controls =
     2 * sizeof(LzssPositionDistance8mStreamRequirements) +
     4 * sizeof(core::ProcessResult) + 32 * sizeof(Region) +
     24 * sizeof(std::size_t) + 8 * sizeof(void *);
-marc_status status(core::ErrorCode e) noexcept {
-  if (e == core::ErrorCode::none)
-    return MARC_STATUS_OK;
-  if (e == core::ErrorCode::limit_exceeded)
-    return MARC_STATUS_LIMIT_EXCEEDED;
-  if (e == core::ErrorCode::out_of_memory)
-    return MARC_STATUS_OUT_OF_MEMORY;
-  if (e == core::ErrorCode::invalid_argument)
-    return MARC_STATUS_INVALID_ARGUMENT;
-  return MARC_STATUS_INTERNAL_ERROR;
-}
+
 marc_status prepare(const Config *c, core::DecoderLimits &l, std::size_t &extra,
                     Requirements &q) noexcept {
   if (!c || c->struct_size != sizeof(*c) ||
@@ -197,7 +189,7 @@ marc_status prepare(const Config *c, core::DecoderLimits &l, std::size_t &extra,
       static_cast<std::size_t>(f), static_cast<std::size_t>(f),
       static_cast<std::size_t>(f), extra);
   if (r.error != core::ErrorCode::none)
-    return status(r.error);
+    return factory_status(r.error);
   q = {sizeof(q),
        MARC_ABI_VERSION,
        MARC_LZSS_POSITION_DISTANCE_8M_CAPACITY_ONLY,
@@ -281,7 +273,7 @@ marc_status marc_lzss_position_distance_dynamic_range_8m_create_decoder(
       b->token_scratch.size / sizeof(Token), b->raw.size, b->raw_scratch.size,
       extra);
   if (actual.error != core::ErrorCode::none)
-    return status(actual.error);
+    return factory_status(actual.error);
   auto guard = std::unique_ptr<Boundary>(new (std::nothrow) Boundary(
       *b, static_cast<std::size_t>(c->input_capacity_bytes),
       static_cast<std::size_t>(c->output_capacity_bytes)));
@@ -301,7 +293,7 @@ marc_status marc_lzss_position_distance_dynamic_range_8m_create_decoder(
   guard->start(l, extra, h.get());
   auto ready = guard->ready();
   if (ready.status == core::StreamStatus::error)
-    return status(ready.error.code);
+    return factory_status(ready.error.code);
   if (ready.status != core::StreamStatus::need_input || ready.input_consumed ||
       ready.output_produced)
     return MARC_STATUS_INTERNAL_ERROR;

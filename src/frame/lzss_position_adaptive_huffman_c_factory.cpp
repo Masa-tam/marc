@@ -1,3 +1,5 @@
+#include "c_api/status.hpp"
+#include "c_api/transform_handle.hpp"
 #include "frame/lzss_position_adaptive_huffman_owned.hpp"
 #include "core/buffer_overlap.hpp"
 #include <marc/marc.h>
@@ -6,8 +8,10 @@
 #include <limits>
 #include <new>
 
-struct marc_transform {marc::core::Transform* implementation;};
+
 namespace {
+using marc::c_api::profile_factory_status;
+
 using namespace marc::frame::internal;
 using Config=marc_lzss_position_distance_adaptive_huffman_config;
 using Resources=marc_lzss_position_distance_adaptive_huffman_resources;
@@ -15,16 +19,7 @@ using Code=marc::core::ErrorCode;
 bool separate(const void* a,std::size_t an,const void* b,std::size_t bn) noexcept {
     return marc::core::check_buffer_overlap(a,an,b,bn)==marc::core::BufferOverlap::disjoint;
 }
-marc_status status(Code e) noexcept {
-    switch(e) {
-    case Code::none:return MARC_STATUS_OK;
-    case Code::invalid_argument:return MARC_STATUS_INVALID_ARGUMENT;
-    case Code::unsupported:return MARC_STATUS_UNSUPPORTED;
-    case Code::limit_exceeded:return MARC_STATUS_LIMIT_EXCEEDED;
-    case Code::out_of_memory:return MARC_STATUS_OUT_OF_MEMORY;
-    default:return MARC_STATUS_INTERNAL_ERROR;
-    }
-}
+
 class Boundary final : public marc::core::Transform {
 public:
     Boundary(std::unique_ptr<marc::core::Transform> p,std::size_t in,std::size_t out) noexcept
@@ -76,7 +71,7 @@ marc_status prepare(const Config* c,marc::core::DecoderLimits& limits,PositionAd
     limits.max_internal_buffered_bytes-=external;
     stream={};stream.frame_size=c->frame_size;stream.original_size=c->direction==MARC_DIRECTION_ENCODE ? c->original_size : 0;
     stream.profile=selected;stream.dictionary.window_size=spec.window_size;
-    return status(c->direction==MARC_DIRECTION_ENCODE ? PositionAdaptiveHuffmanOwnedEncoder::requirements(stream,limits,requirements)
+    return profile_factory_status(c->direction==MARC_DIRECTION_ENCODE ? PositionAdaptiveHuffmanOwnedEncoder::requirements(stream,limits,requirements)
         : PositionAdaptiveHuffmanOwnedDecoder::requirements(stream.profile,c->frame_size,limits,requirements));
 }
 }
@@ -135,7 +130,7 @@ marc_status marc_lzss_position_distance_adaptive_huffman_create(const Config* c,
     Code code{};std::unique_ptr<marc::core::Transform> p;
     if (c->direction==MARC_DIRECTION_ENCODE) p=PositionAdaptiveHuffmanOwnedEncoder::create(stream,limits,code);
     else p=PositionAdaptiveHuffmanOwnedDecoder::create(stream.profile,c->frame_size,limits,code);
-    if (!p) return status(code);
+    if (!p) return profile_factory_status(code);
     std::unique_ptr<Boundary> b(new(std::nothrow) Boundary(std::move(p),static_cast<std::size_t>(c->input_capacity_bytes),static_cast<std::size_t>(c->output_capacity_bytes)));
     if (!b) return MARC_STATUS_OUT_OF_MEMORY;
     auto* h=new(std::nothrow) marc_transform{b.get()};if (!h) return MARC_STATUS_OUT_OF_MEMORY;

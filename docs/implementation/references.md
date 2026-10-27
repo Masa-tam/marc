@@ -12231,3 +12231,25 @@ public dependencies, includes, resource test properties, labels and install
 paths. include() keeps the source/binary directory context; add_subdirectory()
 would change existing relative-path interpretation. No external codec source
 or new algorithm reference is consulted.
+
+
+### IR-1382: opaque C handle and existing status conversion policies
+
+Use current public C declarations, all32 independently repeated private handle
+definitions, the root process/error conversion and30 native factory converters.
+Use frozen v0.8.0 ABI/query/export/archive observations and retained API failure,
+overlap and exact-admission tests as the comparison boundary. The root, ordinary
+factory and Adaptive factory error maps have different Unsupported/Malformed
+policies; preserve the exact maps rather than assuming one universal converter.
+No external implementation source or compression algorithm is consulted.
+
+
+### IR-1383: identical native owning-profile CLI loops
+
+Use the21 current Position-distance rANS/tANS/Blocked Huffman CLI adapters,
+their existing public API configuration and resource requirements, the frozen
+102-profile release bundles, retained CLI rejection/transaction tests and shared
+benchmark boundary recipes. Confirm all21 loop bodies are token-identical before
+extraction. Adaptive Huffman, borrowed/initial-only Range adapters and the root
+CLI have distinct error/publication/control-object policies and are separate
+follow-up work. No external source, algorithm or stream format is consulted.

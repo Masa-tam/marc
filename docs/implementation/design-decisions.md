@@ -35294,3 +35294,40 @@ do not normalize previously different warning/visibility/ownership flags.
 Keep explicit source lists and profile limits. Validate ordinary and optional
 configurations, export/install layout and actual installed consumers before
 requesting the next hosted gate. No decoder or public API change is intended.
+
+
+### DD-1637: central private handle and explicit status policies
+
+Define the opaque global marc_transform once in a private C-API header, retaining
+exactly one core::Transform pointer, its field name, alignment, standard-layout
+and aggregate initialization. Do not install or expose that definition. Replace
+the32 duplicate definitions without changing surrounding factory/process bodies,
+allocation order, ownership, overlap checks, resource formulae or public headers.
+
+Centralize exact existing status mappings as separately named policies: full
+process/error conversion; ordinary factory conversion (None/InvalidArgument/
+LimitExceeded/OutOfMemory, otherwise InternalError); and the Adaptive factory
+conversion that additionally preserves Unsupported. MalformedStream is preserved
+by full process conversion but remains InternalError at the existing factory
+boundaries. Unknown enum values keep their previous InternalError fallback.
+Compare every old conversion against the shared versions across all defined
+enum values and an unknown value, then run existing externally observable API
+tests and frozen ABI/resource/byte comparisons. CLI pumping and ownership-helper
+sharing follow as separately qualified changes; do not merge their policies.
+
+
+### DD-1638: share the identical owning-profile CLI pump with caller storage
+
+Extract only the21 token-identical rANS/tANS/Blocked Huffman owning-profile
+file loops into one private tools helper. Pass the existing transform pointer,
+ifstream/ofstream and caller-owned input/output spans. Retain the two65536-byte
+arrays, their lifetime, all per-profile setup/query/create bodies and external
+retention grants. The helper owns no extra buffers, transform, clock or resource
+configuration; do not borrow the differently timed benchmark pump.
+
+Preserve exact read/write/failure order, numeric native diagnostic statuses,
+byte positions, process-count bounds, final-input and trailing-input checks,
+and the existing no-progress policy. Keep root transactional rename/removal
+unchanged. Other CLI policies and CLI/benchmark profile setup remain open rather
+than silently adopting these native semantics. Qualify against the existing
+release-byte, empty, boundary, rejection and transaction tests after rebuilding.

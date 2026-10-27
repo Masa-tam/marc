@@ -1,3 +1,5 @@
+#include "c_api/status.hpp"
+#include "c_api/transform_handle.hpp"
 #include "frame/lzss_position_distance_1m_encode_workspace.hpp"
 #include "frame/lzss_position_distance_1m_workspace.hpp"
 #include "frame/lzss_position_distance_1m_frame_streaming_encoder.hpp"
@@ -162,41 +164,15 @@
 #include <new>
 #include <span>
 
-struct marc_transform {
-    marc::core::Transform* implementation;
-};
+
 
 namespace {
+using marc::c_api::status_for;
 
-marc_status status_for(const marc::core::ErrorCode code) noexcept {
-    switch (code) {
-    case marc::core::ErrorCode::none: return MARC_STATUS_OK;
-    case marc::core::ErrorCode::invalid_argument:
-        return MARC_STATUS_INVALID_ARGUMENT;
-    case marc::core::ErrorCode::unsupported: return MARC_STATUS_UNSUPPORTED;
-    case marc::core::ErrorCode::limit_exceeded:
-        return MARC_STATUS_LIMIT_EXCEEDED;
-    case marc::core::ErrorCode::out_of_memory:
-        return MARC_STATUS_OUT_OF_MEMORY;
-    case marc::core::ErrorCode::malformed_stream:
-        return MARC_STATUS_MALFORMED_STREAM;
-    case marc::core::ErrorCode::internal_error:
-        return MARC_STATUS_INTERNAL_ERROR;
-    }
-    return MARC_STATUS_INTERNAL_ERROR;
-}
 
-marc_status status_for(const marc::core::StreamStatus status) noexcept {
-    switch (status) {
-    case marc::core::StreamStatus::progress: return MARC_STATUS_PROGRESS;
-    case marc::core::StreamStatus::need_input: return MARC_STATUS_NEED_INPUT;
-    case marc::core::StreamStatus::need_output: return MARC_STATUS_NEED_OUTPUT;
-    case marc::core::StreamStatus::end_of_stream:
-        return MARC_STATUS_END_OF_STREAM;
-    case marc::core::StreamStatus::error: return MARC_STATUS_INTERNAL_ERROR;
-    }
-    return MARC_STATUS_INTERNAL_ERROR;
-}
+
+
+
 
 bool valid_buffer(const void* data, const std::size_t size) noexcept {
     return size == 0 || data != nullptr;

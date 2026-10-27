@@ -70,7 +70,7 @@ headers. These are starting observations, not deletion or line-count targets.
 - [x] Share repeated target setup/registration with small functions.
 - [x] Compare generated targets, source/compile settings, install exports and
   CTest names/labels; account for deliberate experiment removals explicitly.
-- [ ] Preserve shared-only/static-only builds, examples, package consumption
+- [x] Preserve shared-only/static-only builds, examples, package consumption
   and regular/deep CI partitioning. Do not revive dedicated CI fuzz jobs.
 
 ### 5. Share CLI and C API infrastructure
@@ -79,7 +79,7 @@ headers. These are starting observations, not deletion or line-count targets.
   transactional file behavior and error reporting; retain profile setup adapters.
 - [ ] Share applicable CLI/benchmark profile-setup adapters while keeping
   execution-specific admission policies explicit.
-- [ ] Centralize the opaque internal handle definition and status/error mapping.
+- [x] Centralize the opaque internal handle definition and status/error mapping.
 - [ ] Share applicable validation/ownership helpers without merging different
   caller-workspace and owned-resource contracts.
 - [ ] Split src/marc.cpp by responsibility/profile family; preserve public ABI,
@@ -326,3 +326,18 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   Pause before phase5; resolve the remaining phase4 preservation checkbox from
   the maintainer's reported hosted result rather than local metadata alone.
   The complete six-phase refactoring objective remains unfinished.
+
+
+- Hosted phase4 continuation: the maintainer reports successful push and manual
+  full_validation through b39be876 (TVG-1648/CR-2027). The requested preservation
+  gate is reported complete; no run URL or external receipt was supplied. Resume
+  phase5 CLI/C-API sharing, with fresh comparisons for production changes.
+
+
+- Phase5 C-API extraction (DD-1637/TVG-1649/CR-2028):32 repeated private
+  handles and32 converters now use shared private headers with exact existing
+  layout and distinct error policies. All3552 selected core/API CTests pass;
+ 224 queries,111 public layouts,251 exports and102 release archives match.
+  This closes the handle/status item locally. Other validation/ownership,
+  CLI/benchmark adapters, root API decomposition and phase6 remain open; no
+  full hosted qualification of these production edits is inferred.

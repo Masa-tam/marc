@@ -27445,3 +27445,44 @@ Final documentation/CI-policy/partition/corpus-verifier CTests pass4/4 in
 pass. No new whole-suite, Linux, fresh single-library runtime build or fuzz
 execution is inferred from the generated-contract comparisons. Request manual
 full_validation at the committed phase4 boundary before changing CLI/C APIs.
+
+
+### TVG-1648: hosted CMake checkpoint confirmation
+
+The maintainer reports pushing the phase4 commits through b39be876 and successful
+manual GitHub CI full_validation completion. Record maintainer-reported evidence
+for the requested CMake/package/complete-test gate. No workflow URL, individual
+job logs or independent external exchange receipts were supplied. Resume the
+authorized CLI/C-API phase; later production edits require new qualification.
+No new local execution or push is inferred from this confirmation.
+
+
+### TVG-1649: private C handle and exact status-policy sharing
+
+Move32 identical one-pointer marc_transform definitions to the private C-API
+header. Standard-layout, aggregate, pointer-size and pointer-alignment assertions
+preserve its admission/overlap shape. Centralize32 existing conversion functions
+into full error/process, ordinary-factory and profile-factory policies. Compare
+all32 old conversion bodies against their chosen shared policy for every defined
+enum category and unknown values, including UINT32_MAX: all agree. A separate
+token comparison removes only the extracted definitions/converters, new private
+includes/using declarations and renamed converter calls: all surrounding32
+factory/process implementations are unchanged. This is local extraction evidence,
+not a new API or algorithm specification.
+
+Rebuild static/shared libraries, CLI, common benchmark, core tests and86 public
+API/consumer test executables with MSVC19.51 Release. Run3552 selected CTests,
+including all3460 core registrations and public C/API consumers:3552/3552 pass
+in325.56 seconds. Coverage includes allocation-failure/overlap/ownership,
+exact-admission, chunking, malformed streams and the large-window API cases;
+the64MiB Adaptive API deep test also passes. No test is weakened or replaced.
+
+The frozen v0.8.0 capture matches224 configuration/query observations,111 public
+structure layouts and the public header hash exactly, ignoring only the library
+binary hash. All251 exported marc_* names match in order. The release bundle
+restores and re-encodes all102 archives byte-for-byte. No public header, format,
+profile default, resource formula, allocation order or buffer ownership changes.
+The public bundle also passes after the later CLI extraction; that extraction
+has its own qualification record. CMake remains unchanged with4172 registrations.
+Do not infer complete4172-suite, Linux, installed-package, hosted or fuzz execution
+from this scoped Windows run. Later phase5 responsibilities remain open.

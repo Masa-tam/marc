@@ -1,3 +1,5 @@
+#include "c_api/status.hpp"
+#include "c_api/transform_handle.hpp"
 #include "frame/lzss_position_tans_8m_owned.hpp"
 #include "core/buffer_overlap.hpp"
 #include "marc/marc.h"
@@ -7,8 +9,10 @@
 #include <memory>
 #include <new>
 
-struct marc_transform { marc::core::Transform* implementation; };
+
 namespace {
+using marc::c_api::factory_status;
+
 using namespace marc;
 using namespace frame::internal;
 using Config=marc_lzss_position_distance_tans_8m_config;
@@ -17,13 +21,7 @@ using Code=core::ErrorCode;
 bool separate(const void* a,std::size_t an,const void* b,std::size_t bn) noexcept {
     return core::check_buffer_overlap(a,an,b,bn)==core::BufferOverlap::disjoint;
 }
-marc_status status(Code c) noexcept {
-    if (c==Code::none) return MARC_STATUS_OK;
-    if (c==Code::limit_exceeded) return MARC_STATUS_LIMIT_EXCEEDED;
-    if (c==Code::out_of_memory) return MARC_STATUS_OUT_OF_MEMORY;
-    if (c==Code::invalid_argument) return MARC_STATUS_INVALID_ARGUMENT;
-    return MARC_STATUS_INTERNAL_ERROR;
-}
+
 class Boundary final : public core::Transform {
 public:
     Boundary(std::unique_ptr<core::Transform> transform,std::size_t in,std::size_t out) noexcept
@@ -75,7 +73,7 @@ marc_status prepare(const Config* c,core::DecoderLimits& l,PositionTans8mStreamH
         return MARC_STATUS_LIMIT_EXCEEDED;
     l.max_internal_buffered_bytes-=external;
     s={c->frame_size,c->direction==MARC_DIRECTION_ENCODE ? c->original_size : 0};
-    return status(c->direction==MARC_DIRECTION_ENCODE ? PositionTans8mOwnedEncoder::requirements(s,l,r)
+    return factory_status(c->direction==MARC_DIRECTION_ENCODE ? PositionTans8mOwnedEncoder::requirements(s,l,r)
         : PositionTans8mOwnedDecoder::requirements(c->frame_size,l,r));
 }
 }
@@ -111,7 +109,7 @@ marc_status marc_lzss_position_distance_tans_8m_create(const Config* c,marc_tran
     Code error{}; std::unique_ptr<core::Transform> transform;
     if (c->direction==MARC_DIRECTION_ENCODE) transform=PositionTans8mOwnedEncoder::create(s,l,error);
     else transform=PositionTans8mOwnedDecoder::create(c->frame_size,l,error);
-    if (!transform) return status(error);
+    if (!transform) return factory_status(error);
     std::unique_ptr<Boundary> boundary(new(std::nothrow) Boundary(std::move(transform),
         static_cast<std::size_t>(c->input_capacity_bytes),static_cast<std::size_t>(c->output_capacity_bytes)));
     if (!boundary) return MARC_STATUS_OUT_OF_MEMORY;

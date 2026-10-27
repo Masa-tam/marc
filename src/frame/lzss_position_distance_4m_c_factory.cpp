@@ -1,3 +1,4 @@
+#include "c_api/transform_handle.hpp"
 #include "marc/marc.h"
 #include "frame/lzss_position_distance_4m_five_prefix_frame_streaming_encoder.hpp"
 #include "frame/lzss_position_distance_4m_frame_streaming_decoder.hpp"
@@ -9,10 +10,7 @@
 #include <memory>
 #include <new>
 
-// Keep this definition token-identical to src/marc.cpp for the shared C handle.
-struct marc_transform {
-    marc::core::Transform* implementation;
-};
+
 namespace {
 bool valid_buffer(const void* data,std::size_t size) noexcept {return data!=nullptr || size==0;}
 class BoundaryGuard final:public marc::core::Transform {
