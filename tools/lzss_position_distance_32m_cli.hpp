@@ -1,6 +1,9 @@
 #ifndef MARC_TOOLS_POSITION_DISTANCE_32M_CLI_HPP
 #define MARC_TOOLS_POSITION_DISTANCE_32M_CLI_HPP
 
+#include "support/file_pump.hpp"
+#include "support/borrowed_storage.hpp"
+
 #include <algorithm>
 #include <array>
 #include <cstddef>
@@ -16,46 +19,7 @@ namespace marc_cli_32m {
 constexpr std::size_t io_size = 65536;
 constexpr std::uint64_t frame = 33554432, policy = UINT64_C(1) << 29;
 
-class Storage {
-public:
-  Storage() = default;
-  Storage(const Storage &) = delete;
-  Storage &operator=(const Storage &) = delete;
-  ~Storage() {
-    if (aligned_)
-      ::operator delete(data_, std::align_val_t{alignment_});
-    else
-      ::operator delete(data_);
-  }
-  marc_status allocate(std::uint64_t bytes, std::uint64_t alignment) noexcept {
-    if (data_ || !bytes || !alignment || (alignment & (alignment - 1)))
-      return MARC_STATUS_INVALID_ARGUMENT;
-    if (bytes > std::numeric_limits<std::size_t>::max() ||
-        alignment > std::numeric_limits<std::size_t>::max())
-      return MARC_STATUS_LIMIT_EXCEEDED;
-    const auto a = static_cast<std::size_t>(alignment);
-    const bool extended = a > __STDCPP_DEFAULT_NEW_ALIGNMENT__;
-    auto p = extended ? ::operator new(static_cast<std::size_t>(bytes),
-                                       std::align_val_t{a}, std::nothrow)
-                      : ::operator new(static_cast<std::size_t>(bytes),
-                                       std::nothrow);
-    if (!p)
-      return MARC_STATUS_OUT_OF_MEMORY;
-    data_ = p;
-    bytes_ = static_cast<std::size_t>(bytes);
-    alignment_ = a;
-    aligned_ = extended;
-    return MARC_STATUS_OK;
-  }
-  marc_buffer view() const noexcept {
-    return {static_cast<std::uint8_t *>(data_), bytes_};
-  }
-
-private:
-  void *data_{};
-  std::size_t bytes_{}, alignment_{};
-  bool aligned_{};
-};
+using Storage = marc::cli::Storage;
 struct Destroy {
   void operator()(marc_transform *p) const noexcept {
     marc_transform_destroy(p);
@@ -71,14 +35,7 @@ struct Context {
       requirements{};
   marc_lzss_position_distance_dynamic_range_32m_decoder_buffers buffers{};
 };
-struct Loop {
-  std::uint64_t loaded{};
-  std::size_t input_size{}, input_offset{}, count{};
-  marc_const_buffer source{};
-  marc_buffer sink{};
-  marc_process_result result{};
-  bool final{};
-};
+using Loop = marc::cli::FilePumpState;
 inline bool add(std::uint64_t &n, std::uint64_t v) noexcept {
   if (v > std::numeric_limits<std::uint64_t>::max() - n)
     return false;
@@ -205,58 +162,8 @@ inline bool process_file(marc_direction direction, std::uint64_t size,
     s = c.output.allocate(io_size, alignof(std::max_align_t));
   if (s != MARC_STATUS_OK)
     return fail("I/O buffer allocation failed", s);
-  for (;;) {
-    if (loop.input_offset == loop.input_size && loop.loaded != size) {
-      loop.count = static_cast<std::size_t>(
-          std::min<std::uint64_t>(size - loop.loaded, io_size));
-      source.read(reinterpret_cast<char *>(c.input.view().data),
-                  static_cast<std::streamsize>(loop.count));
-      if (source.gcount() != static_cast<std::streamsize>(loop.count)) {
-        std::cerr << "marc: input read failed\n";
-        return false;
-      }
-      loop.loaded += loop.count;
-      loop.input_size = loop.count;
-      loop.input_offset = 0;
-    }
-    loop.final = loop.loaded == size;
-    loop.source = {c.input.view().data + loop.input_offset,
-                   loop.input_size - loop.input_offset};
-    loop.sink = c.output.view();
-    loop.result = marc_transform_process(handle.get(), loop.source, loop.sink,
-                                         loop.final ? MARC_PROCESS_END_INPUT
-                                                    : MARC_PROCESS_NONE);
-    auto &r = loop.result;
-    if (r.input_consumed > loop.source.size ||
-        r.output_produced > loop.sink.size)
-      return fail("transform exceeded buffers", MARC_STATUS_INTERNAL_ERROR);
-    loop.input_offset += r.input_consumed;
-    if (r.output_produced) {
-      sink.write(reinterpret_cast<const char *>(loop.sink.data),
-                 static_cast<std::streamsize>(r.output_produced));
-      if (!sink) {
-        std::cerr << "marc: output write failed\n";
-        return false;
-      }
-    }
-    if (r.status == MARC_STATUS_END_OF_STREAM) {
-      if (loop.input_offset != loop.input_size || loop.loaded != size)
-        return fail("transform ended before consuming input",
-                    MARC_STATUS_INTERNAL_ERROR);
-      return true;
-    }
-    if (r.status >= MARC_STATUS_INVALID_ARGUMENT) {
-      std::cerr << "marc: transform failed at byte " << r.error_byte_position
-                << ": " << marc_status_name(r.status) << '\n';
-      return false;
-    }
-    if ((!r.input_consumed && !r.output_produced &&
-         r.status != MARC_STATUS_NEED_INPUT) ||
-        (r.status == MARC_STATUS_NEED_INPUT &&
-         (loop.input_offset != loop.input_size || loop.final)))
-      return fail("transform violated the progress contract",
-                  MARC_STATUS_INTERNAL_ERROR);
-  }
+  return marc::cli::pump_workspace_profile<marc::cli::FilePumpPolicy::BorrowedRange>(
+      handle.get(), size, source, sink, c.input.view(), c.output.view(), loop);
 }
 } // namespace marc_cli_32m
 #endif

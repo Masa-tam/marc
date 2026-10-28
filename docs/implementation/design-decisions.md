@@ -35435,3 +35435,24 @@ Pass dictionary-byte policy explicitly, including entropy's frame-size bound.
 Keep block/model/table limits, clamping, resource charges and ownership local.
 No helper initializes storage, allocates or infers policy from member presence.
 Prove source expansion against b19af77d and run retained public API contracts.
+
+
+### DD-1645: common CLI pumps with explicit publication and diagnostic policies
+
+Share the root legacy-workspace and four borrowed Range pumps through a private
+file helper. Keep two explicit policies for existing bounds checks and terminal/
+progress diagnostics. Do not add the Range bounds predicate to the legacy path
+or erase different diagnostic text/status suffixes. Retain call, consumption,
+output write, EOS, error and progress order. Use the old retained Loop member
+order and size in FilePumpState, aliased by each Range adapter. Each caller
+continues owning the transform, input/output storage and borrowed workspaces.
+
+Share Adaptive's loop with the native owning pump while retaining an explicit
+WithholdOnError policy. Adaptive errors precede consumption/output publication;
+the other21 native helpers preserve publication-before-error. Keep their buffer
+allocation/initialization, resource admission and named deleters unchanged.
+Share only the four exactly identical Range Storage classes, preserving field
+order, size, alignment, allocation refusal and matching delete policy. Leave
+legacy overallocated-byte storage and benchmark storage distinct. The root run
+function already owns all profiles' transactional temporary-file commit and
+cleanup; preserve that single implementation and qualify its failure behavior.

@@ -27756,3 +27756,55 @@ in2.76 seconds. The production source list, target graph and4172 CTest registrat
 are unchanged; one private, non-installed header is added. No new fuzz campaign
 is claimed. Complete Windows/Linux tests and fresh installed single-library
 consumers remain the next manual full_validation gate for this production edit.
+
+
+### TVG-1659: maintainer-reported hosted gate through1f43a53d
+
+On 2026-10-28 the maintainer reports successful GitHub CI following the request
+to push1f43a53d and run manual full_validation. Record this as maintainer-reported
+qualification of the configuration-transfer checkpoint; no workflow URL or logs
+were independently fetched. Later CLI refactoring needs its own evidence.
+
+
+### TVG-1660: CLI pump, retained-storage and transaction preservation
+
+Use independently saved1f43a53d root, Adaptive, native-owning and four large
+Range helpers as the old side of qualification. Share root/four Range read,
+process, committed output and terminal/progress handling with two explicit
+policies. Keep Adaptive's error-before-consumption/output policy in the native
+owning pump; its other21 callers retain publication-before-error. Keep original
+setup/ownership and the single shared root run transaction. Share only the four
+exactly identical aligned Storage classes and complete retained Loop shape.
+
+Re-expand replacements to recover every old root/Adaptive/Range source after
+whitespace normalization. The complete Storage body and Loop field order match.
+Compile independent old-loop/new-loop harnesses with MSVC19.51 and Clang-cl:
+all83 traces per compiler match, including actual input bytes/capacities/flags,
+return/completion, output bytes and full diagnostics. Cases include partial
+consumption, output-only progress, final empty input, delayed EOS, premature EOS,
+NeedInput with pending bytes/at EOF, no progress, short file reads, failed writes,
+errors with output and invalid result extents. The legacy old path's unchecked
+output overflow is deliberately not executed; the three existing checked paths
+reject it. No unsafe test relies on writing beyond a real output allocation.
+
+Both compilers prove unchanged sizeof/alignof for Storage, Loop, Context and
+Handle, plus each Loop member offset for all four Range windows. Runtime
+external_charge is unchanged at1740 bytes for each helper on Windows x64.
+MSVC rebuilds the DLL CLI, seven static native CLI candidates and four Range
+allocation-test CLIs. Clang full CLI/benchmark syntax passes with/without DLL
+imports; rebuilt Clang DLL clients and the MSVC CLI each restore/re-encode all
+102 frozen v0.8.0 archives byte-for-byte against the current MSVC codec DLL.
+No Clang-built codec or Linux runtime is claimed.
+
+All125 retained CLI CTests pass in2010.61 seconds. This includes all five
+large Range8/16/32/64MiB boundary and64MiB stress campaigns, exact allocation and
+owner-lifetime checks, static/DLL identity, late/malformed failure, protected
+outputs and temporary cleanup. All four tooling checks pass in3.88 seconds.
+Additionally all eight cross-consumer tests pass: four CLI/benchmark boundary
+suites and four existing deterministic tANS CLI malformed-stream pilots (100
+mutations per pilot). These use the actual CLI despite different test-name
+prefixes. The remaining70 benchmark and core/API3552 tests are unchanged and
+not rerun for this CLI-only edit; their prior evidence and hosted gate remain
+scoped to the preceding implementation. Public headers, library/factory sources,
+CMake and4172 test registrations remain unchanged. Two private helper headers
+are added. Complete hosted Windows/Linux/package validation remains required.

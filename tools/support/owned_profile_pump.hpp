@@ -11,8 +11,11 @@
 
 namespace marc::cli {
 
+enum class OwnedOutputPolicy { PublishBeforeError, WithholdOnError };
+
 // These owning-profile adapters share this exact I/O and diagnostic policy.
 // Buffers and the transform remain owned by the caller for the entire call.
+template <OwnedOutputPolicy Policy = OwnedOutputPolicy::PublishBeforeError>
 inline bool pump_owned_profile(marc_transform* transform, const std::uint64_t size,
                                std::ifstream& source, std::ofstream& sink,
                                std::span<std::uint8_t> input,
@@ -39,6 +42,13 @@ inline bool pump_owned_profile(marc_transform* transform, const std::uint64_t si
         if (r.input_consumed > available - used
             || r.output_produced > output.size())
             return false;
+        if constexpr (Policy == OwnedOutputPolicy::WithholdOnError) {
+            if (r.status >= MARC_STATUS_INVALID_ARGUMENT) {
+                std::cerr << "marc: transform failed at byte "
+                          << r.error_byte_position << ": " << r.status << '\n';
+                return false;
+            }
+        }
         used += r.input_consumed;
         if (r.output_produced
             && !sink.write(reinterpret_cast<const char*>(output.data()),
@@ -46,10 +56,12 @@ inline bool pump_owned_profile(marc_transform* transform, const std::uint64_t si
             std::cerr << "marc: output write failed\n";
             return false;
         }
-        if (r.status >= MARC_STATUS_INVALID_ARGUMENT) {
-            std::cerr << "marc: transform failed at byte "
-                      << r.error_byte_position << ": " << r.status << '\n';
-            return false;
+        if constexpr (Policy == OwnedOutputPolicy::PublishBeforeError) {
+            if (r.status >= MARC_STATUS_INVALID_ARGUMENT) {
+                std::cerr << "marc: transform failed at byte "
+                          << r.error_byte_position << ": " << r.status << '\n';
+                return false;
+            }
         }
         if (r.status == MARC_STATUS_END_OF_STREAM)
             return loaded == size && used == available;

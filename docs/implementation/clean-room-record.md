@@ -44176,3 +44176,26 @@ passes, frozen ABI/resource/export equality,102 archive comparisons and compiler
 tooling checks. Similarity review is limited to the repository's own before/after
 source. No external implementation or format change is introduced. This records
 the implementation process, not a legal guarantee or completion of all phases.
+
+
+### CR-2038: 2026-10-28 — hosted configuration-transfer continuation
+
+Author/reviewer: Codex. Record the maintainer-reported successful GitHub CI for
+the requested1f43a53d checkpoint (TVG-1659). Resume the authorized stage-one plan
+at remaining CLI loop/ownership sharing; the whole six-phase plan is incomplete.
+
+
+### CR-2039: 2026-10-28 — CLI loop and borrowed-storage consolidation
+
+Author/reviewer: Codex. The authorized stage-one continuation shares remaining
+CLI loops and four identical Range Storage classes (IR-1389/DD-1645). Preserve
+four existing policy combinations rather than silently unifying failure/output
+semantics. Independently saved first-party old loops supply83 trace comparisons
+per compiler; complete setup/ownership/transaction sources remain equivalent,
+and all four control layouts/resource charges match. TVG-1660 records all125
+CLI tests plus eight cross-consumer tests, including the five large Range
+campaigns,102-profile MSVC/Clang-client
+archive comparisons and compiler/tooling checks. No external implementation or
+new codec/format/API is introduced. Similarity review compares first-party old
+and new source only. This records provenance, not a legal guarantee or completion
+of remaining C-API ownership, codec-family, experiment-role and hosted gates.

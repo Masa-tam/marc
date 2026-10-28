@@ -75,7 +75,7 @@ headers. These are starting observations, not deletion or line-count targets.
 
 ### 5. Share CLI and C API infrastructure
 
-- [ ] Share CLI input/output pumping, terminal handling, progress validation,
+- [x] Share CLI input/output pumping, terminal handling, progress validation,
   transactional file behavior and error reporting; retain profile setup adapters.
 - [x] Share applicable CLI/benchmark profile-setup adapters while keeping
   execution-specific admission policies explicit.
@@ -455,3 +455,26 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   manual full_validation. Require all4172 retained Windows/Linux tests,
   static-only/shared-only installed consumers and102-profile bundles. Pause at
   this production boundary before further CLI ownership or codec-family edits.
+
+
+- Hosted continuation through1f43a53d: the maintainer reports successful GitHub
+  CI for the requested configuration-transfer gate (TVG-1659/CR-2038). Resume
+  remaining CLI pumps and identical Range ownership mechanics under DD-1645.
+
+
+- Remaining CLI consolidation (DD-1645/TVG-1660/CR-2039): root/four large Range
+  pumps share read/process/write mechanics with explicit terminal/progress
+  policies. Adaptive shares the native pump while retaining error-before-output.
+  Four exact Range Storage/Loop shapes share private helpers with identical
+  layouts and resource charges. Setup/lifetimes and the existing single run
+  transaction remain intact. Both compilers'83 traces, all125 CLI tests including
+  five large Range campaigns, eight cross-consumer tests and both102-profile
+  archive comparisons pass.
+  The CLI pumping/transaction item is locally complete; C-API ownership review,
+  phase6 and final experiment/reference-role audit remain open.
+
+- Hosted CLI-pump gate: push the commit carrying TVG-1660 and run manual
+  full_validation. Confirm all4172 retained Windows/Linux tests, single-library
+  installed consumers and102-profile bundles. Pause before further factory or
+  codec-family changes. Do not treat scoped local CLI evidence as completion of
+  the whole six-phase plan or as hosted validation of this new implementation.

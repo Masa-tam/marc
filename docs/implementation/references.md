@@ -12316,3 +12316,14 @@ Use only the first-party family adapters at b19af77d, core DecoderLimits and
 public configuration definitions. Compare entire pre-edit family files after
 expanding shared checks/assignments; preserve short-circuit order, dictionary
 limit expressions and profile-specific validation. No external reference used.
+
+
+### IR-1389: CLI loop, retained-storage and transaction contracts
+
+Use only first-party CLI sources at1f43a53d: the root legacy-workspace pump,
+four token-identical large Range loops/Storage/Loop definitions, native owning
+pump and Adaptive file helper. Save all old implementations independently before
+editing. Compare scripted process calls, flags, outputs, errors and completion
+against those originals, not against another current policy. Preserve the
+existing run function's single shared transactional output path. Keep named
+empty deleter types and different admission/ownership strategies explicit.

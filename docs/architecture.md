@@ -574,8 +574,32 @@ Blocked Huffman bind their public functions explicitly and use
 `tools/support/owned_profile_file.hpp` for their identical setup, resource query,
 transform ownership and two fixed I/O buffers. Its shared pump in
 `tools/support/owned_profile_pump.hpp` borrows those buffers and preserves their
-existing progress and diagnostic policy. Adaptive CLI shares initialization only;
-other CLI admission and output/error policies remain explicit.
+existing progress and diagnostic policy. Adaptive CLI uses that same pump with
+an explicit error policy that withholds output before returning a transform
+error; its setup and admission remain distinct.
+
+The root legacy-workspace CLI and four large Range helpers use
+`tools/support/file_pump.hpp` for reading, processing and writing. Two explicit
+policies preserve their different result bounds and terminal/progress diagnostics.
+Range helpers retain the complete `FilePumpState` object for resource accounting.
+Their identical aligned-allocation class is shared in
+`tools/support/borrowed_storage.hpp`; each helper's Context and named deleter
+retain their existing layout and workspace-before-handle lifetime. Legacy and
+benchmark storage with different contracts remain separate.
+
+The pumps preserve these existing rules when a process error also returns bytes:
+
+| CLI path | Returned output on error | Transform status diagnostic |
+| --- | --- | --- |
+| Legacy workspace | Write before reporting the error | Status name |
+| Large Range | Write before reporting the error | Status name |
+| Native owning rANS/tANS/Blocked Huffman | Write before reporting the error | Numeric status |
+| Adaptive Huffman | Withhold before reporting the error | Numeric status |
+
+All profiles still pass through the single root `run` transaction: protect an
+existing output or temporary file, write the temporary output, check close,
+rename on success and remove temporary output on failure. Pump helpers borrow
+streams and buffers and do not commit or remove files.
 
 ## Initial stream-size policy
 

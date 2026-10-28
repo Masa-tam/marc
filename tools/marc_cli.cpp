@@ -1,5 +1,6 @@
 #include <marc/marc.h>
 #include "support/configuration.hpp"
+#include "support/file_pump.hpp"
 #include "lzss_position_distance_8m_cli.hpp"
 #include "lzss_position_distance_16m_cli.hpp"
 #include "lzss_position_distance_32m_cli.hpp"
@@ -2336,71 +2337,10 @@ bool process_file(const marc_direction direction,
         return false;
     }
 
-    std::uint64_t loaded{};
-    std::size_t input_size{};
-    std::size_t input_offset{};
-    for (;;) {
-        if (input_offset == input_size && loaded != source_size) {
-            const auto remaining = source_size - loaded;
-            const auto count = static_cast<std::size_t>(
-                std::min<std::uint64_t>(remaining, io_buffer_size));
-            source.read(reinterpret_cast<char*>(input.get()),
-                        static_cast<std::streamsize>(count));
-            if (source.gcount() != static_cast<std::streamsize>(count)) {
-                std::cerr << "marc: input read failed\n";
-                return false;
-            }
-            loaded += count;
-            input_size = count;
-            input_offset = 0;
-        }
-
-        const bool final_input = loaded == source_size;
-        const marc_const_buffer source_buffer{
-            input == nullptr ? nullptr : input.get() + input_offset,
-            input_size - input_offset};
-        const marc_buffer sink_buffer{output.get(), io_buffer_size};
-        const auto result = marc_transform_process(
-            transform.get(), source_buffer, sink_buffer,
-            final_input ? MARC_PROCESS_END_INPUT : MARC_PROCESS_NONE);
-        input_offset += result.input_consumed;
-        if (result.output_produced != 0) {
-            sink.write(reinterpret_cast<const char*>(output.get()),
-                       static_cast<std::streamsize>(result.output_produced));
-            if (!sink) {
-                std::cerr << "marc: output write failed\n";
-                return false;
-            }
-        }
-
-        if (result.status == MARC_STATUS_END_OF_STREAM) {
-            if (input_offset != input_size || loaded != source_size) {
-                std::cerr << "marc: transform ended before consuming input\n";
-                return false;
-            }
-            return true;
-        }
-        if (result.status >= MARC_STATUS_INVALID_ARGUMENT) {
-            std::cerr << "marc: transform failed at byte "
-                      << result.error_byte_position << ": "
-                      << marc_status_name(result.status) << '\n';
-            return false;
-        }
-        if (result.input_consumed == 0 && result.output_produced == 0
-            && result.status != MARC_STATUS_NEED_INPUT) {
-            std::cerr << "marc: transform violated the progress contract\n";
-            return false;
-        }
-        if (result.status == MARC_STATUS_NEED_INPUT
-            && input_offset != input_size) {
-            std::cerr << "marc: transform requested input with bytes pending\n";
-            return false;
-        }
-        if (final_input && result.status == MARC_STATUS_NEED_INPUT) {
-            std::cerr << "marc: transform did not finish at end of input\n";
-            return false;
-        }
-    }
+    marc::cli::FilePumpState loop{};
+    return marc::cli::pump_workspace_profile<marc::cli::FilePumpPolicy::LegacyWorkspace>(
+        transform.get(), source_size, source, sink,
+        {input.get(), io_buffer_size}, {output.get(), io_buffer_size}, loop);
 }
 
 bool run(const marc_direction direction, const Codec codec,
