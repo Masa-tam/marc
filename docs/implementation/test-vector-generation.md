@@ -27808,3 +27808,55 @@ not rerun for this CLI-only edit; their prior evidence and hosted gate remain
 scoped to the preceding implementation. Public headers, library/factory sources,
 CMake and4172 test registrations remain unchanged. Two private helper headers
 are added. Complete hosted Windows/Linux/package validation remains required.
+
+
+### TVG-1661: maintainer-reported hosted CLI checkpoint throughfe56fde3
+
+On2026-10-28 the maintainer reports pushingfe56fde3 and successful manual CI
+following the requested full_validation gate. Record this as maintainer-reported
+qualification; no workflow URL/logs were fetched independently. Resume remaining
+C-API validation/ownership work. Later production edits need their own evidence.
+
+
+### TVG-1662: Range C-API boundary ownership and validation preservation
+
+Atfe56fde3, independently save the old nine factories before editing. Identify
+three exact groups after concrete type substitution: four embedded-owning-adapter
+encoder guards, two borrowed typed-token decoder guards and two borrowed-byte
+decoder guards. Share these as three private templates in two helper headers;
+share region enumeration/pair checks and the existing disjoint predicate.
+Adaptive changes only its pure predicate call. Re-expand all eight complete
+class bodies and all nine factory files to the pre-edit source, modulo whitespace.
+Region fields, enumeration and pair order match. Factory initialization, profile
+constants, allocation/publication and admission formulas remain unchanged.
+
+MSVC19.51 Release static/shared libraries, core and86 API targets plus four
+Range allocation CLIs rebuild successfully. Clang-cl syntax passes for all nine
+changed factory translation units with DLL-export declarations. With both
+compilers, all eight real guard types retain sizeof/alignof. Independently saved
+old bodies versus new templates produce180 identical traces per compiler for
+ready/delegation, flags, results/error positions, capacity/overlap priority,
+accepted-counter overflow, sticky error/EOS, absent startup, construction and
+destruction. Nontrivial probe Tokens prove that typed decoder reset precedes both
+Token-array destructions; packed variants construct no Token objects. All144
+region-pair comparisons per compiler match, including empty/null/overlapping and
+address-overflow extents. Invalid extents are tested as opaque region metadata;
+no invalid address is dereferenced. Backend count-overflow injection writes only
+within the supplied output extent.
+
+All3552 retained core/API CTests pass in315.31 seconds. They include real
+8MiB encoder/typed-decoder/malformed/max-workspace/static/shared consumers,
+16/32/64MiB public C contracts and the existing allocation/ownership/limit and
+chunking suites. Frozen224 configuration/query records,111 public layouts,
+header hash and251 exports match v0.8.0, including size-dependent grants. Both
+MSVC and Clang-built CLI clients restore/re-encode all102 frozen archives against
+the final MSVC DLL byte-for-byte; no Clang-codec or Linux runtime is claimed.
+
+Four Range CLI exact-allocation/lifetime tests and four documentation/corpus/
+CI-policy/partition checks pass together (8 tests,5.71 seconds). Fresh installed
+static/shared packages build standalone C examples; all three consumer tests
+pass in0.62 seconds. Existing hidden/inlines-hidden visibility remains configured.
+No public header, codec/frame body, CMake source list, workflow or4172 test
+registration changes. The preceding125 CLI/8 cross-consumer campaign is not
+repeated for this factory-only edit. Full hosted Windows/Linux and fresh
+single-library package validation remain required at the next checkpoint.

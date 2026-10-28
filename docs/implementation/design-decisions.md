@@ -35456,3 +35456,24 @@ order, size, alignment, allocation refusal and matching delete policy. Leave
 legacy overallocated-byte storage and benchmark storage distinct. The root run
 function already owns all profiles' transactional temporary-file commit and
 cleanup; preserve that single implementation and qualify its failure behavior.
+
+
+### DD-1646: type-substituted Range guards with explicit ownership shapes
+
+Share four embedded-owning-adapter guards through a private template parameterized
+only by concrete Adapter and Config types. Share8/16MiB borrowed typed-token
+decoder guards through a separate Decoder/Buffers/Token template. Share32/64MiB
+borrowed byte-buffer guards through a separate Decoder/Buffers template. Preserve
+complete member order, method bodies, sizeof-dependent control-region checks,
+accepted-byte arithmetic and sticky terminal results. Do not add base-state
+subobjects, runtime strategy fields, policy flags or alternative ownership.
+
+Typed guards reset the optional decoder before destroying both Token arrays and
+keep the existing live flag. Packed guards keep their default destructor and
+byte-span constructor calls. Shared region records keep the existing field shape;
+region enumeration and pair order remain unchanged. Pure disjoint checks reuse
+the existing C-API predicate. Keep factory initialization, limits, exact-admission
+charges, allocation/publication order and profile constants in their callers.
+Adaptive and4MiB guards retain their different overflow/lease/error-position
+policies; Adaptive can share only its stateless predicate. Prove source expansion,
+real-type layouts, independent lifecycle/terminal traces and retained API cases.

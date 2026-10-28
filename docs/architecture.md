@@ -544,6 +544,23 @@ Its member shape and size-based admission charge match the previous guards.
 `src/c_api/buffer_validation.hpp` supplies their common disjoint-buffer predicate.
 The distinct Adaptive and Range guards retain their own policies.
 
+The8/16/32/64MiB Range encoder factories use the private
+`src/c_api/owning_adapter_boundary.hpp` guard, parameterized by their concrete
+adapter and configuration types. It owns the adapter directly and preserves
+the existing complete input/output/control-region overlap checks.
+`src/c_api/workspace_decoder_boundary.hpp` supplies two separate borrowed
+decoder shapes:8/16MiB constructs typed Token arrays and resets the decoder
+before destroying them;32/64MiB passes byte spans and retains default destruction.
+Both preserve the five workspace regions, capacity-first error priority,
+accepted-byte arithmetic and sticky terminal results. Their data-member shapes
+and size-based admission charges match the former private classes.
+
+Adaptive retains its preflight accepted-plus-input overflow check. The4MiB Range
+guard retains three borrowed regions and overlap error position zero. These
+different state/ownership policies stay explicit. Shared disjoint predicates
+reuse the same checked core overlap primitive; factory-specific admission,
+allocation order and initial-only/capacity-only scopes remain at their callers.
+
 The public C entry points are implemented by responsibility. `src/marc.cpp`
 contains version/status queries and transform process/destruction. Private
 `src/c_api/entropy.cpp`, six `dictionary_*.cpp` files, `contextual.cpp` and

@@ -44199,3 +44199,26 @@ archive comparisons and compiler/tooling checks. No external implementation or
 new codec/format/API is introduced. Similarity review compares first-party old
 and new source only. This records provenance, not a legal guarantee or completion
 of remaining C-API ownership, codec-family, experiment-role and hosted gates.
+
+
+### CR-2040: 2026-10-28 — hosted CLI-pump continuation
+
+Author/reviewer: Codex. Record the maintainer-reported push and successful manual
+CI throughfe56fde3 (TVG-1661). Continue the authorized stage-one plan at remaining
+C-API ownership/validation; the six-phase objective is still incomplete.
+
+
+### CR-2041: 2026-10-28 — explicit-shape C-API boundary consolidation
+
+Author/reviewer: Codex. IR-1390/DD-1646 use only first-party factories and existing
+checked core primitives. Share eight exact guard bodies in three concrete-shape
+templates while preserving typed-token versus byte-buffer lifetimes. Adaptive
+shares its stateless predicate; its input-position preflight and the4MiB guard's
+three-region/position-zero contract stay explicit. Complete source expansion,
+eight real-type layouts,180 lifecycle/terminal traces and144 region comparisons
+per compiler agree with independently retained old source (TVG-1662). All3552
+core/API cases, eight supplementary and three installed-consumer tests pass;
+frozen ABI/resource/export receipts and102-profile bytes match. No external
+implementation, new algorithm or format is used. Similarity review compares only
+first-party old/new expression and documented type substitutions. This records
+process/evidence, not a legal guarantee or completion of phase6/hosted gates.

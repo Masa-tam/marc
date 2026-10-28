@@ -1,4 +1,5 @@
 #include "c_api/status.hpp"
+#include "c_api/owning_adapter_boundary.hpp"
 #include "c_api/transform_handle.hpp"
 #include "core/buffer_overlap.hpp"
 #include "core/checked_math.hpp"
@@ -17,58 +18,10 @@ using namespace marc;
 using namespace frame::internal;
 using Config = marc_lzss_position_distance_dynamic_range_64m_config;
 using Resources = marc_lzss_position_distance_dynamic_range_64m_resources;
-struct Region {
-  const void *data;
-  std::size_t size;
-};
-bool disjoint(Region a, Region b) noexcept {
-  return core::check_buffer_overlap(a.data, a.size, b.data, b.size) ==
-         core::BufferOverlap::disjoint;
-}
-class Boundary final : public core::Transform {
-public:
-  explicit Boundary(const LzssPositionDistance64mOwningConfig &c) noexcept
-      : adapter_(c) {}
-  core::ProcessResult ready() noexcept { return adapter_.process({}, {}, 0); }
-  void handle(marc_transform *h) noexcept { handle_ = h; }
-  core::ProcessResult process(std::span<const std::byte> in,
-                              std::span<std::byte> out,
-                              std::uint32_t flags) noexcept override {
-    if (terminal_)
-      return {0, 0, last_.status, last_.error};
-    const std::array regions{
-        Region{in.data(), in.size()}, Region{out.data(), out.size()},
-        Region{this, sizeof(*this)}, Region{handle_, sizeof(*handle_)}};
-    for (std::size_t i = 0; i < regions.size(); ++i)
-      for (std::size_t j = i + 1; j < regions.size(); ++j)
-        if (!disjoint(regions[i], regions[j])) {
-          last_ = {0,
-                   0,
-                   core::StreamStatus::error,
-                   {core::ErrorCode::invalid_argument, accepted_, 0}};
-          terminal_ = true;
-          return last_;
-        }
-    last_ = adapter_.process(in, out, flags);
-    // The unchanged coordinator proves bounded consumption and total size.
-    if (!core::checked_add(accepted_,
-                           static_cast<std::uint64_t>(last_.input_consumed),
-                           accepted_)) {
-      last_.status = core::StreamStatus::error;
-      last_.error = {core::ErrorCode::internal_error, accepted_, 0};
-    }
-    terminal_ = last_.status == core::StreamStatus::error ||
-                last_.status == core::StreamStatus::end_of_stream;
-    return last_;
-  }
-
-private:
-  LzssPositionDistance64mOwningAdapter adapter_;
-  marc_transform *handle_{};
-  std::uint64_t accepted_{};
-  core::ProcessResult last_{};
-  bool terminal_{};
-};
+using Region = marc::c_api::detail::OwningAdapterRegion;
+using marc::c_api::detail::disjoint;
+using Boundary = marc::c_api::detail::OwningAdapterBoundary<
+    LzssPositionDistance64mOwningAdapter, LzssPositionDistance64mOwningConfig>;
 constexpr std::size_t public_controls =
     sizeof(Config) + sizeof(Resources) +
     2 * sizeof(LzssPositionDistance64mOwningConfig) +

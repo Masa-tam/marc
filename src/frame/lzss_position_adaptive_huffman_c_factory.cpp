@@ -1,4 +1,5 @@
 #include "c_api/status.hpp"
+#include "c_api/buffer_validation.hpp"
 #include "c_api/transform_handle.hpp"
 #include "frame/lzss_position_adaptive_huffman_owned.hpp"
 #include "core/buffer_overlap.hpp"
@@ -17,7 +18,7 @@ using Config=marc_lzss_position_distance_adaptive_huffman_config;
 using Resources=marc_lzss_position_distance_adaptive_huffman_resources;
 using Code=marc::core::ErrorCode;
 bool separate(const void* a,std::size_t an,const void* b,std::size_t bn) noexcept {
-    return marc::core::check_buffer_overlap(a,an,b,bn)==marc::core::BufferOverlap::disjoint;
+    return marc::c_api::disjoint_buffers(a,an,b,bn);
 }
 
 class Boundary final : public marc::core::Transform {

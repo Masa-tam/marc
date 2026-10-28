@@ -12327,3 +12327,20 @@ editing. Compare scripted process calls, flags, outputs, errors and completion
 against those originals, not against another current policy. Preserve the
 existing run function's single shared transactional output path. Keep named
 empty deleter types and different admission/ownership strategies explicit.
+
+
+### IR-1390: Range factory boundary shapes and borrowed token lifetimes
+
+Use only first-party C factories atfe56fde3 and the existing core overlap/status/
+checked-arithmetic primitives. Independently save the old nine factories. Four
+8/16/32/64MiB encoder Boundary bodies match after concrete adapter/config type
+substitution. Decoder8/16MiB bodies match after decoder type substitution; their
+Token objects are constructed in borrowed storage and destroyed after resetting
+the decoder. Decoder32/64MiB bodies match as byte-buffer variants with default
+destruction and no live-token flag. Keep the two lifecycle shapes separate.
+
+Adaptive capacity checks include preflight accepted-plus-input overflow;4MiB
+Range tracks three borrowed regions and reports overlap at position zero.
+These differ from the owned21-profile guard, embedded-adapter encoder and
+five-region borrowed decoder policies. Retain their state shapes and error
+priority. Share the pure overlap predicate without changing those decisions.

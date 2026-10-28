@@ -80,7 +80,7 @@ headers. These are starting observations, not deletion or line-count targets.
 - [x] Share applicable CLI/benchmark profile-setup adapters while keeping
   execution-specific admission policies explicit.
 - [x] Centralize the opaque internal handle definition and status/error mapping.
-- [ ] Share applicable validation/ownership helpers without merging different
+- [x] Share applicable validation/ownership helpers without merging different
   caller-workspace and owned-resource contracts.
 - [x] Split src/marc.cpp by responsibility/profile family; preserve public ABI,
   initialization defaults, allocation-failure behavior and resource admission.
@@ -478,3 +478,27 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   installed consumers and102-profile bundles. Pause before further factory or
   codec-family changes. Do not treat scoped local CLI evidence as completion of
   the whole six-phase plan or as hosted validation of this new implementation.
+
+
+- Hosted continuation throughfe56fde3: the maintainer reports push and successful
+  manual CI for the CLI gate (TVG-1661/CR-2040). Resume remaining C-API ownership
+  and validation sharing under DD-1646; no phase6 implementation is implied yet.
+
+
+- Phase5 boundary completion (DD-1646/TVG-1662/CR-2041): eight large Range
+  guards share three explicit owning/typed-borrowed/byte-borrowed shapes with
+  unchanged layouts and complete source bodies. Adaptive's distinct input-position
+  preflight and the4MiB three-region/position-zero policy remain explicit; their
+  mismatch prevents merging ownership contracts. Alongside the earlier21-owned
+  guard, stateless buffer/config helpers, handle/status sharing, CLI transaction/
+  pumps and nine-file decomposition, this closes applicable phase5 sharing
+  locally.3552 API/core, eight supplementary, three installed consumers, frozen
+  ABI/resources/exports and102-profile bytes pass. Phase6 and remaining
+  experiment/reference-role review are still incomplete.
+
+- Hosted phase5 gate: push the commit carrying TVG-1662 and run manual
+  full_validation. Confirm all4172 retained Windows/Linux tests, installed
+  static-only/shared-only consumers and102-profile bundles. Pause at this
+  ownership boundary; resume the Position-distance Blocked Huffman phase6 pilot
+  after the maintainer's result. Do not infer hosted qualification or completion
+  of the six-phase objective from scoped local preservation evidence.
