@@ -35477,3 +35477,22 @@ charges, allocation/publication order and profile constants in their callers.
 Adaptive and4MiB guards retain their different overflow/lease/error-position
 policies; Adaptive can share only its stateless predicate. Prove source expansion,
 real-type layouts, independent lifecycle/terminal traces and retained API cases.
+
+
+### DD-1647: Blocked Huffman ownership pilot with unchanged concrete objects
+
+Pilot only64KiB and1MiB. Keep the concrete encoder/decoder/workspace declarations
+and every data member/order/default intact. Grant one private family mechanics
+struct friendship; add no base class, policy subobject or runtime strategy field.
+Concrete methods retain signatures and delegate to shared requirements, allocation,
+validation and streaming bodies. Their sizeof-dependent admission remains exact.
+
+Keep per-profile constants and existing private format/frame/finder callbacks in
+explicit local binding records. Shared code must not infer limits or normalize
+profiles. Retain checked-arithmetic order, all allocation/refusal and destruction
+order, private scratch, header/frame draining, finish/error precedence and failed
+output withholding. Use the existing frame implementations and adopted finders
+unchanged. This is a Blocked Huffman family helper, not a universal codec engine
+or build-time generator. Prove whole-body expansion and class-layout preservation,
+then qualify old/new traces and retained contracts before extending to other
+windows; the seven-window consolidation remains a later gated step.

@@ -44222,3 +44222,29 @@ frozen ABI/resource/export receipts and102-profile bytes match. No external
 implementation, new algorithm or format is used. Similarity review compares only
 first-party old/new expression and documented type substitutions. This records
 process/evidence, not a legal guarantee or completion of phase6/hosted gates.
+
+
+### CR-2042: 2026-10-29 — hosted phase5 continuation
+
+Author/reviewer: Codex. Record the maintainer-reported push/successful CI through
+49fead16 (TVG-1663). Resume the authorized phase6 Blocked Huffman pilot, preserving
+format/ABI/resources and completing fresh evidence before the next hosted gate.
+
+
+### CR-2043: 2026-10-29 — Blocked Huffman ownership pilot
+
+Author/reviewer: Codex. Task: share duplicate 64 KiB/1 MiB Position-distance
+Blocked Huffman ownership mechanics as phase6's pilot while retaining concrete
+objects and all format/resource/publication contracts (IR-1391/DD-1647).
+Consult only first-party 49fead16 sources and frozen v0.8.0 receipts; no external
+implementation, algorithm or format is introduced. Similarity review expands
+the actual family helper and verifies all 20 old bodies, 16 forwarders, explicit
+bindings and complete declarations. Both compilers preserve concrete sizes and
+alignments. Record the initial overloaded-finder compile rejection and six
+unbuilt test executables transparently; fixes and final checks are in TVG-1664.
+All 3580 unique selected tests, four tooling and three installed-consumer cases
+pass; 82 old/new DLL traces, frozen ABI/resources/exports and both clients' 102
+archive comparisons agree. The stateless friend helper stores no policy and
+uses the existing independently documented frame/finder implementations.
+This records process and scoped local evidence, not a legal guarantee, hosted
+qualification or completion of phase6/the six-phase plan.

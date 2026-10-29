@@ -561,6 +561,16 @@ different state/ownership policies stay explicit. Shared disjoint predicates
 reuse the same checked core overlap primitive; factory-specific admission,
 allocation order and initial-only/capacity-only scopes remain at their callers.
 
+The 64 KiB and 1 MiB Position-distance Blocked Huffman owners share the private
+`src/frame/lzss_position_blocked_huffman_owned_common.hpp` requirements,
+allocation and process bodies. Explicit local profile bindings retain each
+window's constants and existing format/frame/finder functions. The concrete
+encoder, decoder and workspace types keep their data-member order and defaults;
+a stateless friend helper adds no stored policy or base-class subobject.
+Admission, allocation order, private frame validation and draining remain the
+existing contracts. Other windows and frame implementations remain separate
+pending the next qualification gate (DD-1647).
+
 The public C entry points are implemented by responsibility. `src/marc.cpp`
 contains version/status queries and transform process/destruction. Private
 `src/c_api/entropy.cpp`, six `dictionary_*.cpp` files, `contextual.cpp` and

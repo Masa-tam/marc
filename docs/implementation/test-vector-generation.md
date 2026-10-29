@@ -27860,3 +27860,68 @@ No public header, codec/frame body, CMake source list, workflow or4172 test
 registration changes. The preceding125 CLI/8 cross-consumer campaign is not
 repeated for this factory-only edit. Full hosted Windows/Linux and fresh
 single-library package validation remain required at the next checkpoint.
+
+
+### TVG-1663: maintainer-reported hosted phase5 gate through49fead16
+
+On2026-10-29 the maintainer reports push and successful GitHub CI after the
+requested manual full_validation checkpoint for49fead16. Record the result as
+maintainer-reported; no run URL or logs were independently retrieved. Resume
+phase6 with a small Position-distance Blocked Huffman pilot. Later edits require
+new qualification and do not inherit the previous hosted result.
+
+
+### TVG-1664: Blocked Huffman ownership pilot preservation
+
+On 2026-10-29 qualify DD-1647 using first-party 49fead16 originals saved before
+editing. Expand the actual shared helper with the explicit 64 KiB/1 MiB bindings:
+all 20 old function bodies and 16 concrete forwarding bodies match. Removing
+only the stateless helper friendship recovers both complete old declarations.
+MSVC and Clang independently compile/run sizeof/alignof comparisons for four
+concrete owners and two workspace types. Clang-cl syntax checks pass for both
+production sources. The first check rejected an ambiguous overloaded finder
+function address; an explicit four-argument forwarding method resolves it, with
+the shared requirements call explicitly qualified. Final source checks pass.
+
+Build static/shared libraries and 103 relevant targets in MSVC Release. The first
+3580-test selection passes 3574 tests in 350.07 seconds and reports six Not Run:
+two stream binaries and four standalone static/shared C consumers were missing
+from the build list. CTest show-only JSON omitted command fields for unbuilt
+executables; do not treat that inventory omission as successful execution.
+Build those six targets explicitly and pass all six in 0.40 seconds. Thus all
+3580 unique selected tests pass across the two runs, including the full 3552
+core/API selection and 28 additional pilot/vector/token/frame/stream/owner/
+independent-oracle/public-consumer/CLI cases. Existing owner suites inject every
+allocation failure and forbid allocation during process; frame/token/raw Python
+oracles remain independent. No production fix was needed for the build omission.
+
+Load distinct frozen v0.8.0/current DLL modules and compare 82 cases, 6845 process
+calls per library: query/create results, full resource records, committed bytes,
+consumption/production, statuses, error positions and repeated terminal results
+agree. Cases include empty/one-byte input, arbitrary small chunks, zero/one-byte
+output, Flush, late-empty/final-nonempty EndInput, frame-size minus/equal/plus one,
+truncation, mutation, trailing data, size mismatch, overlap, ResetBlock refusal
+and insufficient memory. Retained tests supply allocation-failure and detailed
+malformed-frame coverage beyond this bounded trace sample.
+
+Frozen 224 configuration/query records, 111 public layouts, header hash and 251
+exports match. MSVC and Clang-built CLI clients each restore/re-encode all 102
+frozen archives byte-for-byte against the current MSVC DLL. Fresh installed
+static/shared packages build the C examples; all three consumer tests pass in
+0.56 seconds. Four documentation/corpus/CI-policy/partition checks pass in 2.94
+seconds. After the six additional target builds, the DLL hash still matches the
+qualified receipt. No Clang-codec or Linux runtime result is claimed.
+
+Public headers, format/frame/finder/model implementations, CMake source graph,
+workflows and all 4172 test registrations remain unchanged. No new fuzz campaign
+or repeated 125-CLI campaign is needed for source-equivalent ownership bodies;
+existing relevant malformed/chunking/allocation/CLI coverage is retained. Hosted
+Windows/Linux full_validation, single-library installed consumers and complete
+102-profile exchange remain a fresh gate. Other five windows, frame mechanics,
+remaining families and final experimental/reference-role audit remain open.
+
+Private receipts: out/refactoring/blocked-pilot-{originals,profiles,functions}.json,
+verify_blocked_pilot_sources.py, blocked-pilot-{layout,clang-final,build,tests,
+missing-build,retry,traces,public-api,exports,consumer-tests,tooling}.log/txt/json
+and blocked-pilot-{v080,clang-v080}.log; these are local qualification artifacts,
+not new maintained benchmark or reproduction commands.

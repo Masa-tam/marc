@@ -87,7 +87,8 @@ headers. These are starting observations, not deletion or line-count targets.
 
 ### 6. Share codec-family internals incrementally
 
-- [ ] Pilot Position-distance Blocked Huffman across a small set of windows.
+- [x] Pilot Position-distance Blocked Huffman across 64 KiB/1 MiB ownership
+  mechanics (DD-1647/TVG-1664); local qualification, hosted gate pending.
 - [ ] Separate explicit profile constants/limits/format identities from common
   factory, ownership and frame mechanics, then extend to all seven windows.
 - [ ] Apply proven common pieces to remaining comparable families where they
@@ -502,3 +503,26 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   ownership boundary; resume the Position-distance Blocked Huffman phase6 pilot
   after the maintainer's result. Do not infer hosted qualification or completion
   of the six-phase objective from scoped local preservation evidence.
+
+
+- Hosted continuation through49fead16: the maintainer reports push and successful
+  CI for the phase5 gate (TVG-1663/CR-2042). Resume phase6 with the64KiB/1MiB
+  Blocked Huffman ownership pilot (DD-1647). Keep all seven identities/formats and
+  later family/experiment audits open until their own evidence is complete.
+
+
+- Phase6 ownership pilot (DD-1647/TVG-1664/CR-2043): 64 KiB/1 MiB share
+  stateless family mechanics with explicit constants/functions. Concrete data
+  members, allocation/admission and byte/error publication remain unchanged.
+  Whole-body expansion, both compilers' sizes/alignments, 82 DLL trace cases,
+  all 3580 selected tests (including six missing-build retries), four tooling
+  and three installed consumers pass. Frozen ABI/resources/exports and both
+  clients' 102-profile archive comparisons agree. Only the pilot checkbox is
+  locally complete; five other windows, frame mechanics, remaining comparable
+  families and the final experimental/reference-role audit remain open.
+
+- Hosted phase6 pilot gate: push the commit carrying TVG-1664 and run manual
+  full_validation. Confirm all 4172 retained Windows/Linux tests, installed
+  static-only/shared-only consumers and 102-profile bundles. Pause before
+  expanding the helper to the other five windows or changing frame mechanics.
+  Scoped local preservation evidence does not complete the full objective.

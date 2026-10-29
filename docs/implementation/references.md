@@ -12344,3 +12344,16 @@ Range tracks three borrowed regions and reports overlap at position zero.
 These differ from the owned21-profile guard, embedded-adapter encoder and
 five-region borrowed decoder policies. Retain their state shapes and error
 priority. Share the pure overlap predicate without changing those decisions.
+
+
+### IR-1391: Blocked Huffman64KiB/1MiB ownership reference bodies
+
+Use only first-party49fead16 ownership headers/implementations, format/frame/
+stream decoder contracts and adopted dictionary finders. Independently save both
+complete old implementations. They are identical after enumerated substitutions
+of concrete stream/workspace/owner/error types, validation/serialization/frame
+callbacks, table/working-space constants, payload bit bounds/descriptor overhead,
+and finder/token variant bindings. Preserve all of those bindings explicitly.
+Use old v0.8.0 DLL processing traces, frozen resource/ABI/archive receipts and
+retained owner/allocation/malformed/chunking tests as independent evidence. No
+external algorithm, implementation or new format is consulted or introduced.
