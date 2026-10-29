@@ -35496,3 +35496,23 @@ unchanged. This is a Blocked Huffman family helper, not a universal codec engine
 or build-time generator. Prove whole-body expansion and class-layout preservation,
 then qualify old/new traces and retained contracts before extending to other
 windows; the seven-window consolidation remains a later gated step.
+
+
+### DD-1648: extend the proven Blocked Huffman owner bindings to five windows
+
+After the maintainer-reported pilot gate, bind 4/8/16/32/64 MiB to the existing
+DD-1647 stateless friend helper. Keep the helper body unchanged. Preserve all
+concrete owner/workspace declarations, signatures, data-member order/defaults,
+sizeof-based admission, private scratch, allocation/refusal/destruction order,
+process states and publication/error priority. Supply each existing finder,
+token variant, format/frame callback and bound explicitly in its local profile.
+No public header, codec model, frame representation or CMake graph changes.
+
+Prove all 50 old bodies and 40 forwarding bodies, recover all ten complete old
+headers after removing only friendship, and compare ten owner/five workspace
+sizes/alignments with both compilers. Build every selected test executable
+explicitly, including tests whose show-only command was absent before build.
+Keep retained allocation/chunking/malformed/oracle/CLI/public coverage. This
+finishes seven-window ownership sharing only; frame-mechanics consolidation,
+remaining comparable families and the final experiment/reference audit retain
+their own decisions and completion evidence.

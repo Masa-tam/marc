@@ -88,7 +88,7 @@ headers. These are starting observations, not deletion or line-count targets.
 ### 6. Share codec-family internals incrementally
 
 - [x] Pilot Position-distance Blocked Huffman across 64 KiB/1 MiB ownership
-  mechanics (DD-1647/TVG-1664); local qualification, hosted gate pending.
+  mechanics (DD-1647/TVG-1664); hosted success reported in TVG-1665.
 - [ ] Separate explicit profile constants/limits/format identities from common
   factory, ownership and frame mechanics, then extend to all seven windows.
 - [ ] Apply proven common pieces to remaining comparable families where they
@@ -526,3 +526,31 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   static-only/shared-only consumers and 102-profile bundles. Pause before
   expanding the helper to the other five windows or changing frame mechanics.
   Scoped local preservation evidence does not complete the full objective.
+
+
+- Hosted continuation through 0becc3d9: the maintainer reports push and successful
+  manual CI for the ownership pilot gate (TVG-1665/CR-2044). Resume the five-window
+  owner extension under DD-1648. Frame mechanics, other families and the final
+  experimental/reference-role audit remain open.
+
+
+- Seven-window ownership sharing (DD-1648/TVG-1666/CR-2045): the remaining five
+  windows bind the unchanged stateless Blocked Huffman owner helper. Explicit
+  constants/callbacks, concrete declarations and size-dependent admission stay
+  intact. Whole-body expansion, both compilers' layouts/syntax, 215 DLL traces,
+  all 3655 selected tests, four unique tooling checks, three installed consumers
+  and frozen ABI/resources/exports/102-profile comparisons qualify locally.
+  Record receipt/environment retries separately. Seven-window owner sharing is
+  complete locally, with a fresh hosted gate pending. Keep the broader second
+  phase6 checkbox open: frame mechanics are still separate. Other comparable
+  families and the final experimental/reference-role audit also remain open.
+
+- Hosted all-window ownership gate: push the commit carrying TVG-1666 and run
+  manual full_validation. Confirm all 4172 retained Windows/Linux tests,
+  static-only/shared-only installed consumers and 102-profile bundles. Pause
+  before changing frame mechanics or applying sharing to another codec family.
+  This checkpoint does not complete the full six-phase objective. A read-only
+  survey identifies seven matching stream-decoder bodies after profile-name
+  substitution; review their concrete state/layout contracts first after CI,
+  then analyze the frame bodies' remaining constants. No frame source changes
+  have been made at this ownership checkpoint.

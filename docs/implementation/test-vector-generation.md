@@ -27925,3 +27925,87 @@ verify_blocked_pilot_sources.py, blocked-pilot-{layout,clang-final,build,tests,
 missing-build,retry,traces,public-api,exports,consumer-tests,tooling}.log/txt/json
 and blocked-pilot-{v080,clang-v080}.log; these are local qualification artifacts,
 not new maintained benchmark or reproduction commands.
+
+
+### TVG-1665: maintainer-reported hosted ownership pilot gate through 0becc3d9
+
+On 2026-10-30 the maintainer reports push and successful manual CI after the
+requested full_validation checkpoint for 0becc3d9. Record this as maintainer-
+reported evidence; no run URL or logs were independently retrieved. Resume the
+remaining five Blocked Huffman ownership bindings under DD-1648. Later source
+changes need fresh qualification and do not inherit the previous hosted result.
+
+
+### TVG-1666: all-window Blocked Huffman ownership preservation
+
+On 2026-10-30 qualify DD-1648 against independently saved 0becc3d9 originals.
+All five complete implementations equal the pilot after explicit profile
+substitutions. Expand the actual unchanged family helper: all 50 old bodies,
+40 forwarding bodies and explicit bindings agree. Remove only the stateless
+friend declarations and recover all ten complete old owner headers. MSVC and
+Clang compile/run size/alignment comparisons for ten concrete owners and five
+workspace types. Clang-cl syntax checks pass for all five production sources.
+No state field, base/policy subobject or common helper body changes.
+
+MSVC Release builds static/shared libraries and 143 relevant targets. Select
+the full 3552 core/API cases plus all seven windows' 110 family tests (seven
+API names overlap), yielding 3655 unique tests. All pass in 2476.57 seconds.
+This includes owned allocation-failure/rollback/no-process-allocation suites,
+independent mathematical/token/frame/raw Python oracles, chunking/malformed/
+resource/publication coverage, standalone static/shared C consumers and native
+static/public CLI profiles through 64 MiB. Existing large CLI vectors cover
+window/frame minus/equal/plus one and later corrupt-frame publication. No tests
+were removed or replaced with a shared-implementation round-trip assertion.
+
+Recover unbuilt binary paths from generated Release CTest registrations rather
+than assuming every show-only JSON entry has a command. Verify all 3655 selected
+tests have commands and existing executable arguments after build; all 4172
+registrations remain. Initial local receipt helpers retained a pilot-only key
+and assumed output names always equal target names; correct these checker-only
+assumptions using the saved five-window keys and actual CTest commands. They
+are not production failures or passing evidence before the corrected checks.
+
+Load distinct v0.8.0/current DLL modules and compare 215 cases, 15782 process
+calls per library. Full resource/query/create results, committed bytes,
+consumption/production, statuses, error byte/bit positions and repeated terminal
+results agree. Use each of the five default frame settings on short input and
+explicit 4096-byte frames for varied small split schedules, zero/one-byte
+output, Flush, both final-input forms, frame-size minus/equal/plus one,
+truncation, mutation, trailing data, size mismatch, overlap, ResetBlock refusal
+and insufficient-memory cases. The bounded trace sample does not replace the
+retained full-size owner/CLI allocation and frame-boundary tests.
+
+Frozen 224 configuration/query records, 111 public layouts, header hash and 251
+exports agree with v0.8.0. MSVC and Clang-built CLI clients each restore and
+re-encode all 102 frozen archives byte-for-byte against the final MSVC DLL.
+Fresh installed static/shared packages build C examples; all three tests pass
+in 0.87 seconds. Two initial bundle launches were not executed because automatic
+approval review timed out; workspace-permitted reruns both succeed. This is a
+launch issue, not an archive-validation failure or evidence of unsafe code.
+
+Of four tooling checks, documentation layout, CI gate and partition checks pass;
+the corpus verifier fails with PermissionError in the sandbox-selected temporary
+directory (initial batch 6.27 seconds). Point TEMP/TMP to a new ignored directory
+inside the workspace and rerun only the corpus test: pass in 0.99 seconds. All
+four unique checks are thus qualified. Keep this environment failure separate
+from codec correctness. Final document/source/ABI receipt checks precede commit.
+
+Only the five owner implementations/declarations and documentation change.
+The qualified two-window pilot and common helper, public headers, all frame/
+format/model/finder bodies, build graph, workflows and test registrations stay
+unchanged. No Clang codec runtime, Linux result or new sanitizer campaign is
+claimed. Fresh hosted full_validation must cover all retained Windows/Linux
+tests, installed single-library consumers and 102-profile exchange. Seven-window
+ownership sharing is locally complete; frame mechanics, other families and the
+final experimental/reference-role audit remain open.
+
+Private receipts use out/refactoring/blocked-windows-* for independently saved
+originals/bindings/bodies, layout/syntax/build/test logs, 215 trace cases, API/
+export records, installed consumers, tooling/corpus retry and both archive
+comparisons. verify_blocked_windows_sources.py and
+verify_blocked_windows_targets.py reproduce source expansion and actual-command
+inventory checks; these ignored receipts are not new maintained benchmark tools.
+A read-only next-step survey (blocked-frame-readonly-review.json) saves hashes
+of all seven frame and stream-decoder sources: all seven complete stream-decoder
+sources agree after name substitutions only, whereas frame bodies need further
+explicit-constant analysis. No frame implementation or qualification is claimed.

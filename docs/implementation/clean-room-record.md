@@ -44248,3 +44248,29 @@ archive comparisons agree. The stateless friend helper stores no policy and
 uses the existing independently documented frame/finder implementations.
 This records process and scoped local evidence, not a legal guarantee, hosted
 qualification or completion of phase6/the six-phase plan.
+
+
+### CR-2044: 2026-10-30 — hosted Blocked Huffman pilot continuation
+
+Author/reviewer: Codex. Record the maintainer-reported push and successful manual
+CI through 0becc3d9 (TVG-1665). Resume the authorized five-window ownership
+extension with unchanged concrete objects and fresh source/runtime preservation
+evidence. Remaining phase6 work and the final role audit are still open.
+
+
+### CR-2045: 2026-10-30 — all-window Blocked Huffman owner extension
+
+Author/reviewer: Codex. Task: extend the qualified DD-1647 ownership helper to
+4/8/16/32/64 MiB under DD-1648, preserving concrete objects and all existing
+profile bounds/functions. Use first-party 0becc3d9 originals and documented
+frozen v0.8.0 evidence only (IR-1392). The common helper is unchanged. Similarity
+review verifies 50 complete old bodies, 40 forwarders, explicit binding records
+and all ten complete declarations after friendship removal. Both compilers'
+ten owner/five workspace sizes and alignments agree. All 3655 selected retained
+tests, four unique tooling checks and three installed consumers qualify;
+215 DLL traces, frozen ABI/resources/exports and both clients' 102 archives
+agree. TVG-1666 records initial receipt-checker assumptions, permission-review
+launch timeouts and the corrected corpus temporary-directory failure separately.
+No external implementation, new algorithm or format is introduced. This records
+process and local preservation evidence, not a legal guarantee, hosted result
+or completion of frame consolidation/the six-phase objective.

@@ -12357,3 +12357,17 @@ and finder/token variant bindings. Preserve all of those bindings explicitly.
 Use old v0.8.0 DLL processing traces, frozen resource/ABI/archive receipts and
 retained owner/allocation/malformed/chunking tests as independent evidence. No
 external algorithm, implementation or new format is consulted or introduced.
+
+
+### IR-1392: remaining Blocked Huffman ownership reference bodies
+
+Use only first-party 0becc3d9 ownership sources, the qualified DD-1647 helper,
+existing format/frame/stream/finder contracts and frozen v0.8.0 receipts. Save
+all ten original 4/8/16/32/64 MiB ownership files and 50 complete function bodies
+before editing. Each complete implementation equals the saved pilot after
+explicit substitutions of types, function bindings, tables/working-space terms,
+payload bit bounds (135/135/135/150/150) and serialized descriptor overheads
+(64+2561/2563/2575/2578/2590). These are existing per-profile constants, not a
+new derivation of stream identities or limits. No external algorithm or source
+is consulted. Use whole-body expansion, real concrete layouts, retained tests,
+old/new DLL traces and frozen ABI/resources/archives to qualify the extension.
