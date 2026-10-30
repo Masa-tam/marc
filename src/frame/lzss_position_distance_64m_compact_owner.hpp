@@ -3,6 +3,7 @@
 #include "core/status.hpp"
 #include "frame/lzss_position_distance_64m_compact_frame_encoder.hpp"
 namespace marc::frame::internal {
+template<class Profile> struct PositionRangeCompactOwnerMechanics;
 template <class T> struct LzssPositionDistance64mOwnedBlock {
   T *data{};
   std::size_t capacity{};
@@ -63,6 +64,7 @@ public:
   static std::size_t working_bytes() noexcept;
 
 private:
+  template<class Profile> friend struct PositionRangeCompactOwnerMechanics;
   LzssPositionDistance64mCompactAllocator &allocator_;
   LzssPositionDistance64mOwnedBytes publication_{};
   TypedContextFrameLayout layout_{};

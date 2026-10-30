@@ -44428,3 +44428,22 @@ nine prose count and identify five further comparable paths without claiming
 their implementation. No external source, algorithm or format is introduced.
 This records scoped local evidence, not a legal guarantee, hosted result,
 full Clang/Linux codec runtime or full-goal completion. Continue under DD-1650.
+
+
+### CR-2055: 2026-10-31 — Range compact/token and adapter mechanics
+
+Author/reviewer: Codex. Task: share the five comparable16/32/64MiB Range
+compact-frame, token-frame, prefix, compact-owner and owning-adapter paths
+(DD-1657), using only first-party f81535e1 originals/native declarations and
+frozen v0.8.0 evidence (IR-1401). Recover165 bodies,66 forwards,15 concrete
+headers and27 local data shapes; both compilers preserve42 actual layouts and
+nine working expressions, and15 units pass Clang syntax. TVG-1676 distinguishes
+capture/wrapper/template-rewrite setup findings from final passing evidence.
+All42 selected tests,132 frozen/current public cases, ABI/resources/header/
+251 exports, both clients'102 archives and three installed consumers pass.
+Keep literal types/values, callback/default identities, receipt/delegate
+isolation, cleanup/publication generations, concrete state and decoder policies.
+No external source, new algorithm, public API or representation is introduced.
+This documents scoped process/evidence, not a legal guarantee, hosted result,
+full Clang/Linux codec runtime or full-goal completion. Continue final audits
+under DD-1650; do not request another helper-only push/CI checkpoint.

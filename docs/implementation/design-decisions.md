@@ -35718,3 +35718,29 @@ charges, and qualify relevant retained frame/stream/ownership/public/CLI tests
 and frozen ABI/resource/byte contracts. Other differing Range components and
 independent models/references remain separate. Refresh final role/inventory and
 completion evidence after this work; DD-1650 requests no per-helper hosted run.
+
+
+### DD-1657: Range compact/token paths and owning-adapter mechanics
+
+Share five comparable16/32/64MiB responsibilities through separate stateless
+private helpers: compact_frame_encoder, token_frame_encoder, compact_prefix,
+compact_owner and owning_adapter. Bind original callbacks/types and literal
+bounds explicitly; do not derive a new format or merge typed and packed decoder
+policies. Keep basic format/ABI validators and tiny native delegates explicit.
+
+Keep all concrete signatures, default retained arguments, allocation interfaces,
+member order/defaults and sizeof-based working/resource expressions. Grant only
+the required owner/adapter friendship; add no stored strategy/base-class state.
+Preserve Candidate cleanup and old/new publication generations, receipt-kind/
+capacity checks, real deletion before receipt clearing, exact delegate isolation,
+overflow/overlap/admission priority, coordinator destruction before allocator
+destruction and sticky process semantics. Preserve zero-filled byte headers and
+success-only output/count/layout publication. Retain small concrete allocator
+forwarders and observable ledger access where abstraction would add no clarity.
+
+Recover all165 old bodies, local data shapes and working expressions under
+explicit substitutions; compare actual layouts/charges and qualify relevant
+retained tests plus frozen public contracts. Keep independent codec primitives,
+oracles and differing decoder storage/lifetimes intact. After these five paths,
+refresh inventory/role evidence and perform the full completion audit. DD-1650
+batches the work before one integrated hosted checkpoint, not helper-only gates.

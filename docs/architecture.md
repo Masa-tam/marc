@@ -10,6 +10,15 @@ foundation/admission descriptions below retain the decisions and measurements
 at their original revisions. Retired experiments can be inspected in tag v0.8.0.
 See the [active plan](design/v1-refactoring-stage-1.md) for verification gates.
 
+The16/32/64MiB Position-distance Range paths now share stateless private
+owning-stream, operation-frame, serialization, compact/token-frame, prefix,
+compact-owner and adapter mechanics. Concrete profiles retain their original
+constants, callback/default identities, allocation interfaces, state layouts,
+receipt ledgers and publication rules. Basic format/ABI admission and typed
+versus packed decoder storage/lifetimes remain explicit. The family survey and
+local qualification are recorded in the [source-role audit](design/v1-refactoring-stage-1-audit.md);
+integrated completion validation remains a separate gate.
+
 ## Baseline
 
 marc is a C++20 library of bounded, stateful byte-stream transforms. MSVC is

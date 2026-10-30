@@ -3,6 +3,7 @@
 #include "frame/lzss_position_distance_64m_owned_stream_encoder.hpp"
 #include <optional>
 namespace marc::frame::internal {
+struct PositionRangeOwningAdapterMechanics;
 struct LzssPositionDistance64mOwningConfig {
   TypedContextStreamHeader stream{};
   core::DecoderLimits limits{};
@@ -48,6 +49,7 @@ public:
   Ledger ledger() const noexcept;
 
 private:
+  friend struct PositionRangeOwningAdapterMechanics;
   class Allocator final : public LzssPositionDistance64mStreamAllocator {
   public:
     struct Receipt {

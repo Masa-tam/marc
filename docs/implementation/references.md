@@ -12481,3 +12481,16 @@ Region/Working types plus exact working-space expressions before editing.
 All three complete sources per responsibility match profile-name/whitespace
 substitution. Preserve native preflight's optional retained-state default0 in
 explicit callback adapters. No external implementation source is consulted.
+
+
+### IR-1401: Range compact/token/owner/adapter originals and profile bounds
+
+Use only first-partyf81535e1 sources, native headers/defaults and the detailed
+five-component comparison from TVG-1675. Save30 original files,165 complete
+bodies and27 local data types before editing. Match explicit callback suffixes,
+window bounds16/32/64MiB, context counts48/49/50, decision bounds9/10 per raw
+byte and34/35/36 per token, payload factors18/20 and table entries2610/2621/2632.
+Preserve their native integer types and expression order. Retain the isolated
+owning delegate functions and field/lifetime contracts. No external source is
+consulted. Initial capture handles profile-specific line wrapping before saving;
+originals are not overwritten.

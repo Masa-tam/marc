@@ -747,3 +747,23 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   differing typed/packed decoder policies and tiny delegates explicit. Continue
   those five paths and final inventory/role/completion audit locally under
   DD-1650; no per-frame push or hosted checkpoint.
+
+
+- Range compact/token/adapter continuation (DD-1657/IR-1401): extract the five
+  proven comparable paths with explicit native bounds/callbacks and retained
+  allocator/cleanup/publication/ledger semantics. Save30 originals/165 bodies/
+  27 local types before editing. Qualify source/layout/resource/runtime behavior
+  locally, then refresh inventory/roles and audit completion. Keep native format/
+  ABI admission, differing typed/packed decoders and tiny delegates explicit.
+  Continue under DD-1650 without per-helper hosted checkpoints.
+
+
+- Range compact/token/adapter sharing (DD-1657/TVG-1676/CR-2055): recover165
+  bodies,66 forwards,15 headers and27 local shapes; preserve42 actual layouts
+  and nine working expressions with both compilers. All42 selected tests,
+  132 frozen/current public cases, ABI/resources/header/251 exports, both
+  clients'102 archives and three installed consumers pass. Explicit profile
+  bounds/types/defaults/callbacks retain native publication/receipt/delegate
+  semantics. All five comparable Range paths are locally qualified. Continue
+  the final inventory/role/completion audit under DD-1650; the integrated hosted
+  gate remains open and no per-helper push/CI checkpoint is requested.

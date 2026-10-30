@@ -123,9 +123,10 @@ to v0.8.0, not maintained commands. Current measurements use the common benchmar
 and [current measurement contract](../benchmarks.md).
 
 This audit closes the remaining phase-two role/retired-command classification.
-It does not close phase six: Range16/32/64MiB owner/frame/serializer sharing still
-needs code and qualification. After that work, refresh affected role/inventory evidence and
-audit all six phases against executable evidence. Complete Windows/Linux,
+At this snapshot, Range16/32/64MiB owner/frame/serializer sharing still needed
+code and qualification. The subsequent sections record that local work. Refresh
+affected role/inventory evidence and audit all six phases against executable
+evidence before closing stage one. Complete Windows/Linux,
 linkage/package and102-profile hosted validation at the integrated candidate
 remains required under DD-1650. Do not request separate hosted runs for this
 documentation audit or the next ownership helper.
@@ -175,3 +176,25 @@ All42 selected tests and132 frozen public traces pass. Three more stateless
 headers join the production include graph. Preserve the dated inventory above
 and refresh it at integration. The five additional comparable paths identified
 in the detailed follow-up and full completion/hosted gates remain open.
+
+
+## Subsequent compact/token/adapter qualification
+
+DD-1657/TVG-1676/CR-2055 qualify all five additional comparable Range paths
+locally. Five stateless private helpers preserve native bounds/types/defaults,
+allocation/receipt/delegate behavior and transactional publication. All165 old
+bodies,66 forwards,15 concrete headers,27 local data shapes,42 actual layouts
+and nine working expressions agree under the documented substitutions. All42
+selected tests and132 frozen public cases pass, with unchanged ABI/resources/
+exports, both102-archive clients and three installed consumers.
+
+The finite14-component Range survey now has nine shared responsibilities:
+owned_stream, frame_encoder, frame_decoder, frame_serialize, compact_frame_encoder,
+token_frame_encoder, compact_prefix, compact_owner and owning_adapter. Keep
+owning_delegate as a tiny identity forward and c_factory, decoder_c_factory,
+preflight and stream_decoder explicit for the contract differences above.
+Adaptive Huffman already has one seven-profile dispatch owner/frame/stream;
+smaller Range prepared/fallback paths retain different ownership/control shapes.
+Do not force unrelated model, dictionary, format or independent-reference code
+into these helpers. Final refreshed inventory and requirement-by-requirement
+completion evidence remain pending; this is no hosted-validation claim.

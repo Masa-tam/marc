@@ -28500,3 +28500,60 @@ existing private headers, build/test/workflow registrations and independent
 oracles remain unchanged. Continue the five proven comparable paths and final
 inventory/role/completion audit under DD-1650 without a frame-only hosted gate.
 No external implementation or new public API/representation is introduced.
+
+
+### TVG-1676: Range compact/token/owner/adapter extraction qualification
+
+Use first-party f81535e1 originals and frozen v0.8.0 artifacts (IR-1401,
+DD-1657). Recover all165 complete old bodies under explicit profile/callback,
+native integer-type and retained-default substitutions; check66 forwards,
+27 local data shapes and15 complete concrete headers after removing only
+the six required owner/adapter friendship additions. Thirty constructor,
+destructor, allocator and ledger bodies remain concrete and unchanged.
+Independent old-declaration fixtures agree on42 actual local/owner/adapter/
+allocator/receipt/ledger sizes and alignments and nine pure working expressions
+with MSVC19.51 and Clang22.1.3. All15 changed units pass Clang syntax.
+
+Record setup findings separately: initial source capture needs whitespace-aware
+positions for a wrapped release declaration; preserve originals after capture.
+Prebuild pure-wrapper inspection corrects output/compact_capacity argument names
+and a missing concrete Error alias. The first state-helper syntax attempt finds
+a split namespace qualifier incorrectly rewritten as entropy::internal::Profile,
+unconverted this/sizeof(*this), and a wrapped template missing static. Correct
+the extraction/substitution rules and repeat syntax successfully. These attempts
+are not passing build/runtime evidence. Final body and layout checks pass on
+their first executions; do not invent runtime regressions or alter native types
+to accommodate a fixture.
+
+The serial MSVC Release build completes40 selected targets. All42 relevant
+retained frame/stream/owned/public/CLI tests pass in1237.73 seconds with two
+workers and workspace TEMP/TMP. Include independent frame/core/stream/ownership
+conformance, malformed/overlap/admission/publication, allocation-fault C clients,
+CLI boundaries and64MiB stress. Preserve the two incompressible full frames and
+byte-identical re-encoding. Unchanged field-cursor/reference/indexed/token-range/
+compact primitives are outside this scoped selection. All4172 registrations
+and selected executable paths remain valid. This is not a complete suite or a
+new fuzz campaign.
+
+Frozen/current MSVC DLLs agree on132 encoder/borrowed-decoder cases and8037
+process records per library, including resource/create results, exact bytes,
+statuses, counts and error positions. Use real65536-byte caller capacities and
+five independently aligned borrowed regions held through transform destruction.
+Cover all three windows, empty/small/4096 boundaries, arbitrary chunking,
+zero/small output, flush/final/repeated terminals, truncation, mutations, trailing
+bytes, size mismatch, aliases, reset and tiny budgets. Positive decoding equals
+the original input. Frozen public receipts agree on224 records,111 layouts,
+the public-header hash and all251 exports; the current DLL matches its receipt.
+Both the MSVC CLI and existing Clang C client verify all102 frozen archives.
+The Clang client uses the MSVC DLL; syntax/layout/client checks do not establish
+a full Clang codec or Linux runtime. Three fresh installed-package tests pass
+in0.67 seconds with both static/shared linkage consumers.
+
+Scope/source/layout/public-contract, document and whitespace checks pass:
+21 existing production files, five new private headers and seven documents.
+No public header, CMake/test/workflow registration, independent oracle, format
+constant or concrete allocation interface changes. Retain the basic per-profile
+format/ABI admission, typed16MiB versus packed32/64MiB decoder storage/lifetimes
+and tiny delegate wrappers. The five comparable Range paths are locally
+qualified; final inventory/role/completion review and integrated hosted gates
+remain open. Continue under DD-1650 without a per-helper hosted checkpoint.
