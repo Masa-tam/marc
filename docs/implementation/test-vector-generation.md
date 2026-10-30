@@ -28382,3 +28382,59 @@ production code, public headers, build/test registrations and CI workflow stay
 unchanged. Repeating thousands of codec cases is not warranted for this audit.
 No hosted result or final six-phase completion is inferred. Continue the Range
 work locally under DD-1650 without requesting a documentation-only CI run.
+
+
+### TVG-1674: Range16/32/64MiB owning-stream sharing preservation
+
+On 2026-10-31 qualify DD-1655 from first-party77a18c02 originals (IR-1399).
+Reverse-expand the actual helper and concrete bindings: all63 original complete
+bodies,39 forwarding functions and three complete headers recover after friend
+removal/profile substitutions. Keep18 local exact-allocation bodies unchanged;
+the bridge/coordinator and checked add/subtract bodies are shared. Verify the
+original sizeof-based call-controls expressions and constructor initialization
+lists. MSVC19.51 and clang-cl preserve nine actual concrete encoder/exact/base
+allocator sizes and alignments. Clang syntax-checks all three changed units.
+The other CompactOwner/frame/serializer/finder implementations are unchanged.
+
+The initial sharing pass mistakenly rewrites calls to the local Region disjoint
+lambda as encoder-member calls. Clang rejects the argument types before a product
+build; correct method-scope rewriting and rerun all three units. Initial recovery
+checks also find the checker selecting a fail call instead of its definition,
+matching Owner inside CompactOwner, and formatter-reflowed comment delimiters.
+Correct definition matching/word boundaries and preserve original comment lines.
+An initial layout command has no fixture because recovery stopped; do not count
+it as successful evidence. Final recovery, layouts and syntax pass. Preserve
+these failed setup/compile attempts separately from qualification.
+
+The serial MSVC Release build completes21 selected targets. All23 relevant
+retained owned/public/CLI CTests pass in1087.08 seconds with two workers and
+workspace TEMP/TMP, including64MiB boundaries/stress and independent32/64MiB
+full-window owning conformance. Retained tests cover exact/one-short budgets,
+stable controls and full call capacities, alias rejection, constructor/frame
+allocation failures and cleanup, release/publication generations, failed second
+frame withholding, chunk splits/flush/final suffixes, truncation/trailing data,
+unsupported flags and sticky errors/terminals. Independent tests and oracles
+remain unchanged. This is a23-test selection with4172 registrations retained,
+not a new complete-suite or sanitizer/fuzz campaign.
+
+Distinct frozen v0.8.0/current MSVC DLLs match63 encoder cases and3978 process
+records per library for16/32/64MiB. Cover empty/small/4096-boundary inputs,
+default frames, arbitrary chunks, small/zero output, flush/final/repeated terminal
+calls, original-size mismatch, overlap, reset rejection and tiny budgets. Caller
+buffers physically provide the declared65536-byte capacities. Resources/create
+outcomes, bytes, statuses, counts and error positions agree. Decoder code is
+unchanged; round-trip/conformance and archive verification supply its integration
+checks. Frozen public receipts match224 records,111 layouts, header hash and all
+251 exports; verify the final DLL hash against its receipt.
+
+MSVC CLI and the existing Clang C client each verify102 frozen archives. The
+Clang client uses the MSVC DLL; syntax/layout/client evidence does not establish
+a full Clang codec or Linux runtime result. Three fresh installed-package
+consumers pass (1.00 seconds) with both shared/static exports. Source/scope,
+document ordering/links and whitespace checks pass before committing. Scope is
+six existing production files, one private helper and seven documents; public
+headers, CMake/workflow/test registrations and retained test sources are unchanged.
+The role audit remains an explicit58b12eda snapshot, with subsequent ownership
+qualification noted separately. Frame/serializer sharing and final role/inventory/
+completion refresh remain open. Continue under DD-1650 without an owner-only
+push/hosted checkpoint; no external implementation or new format/API is used.

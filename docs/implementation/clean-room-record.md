@@ -44392,3 +44392,21 @@ do not close phase six or claim final hosted qualification. No external source,
 algorithm, format or product behavior is introduced. This records process and
 scoped audit evidence, not a legal guarantee or complete runtime call-graph proof.
 Continue locally under DD-1650 and leave the full goal active.
+
+
+### CR-2053: 2026-10-31 — large-window Range owning-stream mechanics
+
+Author/reviewer: Codex. Task: share16/32/64MiB bridge/coordinator repetition
+under DD-1655 using only first-party77a18c02 sources, saved originals and frozen
+v0.8.0 evidence (IR-1399). Preserve concrete state/layout, allocator interfaces/
+lifetime, exact grants, call/full-capacity charges and publication/release order.
+Recover63 old bodies,39 forwards and three complete headers; keep the18 small
+exact-allocation bodies local. Both compilers preserve nine actual layouts and
+three units pass Clang syntax. TVG-1674 records the initial lambda rewrite compile
+failure and checker/formatter/fixture setup failures separately. All23 relevant
+retained tests and63 old/current encoder cases pass; ABI/resources/header/251
+exports, both clients'102 archives and three installed consumers agree.
+No external implementation, new format or public API is introduced. This records
+scoped local evidence and process, not a legal guarantee, hosted result, full
+Clang/Linux codec runtime or completion of remaining frame/serializer/audit work.
+Continue coherent local work under DD-1650 and leave the goal active.

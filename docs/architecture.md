@@ -610,6 +610,16 @@ initializers, fields and size-based admission remain unchanged. The older
 four-MiB non-full-literal implementation remains separate pending source-role
 review; per-profile format/model/token/finder callbacks retain their identities.
 
+The16/32/64 MiB Position-distance Range owning streams share bridge and
+coordinator mechanics through the private stateless
+`src/frame/position_range_owned_stream_common.hpp` helper (DD-1655). Concrete
+encoders and allocator interfaces retain their fields, initialization and
+destruction order. Explicit bindings preserve the original sizeof-based call
+controls, CompactOwner, serializer and index-head identities. Exact-allocation
+wrappers remain local. The helper retains live-capacity receipts, full call/
+external charges, pre-admission and failure/publication behavior; it adds no
+stored policy. Range frame/serializer consolidation remains separate work.
+
 The public C entry points are implemented by responsibility. `src/marc.cpp`
 contains version/status queries and transform process/destruction. Private
 `src/c_api/entropy.cpp`, six `dictionary_*.cpp` files, `contextual.cpp` and

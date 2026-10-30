@@ -706,3 +706,22 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   expose substantial matching mechanics; implement and qualify those next.
   Tiny delegates and other differing components retain explicit contract review.
   Phase six/final integration remain open; no per-audit CI checkpoint under DD-1650.
+
+
+- Range owning-stream continuation (DD-1655/IR-1399): share16/32/64MiB bridge
+  and coordinator bodies through explicit profile bindings, retaining concrete
+  allocator interfaces/layouts and small exact-grant wrappers. Save six original
+  files/63 bodies; qualify ownership/admission/release/public behavior locally.
+  Frame/serializer work and integrated role/completion refresh remain open.
+  Continue under DD-1650 without an owner-only hosted checkpoint.
+
+
+- Range owning-stream sharing (DD-1655/TVG-1674/CR-2053): recover63 complete
+  bodies,39 forwards and three headers; preserve nine encoder/allocator layouts
+  with both compilers. All23 relevant retained tests,63 frozen/current encoder
+  cases, ABI/resources/exports, both clients'102 archives and three installed
+  consumers pass. Record the initial local-lambda rewrite and recovery/formatter
+  setup failures separately. Concrete callback/lifetime/admission/publication
+  contracts and local exact-allocation wrappers stay intact. Range frame encoder/
+  decoder and serializer work, plus final inventory/completion refresh, remain
+  open. Continue locally under DD-1650; no owner-only push or hosted run.

@@ -35669,3 +35669,28 @@ callbacks. Keep tiny identity delegates and differing1/4/8MiB contracts explicit
 review other nonmatching components rather than forcing a universal engine.
 Refresh affected inventory evidence after changes. DD-1650 batches that work
 and the final completion audit before one integrated hosted checkpoint.
+
+
+### DD-1655: Range16/32/64MiB owning-stream bridge and coordinator sharing
+
+Extract repeated bridge/coordinator mechanics to one private stateless helper
+with explicit profile types/constants/callbacks. Preserve concrete encoder and
+allocator declarations, constructor initialization lists, member order/defaults,
+bridge region receipts and size-dependent admission. Grant friendship to the
+encoder and its nested Bridge; add no stored policy or base-class state. Keep
+small exact-allocation wrappers local rather than abstracting identity forwarding.
+
+Preserve allocator lifetime and controls stability, callback order, exact grant
+refusal, live-capacity accounting, release/destructor ordering, pre-admitted raw/
+index requests, private publication and old/new owner generations. Preserve full
+input/output/external charges, fixed/call-working expressions, checked add/subtract
+order and priority, partial-buffer flags, failed-frame withholding and sticky
+terminal/error/count/position behavior. Keep CompactOwner/frame/finder/format and
+serializer callbacks separate. Source-body recovery, real layouts, relevant
+retained allocation/public tests and frozen contracts qualify the extraction.
+
+Frame encoder/decoder and serializer repetitions remain subsequent local work;
+do not infer that this ownership change closes phase six or the integrated gate.
+DD-1650 requests no per-helper push/hosted run. Refresh affected source-role
+inventory evidence at integration; the existing58b12eda audit stays a dated
+snapshot rather than silently describing a later tree.

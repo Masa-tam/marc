@@ -129,3 +129,14 @@ audit all six phases against executable evidence. Complete Windows/Linux,
 linkage/package and102-profile hosted validation at the integrated candidate
 remains required under DD-1650. Do not request separate hosted runs for this
 documentation audit or the next ownership helper.
+
+
+## Subsequent ownership qualification
+
+DD-1655/TVG-1674/CR-2053 qualify the16/32/64MiB Range owning-stream bridge and
+coordinator extraction locally. One stateless private helper becomes a production
+include dependency; concrete allocation interfaces, layouts and call-controls
+remain unchanged. The counts/source comparisons above intentionally identify
+the original58b12eda snapshot. Refresh the affected inventory/include closure at
+final integration. Frame encoder/decoder and serializer sharing and remaining
+contract/completion review stay open; this update does not claim a hosted result.

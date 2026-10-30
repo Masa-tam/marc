@@ -12459,3 +12459,14 @@ Retain historical results and v0.8.0 source identity; no external implementation
 or network history is consulted. Inspect14 Range16/32/64MiB frame-component
 triplets: owner/frame encoder/frame decoder/serializer repetitions remain
 concrete next-work candidates, while other contracts need explicit review.
+
+
+### IR-1399: Range16/32/64MiB owning-stream originals
+
+Use only first-party77a18c02 sources and existing allocation/frame/serialization
+contracts, role-survey data and frozen v0.8.0 receipts. Save six original cpp/hpp
+files and63 complete function bodies before editing. All three full cpp sources
+agree after explicit profile-name/whitespace substitutions. Retain concrete
+allocator interfaces and the small exact-allocation wrappers; share the repeated
+bridge/coordinator mechanics. The8MiB and older reference ownership policies
+remain outside this extraction. No external implementation source is consulted.

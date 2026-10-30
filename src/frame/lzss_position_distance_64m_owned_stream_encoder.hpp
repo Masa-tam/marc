@@ -3,6 +3,7 @@
 #include "frame/lzss_position_distance_64m_compact_owner.hpp"
 #include <array>
 namespace marc::frame::internal {
+struct PositionRangeOwnedStreamMechanics;
 class LzssPositionDistance64mStreamAllocator
     : public LzssPositionDistance64mCompactAllocator {
 public:
@@ -42,6 +43,7 @@ public:
   static std::size_t working_bytes() noexcept;
 
 private:
+  friend struct PositionRangeOwnedStreamMechanics;
   struct Region {
     const void *data{};
     std::size_t bytes{};
@@ -60,6 +62,7 @@ private:
     std::array<Region, 5> regions{};
 
   private:
+    friend struct PositionRangeOwnedStreamMechanics;
     void remember(const void *, std::size_t) noexcept;
     void forget(const void *) noexcept;
   };
