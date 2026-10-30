@@ -6,6 +6,10 @@ whose complete source is preserved in tag v0.8.0; they do not promise a current
 executable or runner. The contextual phase/tokenization/probe campaigns are now
 also retired; no active JSON manifest remains here. See the
 [refactoring plan](../../docs/design/v1-refactoring-stage-1.md).
+The [retired command index](../../docs/design/v1-refactoring-retired-commands.md)
+identifies exact historical targets, runners and manifests. Current tools and
+independent oracles are classified in the
+[source-role audit](../../docs/design/v1-refactoring-stage-1-audit.md).
 
 Per-window public timing/resource programs, private admission precursors and
 completed pool-refit measurement/diagnostic campaigns are also retired. Their

@@ -37,7 +37,7 @@ headers. These are starting observations, not deletion or line-count targets.
 
 ### 2. Remove completed experiments
 
-- [ ] Classify experimental targets and their transitive source/script/test
+- [x] Classify experimental targets and their transitive source/script/test
   dependencies; distinguish public production dependencies and independent
   correctness oracles from abandoned candidates.
 - [x] Remove diagnostic copies such as end_probe, phase_split, probe17, word4
@@ -49,7 +49,7 @@ headers. These are starting observations, not deletion or line-count targets.
   HashChain/BinaryTree strategies and the exhaustive correctness oracle.
 - [x] Review prepared/finder_scratch paths individually: names do not prove
   obsolescence. Preserve adopted public paths.
-- [ ] Keep provenance and historical results; identify retired reproduction
+- [x] Keep provenance and historical results; identify retired reproduction
   commands and update current documentation/validators without rewriting history.
 
 ### 3. Consolidate maintained benchmarks
@@ -154,6 +154,12 @@ Experiment-only harnesses retire with their obsolete interfaces, with the
 remaining public coverage explicitly accounted for (DD-1631).
 
 ## Completion audit
+
+The [source-role audit](v1-refactoring-stage-1-audit.md) and
+[retired command index](v1-refactoring-retired-commands.md) qualify phase-two
+classification at58b12eda. They identify remaining Range16/32/64MiB owner,
+frame and serializer sharing opportunities; phase six remains open. Refresh
+affected inventory/role evidence after those changes before integrated validation.
 
 All six phases must be assessed against current files and executable evidence.
 Published profiles and their behavior remain intact; completed experimental
@@ -688,3 +694,15 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   Public rANS owner/frame/stream sharing is locally complete. Continue remaining
   comparable-family review and final source-role/completion audits under DD-1650;
   keep the goal active without requesting a rANS-only push or hosted run.
+
+
+- Source-role/retired-command audit (DD-1654/TVG-1673/CR-2052): close the remaining
+  phase-two classification items using the linked audit/index. Account for680
+  production/15 test-only cpp files, ordinary include consumers, all125 optional
+  fuzz sources/37 seeds, maintained43 tools and the single common benchmark.
+  Index87 retired targets and68 runners/manifests; retain history and independent
+  mathematical references. Eight exporter/oracle cases and the diagnostic CTest
+  pass. Range16/32/64MiB owned-stream, frame encoder/decoder and serializer sources
+  expose substantial matching mechanics; implement and qualify those next.
+  Tiny delegates and other differing components retain explicit contract review.
+  Phase six/final integration remain open; no per-audit CI checkpoint under DD-1650.

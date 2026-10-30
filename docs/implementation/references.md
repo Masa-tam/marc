@@ -12443,3 +12443,19 @@ type/function/token-variant and fixed-working substitutions, including concrete
 signatures and constructor initialization lists. Preserve the older4MiB
 non-full-literal path and independent format/model/token/finder implementations.
 No external implementation source is consulted or needed for this extraction.
+
+
+### IR-1398: stage-one source-role and retired-command audit inputs
+
+Use only first-party58b12eda files, generated MSVC project/CTest contracts,
+fresh Clang22.1.3 optional codemodel data, v0.8.0 tracked paths/CMake declarations,
+existing DD-1630/DD-1631/DD-1635 retirement/adoption records and actual oracle
+imports. Survey all695 src cpp files and project/include consumers rather than
+inferring obsolescence from candidate/prepared/reference/scratch names. Preserve
+the15 test-only implementation roles,125 optional fuzz sources and37 seed inputs.
+Index87 retired measurement/tool targets and68 removed runners/manifests against
+the exact baseline declarations and current ordinary/optional target sets.
+Retain historical results and v0.8.0 source identity; no external implementation
+or network history is consulted. Inspect14 Range16/32/64MiB frame-component
+triplets: owner/frame encoder/frame decoder/serializer repetitions remain
+concrete next-work candidates, while other contracts need explicit review.

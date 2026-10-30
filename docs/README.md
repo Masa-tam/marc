@@ -146,6 +146,10 @@ produced; they are not additional public API or stream-format specifications.
 
 ## Project
 
+- [Stage-one refactoring audit](design/v1-refactoring-stage-1-audit.md): retained
+  source/tool/reference roles, remaining family work and validation scope.
+- [Retired reproduction commands](design/v1-refactoring-retired-commands.md):
+  historical target/runner identities and current measurement replacements.
 - [Contributing](../CONTRIBUTING.md): implementation sequence, provenance,
   composed-profile admission, and validation requirements.
 - [Changelog](../CHANGELOG.md): user-visible contents by project release.

@@ -44374,3 +44374,21 @@ No external implementation source, new algorithm, format or public API is used.
 This records scoped local preservation and provenance, not a legal guarantee,
 hosted result, Linux/full Clang codec runtime or completion of remaining audits.
 Under DD-1650 keep the goal active and continue locally without a rANS-only gate.
+
+
+### CR-2052: 2026-10-31 — source-role and retired-command audit
+
+Author/reviewer: Codex. Task: complete phase-two dependency/role classification
+and preserve historical reproduction identity (DD-1654). Use only first-party
+58b12eda/v0.8.0 files, generated project/include/import graphs and existing
+retirement records (IR-1398). Account for695 src cpp files, retained test-only
+references, maintained tools and125 optional fuzz harnesses with37 seeds.
+TVG-1673 records422 ordinary/566 optional targets,4172 ordinary CTests, no
+unregistered src cpp/header closure gaps or retired active CMake references,
+eight native-export/mathematical-oracle cases and the retained diagnostic test.
+Record87 retired targets and68 runners/manifests without rewriting measurements.
+Range ownership/frame/serializer repetitions remain concrete implementation work;
+do not close phase six or claim final hosted qualification. No external source,
+algorithm, format or product behavior is introduced. This records process and
+scoped audit evidence, not a legal guarantee or complete runtime call-graph proof.
+Continue locally under DD-1650 and leave the full goal active.

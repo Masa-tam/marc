@@ -26,8 +26,16 @@ auditing and public fuzz harnesses/runners also remain available.
 Public codec implementations, maintained benchmark coverage and independent
 correctness oracles are separate from these retired experiments. Track further
 retirements in [the refactoring plan](design/v1-refactoring-stage-1.md).
+The [retired command index](design/v1-refactoring-retired-commands.md) lists
+the exact baseline target and runner/manifest names; the
+[source-role audit](design/v1-refactoring-stage-1-audit.md) identifies maintained
+tools and independent oracles. Historical commands below require their original
+revision; use the current measurement contract for new public-profile results.
 
 ## Private context-9 whole-stream measurement
+
+Historical recipe: this private target is retired. Inspect its implementation
+and original command in `v0.8.0`; it is not a current benchmark entry point.
 
 With `MARC_BUILD_BENCHMARKS=ON` and a static library, build
 `marc_lzss_position_distance_stream_benchmark`. Example:

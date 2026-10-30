@@ -28330,3 +28330,55 @@ frame/stream sharing is locally qualified. Remaining comparable-family review,
 experimental/reference-role classification and completion audits stay open.
 Continue local work under DD-1650 without a per-family push or hosted gate; no
 external implementation or new public API/representation is introduced.
+
+
+### TVG-1673: source-role graph, retired command and diagnostic audit evidence
+
+On 2026-10-31 inspect current58b12eda sources and generated configuration evidence.
+The MSVC solution has422 targets and4172 CTests. Static/shared production cpp
+lists both contain680 files; all695 tracked src cpp files have production or
+explicit test-only consumers. Record all15 nonproduction cpp files and their
+project references in the source-role audit. The production include closure
+contains1388 tracked first-party files. No tracked src header is outside the
+ordinary target/include closure, no src cpp is unregistered, and no retired
+experiment path remains in active CMake source declarations. These are concrete
+membership/dependency checks, not proof of every possible runtime call path.
+
+Fresh Clang22.1.3 GNU-front-end/Ninja Release configuration with benchmarks,
+diagnostics and fuzz ON generates566 targets. Codemodel inspection confirms all
+125 fuzz harness cpp files registered and the optional rANS exporter present.
+The remaining37 tracked fuzz paths are seed inputs. Configuration does not claim
+a newly built/executed Clang codec or sanitizer campaign. Earlier compiler and
+file-api output locations are not assumed: the MSVC tree uses its actual solution
+projects; request fresh codemodel data explicitly in the optional tree.
+
+Build the unchanged trusted rANS exporter with MSVC/MD against the qualified
+static library. Four native exports (empty/mixed binary, minimum-match3/5) feed
+both mathematical model versions1/2; all eight comparison cases pass. Existing
+marc_position_distance_rans_diagnostic CTest passes (6.84 seconds). Current rANS
+test imports confirm the Python diagnostic's independent-oracle role. No user
+Silesia input, ignored cache or local result is staged, moved or deleted.
+
+Derive87 retired measurement/tool targets from baseline add_executable declarations
+with benchmark/tool sources and compare ordinary/optional generated targets.
+Every listed target and all its old cpp sources are absent. Index68 removed
+runner/manifest paths separately; JSON entries are inert data, not commands.
+Retain original measurement/provenance text and explicitly label the private
+context9 command historical. Current tools/benchmarks and adoption/reference
+roles are linked from the plan and documentation index. Raw tracked benchmark
+counts204/8 include the corpus README; the plan's initial203 non-corpus count
+uses its stated narrower unit.
+
+Compare14 Range16/32/64MiB frame-component triplets under only profile-name and
+whitespace normalization. Four substantial repetitions (owned stream, frame
+encode/decode and serialization) remain candidates; small delegates are already
+forwarders and eight other components do not satisfy this equality rule. Keep
+phase six and broader contract review open instead of claiming completion from
+the three newly qualified entropy families.
+
+Final audit/index content, documentation ordering/links and whitespace checks
+pass. Scope is documentation, numbered records and required-document validation;
+production code, public headers, build/test registrations and CI workflow stay
+unchanged. Repeating thousands of codec cases is not warranted for this audit.
+No hosted result or final six-phase completion is inferred. Continue the Range
+work locally under DD-1650 without requesting a documentation-only CI run.

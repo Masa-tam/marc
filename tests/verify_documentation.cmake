@@ -29,6 +29,9 @@ set(required_documents
     docs/design/lzss-wavl-tree-exact-transitions.md
     docs/design/lzss-sparse-hash-tree-snapshot-delta.md
     docs/design/lzss-sparse-hash-tree-snapshot-delta-budget.md
+    docs/design/v1-refactoring-stage-1.md
+    docs/design/v1-refactoring-stage-1-audit.md
+    docs/design/v1-refactoring-retired-commands.md
     docs/implementation/README.md
     docs/implementation/clean-room-record.md
     docs/implementation/design-decisions.md

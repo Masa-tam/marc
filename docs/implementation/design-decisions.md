@@ -35641,3 +35641,31 @@ borrowed-region/budget boundaries and frozen public contracts. Keep older4MiB
 non-full-literal sources independent pending role review. This local commit
 does not request a hosted checkpoint under DD-1650; final family/source-role and
 completion audits remain open.
+
+
+### DD-1654: explicit source-role and historical-command audit
+
+Close phase-two classification with a named source-role audit and exact retired
+command index. Account for680 production compilation units and15 test-only cpp
+files using actual project references and include/import consumers. Compile-list
+membership is build evidence, not a universal public-call reachability proof.
+Retain the qualified prepared-path adoption map and independent dictionary/
+entropy references. Preserve the optional bounded native rANS exporter as a
+manual bridge to the mathematical oracle; distinguish that role from the Python
+tests' direct imports and from public benchmark execution. Keep all125 current
+fuzz harnesses and37 seed files, with dedicated hosted fuzz jobs still absent.
+
+Identify87 retired benchmark/tool executable targets and68 runner/manifest paths
+from v0.8.0. Add explicit current/historical navigation without deleting or
+rewriting past measurements/provenance. Require the plan and both audit documents
+in existing documentation validation. No product/CMake registration/workflow
+behavior changes are part of this audit.
+
+Keep phase six open. Range16/32/64MiB owned-stream329-line implementations match
+after profile names/whitespace; their frame encoders277, decoders164 and serializers
+249 lines also match. Review and share those family-specific mechanics next,
+starting with owning streams, preserving concrete layout/admission and exact
+callbacks. Keep tiny identity delegates and differing1/4/8MiB contracts explicit;
+review other nonmatching components rather than forcing a universal engine.
+Refresh affected inventory evidence after changes. DD-1650 batches that work
+and the final completion audit before one integrated hosted checkpoint.
