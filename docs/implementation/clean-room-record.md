@@ -44356,3 +44356,21 @@ No external implementation, new format or algorithm is introduced. This records
 process and scoped local evidence, not a legal guarantee, hosted qualification,
 Linux/full Clang codec runtime or completion of the remaining frame/stream and
 source-role audits. DD-1650 keeps the goal active without an owner-only CI gate.
+
+
+### CR-2051: 2026-10-31 — public rANS frame and stream mechanics
+
+Author/reviewer: Codex. Task: remove seven-profile frame/controller duplication
+under DD-1653 using only first-party62bc87ef sources and saved complete originals
+(IR-1397). Preserve rANS validation priority, ordinary/scratch reader identities,
+fixed-working charges, concrete initialization/state/layout and output/draining.
+Similarity review recovers70 old bodies,49 forwards and14 complete headers;
+both compilers preserve28 layouts and14 units pass Clang syntax. TVG-1672
+records72 relevant retained test successes, both1008-case private boundary
+matrices and301 public frozen-DLL cases. Frozen ABI/resources/header/251 exports,
+both clients'102 archives and three installed consumers agree. Independent
+format/model/token/finder implementations and old4MiB controls remain intact.
+No external implementation source, new algorithm, format or public API is used.
+This records scoped local preservation and provenance, not a legal guarantee,
+hosted result, Linux/full Clang codec runtime or completion of remaining audits.
+Under DD-1650 keep the goal active and continue locally without a rANS-only gate.

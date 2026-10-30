@@ -601,8 +601,14 @@ The seven public Position-distance rANS owners share the private stateless
 bindings retain serialized-size multipliers18/20, additive bounds, fixed-working
 charges and each format/frame/finder callback. Eligibility3/5 validation, finder
 argument semantics, allocation order and concrete state/layout stay unchanged.
-Their frame/stream implementations and the older four-MiB non-full-literal
-implementation remain separate pending further family/source-role review.
+Their frame transactions and stream state machines share two further private
+helpers, `src/frame/lzss_position_rans_frame_common.hpp` and
+`src/frame/lzss_position_rans_stream_decoder_common.hpp` (DD-1653). They preserve
+rANS preflight/error priority, distinct ordinary/scratch token readers, original
+fixed-working charges and stream publication/draining behavior. Concrete stream
+initializers, fields and size-based admission remain unchanged. The older
+four-MiB non-full-literal implementation remains separate pending source-role
+review; per-profile format/model/token/finder callbacks retain their identities.
 
 The public C entry points are implemented by responsibility. `src/marc.cpp`
 contains version/status queries and transform process/destruction. Private

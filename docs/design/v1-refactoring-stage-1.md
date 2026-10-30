@@ -670,3 +670,21 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   the older4MiB control implementation stay unchanged. Continue frame/stream
   and final comparable-family/source-role audits locally under DD-1650; this
   coherent commit requests no push or hosted checkpoint and leaves the goal active.
+
+
+- rANS frame/stream continuation (DD-1653/IR-1397): share exact transactions and
+  state machines with explicit profile bindings, preserving rANS validation
+  order, ordinary/scratch readers, fixed-work accounting and concrete layouts.
+  Save28 originals/70 bodies and qualify locally. Keep the old4MiB path and final
+  audits open; continue under DD-1650 without a per-family hosted checkpoint.
+
+
+- Public rANS frame/controller sharing (DD-1653/TVG-1672/CR-2051): recover70
+  complete bodies,49 forwards and14 headers; preserve28 actual layouts with
+  both compilers. All72 relevant retained tests, both1008-case private boundary
+  matrices,301 public DLL cases, frozen ABI/resources/exports, both clients'102
+  archives and three installed consumers pass. Exclude only32 unchanged pure
+  model/format/token tests already run at the preceding owner checkpoint.
+  Public rANS owner/frame/stream sharing is locally complete. Continue remaining
+  comparable-family review and final source-role/completion audits under DD-1650;
+  keep the goal active without requesting a rANS-only push or hosted run.

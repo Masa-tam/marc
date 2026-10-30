@@ -4,6 +4,7 @@
 #include "core/status.hpp"
 
 namespace marc::frame::internal {
+struct PositionRansStreamMechanics;
 class PositionRans4mFullLiteralStreamDecoder final : public core::Transform {
 public:
     PositionRans4mFullLiteralStreamDecoder(core::DecoderLimits limits,std::span<std::byte> serialized,
@@ -14,6 +15,7 @@ public:
     [[nodiscard]] core::ProcessResult process(std::span<const std::byte> input,
         std::span<std::byte> output,std::uint32_t flags) noexcept override;
 private:
+    friend struct PositionRansStreamMechanics;
     enum class State { stream_header,frame_header,descriptor,payload,draining,awaiting_end,ended,error };
     [[nodiscard]] bool disjoint(std::span<const std::byte> input,std::span<std::byte> output) const noexcept;
     [[nodiscard]] core::ProcessResult fail(core::ErrorCode code,std::uint64_t position,

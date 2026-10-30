@@ -12432,3 +12432,14 @@ assertion identifies the16MiB multiplier difference; record it explicitly rather
 than treating it as identical. No original snapshot is overwritten. Keep the
 older4MiB non-full-literal implementation outside this owner extraction pending
 the final source-role audit. Do not consult external implementation source.
+
+
+### IR-1397: public rANS frame and stream-controller originals
+
+Use only first-party62bc87ef sources and the existing frozen v0.8.0 public
+receipts. Save28 original frame/stream cpp/hpp files and70 complete bodies
+before editing. Seven complete public profile sources match after explicit
+type/function/token-variant and fixed-working substitutions, including concrete
+signatures and constructor initialization lists. Preserve the older4MiB
+non-full-literal path and independent format/model/token/finder implementations.
+No external implementation source is consulted or needed for this extraction.

@@ -28275,3 +28275,58 @@ unchanged. Keep rANS frame/stream sharing and remaining comparable-family and
 source-role/completion audits open. Continue local commits under DD-1650;
 request no owner-only push or hosted checkpoint. No external implementation,
 public format/API change or hosted qualification is claimed.
+
+
+### TVG-1672: seven public rANS frame and stream-controller preservation
+
+On 2026-10-31 qualify DD-1653 with first-party62bc87ef originals (IR-1397).
+Reverse-expand the actual two helper headers and validate explicit bindings:
+all70 complete old bodies,49 concrete forwards and14 original frame/stream
+headers agree after friendship removal. Constructor initialization lists,
+concrete fields/defaults and callback identities remain exact. Independently
+clone original stream and unchanged owner declarations: MSVC19.51 and clang-cl
+preserve28 actual stream/owner/workspace sizes and alignments. Clang syntax-
+checks all14 changed production units. No guard/declaration correction or new
+format/model/table/finder implementation belongs to this extraction.
+
+The serial MSVC Release build completes46 selected targets. All72 relevant
+retained tests pass in573.75 seconds using two CTest workers and workspace
+TEMP/TMP. Inspect executable paths and preserve all4172 CTest names. Compare
+the prior104-test owner selection: omit only32 pure format/token/model tests,
+whose source is unchanged and which passed in TVG-1671. Retain frame/stream/
+owner/vector tests, public C/static/shared ABI and CLI paths, including the older
+4MiB non-full-literal controls. Existing independent exhaustive encoders,
+malformed/boundary/chunk vectors and allocation/limit tests remain unchanged.
+This is scoped qualification, not a new4172-test run or fuzz/sanitizer campaign.
+
+For each compiler, independently renamed original/current stream units match
+1008 borrowed-constructor/region/budget cases and3024 process records per
+implementation, with168 explicit expected-outcome checks. Cover exact and
+one-short budgets, additional-owner charge/overflow, invalid limits, all three
+borrowed regions' aliases, self/control aliases, empty workspaces, flag priority,
+partial header/final input and sticky error calls. Assert bounded counts and no
+output publication. Both harnesses use /MD. The Clang harness compiles seven old
+and seven actual changed stream sources; support/frame callbacks come from the
+current MSVC library. These constructor/header probes do not establish a full
+Clang codec or Linux runtime result; full-frame preservation uses retained MSVC
+tests and the frozen DLL comparison.
+
+Distinct frozen v0.8.0/current MSVC DLLs match301 public cases and25775 process
+calls per library. Cover all seven profiles, default/4096 frames, empty/partial/
+boundary input, small/zero output, flush/final/repeated terminal behavior,
+truncation/mutations/trailing data, original-size mismatch, overlap, reset and
+tiny budgets. Resources/create outcomes, bytes, counts, errors and positions
+agree. Frozen receipts match224 configuration/query records,111 layouts, public
+header hash and all251 exports; final DLL hash agrees with its receipt. MSVC
+CLI and existing Clang C client each verify102 frozen archives; the client uses
+the MSVC DLL, not a full Clang codec build. Three fresh installed-package tests
+pass (0.79 seconds) with both shared/static exports.
+
+Final source/scope, documentation order/link and whitespace checks pass. Scope:
+21 existing production files, two private helpers and six documents. Public
+headers, CMake/workflow registrations, independent test sources, model/token/
+finder/format and old4MiB implementation are unchanged. Public rANS ownership/
+frame/stream sharing is locally qualified. Remaining comparable-family review,
+experimental/reference-role classification and completion audits stay open.
+Continue local work under DD-1650 without a per-family push or hosted gate; no
+external implementation or new public API/representation is introduced.

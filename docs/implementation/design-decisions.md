@@ -35619,3 +35619,25 @@ source-role classification. Prove complete-body recovery, original declarations,
 actual layouts, relevant retained runtime tests and frozen public contracts.
 Record setup failures and platform limits. Under DD-1650 continue local commits
 without requesting a per-helper or per-family hosted checkpoint.
+
+
+### DD-1653: rANS-specific frame transactions and stream state machines
+
+Continue DD-1652 through two private stateless rANS family helpers, with explicit
+local profile bindings. Share the seven matching frame transactions and stream
+state machines while retaining concrete functions/classes, original constructor
+initialization lists, fields/defaults and size-dependent admission. Grant stream
+friendship without adding stored policy/base-class state. Do not reuse the
+Blocked Huffman/tANS helpers: rANS preflights frames before bounded buffer checks,
+retains distinct ordinary/scratch token readers and charges its existing fixed
+working constants without an entropy table bank.
+
+Preserve overlap and validation/error priority, output publication, scratch and
+borrowed-buffer lifetimes, checked accounting, partial-buffer/flag semantics and
+sticky terminal/count/position results. Frame/token/model/finder/format callbacks
+keep their identities. Prove all70 original bodies,49 forwards, declarations,
+initializers and actual layouts, then qualify retained relevant tests, private
+borrowed-region/budget boundaries and frozen public contracts. Keep older4MiB
+non-full-literal sources independent pending role review. This local commit
+does not request a hosted checkpoint under DD-1650; final family/source-role and
+completion audits remain open.
