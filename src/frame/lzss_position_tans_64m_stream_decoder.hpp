@@ -1,9 +1,10 @@
-#ifndef MARC_FRAME_LZSS_POSITION_TANS_32M_STREAM_DECODER_HPP
-#define MARC_FRAME_LZSS_POSITION_TANS_32M_STREAM_DECODER_HPP
+#ifndef MARC_FRAME_LZSS_POSITION_TANS_64M_STREAM_DECODER_HPP
+#define MARC_FRAME_LZSS_POSITION_TANS_64M_STREAM_DECODER_HPP
 #include "frame/lzss_position_tans_64m_frame.hpp"
 #include "core/status.hpp"
 
 namespace marc::frame::internal {
+struct PositionTansStreamMechanics;
 // Caller owns bounded scratch. Failed frames never enter the draining state.
 class PositionTans64mStreamDecoder final : public core::Transform {
 public:
@@ -16,6 +17,7 @@ public:
     [[nodiscard]] core::ProcessResult process(std::span<const std::byte> input,
         std::span<std::byte> output,std::uint32_t flags) noexcept override;
 private:
+    friend struct PositionTansStreamMechanics;
     enum class State { stream_header,frame_header,descriptor,payload,draining,awaiting_end,ended,error };
     [[nodiscard]] bool disjoint(std::span<const std::byte> input,std::span<std::byte> output) const noexcept;
     [[nodiscard]] core::ProcessResult fail(core::ErrorCode code,std::uint64_t position,

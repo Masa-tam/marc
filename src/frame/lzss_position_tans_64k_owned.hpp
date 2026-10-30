@@ -5,6 +5,7 @@
 #include <optional>
 
 namespace marc::frame::internal {
+struct PositionTansOwnedMechanics;
 struct PositionTans64kWorkspace {
     std::size_t raw_bytes{},token_count{},serialized_bytes{},finder_bytes{},aggregate_bytes{};
     std::size_t token_bytes{},payload_bytes{},private_serialized_bytes{},table_bytes{};
@@ -22,6 +23,7 @@ public:
     PositionTans64kOwnedEncoder& operator=(const PositionTans64kOwnedEncoder&)=delete;
     [[nodiscard]] core::ProcessResult process(std::span<const std::byte>,std::span<std::byte>,std::uint32_t) noexcept override;
 private:
+    friend struct PositionTansOwnedMechanics;
     PositionTans64kOwnedEncoder() noexcept = default;
     enum class State { header,collecting,draining,awaiting_end,ended,error };
     [[nodiscard]] bool disjoint(std::span<const std::byte>,std::span<std::byte>) const noexcept;
@@ -48,6 +50,7 @@ public:
     PositionTans64kOwnedDecoder& operator=(const PositionTans64kOwnedDecoder&)=delete;
     [[nodiscard]] core::ProcessResult process(std::span<const std::byte>,std::span<std::byte>,std::uint32_t) noexcept override;
 private:
+    friend struct PositionTansOwnedMechanics;
     PositionTans64kOwnedDecoder() noexcept = default;
     std::unique_ptr<std::byte[]> raw_,serialized_;
     std::unique_ptr<entropy::internal::TansDecodeEntry[]> tables_;

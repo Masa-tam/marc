@@ -35567,3 +35567,36 @@ and manual defaults unchanged in this policy-only change. Fewer agent-requested
 push/manual checkpoints are the immediate intervention. No runtime reduction or
 hosted cost saving is measured here, and no new hosted run is requested merely
 to validate this documentation update.
+
+
+### DD-1651: family-specific tANS ownership and frame/stream mechanics
+
+Continue local work under DD-1650 without a per-family hosted pause. Share the
+seven identical tANS owners, frame transactions and stream state machines in
+three private stateless family helpers with explicit local bindings. Preserve
+all concrete declarations, constructor initialization lists, data-field order/
+defaults and size-dependent admission. Grant friendship rather than adding a
+base class, runtime strategy field or universal codec engine.
+
+Keep the tANS-specific uint16 encoder table and TansDecodeEntry bank, fixed
+working-space expressions, payload rounding plus2, metadata floor and entropy-
+table limit checks exact. Keep all checked-arithmetic/refusal/allocation order,
+scratch-only versus ordinary decode, borrowed versus owned lifetimes, failed-
+frame withholding, flag/error priority and sticky terminal/count/position rules.
+The64 KiB finder binding explicitly supplies its existing token variant; the
+other six bindings retain the original three-argument call/default semantics.
+Do not normalize those contracts to the Blocked Huffman implementation.
+
+Prove all147 old bodies and concrete forwards, original declarations/initializers
+and both compilers' real layouts. Run relevant retained family tests, frozen
+ABI/resource/export/archive comparisons and meaningful private/public boundary
+traces before the local commit. Leave the integrated hosted gate pending; rANS,
+remaining comparable-family review and final source-role audit stay open.
+
+The initial combined-layout compilation exposes seven pre-existing private guard
+collisions:8MiB format/frame/owned/stream and16MiB owned use4MiB guards;
+64MiB frame/stream use32MiB guards. Repair only those guard identifiers, preserving declarations
+and format definitions exactly. Save their original text separately and reverse
+the documented guard mapping in source comparisons. Extend the existing1MiB
+owned test to co-include all seven profiles and require all seven encoder classes, so a future
+guard collision fails compilation without adding or removing CTest registrations.

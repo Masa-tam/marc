@@ -12397,3 +12397,24 @@ manual runs are unconditional and concurrency groups include the event name.
 Only scheduled work reuses proven exact-SHA complete success. No external API
 history or run URL was retrieved. Review request frequency separately from
 changing triggers, coverage or treating unspecified CI success as complete.
+
+
+### IR-1395: tANS seven-window ownership and controller originals
+
+Use only first-party d5437e7e tANS ownership/frame/stream sources, their existing
+format/context/table/finder contracts, the qualified Blocked Huffman refactoring
+process and frozen v0.8.0 receipts. Independently save all 42 original files and
+147 complete old bodies before editing. Whole sources agree across seven windows
+after explicit type/function/variant/bound substitutions and the existing 64 KiB
+finder's explicit fourth argument versus the other finders' three-argument calls.
+Retain payload bit bounds84/96 and descriptor overheads64+9122/9207/9249/9270/
+9291/9313/9334 as profile bindings. Do not derive a new representation or consult
+external implementation source. Original tANS table/model/format code remains
+independent and unchanged; use retained vectors, boundary contracts and frozen
+old/new resource/byte/error evidence for qualification.
+
+Combined-profile compilation also identifies seven pre-existing private include-
+guard collisions. Preserve their original text in a separate receipt (including
+8MiB format.hpp in addition to the42 saved files). Rename only those guards;
+compare every declaration after reversing the explicit mapping. The existing
+1MiB owned test gains seven-profile co-inclusion assertions without new test IDs.

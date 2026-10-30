@@ -1,5 +1,5 @@
-#ifndef MARC_FRAME_LZSS_POSITION_TANS_4M_FRAME_HPP
-#define MARC_FRAME_LZSS_POSITION_TANS_4M_FRAME_HPP
+#ifndef MARC_FRAME_LZSS_POSITION_TANS_8M_FRAME_HPP
+#define MARC_FRAME_LZSS_POSITION_TANS_8M_FRAME_HPP
 #include "frame/lzss_position_tans_8m_format.hpp"
 #include "context/lzss_position_tans_8m_tokens.hpp"
 #include "dictionary/lzss_typed_reconstructor.hpp"

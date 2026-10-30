@@ -44317,3 +44317,24 @@ trigger, test coverage or external implementation changes. Leave the goal active
 for batched local continuation; do not pause/request CI for this policy change.
 This records process and evidence, not a hosted validation result or completion
 of the remaining refactoring scope.
+
+
+### CR-2049: 2026-10-31 — tANS ownership and frame/controller consolidation
+
+Author/reviewer: Codex. Task: consolidate the seven tANS ownership, frame and
+stream mechanics using first-party d5437e7e sources and independently saved
+originals (IR-1395/DD-1651). Keep concrete state, profile callbacks, finder
+semantics and tANS-specific bounds/banks/admission. Similarity review recovers
+all147 old bodies,105 forwards, complete declarations and initialization lists.
+Correct seven pre-existing private guard collisions without changing format
+definitions; add seven-profile co-inclusion to the existing1MiB owned test.
+Both compilers preserve28 type layouts;21 changed units pass Clang syntax.
+TVG-1670 records fixture/filename setup failures separately from final evidence.
+All98 relevant retained tests, both private boundary matrices,301 public DLL
+cases, four tooling checks and three installed consumers pass. Frozen ABI,
+resources, all251 exports and both clients'102 archive comparisons agree.
+No external implementation source or new algorithm/format is introduced.
+This records process and scoped local evidence, not a legal guarantee, hosted
+qualification, Linux/full Clang codec runtime or completion of remaining work.
+Under DD-1650 keep the goal active and continue local commits without requesting
+a tANS-only push/CI checkpoint; rANS and the final source-role audit stay open.

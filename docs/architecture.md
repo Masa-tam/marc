@@ -583,6 +583,19 @@ unchanged. Borrowed workspaces, validation order, exact error positions, final
 input/draining and sticky terminals retain their existing contracts. Per-window
 format/token/model/finder implementations remain separate callbacks.
 
+The seven Position-distance tANS windows use three separate private helpers:
+`src/frame/lzss_position_tans_owned_common.hpp`,
+`src/frame/lzss_position_tans_frame_common.hpp` and
+`src/frame/lzss_position_tans_stream_decoder_common.hpp` (DD-1651). Explicit
+bindings retain each profile's callbacks, payload/serialized bounds and finder
+argument semantics. Concrete owners, workspaces and stream decoders retain
+their fields, initialization and size-based admission. The uint16 encoder bank,
+TansDecodeEntry decoder bank, fixed working-space expression, payload rounding
+plus two bytes, metadata floor and global entropy-table limit remain tANS
+contracts. Seven pre-existing private header-guard collisions are corrected
+without changing declarations or format definitions; the existing one-MiB
+owned test co-includes all seven profiles to catch future collisions.
+
 The public C entry points are implemented by responsibility. `src/marc.cpp`
 contains version/status queries and transform process/destruction. Private
 `src/c_api/entropy.cpp`, six `dictionary_*.cpp` files, `contextual.cpp` and

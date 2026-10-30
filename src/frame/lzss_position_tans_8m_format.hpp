@@ -1,5 +1,5 @@
-#ifndef MARC_FRAME_LZSS_POSITION_TANS_4M_FORMAT_HPP
-#define MARC_FRAME_LZSS_POSITION_TANS_4M_FORMAT_HPP
+#ifndef MARC_FRAME_LZSS_POSITION_TANS_8M_FORMAT_HPP
+#define MARC_FRAME_LZSS_POSITION_TANS_8M_FORMAT_HPP
 #include "dictionary/lzss_typed_token.hpp"
 #include "entropy/position_tans_8m.hpp"
 

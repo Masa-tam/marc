@@ -1,4 +1,27 @@
+#include "frame/lzss_position_tans_64k_owned.hpp"
 #include "frame/lzss_position_tans_1m_owned.hpp"
+#include "frame/lzss_position_tans_4m_owned.hpp"
+#include "frame/lzss_position_tans_8m_owned.hpp"
+#include "frame/lzss_position_tans_16m_owned.hpp"
+#include "frame/lzss_position_tans_32m_owned.hpp"
+#include "frame/lzss_position_tans_64m_owned.hpp"
+#include <type_traits>
+// Regression: all seven private profiles must coexist in one translation unit.
+// The 8 MiB, 16 MiB and 64 MiB headers formerly reused other windows' include guards.
+static_assert(std::is_base_of_v<marc::core::Transform,
+    marc::frame::internal::PositionTans64kOwnedEncoder>);
+static_assert(std::is_base_of_v<marc::core::Transform,
+    marc::frame::internal::PositionTans1mOwnedEncoder>);
+static_assert(std::is_base_of_v<marc::core::Transform,
+    marc::frame::internal::PositionTans4mOwnedEncoder>);
+static_assert(std::is_base_of_v<marc::core::Transform,
+    marc::frame::internal::PositionTans8mOwnedEncoder>);
+static_assert(std::is_base_of_v<marc::core::Transform,
+    marc::frame::internal::PositionTans16mOwnedEncoder>);
+static_assert(std::is_base_of_v<marc::core::Transform,
+    marc::frame::internal::PositionTans32mOwnedEncoder>);
+static_assert(std::is_base_of_v<marc::core::Transform,
+    marc::frame::internal::PositionTans64mOwnedEncoder>);
 #include "core/endian.hpp"
 #include <algorithm>
 #include <cstdlib>

@@ -632,3 +632,23 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   History/partition checks and document validation pass. Workflow triggers and
   coverage stay unchanged. Do not request a push or hosted run for this
   documentation-only commit; keep the goal active and continue locally.
+
+
+- tANS local continuation (DD-1651): compare and share the seven-window owned,
+  frame and stream mechanics using explicit tANS bounds/types/callbacks, preserving
+  concrete layouts and existing three/four-argument finder semantics. Original
+  sources are saved under IR-1395. Qualify locally and commit; do not request a
+  per-family push/CI checkpoint under DD-1650. Keep rANS and final audits open.
+
+
+- Seven-window tANS local consolidation (DD-1651/TVG-1670/CR-2049): three private
+  stateless helpers retain concrete ownership/state/layout, tANS table/budget
+  contracts and explicit finder/profile bindings. Recover147 bodies/105 forwards,
+  preserve28 layouts with both compilers, and qualify98 relevant retained tests,
+  both private boundary matrices,301 frozen DLL cases, ABI/resources/exports,
+  both clients'102 frozen archives, four tooling and three installed consumers.
+  Repair seven pre-existing private guard collisions and compile all profiles
+  together in the existing1MiB owned test. Record fixture setup failures and
+  platform/scope limitations separately. This family is complete locally;
+  continue rANS/comparable-family review and final source-role/completion audits.
+  Keep the goal active: DD-1650 requests no per-family push or hosted CI run.

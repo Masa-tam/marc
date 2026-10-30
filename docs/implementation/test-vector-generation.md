@@ -28152,3 +28152,71 @@ workflow/gate code, labels and runtime behavior are untouched. Rebuilding or
 repeating the 3655 codec tests is unnecessary for these prose changes. No new
 CI run is requested for this policy commit. Frequency/cost improvements remain
 an operational expectation, not a measured elapsed-time or hosted-cost result.
+
+
+### TVG-1670: seven-window tANS ownership and controller preservation
+
+On 2026-10-31 qualify DD-1651 locally under the batched DD-1650 policy. Use the
+first-party originals saved in IR-1395 and distinct frozen v0.8.0/current MSVC
+DLLs. Reverse-expand the actual three private helper headers: all147 complete
+old bodies,105 concrete forwards,21 original owned/frame/stream declarations and
+constructor initialization lists agree after explicit profile substitutions and
+friend/guard normalization. The additional8MiB format header is guard-only;
+all seven corrected guards recover their exact original declarations. Existing
+model/context/token/finder/format definitions remain independent. Review all
+38 changed production files, three added private helpers, one existing test and
+six documents; no public header, workflow, CMake registration or other family
+source changes belong to this local commit.
+
+The initial combined-profile layout fixture exposes seven pre-existing private
+guard collisions:8MiB format/frame/owned/stream and16MiB owned use4MiB guards;
+64MiB frame/stream use32MiB guards. Correct only the two guard identifiers per
+header. The independently cloned old declarations also need unique clone guards,
+read from the saved originals rather than guessed from filenames. Initial
+fixture attempts fail until both issues are resolved. An initial helper assumes
+a nonexistent64MiB owned-test filename; resume with the actual existing1MiB
+owned test. That test now co-includes all seven profiles and statically requires
+all seven encoder classes, while its existing runtime checks remain unchanged.
+These setup failures are not counted as successful evidence.
+
+Both MSVC19.51 and clang-cl compile the independent old/current layout fixture:
+seven stream,14 owning and seven workspace sizes/alignments agree (28 types).
+clang-cl syntax-checks all21 changed production translation units. The MSVC
+Release build completes59 selected targets serially, including the existing
+co-inclusion test and CLI/benchmark consumers. CTest inventory remains4172;
+all98 relevant retained tANS tests pass in455.53 seconds with two workers.
+They include independent vectors, format/frame/stream/owner/capacity contracts,
+public API, CLI and existing deterministic CLI/public fuzz smoke cases. This is
+scoped local qualification, not a rerun of all4172 tests or a new fuzz/sanitizer
+campaign. Use a workspace TEMP/TMP directory for corpus subprocesses.
+
+For each compiler, an independent old/current private stream harness matches
+1449 constructor/region/budget cases and4347 process records per implementation,
+with217 explicit expected acceptance/refusal checks. Cover all seven profiles,
+working-space exact/one-short and overflow cases, bank capacity, global entropy
+table limits, invalid limits, buffer/control aliases, flags, sticky errors and
+partial headers; assert no premature output publication. Compile with /MD to
+match the current static library. The Clang harness compiles all seven changed
+stream units and seven independently renamed originals; its support/frame
+callbacks use the MSVC library and full-frame codec execution is not claimed.
+No full Clang codec or Linux runtime result is inferred from syntax/layout and
+these scoped probes.
+
+Public frozen/current DLL comparisons match301 cases and25847 process calls per
+library: all seven profiles, empty/final/4096-boundary input, arbitrary chunks,
+zero/small output, flush/end-input/repeated terminal calls, malformed/truncated/
+trailing data, original-size mismatch, overlap, reset rejection and tiny budget.
+Resources, bytes, statuses, counts and error positions agree. Frozen ABI checks
+match224 configuration/query records,111 layouts, public-header hash and all251
+exports. Verify the final DLL hash against the resource receipt. Both the MSVC
+CLI and existing Clang C client verify all102 frozen archives; the latter uses
+the current MSVC DLL and does not establish a full Clang codec runtime result.
+Three fresh installed-package consumers pass (0.63 seconds); four retained
+documentation/gate/partition/corpus-tooling tests pass (5.10 seconds).
+
+Final document ordering/link validation, source/scope checks and whitespace
+checks pass before committing. Keep the rANS/comparable-family review and final
+experimental/reference-role and completion audits open. No per-family push or
+hosted checkpoint is requested: continue coherent local work under DD-1650 and
+retain one integrated hosted stage-one candidate. No external implementation,
+new public algorithm, representation or independent oracle replacement is used.

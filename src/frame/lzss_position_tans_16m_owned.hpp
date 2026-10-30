@@ -1,10 +1,11 @@
-#ifndef MARC_FRAME_LZSS_POSITION_TANS_4M_OWNED_HPP
-#define MARC_FRAME_LZSS_POSITION_TANS_4M_OWNED_HPP
+#ifndef MARC_FRAME_LZSS_POSITION_TANS_16M_OWNED_HPP
+#define MARC_FRAME_LZSS_POSITION_TANS_16M_OWNED_HPP
 #include "frame/lzss_position_tans_16m_stream_decoder.hpp"
 #include <memory>
 #include <optional>
 
 namespace marc::frame::internal {
+struct PositionTansOwnedMechanics;
 struct PositionTans16mWorkspace {
     std::size_t raw_bytes{},token_count{},serialized_bytes{},finder_bytes{},aggregate_bytes{};
     std::size_t token_bytes{},payload_bytes{},private_serialized_bytes{},table_bytes{};
@@ -22,6 +23,7 @@ public:
     PositionTans16mOwnedEncoder& operator=(const PositionTans16mOwnedEncoder&)=delete;
     [[nodiscard]] core::ProcessResult process(std::span<const std::byte>,std::span<std::byte>,std::uint32_t) noexcept override;
 private:
+    friend struct PositionTansOwnedMechanics;
     PositionTans16mOwnedEncoder() noexcept = default;
     enum class State { header,collecting,draining,awaiting_end,ended,error };
     [[nodiscard]] bool disjoint(std::span<const std::byte>,std::span<std::byte>) const noexcept;
@@ -48,6 +50,7 @@ public:
     PositionTans16mOwnedDecoder& operator=(const PositionTans16mOwnedDecoder&)=delete;
     [[nodiscard]] core::ProcessResult process(std::span<const std::byte>,std::span<std::byte>,std::uint32_t) noexcept override;
 private:
+    friend struct PositionTansOwnedMechanics;
     PositionTans16mOwnedDecoder() noexcept = default;
     std::unique_ptr<std::byte[]> raw_,serialized_;
     std::unique_ptr<entropy::internal::TansDecodeEntry[]> tables_;
