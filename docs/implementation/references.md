@@ -12371,3 +12371,17 @@ payload bit bounds (135/135/135/150/150) and serialized descriptor overheads
 new derivation of stream identities or limits. No external algorithm or source
 is consulted. Use whole-body expansion, real concrete layouts, retained tests,
 old/new DLL traces and frozen ABI/resources/archives to qualify the extension.
+
+
+### IR-1393: Blocked Huffman frame and stream-controller original bodies
+
+Use only first-party 8b273212 sources and frozen v0.8.0 receipts. Independently
+save seven frame implementations, seven stream implementations and their 14
+headers before editing. The complete sources match across all seven windows
+after enumerated profile-type, callback, working-space/table and typed-token
+variant substitutions. Save all 77 original bodies, including constructor
+initialization lists. Existing entropy/context/model/format/reconstructor
+implementations remain independent callbacks, not copied or reimplemented here.
+No external implementation, algorithm or format is consulted or introduced.
+Qualify whole-body expansion, concrete declarations/layouts, direct caller-owned
+boundaries, old/new public traces and retained independent malformed/oracle tests.

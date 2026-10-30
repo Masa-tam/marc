@@ -44274,3 +44274,30 @@ launch timeouts and the corrected corpus temporary-directory failure separately.
 No external implementation, new algorithm or format is introduced. This records
 process and local preservation evidence, not a legal guarantee, hosted result
 or completion of frame consolidation/the six-phase objective.
+
+
+### CR-2046: 2026-10-30 — hosted all-window owner continuation
+
+Author/reviewer: Codex. Record the maintainer-reported push and successful CI
+through 8b273212 (TVG-1667). Resume the authorized Blocked Huffman frame and
+stream-decoder mechanics review. Keep concrete objects, format/token/model
+implementations and resource/publication contracts intact; obtain fresh source
+and runtime evidence before the next hosted checkpoint.
+
+
+### CR-2047: 2026-10-30 — Blocked Huffman frame/controller consolidation
+
+Author/reviewer: Codex. Task: share seven identical frame transactions and seven
+stream controllers under DD-1649 while retaining concrete state and all existing
+format/model/finder contracts. Use only first-party 8b273212 sources, independently
+saved complete originals and frozen v0.8.0 evidence (IR-1393). Similarity review
+recovers all 77 bodies, 49 concrete forwards, original initialization lists and
+complete declarations after friendship removal. Both compilers preserve 28 real
+stream/owner/workspace type sizes and alignments. TVG-1668 records checker/syntax,
+restricted-build and CRT-harness setup failures separately from final evidence.
+Both compiler boundary matrices, 301 DLL cases, all 3655 selected retained tests,
+four tooling checks and three installed consumers pass; ABI/resources/exports
+and both clients' 102 archive comparisons agree. No external implementation,
+new algorithm or format is introduced. This records process and scoped local
+preservation evidence, not a legal guarantee, hosted result, full Clang codec
+runtime or completion of the remaining family/source-role audit.

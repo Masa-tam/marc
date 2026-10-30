@@ -563,13 +563,25 @@ allocation order and initial-only/capacity-only scopes remain at their callers.
 
 The seven Position-distance Blocked Huffman windows (64 KiB through 64 MiB)
 share requirements, allocation and process bodies through the private
-`src/frame/lzss_position_blocked_huffman_owned_common.hpp` helper. Explicit local profile bindings retain each
+`src/frame/lzss_position_blocked_huffman_owned_common.hpp` helper. Explicit local
+profile bindings retain each
 window's constants and existing format/frame/finder functions. The concrete
 encoder, decoder and workspace types keep their data-member order and defaults;
 a stateless friend helper adds no stored policy or base-class subobject.
 Admission, allocation order, private frame validation and draining remain the
-existing contracts (DD-1647/DD-1648). Per-window frame/model/finder implementations
-remain separate; frame-mechanics consolidation is a later phase6 item.
+existing contracts (DD-1647/DD-1648).
+
+The private `src/frame/lzss_position_blocked_huffman_frame_common.hpp` helper
+shares this family's bounded frame planning, preflight, overlap/admission and
+success-only serialization/reconstruction transactions. Ordinary-output and
+scratch-only decode entry points remain distinct. Explicit profile bindings
+retain concrete result/context/model types, token variants and format callbacks.
+`src/frame/lzss_position_blocked_huffman_stream_decoder_common.hpp` shares the
+seven stream state machines through stateless friendship (DD-1649). Concrete
+constructor initialization lists, fields and sizeof-based admission remain
+unchanged. Borrowed workspaces, validation order, exact error positions, final
+input/draining and sticky terminals retain their existing contracts. Per-window
+format/token/model/finder implementations remain separate callbacks.
 
 The public C entry points are implemented by responsibility. `src/marc.cpp`
 contains version/status queries and transform process/destruction. Private

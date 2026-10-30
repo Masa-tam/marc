@@ -89,8 +89,9 @@ headers. These are starting observations, not deletion or line-count targets.
 
 - [x] Pilot Position-distance Blocked Huffman across 64 KiB/1 MiB ownership
   mechanics (DD-1647/TVG-1664); hosted success reported in TVG-1665.
-- [ ] Separate explicit profile constants/limits/format identities from common
-  factory, ownership and frame mechanics, then extend to all seven windows.
+- [x] Separate explicit profile constants/limits/format identities from common
+  factory, ownership and frame mechanics across all seven Blocked Huffman windows
+  (DD-1647/DD-1648/DD-1649/TVG-1668); local qualification, fresh hosted gate pending.
 - [ ] Apply proven common pieces to remaining comparable families where they
   actually simplify maintenance. Review each family and record justified
   differences; avoid a single universal codec template or speculative generator.
@@ -554,3 +555,31 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   substitution; review their concrete state/layout contracts first after CI,
   then analyze the frame bodies' remaining constants. No frame source changes
   have been made at this ownership checkpoint.
+
+
+- Hosted continuation through 8b273212: the maintainer reports push and successful
+  CI for the all-window owner gate (TVG-1667/CR-2046). Resume the seven-window
+  frame and stream-decoder mechanics consolidation under DD-1649. Keep the
+  remaining comparable-family review and final experimental/reference audit open.
+
+
+- Seven-window frame/controller consolidation (DD-1649/TVG-1668/CR-2047): share
+  the exact frame transactions and stream state machines through two private
+  stateless helpers with explicit bindings. Concrete fields/initialization,
+  resource charges, borrowed scratch and validation/publication order stay intact.
+  Full-source expansion, both compilers' real layouts/boundaries, 301 DLL cases,
+  all 3655 selected tests, four tooling and three installed consumers qualify;
+  frozen ABI/resources/exports and both clients' 102 archives agree. Record
+  checker/compiler/build/CRT setup failures transparently. The Blocked Huffman
+  seven-window factory/ownership/frame item is locally complete. Other comparable
+  families and the final experimental/reference-role audit remain open.
+
+- Hosted frame/controller gate: push the commit carrying TVG-1668 and run manual
+  full_validation. Confirm all 4172 retained Windows/Linux tests, installed
+  static-only/shared-only consumers and 102-profile exchange. Pause at this
+  decoder boundary before another codec-family implementation change. Local
+  scoped preservation evidence does not complete the full six-phase objective.
+  The read-only next-family survey identifies rANS/tANS frame/stream repetitions
+  but additional owner-contract differences; Adaptive's seven-profile owner
+  dispatch is already shared. Review those contracts after CI before selecting
+  the next implementation scope. No other-family source changes are made here.

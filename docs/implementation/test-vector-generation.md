@@ -28009,3 +28009,111 @@ A read-only next-step survey (blocked-frame-readonly-review.json) saves hashes
 of all seven frame and stream-decoder sources: all seven complete stream-decoder
 sources agree after name substitutions only, whereas frame bodies need further
 explicit-constant analysis. No frame implementation or qualification is claimed.
+
+
+### TVG-1667: maintainer-reported hosted all-window owner gate through 8b273212
+
+On 2026-10-30 the maintainer reports push and successful CI after the requested
+full_validation checkpoint for 8b273212. Record this as maintainer-reported;
+no run URL/logs were independently retrieved. Resume the authorized Blocked
+Huffman frame/stream-controller consolidation under DD-1649. New implementation
+changes require fresh qualification and do not inherit this hosted result.
+
+
+### TVG-1668: seven-window Blocked Huffman frame/controller preservation
+
+On 2026-10-30 qualify DD-1649 against independently saved 8b273212 originals
+(IR-1393). All seven complete frame implementations and all seven complete
+stream implementations match after explicit profile/type/callback/working-space/
+table/typed-variant substitutions. Expand the actual two helpers and recover all
+77 original bodies; validate all 49 concrete forwards, signatures, constructor
+initialization lists and explicit binding records. Frame headers are unchanged;
+removing only friend/forward declarations recovers all seven original stream
+headers. Both compilers compare seven stream, fourteen owning and seven workspace
+sizes/alignments with independently renamed original declarations: all agree.
+
+An initial receipt-checker reverse rewrite mistook logical &&self for address-of
+self after whitespace removal. Use a token-boundary rule and rerun the complete
+source check. Clang syntax checks then detect four unqualified member uses after
+comparison operators in the moved helper; explicitly qualify those references.
+Final source comparisons and all fourteen production-source syntax checks pass.
+No compiled failing version is counted as qualified production evidence.
+
+Build static/shared libraries and all 143 selected executable targets with MSVC
+Release. The first non-elevated parallel build stops updating output while
+MSBuild workers repeatedly start with negligible CPU and no compiler process;
+it subsequently exits1 without a product compilation diagnostic. Confirm the
+original session is terminal, then rebuild the same targets in the normal
+Windows environment with parallel1: success. Worker startup/coordination in the
+restricted environment is suspected; no definite root-cause claim or production
+fix is made. Preserve the failed and final logs separately.
+
+Compile independently renamed original stream methods plus an independent
+constructor/region/budget driver. For each compiler, all 1260 cases and 3780
+process records per old/new implementation agree. Cover exact and one-short
+admission, additional-owner accounting/overflow, invalid limits, short/empty
+banks and capacities, scratch/token/table/control-object aliases, I/O overlap,
+partial headers, flag priority, EndInput and repeated sticky terminals. Counts,
+error category/byte/bit positions and ordinary-output withholding match. The
+first harness link exposes a CRT mismatch (/MT versus the library's /MD);
+recompile the harness with /MD and pass. This is a harness setup failure, not a
+codec fix. MSVC uses the current MSVC library; the final Clang run explicitly
+compiles the seven current stream units as well as the seven saved originals.
+Strengthen the matrix with 196 explicit success/refusal checks per compiler and
+set max_block_size=1 for these header-only probes. This ensures exact/one-short
+budgets satisfy validate_limits' block-versus-internal constraint instead of
+being rejected as an unrelated invalid configuration. The final qualified runs
+retain 1260 cases/3780 records and pass all 196 expected-outcome assertions.
+Unchanged support/frame callbacks link from the MSVC library; header/constructor
+cases do not claim a full Clang-built frame-codec runtime result.
+
+Distinct frozen v0.8.0/current DLLs agree in 301 all-profile cases and 22083
+process calls per library. Compare complete query/create/resource results,
+committed bytes, consumption/production, statuses, error positions and repeated
+terminal responses. Include each default frame setting on short input, explicit
+4096-byte frames at minus/equal/plus one, small/zero/one-byte capacities, Flush,
+late-empty and final-nonempty EndInput, truncation/mutation/trailing data,
+size mismatch, overlap, ResetBlock refusal and insufficient memory. Retained
+full-size/oracle suites supply broader frame, model and malformed-input coverage.
+
+All 3655 unique selected tests pass in 2411.27 seconds: the full 3552 core/API
+selection plus all 110 seven-window family tests, with seven overlapping API
+names. Existing suites exercise caller-owned stream scratch, exact/one-short
+constructor budgets, descriptor-before-payload refusal, failed-frame publication,
+all small split points, allocation rollback/no-process-allocation, independent
+mathematical/token/frame/raw vectors, full-window raw cases, standalone C
+static/shared consumers and native CLI publication. No test is removed or
+replaced by an implementation-derived encoder/decoder round trip. Post-build
+CTest inventory confirms every selected command/executable and all 4172 retained
+registrations. Existing fuzz-regression tests remain; no new sanitizer/fuzz
+campaign or local Linux result is claimed.
+
+Frozen 224 configuration/query records, 111 public layouts, public-header hash
+and 251 exports agree with v0.8.0. MSVC and Clang-built CLI clients each restore
+and re-encode all 102 frozen archives byte-for-byte against the final MSVC DLL.
+These clients validate the public boundary, not a full Clang codec build. Fresh
+installed static/shared packages build C examples: three tests pass in0.54
+seconds. Four documentation/corpus/CI-gate/partition checks pass in4.81 seconds,
+using a workspace TEMP/TMP directory. Final document/source/API and change-scope
+checks precede commit. The DLL hash remains the qualified receipt's hash.
+
+Only seven frame sources, seven stream sources and seven stream friendship
+headers plus two private helpers/documentation change. Ownership code, format,
+context/token/model/finder implementations, public headers, CMake/source graphs,
+workflows and test registrations remain intact. This completes the Blocked
+Huffman seven-window factory/ownership/frame-mechanics item locally, with a fresh
+hosted full_validation gate still required. Other comparable families and the
+final experimental/reference-role audit remain open.
+
+Private receipts live under out/refactoring/blocked-controller-* and the
+associated capture/share/verify/check scripts. Preserve originals, mappings,
+full-body checks, real-type layouts, failed/final syntax and build logs, both
+compiler boundary runs, 301 DLL traces, API/exports, retained tests, installed
+consumers, tooling and both archive comparisons. These ignored artifacts are
+qualification receipts, not newly maintained benchmark tools. A read-only next-
+family survey (blocked-controller-next-families.json) records source hashes:
+within each rANS/tANS family all seven frame and stream sources agree after
+profile-name substitutions, whereas ownership sources retain further admission/
+finder/eligibility differences. Adaptive Huffman already has a single seven-
+profile owner dispatch. These observations do not qualify or implement another
+family; review the differing contracts after this checkpoint's hosted gate.

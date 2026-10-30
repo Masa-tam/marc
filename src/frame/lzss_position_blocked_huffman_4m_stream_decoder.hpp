@@ -4,6 +4,7 @@
 #include "core/status.hpp"
 
 namespace marc::frame::internal {
+struct PositionBlockedHuffmanStreamMechanics;
 // Bounded nested frame controls plus caller-provided scratch capacities and
 // the owner object. Logical admission only, not measured physical memory.
 inline constexpr std::size_t position_blocked_huffman_4m_stream_decode_working_bytes=
@@ -22,6 +23,7 @@ public:
     [[nodiscard]] core::ProcessResult process(std::span<const std::byte> input,
         std::span<std::byte> output,std::uint32_t flags) noexcept override;
 private:
+    friend struct PositionBlockedHuffmanStreamMechanics;
     enum class State { stream_header,frame_header,descriptor,payload,draining,awaiting_end,ended,error };
     [[nodiscard]] bool disjoint(std::span<const std::byte> input,std::span<std::byte> output) const noexcept;
     [[nodiscard]] core::ProcessResult fail(core::ErrorCode code,std::uint64_t position,

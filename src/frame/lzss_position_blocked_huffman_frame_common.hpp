@@ -1,0 +1,210 @@
+#ifndef MARC_FRAME_LZSS_POSITION_BLOCKED_HUFFMAN_FRAME_COMMON_HPP
+#define MARC_FRAME_LZSS_POSITION_BLOCKED_HUFFMAN_FRAME_COMMON_HPP
+#include "core/buffer_overlap.hpp"
+#include "core/checked_math.hpp"
+#include "core/limits.hpp"
+#include "dictionary/lzss_typed_reconstructor.hpp"
+#include "entropy/canonical_huffman.hpp"
+#include "entropy/huffman_decode_table.hpp"
+#include <algorithm>
+#include <array>
+#include <cstdint>
+#include <span>
+
+namespace marc::frame::internal {
+// A stateless transaction helper for this family; bindings retain profile
+// identity.
+template <class Profile> struct PositionBlockedHuffmanFrameMechanics {
+  using Error = typename Profile::Error;
+  using Result = typename Profile::Result;
+  using Token = dictionary::internal::LzssTypedToken;
+  using Entry = entropy::internal::HuffmanDecodeTable;
+  struct Region {
+    const void *data;
+    std::size_t bytes;
+  };
+  template <class T>
+  static bool region(std::span<T> s, Region &r, Result &result) noexcept {
+    r.data = s.data();
+    if (!core::checked_multiply(s.size(), sizeof(T), r.bytes)) {
+      result.error = Error::arithmetic_overflow;
+      return false;
+    }
+    return true;
+  }
+  template <std::size_t N>
+  static bool prepare(const std::array<Region, N> &regions,
+                      const core::DecoderLimits &limits, std::size_t total,
+                      Result &r) noexcept {
+    for (std::size_t i = 0; i < N; ++i) {
+      if (!core::checked_add(total, regions[i].bytes, total)) {
+        r.error = Error::arithmetic_overflow;
+        return false;
+      }
+      for (std::size_t j = 0; j < i; ++j) {
+        const auto e =
+            core::check_buffer_overlap(regions[i].data, regions[i].bytes,
+                                       regions[j].data, regions[j].bytes);
+        if (e != core::BufferOverlap::disjoint) {
+          r.error = e == core::BufferOverlap::arithmetic_overflow
+                        ? Error::arithmetic_overflow
+                        : Error::overlapping_buffers;
+          return false;
+        }
+      }
+    }
+    if (core::validate_limits(limits) != core::LimitError::none ||
+        total > limits.max_internal_buffered_bytes) {
+      r.error = Error::limit_exceeded;
+      return false;
+    }
+    return true;
+  }
+  static Result decode(std::span<const std::byte> input,
+                       const typename Profile::FrameContext &c,
+                       std::span<Entry> tables, std::span<Token> tokens,
+                       std::span<std::byte> scratch,
+                       std::span<std::byte> output, bool publish) noexcept {
+    Result r{};
+    Region bank{}, temporary{};
+    if (!region(tables, bank, r) || !region(tokens, temporary, r))
+      return r;
+    if (!prepare(std::array{Region{input.data(), input.size()}, bank, temporary,
+                            Region{scratch.data(), scratch.size()},
+                            Region{output.data(), output.size()},
+                            Region{&c, sizeof(c)},
+                            Region{&c.stream, sizeof(c.stream)},
+                            Region{&c.limits, sizeof(c.limits)}},
+                 c.limits, Profile::decode_working_bytes, r))
+      return r;
+    typename Profile::FrameLayout layout{};
+    r.format_error = Profile::preflight_frame(input, c, layout);
+    if (r.format_error != Profile::FormatError::none) {
+      r.error = Error::format_error;
+      return r;
+    }
+    r.requirements = layout.requirements;
+    const auto &h = layout.header;
+    if (tokens.size() < h.token_count || scratch.size() < h.raw_size ||
+        (publish && output.size() < h.raw_size)) {
+      r.error = Error::output_too_small;
+      return r;
+    }
+    const typename Profile::TokenContext tc{h.token_count, h.raw_size,
+                                            h.decision_count, c.raw_committed};
+    r.token_result = Profile::decode_tokens(
+        input.subspan(64, h.descriptor_size),
+        input.subspan(layout.requirements.prefix_size, h.payload_size), tc,
+        c.limits, tables, tokens);
+    if (r.token_result.error != Profile::TokenError::none) {
+      r.error = Error::token_error;
+      return r;
+    }
+    r.reconstruction = dictionary::internal::reconstruct_lzss_typed_frame(
+        tokens.first(h.token_count), c.stream.dictionary,
+        {h.token_count, h.raw_size, c.raw_committed}, c.limits, scratch,
+        Profile::token_variant);
+    if (r.reconstruction.error !=
+            dictionary::internal::LzssTypedReconstructError::none ||
+        r.reconstruction.output_size != h.raw_size) {
+      r.error = Error::reconstruction_error;
+      return r;
+    }
+    if (publish)
+      std::copy_n(scratch.begin(), h.raw_size, output.begin());
+    r.serialized_size = layout.requirements.serialized_size;
+    r.raw_size = h.raw_size;
+    return r;
+  }
+  static Result
+  encode(std::span<const Token> tokens, const typename Profile::FrameContext &c,
+         std::span<entropy::internal::CanonicalHuffmanTable> tables,
+         std::span<std::byte> payload, std::span<std::byte> scratch,
+         std::span<std::byte> output) noexcept {
+    Result r{};
+    Region input{}, bank{};
+    if (!region(tokens, input, r) || !region(tables, bank, r))
+      return r;
+    if (!prepare(std::array{input, bank, Region{payload.data(), payload.size()},
+                            Region{scratch.data(), scratch.size()},
+                            Region{output.data(), output.size()},
+                            Region{&c, sizeof(c)},
+                            Region{&c.stream, sizeof(c.stream)},
+                            Region{&c.limits, sizeof(c.limits)}},
+                 c.limits, Profile::encode_working_bytes, r))
+      return r;
+    r.format_error = Profile::validate_stream(c.stream, c.limits);
+    if (r.format_error != Profile::FormatError::none) {
+      r.error = Error::format_error;
+      return r;
+    }
+    if (c.raw_committed >= c.stream.original_size ||
+        c.raw_committed % c.stream.frame_size ||
+        c.sequence != c.raw_committed / c.stream.frame_size) {
+      r.format_error = Profile::FormatError::invalid_sequence;
+      r.error = Error::format_error;
+      return r;
+    }
+    if (tokens.size() > UINT32_MAX) {
+      r.error = Error::arithmetic_overflow;
+      return r;
+    }
+    const auto raw = static_cast<std::uint32_t>(std::min<std::uint64_t>(
+        c.stream.frame_size, c.stream.original_size - c.raw_committed));
+    const dictionary::internal::LzssTypedFrameValidationContext tc{
+        static_cast<std::uint32_t>(tokens.size()), raw, c.raw_committed};
+    typename Profile::Descriptor model{};
+    r.token_result = Profile::plan_tokens(tokens, tc, c.limits, model);
+    if (r.token_result.error != Profile::TokenError::none) {
+      r.error = Error::token_error;
+      return r;
+    }
+    const auto &tr = r.token_result;
+    if (tr.payload_size > UINT32_MAX || tr.descriptor_size > UINT32_MAX) {
+      r.error = Error::arithmetic_overflow;
+      return r;
+    }
+    const typename Profile::FrameHeader h{
+        0,
+        c.sequence,
+        raw,
+        tr.token_count,
+        tr.decision_count,
+        tr.decision_count,
+        static_cast<std::uint32_t>(tr.payload_size),
+        static_cast<std::uint32_t>(tr.descriptor_size),
+        0,
+        0};
+    r.format_error = Profile::validate_frame_header(h, c, r.requirements);
+    if (r.format_error != Profile::FormatError::none) {
+      r.error = Error::format_error;
+      return r;
+    }
+    if (scratch.size() < r.requirements.serialized_size ||
+        output.size() < r.requirements.serialized_size ||
+        payload.size() < tr.payload_size) {
+      r.error = Error::output_too_small;
+      return r;
+    }
+    r.token_result = Profile::encode_tokens(
+        tokens, tc, c.limits, tables, payload,
+        scratch.subspan(64, h.descriptor_size),
+        scratch.subspan(r.requirements.prefix_size, h.payload_size));
+    if (r.token_result.error != Profile::TokenError::none) {
+      r.error = Error::token_error;
+      return r;
+    }
+    r.format_error = Profile::serialize_frame_header(h, c, scratch.first(64));
+    if (r.format_error != Profile::FormatError::none) {
+      r.error = Error::format_error;
+      return r;
+    }
+    std::copy_n(scratch.begin(), r.requirements.serialized_size,
+                output.begin());
+    r.serialized_size = r.requirements.serialized_size;
+    r.raw_size = raw;
+    return r;
+  }
+};
+} // namespace marc::frame::internal
+#endif

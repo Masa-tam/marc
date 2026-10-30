@@ -35516,3 +35516,28 @@ Keep retained allocation/chunking/malformed/oracle/CLI/public coverage. This
 finishes seven-window ownership sharing only; frame-mechanics consolidation,
 remaining comparable families and the final experiment/reference audit retain
 their own decisions and completion evidence.
+
+
+### DD-1649: family-specific frame transactions and stream-decoder mechanics
+
+After the maintainer-reported all-window owner gate, share the seven identical
+Blocked Huffman frame transactions and stream-decoder state machines separately.
+Use explicit per-profile type/function/variant/working-space bindings; retain
+existing token/model/format/reconstructor callbacks and all numeric stream
+identities. Do not introduce a universal codec engine or build-time generator.
+
+The frame helper is stateless: preserve region order, checked arithmetic,
+preflight/admission/error priority, planning, private token/raw/serialized scratch
+and success-only output publication. Keep ordinary-output and scratch-only
+decode entry points distinct. Concrete functions retain their signatures.
+
+The stream helper is a stateless friend of the seven concrete decoders. Keep
+every data member/order/default, original constructor initialization list and
+signature. Delegate only the constructor body after member initialization, plus
+overlap/failure/process mechanics. Add no base or policy subobject. Preserve
+sizeof-dependent admission, borrowed scratch lifetimes, header/prefix/payload
+validation order, exact error positions, EndInput/draining/sticky terminals and
+failed-frame withholding. Prove full-body expansion and real-type layouts,
+then qualify private/public boundaries and retained tests before hosted CI.
+Ownership sharing remains intact; other codec families and the final source-role
+audit are still separate phase6/phase2 work.
