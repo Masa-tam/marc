@@ -28220,3 +28220,58 @@ experimental/reference-role and completion audits open. No per-family push or
 hosted checkpoint is requested: continue coherent local work under DD-1650 and
 retain one integrated hosted stage-one candidate. No external implementation,
 new public algorithm, representation or independent oracle replacement is used.
+
+
+### TVG-1671: seven public rANS owners preserve allocation and stream contracts
+
+On 2026-10-31 qualify DD-1652 with first-party586baa67 originals (IR-1396).
+Reverse-expand the actual private helper and verify explicit bindings: all70
+complete old bodies,56 concrete forwarding functions and seven complete owner
+headers agree after friendship removal. Eligibility3/5 validation remains before
+requirements/allocation; preserve18/20 serialized-size multipliers, additions,
+fixed-working charges and original finder argument/default semantics. All
+concrete fields/defaults remain unchanged. Both MSVC19.51 and clang-cl compare
+21 actual old/current owner/workspace sizes and alignments. Clang syntax-checks
+all seven changed production units. No full Clang codec or Linux runtime result
+is inferred. Frame/stream/model/token/finder/format sources and the old4MiB
+non-full-literal owner remain independent and unchanged for this commit.
+
+The initial whole-source comparison finds the16MiB serialized-size multiplier
+differs from the smaller windows; expose that parameter before saving originals
+or changing production code. An initial declaration-binding checker incorrectly
+expects concrete Encoder/Decoder aliases in the local Profile; correct it to
+verify the actual Owner template/forward bindings. These are setup findings,
+not successful comparison attempts; final complete-body recovery passes.
+
+The serial MSVC Release build completes62 selected targets. All104 relevant
+retained rANS tests pass in807.35 seconds with two CTest workers and workspace
+TEMP/TMP. Inspect selected commands/binary paths and retain all4172 CTest names.
+The selection includes the older4MiB control path, format/token/frame/stream
+vectors and differential tests, public APIs and CLI integration. Existing owner
+tests retain independent nearest-first exhaustive encoders, eligibility3/5,
+arbitrary chunking, process-allocation prohibition, exact/one-short memory
+admission, query-output preservation, allocation-failure injection and cleanup,
+malformed input and terminal behavior. No test or oracle is replaced by the
+helper, and no new test registration or fuzz/sanitizer campaign is introduced.
+This is scoped local qualification rather than all4172 tests.
+
+Frozen v0.8.0 and current MSVC DLLs match301 public cases and25775 process calls
+per library. Cover all seven public profiles, default and4096-byte frames,
+empty/partial/boundary input, zero/small output, flush/final-input/repeated
+terminal calls, truncation/mutations/trailing bytes, original-size mismatch,
+overlap, reset rejection and tiny budgets. Compare resource/create results,
+output bytes, counts, errors and positions. Frozen public receipts match224
+configuration/query records,111 layouts, public-header hash and all251 exports;
+verify the final DLL hash against its receipt. MSVC CLI and the existing Clang
+C client each verify102 frozen archives. The Clang client uses the current
+MSVC DLL, not a separately rebuilt Clang codec. Both archive commands terminate
+successfully and report102 verified archives. A fresh installation exports both
+linkages and all three installed-package tests pass (0.65 seconds).
+
+Final source/scope, documentation ordering/links and whitespace checks pass.
+Scope is14 existing production files, one private helper and six documents;
+public headers, workflow, build registrations and retained test sources are
+unchanged. Keep rANS frame/stream sharing and remaining comparable-family and
+source-role/completion audits open. Continue local commits under DD-1650;
+request no owner-only push or hosted checkpoint. No external implementation,
+public format/API change or hosted qualification is claimed.

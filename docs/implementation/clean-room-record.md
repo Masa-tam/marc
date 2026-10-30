@@ -44338,3 +44338,21 @@ This records process and scoped local evidence, not a legal guarantee, hosted
 qualification, Linux/full Clang codec runtime or completion of remaining work.
 Under DD-1650 keep the goal active and continue local commits without requesting
 a tANS-only push/CI checkpoint; rANS and the final source-role audit stay open.
+
+
+### CR-2050: 2026-10-31 — seven public rANS owners share private mechanics
+
+Author/reviewer: Codex. Task: simplify public rANS owner duplication while
+preserving concrete state/layout and allocation/resource contracts (DD-1652).
+Use only first-party586baa67 originals and frozen v0.8.0 evidence (IR-1396).
+Recover all70 old bodies,56 forwards and seven original owner declarations;
+both compilers preserve21 actual layouts and seven units pass Clang syntax.
+Record the multiplier-normalization and checker-alias setup findings separately
+in TVG-1671. All104 scoped retained tests and301 public DLL cases pass; frozen
+ABI/resources/header/251 exports, both clients'102 archives and three fresh
+installed-package consumers agree. Preserve independent exhaustive encoders,
+retained allocation/limit/malformed/chunk tests and the older4MiB control path.
+No external implementation, new format or algorithm is introduced. This records
+process and scoped local evidence, not a legal guarantee, hosted qualification,
+Linux/full Clang codec runtime or completion of the remaining frame/stream and
+source-role audits. DD-1650 keeps the goal active without an owner-only CI gate.

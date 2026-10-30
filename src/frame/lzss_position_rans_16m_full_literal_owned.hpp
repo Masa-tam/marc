@@ -5,6 +5,7 @@
 #include <optional>
 
 namespace marc::frame::internal {
+struct PositionRansOwnedMechanics;
 struct PositionRans16mFullLiteralWorkspace {
     std::size_t raw_bytes{},token_count{},serialized_bytes{},finder_bytes{},aggregate_bytes{};
     bool operator==(const PositionRans16mFullLiteralWorkspace&) const = default;
@@ -20,6 +21,7 @@ public:
     PositionRans16mFullLiteralOwnedEncoder& operator=(const PositionRans16mFullLiteralOwnedEncoder&)=delete;
     [[nodiscard]] core::ProcessResult process(std::span<const std::byte>,std::span<std::byte>,std::uint32_t) noexcept override;
 private:
+    friend struct PositionRansOwnedMechanics;
     PositionRans16mFullLiteralOwnedEncoder() noexcept = default;
     enum class State { header,collecting,draining,awaiting_end,ended,error };
     [[nodiscard]] bool disjoint(std::span<const std::byte>,std::span<std::byte>) const noexcept;
@@ -46,6 +48,7 @@ public:
     PositionRans16mFullLiteralOwnedDecoder& operator=(const PositionRans16mFullLiteralOwnedDecoder&)=delete;
     [[nodiscard]] core::ProcessResult process(std::span<const std::byte>,std::span<std::byte>,std::uint32_t) noexcept override;
 private:
+    friend struct PositionRansOwnedMechanics;
     PositionRans16mFullLiteralOwnedDecoder() noexcept = default;
     std::unique_ptr<std::byte[]> raw_,serialized_;
     std::unique_ptr<dictionary::internal::LzssTypedToken[]> tokens_;

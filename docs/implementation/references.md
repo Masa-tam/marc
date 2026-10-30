@@ -12418,3 +12418,17 @@ guard collisions. Preserve their original text in a separate receipt (including
 8MiB format.hpp in addition to the42 saved files). Rename only those guards;
 compare every declaration after reversing the explicit mapping. The existing
 1MiB owned test gains seven-profile co-inclusion assertions without new test IDs.
+
+
+### IR-1396: public rANS owner originals and explicit profile differences
+
+Use only first-party586baa67 public rANS owners and existing format/context/
+finder contracts. Save14 original files and70 complete bodies before editing.
+Compare all seven full sources after explicit substitutions:64KiB,1MiB and
+4/8/16/32/64MiB full-literal. Preserve serialized-size multipliers18/20, additive
+bounds, fixed-working constants and the original64KiB explicit fourth finder
+argument versus the other three-argument bindings. An initial normalization
+assertion identifies the16MiB multiplier difference; record it explicitly rather
+than treating it as identical. No original snapshot is overwritten. Keep the
+older4MiB non-full-literal implementation outside this owner extraction pending
+the final source-role audit. Do not consult external implementation source.

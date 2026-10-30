@@ -35600,3 +35600,22 @@ and format definitions exactly. Save their original text separately and reverse
 the documented guard mapping in source comparisons. Extend the existing1MiB
 owned test to co-include all seven profiles and require all seven encoder classes, so a future
 guard collision fails compilation without adding or removing CTest registrations.
+
+
+### DD-1652: public rANS ownership mechanics with explicit resource bindings
+
+Share the seven public position-distance rANS owner implementations through one
+private stateless family helper. Preserve the concrete owners/workspaces, field
+order/defaults, size-dependent admission, allocation order and per-profile
+callbacks. Keep eligibility3/5 validation and its priority, serialized multipliers
+18/20 and additions, fixed-working charges, original finder argument/default
+semantics, partial-input/output and sticky error/terminal behavior unchanged.
+Use friendship rather than a stored policy, base class or universal codec engine.
+
+Keep frame/stream/token/model/finder/format implementations unchanged for this
+coherent ownership commit; review frame and stream sharing separately as local
+continuation. Retain the older4MiB non-full-literal path independently pending
+source-role classification. Prove complete-body recovery, original declarations,
+actual layouts, relevant retained runtime tests and frozen public contracts.
+Record setup failures and platform limits. Under DD-1650 continue local commits
+without requesting a per-helper or per-family hosted checkpoint.

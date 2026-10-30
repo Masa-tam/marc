@@ -596,6 +596,14 @@ contracts. Seven pre-existing private header-guard collisions are corrected
 without changing declarations or format definitions; the existing one-MiB
 owned test co-includes all seven profiles to catch future collisions.
 
+The seven public Position-distance rANS owners share the private stateless
+`src/frame/lzss_position_rans_owned_common.hpp` helper (DD-1652). Explicit
+bindings retain serialized-size multipliers18/20, additive bounds, fixed-working
+charges and each format/frame/finder callback. Eligibility3/5 validation, finder
+argument semantics, allocation order and concrete state/layout stay unchanged.
+Their frame/stream implementations and the older four-MiB non-full-literal
+implementation remain separate pending further family/source-role review.
+
 The public C entry points are implemented by responsibility. `src/marc.cpp`
 contains version/status queries and transform process/destruction. Private
 `src/c_api/entropy.cpp`, six `dictionary_*.cpp` files, `contextual.cpp` and

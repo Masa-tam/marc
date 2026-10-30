@@ -652,3 +652,21 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   platform/scope limitations separately. This family is complete locally;
   continue rANS/comparable-family review and final source-role/completion audits.
   Keep the goal active: DD-1650 requests no per-family push or hosted CI run.
+
+
+- rANS ownership continuation (DD-1652/IR-1396): extract common mechanics from
+  the seven public owners, keeping serialized multipliers18/20, bounds, fixed
+  work charges, finder arguments and eligibility contracts explicit. Preserve
+  the old4MiB non-full-literal path for separate role review. Frame/stream
+  consolidation and final audits remain open; no hosted pause under DD-1650.
+
+
+- Public rANS owner sharing (DD-1652/TVG-1671/CR-2050): preserve70 complete
+  bodies,56 forwards, seven owner declarations and21 layouts across both
+  compilers. All104 scoped retained tests,301 old/current public DLL cases,
+  frozen ABI/resources/exports, both clients'102 archives and three installed
+  consumers pass. Explicit profile bindings preserve18/20 size multipliers,
+  bounds, fixed-work/finder and eligibility contracts; independent oracles and
+  the older4MiB control implementation stay unchanged. Continue frame/stream
+  and final comparable-family/source-role audits locally under DD-1650; this
+  coherent commit requests no push or hosted checkpoint and leaves the goal active.
