@@ -93,7 +93,7 @@ headers. These are starting observations, not deletion or line-count targets.
   factory, ownership and frame mechanics across all seven Blocked Huffman windows
   (DD-1647/DD-1648/DD-1649/TVG-1668); CI success reported through bc3084d9
   in TVG-1669, without independently confirmed complete scope.
-- [ ] Apply proven common pieces to remaining comparable families where they
+- [x] Apply proven common pieces to remaining comparable families where they
   actually simplify maintenance. Review each family and record justified
   differences; avoid a single universal codec template or speculative generator.
 - [ ] Preserve bounded validation order, independent vectors, exact producer
@@ -157,9 +157,11 @@ remaining public coverage explicitly accounted for (DD-1631).
 
 The [source-role audit](v1-refactoring-stage-1-audit.md) and
 [retired command index](v1-refactoring-retired-commands.md) qualify phase-two
-classification at58b12eda. They identify remaining Range16/32/64MiB owner,
-frame and serializer sharing opportunities; phase six remains open. Refresh
-affected inventory/role evidence after those changes before integrated validation.
+classification at58b12eda. Their subsequent qualification and integrated review
+through the commit carrying DD-1658 account for the completed comparable-family
+sharing and refreshed inventory/roles. Local implementation work is ready for
+one integrated hosted checkpoint. Final preservation/completion remains open
+until the exact-candidate complete result is recorded.
 
 All six phases must be assessed against current files and executable evidence.
 Published profiles and their behavior remain intact; completed experimental
@@ -767,3 +769,23 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   semantics. All five comparable Range paths are locally qualified. Continue
   the final inventory/role/completion audit under DD-1650; the integrated hosted
   gate remains open and no per-helper push/CI checkpoint is requested.
+
+
+- Integrated local review (DD-1658/IR-1402): refresh1428 src paths and1397
+  production include-closure files, retaining680 production/15 test-only cpp roles,
+  422 targets/4172 registrations and the optional125-harness/37-seed contract.
+  Map all six phases to local evidence in the linked source-role audit; do not
+  add overlapping scoped test counts or infer a new full-suite/Linux run.
+  Applicable family sharing is locally resolved. The remaining gate is one
+  integrated exact-candidate complete hosted validation under DD-1650, with
+  package/linkage and102-profile exchange requirements. The maintainer pushes;
+  reuse a qualifying scheduled result or request one manual full_validation.
+  Keep final preservation and overall completion open pending actual success.
+
+
+- Final audit qualification (TVG-1677/CR-2056): target/compile/install contracts
+  and4172 test definitions agree;17 formerly unbuilt command paths now resolve
+  to existing targets. Documentation/history/partition checks pass, and the
+  six-phase local evidence matrix is recorded. Proceed to the single integrated
+  hosted checkpoint; final preservation/completion stays open pending its
+  actual exact-candidate complete result. No new per-family checkpoint is added.

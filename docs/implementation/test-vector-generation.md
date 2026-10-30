@@ -28557,3 +28557,50 @@ format/ABI admission, typed16MiB versus packed32/64MiB decoder storage/lifetimes
 and tiny delegate wrappers. The five comparable Range paths are locally
 qualified; final inventory/role/completion review and integrated hosted gates
 remain open. Continue under DD-1650 without a per-helper hosted checkpoint.
+
+
+### TVG-1677: integrated local source-role and completion review
+
+Refresh the role/include survey through0fb15a78 without replacing the58b12eda
+receipts (IR-1402/DD-1658). Count1428 src paths,1155 tests,162 fuzz paths,
+eight benchmark paths and43 tools. Production include closure1397 adds exactly
+nine qualified Range helpers to1388. The680 production/15 test-only cpp lists
+and consumers remain identical, with no unregistered src cpp, unreachable src
+header or retired path in active CMake. Generated422 target/compile settings,
+seven export/configuration artifacts and install script match the earlier audit.
+
+The first exact whole-receipt comparison rejects17 CTest records: the old receipt
+was captured before those executables were built and contains no command field;
+the new receipt resolves their existing project executables. Inspect the actual
+records rather than attributing this to test-cost updates. Require every new
+single-command executable to exist and correspond to an already registered
+project, and compare all remaining fields exactly. All4172 names, properties
+and previously present commands match. No test definition or build registration
+is edited to satisfy this checker.
+
+Reconfirm all87 retired targets/68 runners are absent from both generated target
+sets and disk. Optional566-target/125-harness registration and37 checked-in
+seed inputs remain valid; production CMake, public headers, workflows and fuzz
+registrations have no changes since the earlier snapshot. This is dependency
+evidence, not a new optional build or fuzz campaign. Correct the live audit's
+two abbreviated Range component labels to actual owned_stream_encoder and
+serializer filenames; their code and qualification are unchanged.
+
+Map all six plan phases to source and executable evidence, including the common
+102-profile benchmark, explicit prepared/reference roles, nine-file C-API split,
+CLI transactions and family-specific common mechanics. Retain distinct scoped
+logs: Blocked Huffman3655, tANS98, rANS owners104/controllers72, Range owning23/
+frame42/compact42. Their overlapping counts and differing qualified revisions
+are not a new4172-test execution. Current frozen ABI/resources/header/exports,
+both102-archive clients and installed consumers remain the latest local DLL
+evidence; complete exact-candidate hosted/Linux validation stays pending.
+
+Documentation layout, CI history policy and generated regular/deep partition
+CTests all pass in2.70 seconds; the history policy contains ten offline cases.
+Revalidate documentation ordering/relative links and whitespace after recording
+these results. Six-document-only scope, with no public/source/build/test/workflow
+change. Applicable family-sharing and final local role/completion review are
+ready for one integrated hosted checkpoint. Preserve the final preservation
+checkbox and active goal until the maintainer's exact-candidate complete result.
+DD-1650/DD-1658 permit one batched push/full_validation request, reusing a
+qualifying scheduled exact-SHA success when present; no push is performed here.

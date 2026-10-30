@@ -12494,3 +12494,16 @@ Preserve their native integer types and expression order. Retain the isolated
 owning delegate functions and field/lifetime contracts. No external source is
 consulted. Initial capture handles profile-specific line wrapping before saving;
 originals are not overwritten.
+
+
+### IR-1402: integrated stage-one inventory and acceptance evidence
+
+Use only first-party v0.8.0, the active six-phase plan, retained source-role/
+retired-command audits and the locally qualified tree through 0fb15a78.
+Refresh generated MSVC/CTest contracts and the production/include graph without
+overwriting the58b12eda receipts. Compare the nine added Range helper edges,
+production/test-only compile lists and role assignments. Consult the existing
+optional Clang/Ninja configuration and exact retired-target/path inventory;
+CMake/workflow registrations have not changed since those audits. Retain each
+checkpoint's scoped runtime evidence as scoped historical evidence, not a new
+4172-test run. No external implementation source is consulted.

@@ -35744,3 +35744,27 @@ retained tests plus frozen public contracts. Keep independent codec primitives,
 oracles and differing decoder storage/lifetimes intact. After these five paths,
 refresh inventory/role evidence and perform the full completion audit. DD-1650
 batches the work before one integrated hosted checkpoint, not helper-only gates.
+
+
+### DD-1658: freeze one integrated stage-one completion candidate
+
+The finite family survey is locally resolved: seven-window Blocked Huffman,
+tANS and public rANS share their applicable owner/frame/stream mechanisms;
+Adaptive Huffman already dispatches one implementation. Nine comparable large
+Range responsibilities share stateless mechanics and five intentionally small
+or contract-distinct responsibilities remain explicit. Do not expand this
+cleanup into a universal algorithm engine or unrelated optimization.
+
+Refresh the inventory/source-role evidence, map all six plan phases to their
+local evidence and preserve the distinction between local implementation work
+and final complete hosted qualification. Keep the final preservation/completion
+checkbox open until exact-candidate Windows/Linux, complete retained tests,
+linkage/package and102-profile exchange gates actually succeed. A collection
+of earlier scoped tests is not a fresh complete run.
+
+This is the integrated checkpoint authorized by DD-1650. Ask the maintainer to
+push the final commit carrying the audit and obtain one exact-SHA complete run.
+Reuse a qualifying successful scheduled run at that SHA; otherwise request one
+manual full_validation. Do not push, request intermediate family runs, change
+workflow triggers/coverage or close the active goal on a scope-unspecified CI
+report. Record the run/attempt and actual scope when supplied.

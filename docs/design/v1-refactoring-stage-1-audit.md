@@ -189,7 +189,7 @@ selected tests and132 frozen public cases pass, with unchanged ABI/resources/
 exports, both102-archive clients and three installed consumers.
 
 The finite14-component Range survey now has nine shared responsibilities:
-owned_stream, frame_encoder, frame_decoder, frame_serialize, compact_frame_encoder,
+owned_stream_encoder, frame_encoder, frame_decoder, serializer, compact_frame_encoder,
 token_frame_encoder, compact_prefix, compact_owner and owning_adapter. Keep
 owning_delegate as a tiny identity forward and c_factory, decoder_c_factory,
 preflight and stream_decoder explicit for the contract differences above.
@@ -198,3 +198,52 @@ smaller Range prepared/fallback paths retain different ownership/control shapes.
 Do not force unrelated model, dictionary, format or independent-reference code
 into these helpers. Final refreshed inventory and requirement-by-requirement
 completion evidence remain pending; this is no hosted-validation claim.
+
+
+## Integrated local completion review (2026-10-31)
+
+The refreshed tree through `0fb15a78` has1428 tracked src paths,1155 tests,
+162 fuzz paths, eight benchmark paths and43 tools. Ordinary MSVC generation
+still has422 targets and4172 CTests. The same680 production cpp files and15
+test-only cpp files keep the same consumers and roles. The production include
+closure grows from1388 to1397 by exactly the nine qualified Range helper
+headers. Every tracked src header is reachable; no src cpp is unregistered and
+no retired experiment path is referenced by active CMake. Preserve the original
+58b12eda snapshot above as historical evidence rather than replacing its counts.
+
+The566-target optional configuration still registers125 fuzz cpp sources and
+37 seeds, the retained diagnostic exporter and the common benchmark. No CMake,
+fuzz or workflow registration changed during the subsequent Range work. The
+retired87-target/68-runner index and maintained tool/reference roles remain
+valid. This is configuration/source evidence, not a new fuzz campaign.
+
+| Plan phase | Local disposition and executable evidence | Final limitation |
+| --- | --- | --- |
+|1. Freeze comparison | v0.8.0 source/toolchain/target receipts,224 API records,111 layouts,251 exports, preserved DLL and102 archives (TVG-1634 and subsequent contract checks). | Frozen history is not final candidate CI. |
+|2. Remove experiments | DD-1629–DD-1632 and DD-1635 removal/adoption evidence; this audit and exact retired-command index account for all retained production/test/reference/tool roles. | Independent oracles and adopted prepared paths intentionally remain. |
+|3. Common benchmark | DD-1633–DD-1635/TVG-1641–TVG-1644 qualify102 public selectors, shared pumping/reporting, ratio/directional throughput/logical grants, separate resident accounting and external corpus recipes. | This cleanup does not claim new performance gains. |
+|4. CMake structure | TVG-1646–TVG-1648 compare generated target/compile/test/install contracts and shared/static/package configurations; current inventory remains422/4172. | Final Linux and installed-linkage matrix still require the integrated run. |
+|5. CLI/C API | DD-1637–DD-1646 and plan progress entries qualify pumping, transactions, native boundaries, configuration adapters and responsibility splits; current public receipts/header/exports remain frozen. | Caller-workspace and owned-resource admission remain distinct. |
+|6. Codec families | DD-1647–DD-1657 qualify applicable family sharing and explicit differences. Latest Range42-test/132-public-case run, frozen contracts, both102-archive clients and installed consumers pass. | Full exact-candidate hosted preservation gate remains open. |
+
+The scoped logs remain distinct: Blocked Huffman3655 tests; tANS98;
+rANS owners104 and controllers72; Range owning-stream23, operation-frame42
+and compact/token/adapter42. They overlap and were run at their respective
+qualified revisions; do not add them together or describe them as one new
+4172-test integrated run. Current Range ABI/resources/header/exports and both
+102-archive consumers cover the final locally built DLL. No full Linux/Clang
+codec runtime or new hosted run is inferred from local syntax/client evidence.
+
+The remaining work is the integrated exact-candidate hosted gate, not another
+helper extraction. Under DD-1650/DD-1658, request one batched push and qualifying
+complete validation. Reuse an exact-SHA successful scheduled complete run;
+otherwise use one manual full_validation. Keep the final preservation checkbox
+and overall goal open until its actual complete result is recorded.
+
+
+TVG-1677/CR-2056 record the final local audit checks. Target/compile/install
+contracts and all4172 test definitions agree with the earlier audit. Seventeen
+previously unbuilt test commands now resolve to their existing executables;
+all other receipt fields match exactly. Documentation layout, ten-case offline
+CI history policy and regular/deep partition checks pass. This remains local
+evidence and does not close the pending exact-candidate complete hosted gate.
