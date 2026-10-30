@@ -618,7 +618,17 @@ destruction order. Explicit bindings preserve the original sizeof-based call
 controls, CompactOwner, serializer and index-head identities. Exact-allocation
 wrappers remain local. The helper retains live-capacity receipts, full call/
 external charges, pre-admission and failure/publication behavior; it adds no
-stored policy. Range frame/serializer consolidation remains separate work.
+stored policy.
+
+Range16/32/64 MiB operation-frame encode/decode and serialization transactions
+share `src/frame/position_range_frame_encoder_common.hpp`,
+`src/frame/position_range_frame_decoder_common.hpp` and
+`src/frame/position_range_serializer_common.hpp` (DD-1656). Concrete signatures
+and headers remain intact. Explicit types/callbacks retain local working-data
+layout, sizeof-based charges, native preflight defaults, field serialization,
+validation/overlap order and success-only byte/count/layout publication. Compact
+and token-frame ownership/encoding paths retain their separate contracts and
+remain under the final family review.
 
 The public C entry points are implemented by responsibility. `src/marc.cpp`
 contains version/status queries and transform process/destruction. Private

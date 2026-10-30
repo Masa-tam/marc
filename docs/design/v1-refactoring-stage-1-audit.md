@@ -108,7 +108,7 @@ to the329-line owned-stream implementations, the277-line frame encoders,
 whitespace normalization. Review these as subsequent family-specific extraction
 scopes, preserving their explicit profile/format callbacks. The21-line owning
 delegates are already identity-preserving forwarding wrappers; another helper
-would not materially simplify them. The other eight component triplets do not
+would not materially simplify them. The other nine component triplets do not
 match this substitution rule and require their contract differences to remain
 explicit. A similar filename is not sufficient evidence for sharing them.
 
@@ -140,3 +140,38 @@ remain unchanged. The counts/source comparisons above intentionally identify
 the original58b12eda snapshot. Refresh the affected inventory/include closure at
 final integration. Frame encoder/decoder and serializer sharing and remaining
 contract/completion review stay open; this update does not claim a hosted result.
+
+## Detailed follow-up to the frame survey
+
+The original14-triplet survey contains five name-normalized matches and nine
+nonmatches. The earlier prose/TVG-1673 count of eight nonmatches was an arithmetic
+error; the nine-component count above corrects it without changing source evidence.
+
+Ignoring include ordering, comments and whitespace, then binding existing callback-name aliases and explicit
+profile bounds/context counts identifies five further comparable responsibilities:
+`compact_frame_encoder`, `compact_owner`, `compact_prefix`, `owning_adapter` and
+`token_frame_encoder`. The adapter difference is include ordering; the other
+differences include native callback suffixes, window bounds, context counts48/49/50,
+decision/payload bounds and entropy-table entries2610/2621/2632. All three complete
+sources match after these explicit bindings. These are subsequent extraction
+candidates, not completed work or an authorization to normalize format values.
+
+Keep the remaining four responsibilities explicit: C encoder factories contain
+public profile initialization/limits; decoder factories and stream decoders
+distinguish typed-token16MiB storage from packed-byte32/64MiB storage and their
+helper/lifetime charges; the small basic preflights state decoder-visible profile
+IDs, limits and memory representation. Their shared C-API boundary infrastructure
+already exists. Keep21-line owning delegates as concrete identity forwards.
+After the pending five comparable paths are qualified, refresh inventory evidence
+and audit the remaining distinctions and full completion requirements again.
+
+
+## Subsequent operation-frame and serializer qualification
+
+DD-1656/TVG-1675/CR-2054 qualify16/32/64MiB operation-frame encode/decode and
+serialization sharing locally. The nine concrete headers stay unchanged;18
+actual local data layouts and nine working expressions agree in both compilers.
+All42 selected tests and132 frozen public traces pass. Three more stateless
+headers join the production include graph. Preserve the dated inventory above
+and refresh it at integration. The five additional comparable paths identified
+in the detailed follow-up and full completion/hosted gates remain open.

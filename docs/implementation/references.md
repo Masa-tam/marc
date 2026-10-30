@@ -12470,3 +12470,14 @@ agree after explicit profile-name/whitespace substitutions. Retain concrete
 allocator interfaces and the small exact-allocation wrappers; share the repeated
 bridge/coordinator mechanics. The8MiB and older reference ownership policies
 remain outside this extraction. No external implementation source is consulted.
+
+
+### IR-1400: large-window Range frame/serializer originals and working types
+
+Use only first-party6d4ba084 Range16/32/64MiB frame encoder/decoder and serializer
+sources, existing callbacks/default arguments, role survey and frozen v0.8.0
+evidence. Save18 cpp/hpp originals,66 complete function bodies and18 local
+Region/Working types plus exact working-space expressions before editing.
+All three complete sources per responsibility match profile-name/whitespace
+substitution. Preserve native preflight's optional retained-state default0 in
+explicit callback adapters. No external implementation source is consulted.

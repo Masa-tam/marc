@@ -28438,3 +28438,65 @@ The role audit remains an explicit58b12eda snapshot, with subsequent ownership
 qualification noted separately. Frame/serializer sharing and final role/inventory/
 completion refresh remain open. Continue under DD-1650 without an owner-only
 push/hosted checkpoint; no external implementation or new format/API is used.
+
+
+### TVG-1675: Range operation-frame and serializer sharing preservation
+
+On 2026-10-31 qualify DD-1656 from first-party6d4ba084 originals (IR-1400).
+Reverse-expand all three actual helpers and explicit profile/default adapters:
+recover66 complete bodies,30 concrete forwards, nine unchanged headers,18 local
+Region/Working data shapes and nine original sizeof-based working expressions.
+MSVC19.51 and clang-cl preserve all18 real local type sizes/alignments and all
+nine working expressions. Clang syntax-checks all nine changed production units.
+Native preflight's retained-state default0 remains an explicit four/five-argument
+adapter; other parser/model/finder/range/preflight implementations are unchanged.
+
+Correct draft identifier substitution to match whole namespace/type identifiers,
+including preserving std:: and enum qualifiers, before compiler qualification.
+An initial recovery checker removes whitespace too early and loses type/variable
+token boundaries; correct it to retain raw body tokens during reverse expansion.
+An initial borrowed-decoder trace parser rejects nested marc_buffer fields;
+register the independently declared two-field buffer ABI explicitly. These setup
+attempts are not successful qualification. All final source, layouts, syntax and
+trace checks pass. No existing header/type or algorithm definition is changed
+to accommodate a fixture.
+
+The serial MSVC Release build completes40 selected targets. All42 relevant
+retained frame/stream/owned/public/CLI CTests pass in1233.09 seconds with two
+workers and workspace TEMP/TMP. Include independent core/frame/stream/owning
+conformance, malformed/overlap/admission/publication tests, C consumers/fault
+injection, explicit CLI boundaries and64MiB stress. The latter restores two
+incompressible full frames (128MiB) and verifies byte-identical re-encoding.
+Pure field-cursor/reference/indexed/token-range/compact primitives are unchanged
+and excluded from this scoped selection. All4172 registrations and selected
+executable paths remain intact; this is not a new complete suite or fuzz campaign.
+
+Distinct frozen v0.8.0/current MSVC DLLs match132 encoder/borrowed-decoder cases
+and8037 process records per library. Provide five real aligned borrowed regions
+through transform destruction, plus real65536-byte caller capacities. Cover all
+three windows, empty/small/4096 boundaries, chunking, zero/small output, flush/
+final/repeated terminals, truncation/mutations/trailing bytes, original-size
+mismatch, aliases, reset and tiny budgets. Resource/create results, bytes,
+statuses, counts and error positions agree; positive decode output equals input.
+Frozen receipts match224 records,111 layouts, header hash and all251 exports;
+final DLL hash agrees with its receipt. Both MSVC CLI and the existing Clang C
+client verify102 frozen archives. The client uses the MSVC DLL; no full Clang
+codec/Linux runtime is inferred from syntax/layout/client evidence. Three fresh
+installed-package tests pass (0.62 seconds), with both linkage exports present.
+
+Detailed follow-up of the original14 Range component triplets corrects the
+earlier audit/TVG-1673 prose count: five name-normalized matches leave nine,
+not eight, nonmatches. Ignoring include ordering/comments and explicitly binding
+existing callback aliases/window/context/decision/payload/table bounds proves
+five additional comparable paths: compact_frame_encoder, compact_owner,
+compact_prefix, owning_adapter and token_frame_encoder. Record these as pending
+implementation, not completed work. Keep per-profile basic format/ABI admission,
+typed16MiB versus packed32/64MiB decoder storage/lifetimes and tiny delegates
+explicit. No unrelated implementation source is changed during this review.
+
+Source/scope, documentation ordering/links and whitespace checks pass. Scope:
+nine existing cpp files, three private headers and seven documents. All public/
+existing private headers, build/test/workflow registrations and independent
+oracles remain unchanged. Continue the five proven comparable paths and final
+inventory/role/completion audit under DD-1650 without a frame-only hosted gate.
+No external implementation or new public API/representation is introduced.

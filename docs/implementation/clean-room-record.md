@@ -44410,3 +44410,21 @@ No external implementation, new format or public API is introduced. This records
 scoped local evidence and process, not a legal guarantee, hosted result, full
 Clang/Linux codec runtime or completion of remaining frame/serializer/audit work.
 Continue coherent local work under DD-1650 and leave the goal active.
+
+
+### CR-2054: 2026-10-31 — Range operation-frame and serializer mechanics
+
+Author/reviewer: Codex. Task: share16/32/64MiB matching frame encode/decode and
+serialization transactions (DD-1656), using only first-party6d4ba084 originals
+and frozen v0.8.0 evidence (IR-1400). Recover66 bodies,30 forwards, nine headers,
+18 data shapes and nine working expressions; both compilers preserve actual
+layouts/charges and nine units pass Clang syntax. TVG-1675 separates draft
+identifier/recovery/nested-buffer fixture setup findings from final evidence.
+All42 relevant retained tests,132 public encoder/borrowed-decoder cases, frozen
+ABI/resources/header/251 exports, both clients'102 archives and three installed
+consumers pass. Keep original validation/publication order and independent
+models, format guards, test oracles and references. Correct the survey's eight/
+nine prose count and identify five further comparable paths without claiming
+their implementation. No external source, algorithm or format is introduced.
+This records scoped local evidence, not a legal guarantee, hosted result,
+full Clang/Linux codec runtime or full-goal completion. Continue under DD-1650.

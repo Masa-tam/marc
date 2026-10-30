@@ -725,3 +725,25 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   contracts and local exact-allocation wrappers stay intact. Range frame encoder/
   decoder and serializer work, plus final inventory/completion refresh, remain
   open. Continue locally under DD-1650; no owner-only push or hosted run.
+
+
+- Range frame/serializer continuation (DD-1656/IR-1400): share16/32/64MiB
+  frame encode/decode and serialization mechanics through three stateless
+  private helpers. Save18 originals/66 bodies and18 local data types. Preserve
+  native callback/default-argument identities, working charges and transactional
+  publication; qualify locally. Final role/inventory/contract and completion
+  audits remain open; continue under DD-1650 without a helper-only CI gate.
+
+
+- Range operation-frame/serializer sharing (DD-1656/TVG-1675/CR-2054): recover66
+  bodies,30 forwards, nine headers and18 real data layouts/nine working charges.
+  All42 relevant retained tests,132 old/current public cases, ABI/resources/
+  exports, both clients'102 archives and three installed consumers pass. Keep
+  all native callbacks/defaults and transactional byte/count/layout publication.
+  Correct the14-component survey to five matches/nine nonmatches. Further
+  explicit-bound/alias comparison identifies compact_frame_encoder, compact_owner,
+  compact_prefix, owning_adapter and token_frame_encoder as five subsequent
+  commonization scopes; they are not complete. Keep basic format/ABI admission,
+  differing typed/packed decoder policies and tiny delegates explicit. Continue
+  those five paths and final inventory/role/completion audit locally under
+  DD-1650; no per-frame push or hosted checkpoint.

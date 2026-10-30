@@ -35694,3 +35694,27 @@ do not infer that this ownership change closes phase six or the integrated gate.
 DD-1650 requests no per-helper push/hosted run. Refresh affected source-role
 inventory evidence at integration; the existing58b12eda audit stays a dated
 snapshot rather than silently describing a later tree.
+
+
+### DD-1656: Range16/32/64MiB frame transactions and serialization mechanics
+
+Share each matching responsibility through its own private stateless class
+template with explicit per-profile types/callbacks. Keep concrete frame/serializer
+signatures and all nine headers unchanged. Preserve18 local Region/Working data
+shapes, member order/defaults and exact sizeof-based working expressions; compare
+their actual layouts in both compilers rather than assuming dependent types have
+identical padding. No runtime strategy, stored policy or universal codec engine.
+
+Keep parser/mapper/range/preflight/validation callbacks and algorithm identities
+explicit. Preserve error/overlap/size/admission order, full-capacity and retained-
+owner ledger arithmetic, ordinary/scratch roles, little-endian byte writes,
+zero initialization, native header/prefix validation and success-only publication
+of bytes/count/layout. Preflight adapters retain native default0 for four-argument
+calls and explicit retained bytes for five-argument calls. Do not normalize those
+calls through a function pointer that silently loses the default argument.
+
+Recover66 old bodies and30 concrete forwards, verify headers/declarations/working
+charges, and qualify relevant retained frame/stream/ownership/public/CLI tests
+and frozen ABI/resource/byte contracts. Other differing Range components and
+independent models/references remain separate. Refresh final role/inventory and
+completion evidence after this work; DD-1650 requests no per-helper hosted run.
