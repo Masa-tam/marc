@@ -91,7 +91,8 @@ headers. These are starting observations, not deletion or line-count targets.
   mechanics (DD-1647/TVG-1664); hosted success reported in TVG-1665.
 - [x] Separate explicit profile constants/limits/format identities from common
   factory, ownership and frame mechanics across all seven Blocked Huffman windows
-  (DD-1647/DD-1648/DD-1649/TVG-1668); local qualification, fresh hosted gate pending.
+  (DD-1647/DD-1648/DD-1649/TVG-1668); CI success reported through bc3084d9
+  in TVG-1669, without independently confirmed complete scope.
 - [ ] Apply proven common pieces to remaining comparable families where they
   actually simplify maintenance. Review each family and record justified
   differences; avoid a single universal codec template or speculative generator.
@@ -107,11 +108,46 @@ resource queries, memory admission and malformed-output behavior as well as
 round trips. Record failures and scope limitations without counting them as
 successful evidence. Re-run expensive checks when changes justify them.
 
-At major boundaries require Windows/MSVC and Linux validation, static/shared
-and installed-package consumers, complete retained tests and the 102-profile
-exchange contract, with historical restore-only exceptions kept explicit.
-Request a maintainer push at a committed checkpoint when hosted CI is needed;
-do not push. Wait for the actual result before marking that gate complete.
+### Current hosted-checkpoint policy (2026-10-30, DD-1650)
+
+The maintainer reports that one hosted CI run takes more than two hours and
+requests fewer checkpoints. This policy supersedes the historical per-window,
+per-component and per-family push/pause instructions in the progress log below.
+Those entries remain historical evidence, not instructions to repeat their gates.
+
+Continue coherent local commits with relevant local tests, source comparisons,
+ABI/resource/archive checks and work records. Do not request a push or pause
+merely because a window, helper, ownership shape or codec family is complete.
+Batch the remaining comparable-family review/refactoring and the final
+experimental/reference-role and completion audits. The next planned hosted
+checkpoint is one integrated stage-one completion candidate after that remaining
+local work, rather than separate rANS/tANS/window checkpoints. Keep the goal
+active between local commits; do not pause just to obtain routine hosted evidence.
+
+An earlier hosted checkpoint is an exception only when a concrete platform,
+build, install/package or workflow uncertainty cannot be resolved locally and
+prevents reliable continuation. Record the observed evidence and explain why
+hosted execution is needed now. A hypothetical portability risk or another
+completed family is insufficient. Public API/format changes remain outside the
+stage's authorized scope; this scheduling policy does not authorize them.
+
+At the integrated candidate require Windows/MSVC and Linux validation,
+static/shared and installed-package consumers, complete retained tests and the
+102-profile exchange contract, with historical restore-only exceptions explicit.
+A qualifying successful scheduled complete run at the exact final candidate SHA
+can satisfy this gate; do not request a duplicate manual run just because it was
+scheduled. Otherwise request one full_validation run after the batched push.
+Record SHA, scope and run/attempt identity when available. Regular CI success,
+ancestor results and a scope-unspecified success report are not complete-suite
+evidence for the final candidate. Wait for actual complete success before closing
+the gate or claiming completion. The maintainer performs pushes; do not push.
+
+The existing workflow still runs regular validation on push/PR, checks nightly
+for exact-SHA complete success, and always executes requested manual runs.
+This plan changes the agent's checkpoint requests and batching, not Actions
+triggers, test labels, job contents or nightly history semantics. Avoid repeatedly
+asking for a push plus a manual full run for each local commit. Read docs/ci.md
+for current workflow behavior and exact-revision release requirements.
 Local sanitizer work remains separate from CI and is proportional to changed
 decoder behavior. Keep harnesses for retained public/reference paths available.
 Experiment-only harnesses retire with their obsolete interfaces, with the
@@ -583,3 +619,16 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   but additional owner-contract differences; Adaptive's seven-profile owner
   dispatch is already shared. Review those contracts after CI before selecting
   the next implementation scope. No other-family source changes are made here.
+
+
+- Hosted report through bc3084d9 and checkpoint batching (DD-1650/TVG-1669/
+  CR-2048): the maintainer reports push/successful CI and more than two hours per
+  execution. Record scope/run identity as unconfirmed rather than promoting
+  regular/unspecified success to complete evidence. Current verification policy
+  above supersedes earlier per-family pause instructions. Continue remaining
+  comparable-family work and final source-role/completion audits in local commits;
+  request the next full_validation at the integrated stage-one candidate, with
+  concrete locally unresolvable platform blockers as the only early exception.
+  History/partition checks and document validation pass. Workflow triggers and
+  coverage stay unchanged. Do not request a push or hosted run for this
+  documentation-only commit; keep the goal active and continue locally.

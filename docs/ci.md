@@ -7,6 +7,33 @@ for local campaigns. Benchmark smoke tests and deterministic CLI fuzz campaigns
 remain enabled. The regular suites exclude only the explicit `ci-deep` label.
 Successful regular CI is not evidence that the complete suite passed.
 
+## Refactoring checkpoint frequency
+
+During the v1.0 stage-one refactoring, changes receive coherent local commits
+and relevant local qualification; they do not each require a maintainer push
+or manual complete run. The remaining comparable-family work and final
+source-role/completion audits are batched into one integrated candidate before
+the next planned hosted checkpoint (DD-1650). Earlier hosted execution is reserved
+for a concrete platform/build/package/workflow blocker that local evidence
+cannot resolve, with the reason recorded. This replaces per-window/per-family
+checkpoint requests in historical progress entries of the
+[active plan](design/v1-refactoring-stage-1.md).
+
+Push/PR regular runs and manual complete runs are separate workflow invocations;
+the current concurrency groups include the event name. Manual runs always
+execute, so repeatedly requesting both after small local changes adds work.
+Batch local commits before requesting a maintainer push. If the exact integrated
+candidate already has a qualifying successful scheduled complete run, reuse it
+rather than requesting a duplicate manual complete run. This does not transfer
+success to later commits or turn regular success into complete evidence.
+
+The checkpoint policy leaves workflow triggers, nightly deduplication and all
+validation coverage intact. Release qualification still requires complete
+validation of the exact release candidate, including installed consumers and
+exchange requirements described below.
+
+## Workflow scope and history
+
 The same workflow checks nightly at 18:17 UTC whether the exact commit already
 has successful complete validation. Only that confirmed success suppresses
 the nightly build, tests, package, fuzz and bundle jobs. Unverified, failed,

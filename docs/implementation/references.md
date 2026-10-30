@@ -12385,3 +12385,15 @@ implementations remain independent callbacks, not copied or reimplemented here.
 No external implementation, algorithm or format is consulted or introduced.
 Qualify whole-body expansion, concrete declarations/layouts, direct caller-owned
 boundaries, old/new public traces and retained independent malformed/oracle tests.
+
+
+### IR-1394: hosted-checkpoint frequency review
+
+Use the maintainer's 2026-10-30 report of CI success through bc3084d9 and more
+than two hours per CI run, the current stage-one plan, docs/ci.md,
+.github/workflows/ci.yml, tools/ci_validation_gate.py and its offline regressions.
+The workflow selects regular push/PR scope and complete scheduled/manual scope;
+manual runs are unconditional and concurrency groups include the event name.
+Only scheduled work reuses proven exact-SHA complete success. No external API
+history or run URL was retrieved. Review request frequency separately from
+changing triggers, coverage or treating unspecified CI success as complete.

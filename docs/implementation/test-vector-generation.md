@@ -28117,3 +28117,38 @@ profile-name substitutions, whereas ownership sources retain further admission/
 finder/eligibility differences. Adaptive Huffman already has a single seven-
 profile owner dispatch. These observations do not qualify or implement another
 family; review the differing contracts after this checkpoint's hosted gate.
+
+
+### TVG-1669: hosted report and reduced-checkpoint policy qualification
+
+The maintainer reports push and successful CI through bc3084d9 and states that
+one CI execution takes more than two hours. Record the success as maintainer-
+reported: no run URL/attempt/logs or exact scope were supplied or independently
+retrieved. Do not infer that the complete marker or every complete-suite test
+passed. The report permits the authorized local continuation under the revised
+checkpoint policy; it does not qualify a later integrated candidate.
+
+On 2026-10-31 qualify the documentation-only DD-1650 change. Inspect the existing
+workflow, gate implementation, regressions and CI documentation: push/PR select
+regular scope, schedule/manual full_validation select complete scope, manual
+runs always execute, event-specific concurrency groups are separate, and only
+schedule reuses confirmed same-workflow/exact-SHA complete-marker success.
+No network history lookup, workflow execution or trigger change is performed.
+
+The current policy explicitly supersedes historical per-family push/pause
+instructions. Keep coherent local commits and relevant local evidence, batch
+remaining comparable-family work plus final role/completion audits, and plan
+one integrated hosted checkpoint. An earlier run needs a concrete locally
+unresolvable platform/build/package/workflow blocker. A successful complete
+scheduled run at the exact candidate can satisfy the final gate; regular,
+ancestor or scope-unspecified success cannot. Public API/format exclusions and
+complete validation/installed-package/exchange requirements remain intact.
+
+Existing CTest history-policy and partition checks both pass (2 tests,5.28
+seconds); the history suite retains its ten offline regressions. Documentation
+validation passes with ordered records and relative links. Git diff whitespace
+and scope checks show documentation-only changes; production, test registrations,
+workflow/gate code, labels and runtime behavior are untouched. Rebuilding or
+repeating the 3655 codec tests is unnecessary for these prose changes. No new
+CI run is requested for this policy commit. Frequency/cost improvements remain
+an operational expectation, not a measured elapsed-time or hosted-cost result.

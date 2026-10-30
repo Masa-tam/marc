@@ -35541,3 +35541,29 @@ failed-frame withholding. Prove full-body expansion and real-type layouts,
 then qualify private/public boundaries and retained tests before hosted CI.
 Ownership sharing remains intact; other codec families and the final source-role
 audit are still separate phase6/phase2 work.
+
+
+### DD-1650: batch remaining refactoring into an integrated hosted checkpoint
+
+The maintainer reports CI runs taking more than two hours and requests fewer
+runs. Per-window/component/family pauses are too granular given the existing
+local source-expansion, layout, contract, malformed-input, ABI/resource and
+archive evidence. Supersede historical checkpoint instructions in the active
+plan with an explicit current policy. Keep separate local commits and appropriate
+local tests; batch remaining comparable-family work and final source-role/
+completion audits before one planned integrated full_validation checkpoint.
+
+Do not pause/request a push simply because another family or helper is complete.
+Keep the goal active. Request an earlier hosted run only for a concrete unresolved
+platform/build/package/workflow uncertainty that blocks reliable local progress,
+with evidence and an explanation. This is not authorization to change the public
+API or format. At the integrated candidate retain full Windows/Linux, linkage,
+installed-consumer and 102-profile requirements. Reuse qualifying complete
+scheduled success at that exact SHA; otherwise request one manual complete run.
+Do not count regular/ancestor/unspecified-scope success as final complete evidence.
+
+Leave workflow triggers, nightly deduplication, job/test coverage, concurrency
+and manual defaults unchanged in this policy-only change. Fewer agent-requested
+push/manual checkpoints are the immediate intervention. No runtime reduction or
+hosted cost saving is measured here, and no new hosted run is requested merely
+to validate this documentation update.

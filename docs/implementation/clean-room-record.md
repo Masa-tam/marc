@@ -44301,3 +44301,19 @@ and both clients' 102 archive comparisons agree. No external implementation,
 new algorithm or format is introduced. This records process and scoped local
 preservation evidence, not a legal guarantee, hosted result, full Clang codec
 runtime or completion of the remaining family/source-role audit.
+
+
+### CR-2048: 2026-10-31 — batch hosted refactoring checkpoints
+
+Author/reviewer: Codex. Task: respond to the maintainer's reported CI cost of
+over two hours per run by reducing push/manual-checkpoint requests. Use only
+first-party plan/workflow/gate/documents and the maintainer's report (IR-1394).
+DD-1650 supersedes granular historical gates with one planned integrated
+remaining-work checkpoint, preserving local qualification and exact-candidate
+full-validation requirements. Record successful CI through bc3084d9 as reported,
+with complete scope/run identity unconfirmed. Existing history/partition tests
+and documentation checks pass (TVG-1669). No product, format, algorithm, workflow
+trigger, test coverage or external implementation changes. Leave the goal active
+for batched local continuation; do not pause/request CI for this policy change.
+This records process and evidence, not a hosted validation result or completion
+of the remaining refactoring scope.
