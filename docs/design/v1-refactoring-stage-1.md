@@ -1,6 +1,6 @@
 # Refactoring toward v1.0: stage 1
 
-Status: active. Started 2026-10-26. Baseline: annotated tag `v0.8.0`,
+Status: complete (2026-10-31). Started 2026-10-26. Baseline: annotated tag `v0.8.0`,
 source commit `86af8bf2`. This plan is the maintainer-authorized work scope.
 
 ## Objective and boundaries
@@ -96,7 +96,7 @@ headers. These are starting observations, not deletion or line-count targets.
 - [x] Apply proven common pieces to remaining comparable families where they
   actually simplify maintenance. Review each family and record justified
   differences; avoid a single universal codec template or speculative generator.
-- [ ] Preserve bounded validation order, independent vectors, exact producer
+- [x] Preserve bounded validation order, independent vectors, exact producer
   bytes and output publication on every admitted profile.
 
 ## Verification gates
@@ -159,9 +159,10 @@ The [source-role audit](v1-refactoring-stage-1-audit.md) and
 [retired command index](v1-refactoring-retired-commands.md) qualify phase-two
 classification at58b12eda. Their subsequent qualification and integrated review
 through the commit carrying DD-1658 account for the completed comparable-family
-sharing and refreshed inventory/roles. Local implementation work is ready for
-one integrated hosted checkpoint. Final preservation/completion remains open
-until the exact-candidate complete result is recorded.
+sharing and refreshed inventory/roles. TVG-1678/CR-2057/IX-0121 close the final
+exact-candidate hosted and exchange gate at fa925da4. All six phases and final
+preservation are complete; the later documentation/prose-validator receipt commit does
+not claim its own exact-SHA CI result.
 
 All six phases must be assessed against current files and executable evidence.
 Published profiles and their behavior remain intact; completed experimental
@@ -789,3 +790,16 @@ user data and must not be staged, moved or deleted as part of this refactoring.
   six-phase local evidence matrix is recorded. Proceed to the single integrated
   hosted checkpoint; final preservation/completion stays open pending its
   actual exact-candidate complete result. No new per-family checkpoint is added.
+
+
+- Final completion (DD-1659/IR-1403/TVG-1678/CR-2057/IX-0121): the maintainer
+  reports manual full_validation success after pushingfa925da4. Public GitHub
+  receipts independently confirm [run41131424716](https://github.com/Masa-tam/marc/actions/runs/41131424716), attempt1,
+  atfa925da4308a169d1a08e1c33e02b638e22e3573: Windows/MSVC and Ubuntu/Ninja
+  complete-test steps, all four installed-package configurations, both bundle
+  uploads and the complete marker succeed. Both102-profile bundles match the
+  frozen input/archive bytes and pass all102 cases through each of two Windows
+  consumers. The six-phase audit and last preservation checkbox are complete.
+  The completion receipt changes documentation and its prose validator only;
+  no implementation remains
+  pending, no further full CI is requested and no push or v1.0 release is made.

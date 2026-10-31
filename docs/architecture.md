@@ -8,7 +8,7 @@ HashChain Exact and BinaryTree Exact remain the two public encoder strategies;
 the exhaustive parser remains the independent correctness oracle. Historical
 foundation/admission descriptions below retain the decisions and measurements
 at their original revisions. Retired experiments can be inspected in tag v0.8.0.
-See the [active plan](design/v1-refactoring-stage-1.md) for verification gates.
+See the [stage-one plan](design/v1-refactoring-stage-1.md) for verification gates.
 
 The16/32/64MiB Position-distance Range paths now share stateless private
 owning-stream, operation-frame, serialization, compact/token-frame, prefix,
@@ -17,7 +17,9 @@ constants, callback/default identities, allocation interfaces, state layouts,
 receipt ledgers and publication rules. Basic format/ABI admission and typed
 versus packed decoder storage/lifetimes remain explicit. The family survey and
 local qualification are recorded in the [source-role audit](design/v1-refactoring-stage-1-audit.md);
-integrated completion validation remains a separate gate.
+integrated completion at `fa925da4` is qualified by both platform complete CI
+suites, the installed-package matrix and exact102-profile bundle checks
+(TVG-1678/IX-0121). This completes the cleanup stage without declaring v1.0.
 
 ## Baseline
 

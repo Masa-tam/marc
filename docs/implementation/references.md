@@ -12507,3 +12507,23 @@ optional Clang/Ninja configuration and exact retired-target/path inventory;
 CMake/workflow registrations have not changed since those audits. Retain each
 checkpoint's scoped runtime evidence as scoped historical evidence, not a new
 4172-test run. No external implementation source is consulted.
+
+
+### IR-1403: exact-candidate hosted result and published bundle receipts
+
+Read the public GitHub Actions API for CI run41131424716, attempt1, at
+fa925da4308a169d1a08e1c33e02b638e22e3573, plus its job/step and artifact
+metadata. Retain the raw receipts outside tracked source. The maintainer
+independently reports manual full_validation success; the API confirms the
+workflow_dispatch event, exact SHA, both successful Test (complete) steps,
+four installed-package configurations and Complete validation succeeded marker.
+The [run](https://github.com/Masa-tam/marc/actions/runs/41131424716) completed on2026-10-31 in Asia/Tokyo.
+
+Download the two published schema92 bundles through the public nightly.link
+proxy after anonymous GitHub artifact downloads return HTTP401. Match each
+ZIP's complete SHA-256 against the artifact digest supplied by GitHub before
+opening its bounded, leaf-only files. Consult only manifest/input/archive data;
+no external implementation or executable is imported. Compare every payload to
+the frozen v0.8.0 bundle and run the retained verifier with current MSVC CLI and
+the existing Clang C client using the current MSVC DLL. These four observed
+consumer routes run on Windows; hosted Ubuntu provides Linux runtime evidence.

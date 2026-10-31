@@ -28604,3 +28604,70 @@ ready for one integrated hosted checkpoint. Preserve the final preservation
 checkbox and active goal until the maintainer's exact-candidate complete result.
 DD-1650/DD-1658 permit one batched push/full_validation request, reusing a
 qualifying scheduled exact-SHA success when present; no push is performed here.
+
+
+### TVG-1678: final exact-candidate complete CI and exchange verification
+
+The maintainer reports push throughfa925da4 and successful manual
+full_validation. Independently read public GitHub API receipts: main resolves
+tofa925da4308a169d1a08e1c33e02b638e22e3573; [run41131424716](https://github.com/Masa-tam/marc/actions/runs/41131424716),
+attempt1, is completed/success at that SHA with event workflow_dispatch.
+All eight jobs succeed. Both Windows/MSVC and Ubuntu/Ninja Test (complete)
+steps succeed and Test (regular) is skipped. The workflow invokes unfiltered
+CTest, including retained deep tests and configured benchmark tests. Four
+installed-package jobs (Windows/Ubuntu x shared/static) successfully build,
+install and run their consumers. The Complete validation succeeded marker
+also succeeds. This proves complete scope; do not infer hosted test counts from
+the default local4172 registration inventory or earlier scoped summaries.
+
+Both generated/uploaded artifacts are present and unexpired. GitHub ZIP digests:
+
+- windows-msvc-x64:1857c1c88b289758f74bd794fef2467b8070f1946904aef09c4a10fe502bac33
+- ubuntu-ninja-x64:bab47eef4ead797955d7b3bf85145c8861c61e2b1154f7e33fa8b1127e0552fe
+
+Anonymous API ZIP retrieval returns HTTP401. Fetch the public copies through
+nightly.link and require exact digest equality before bounded extraction.
+Each archive has104 leaf files: input, manifest and102 streams. Both manifests
+declare schema92/marc-cli-v92 and the exact candidate SHA. Check every size/hash,
+profile order and raw file byte against the frozen v0.8.0 manifest/input/streams;
+all match. Four retained-verifier routes pass102 restoration and byte-identical
+re-encoding cases each: each producer bundle through current Windows/MSVC CLI
+and through the existing Clang C client using the current MSVC DLL. These are
+Windows consumer routes, not separate Linux/Clang codec executions. An optional
+WSL consumer probe finds a missing registered distribution disk; do not repair
+that environment or count it as Linux test evidence. Linux runtime qualification
+comes from the exact-candidate complete hosted suite and its package consumers.
+
+Reconfirm the current DLL's SHA against its latest local receipt, frozen224
+configuration/resource records,111 ABI layouts, public-header hash and251
+exports. No codec-source/build/runtime-test/workflow/public-header changes follow0fb15a78;
+fa925da4 adds only the integrated audit documents. The existing role/contract
+checker again verifies422 targets/4172 default definitions,680 production/15
+test-only units, retired87 targets/68 paths and125 optional fuzz registrations.
+Review all six phases against the plan's local evidence matrix and these hosted/
+exchange receipts. No explicit stage-one implementation or validation item
+remains open. Preserve historical restore-only exceptions and independent oracles.
+
+Update only the plan, source-role audit, current architecture/interoperability
+status and numbered provenance records. Initial final-record CTests pass the
+history and partition checks but documentation validation rejects the corrected
+schema92 introduction: its prose contract still requires the obsolete phrase
+The current local schema-85 bundle. Update only that literal assertion to
+require the actual current schema92/marc-cli-v92 and IX-0121 plus the historical
+schema85 wording; retain all other historical/schema checks. This is a stronger
+documentation consistency check, not a runtime-test or coverage change. Repeat
+the documentation check and verify final whitespace/scope before committing. No new complete
+suite, local sanitizer campaign, release or performance gain is claimed. The
+implementation qualified by CI isfa925da4; the subsequent completion commit contains
+documentation and its prose-consistency assertion only and is not described as independently hosted-qualified.
+
+Final record checks: the corrected documentation CTest passes in1.26 seconds;
+the history-policy and regular/deep partition tests already pass in the initial
+three-test invocation. Revalidate all relative links and numbered records after
+this result entry. The scope checker initially assumes29 checklist items;
+enumerating the original six phases gives27 (4+6+4+4+5+4). Correct that fixture
+constant, preserving every original acceptance requirement, and verify all27
+are closed with no unchecked item. The final diff is eight documentation files
+plus the exact prose-only assertion replacement; no new untracked file is
+included. Whitespace and final scope/evidence checks pass. Commit the completion
+receipt locally without pushing or requesting another complete run.

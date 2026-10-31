@@ -35768,3 +35768,29 @@ Reuse a qualifying successful scheduled run at that SHA; otherwise request one
 manual full_validation. Do not push, request intermediate family runs, change
 workflow triggers/coverage or close the active goal on a scope-unspecified CI
 report. Record the run/attempt and actual scope when supplied.
+
+
+### DD-1659: close stage-one refactoring at the qualified implementation candidate
+
+Accept fa925da4308a169d1a08e1c33e02b638e22e3573 as the integrated implementation
+candidate. The maintainer's explicit full_validation report is corroborated by
+run41131424716/attempt1: both platform complete-test steps, all four installed
+static/shared package consumers, bundle creation/uploads and the complete marker
+succeed at that exact SHA. Both published102-profile bundles match frozen
+v0.8.0 input/archive bytes and pass restoration/deterministic re-encoding through
+the two Windows consumers. Combine this with the six-phase local completion
+matrix and source/ABI/resource/publication evidence; do not replace that evidence
+with a generic green status or sum overlapping scoped tests.
+
+Close the last plan preservation checkbox and stage-one goal. Keep retained
+reference/format/profile distinctions and historical restore-only policies;
+completion introduces no new algorithm, public API, stream variant, optimization
+claim or v1.0 release qualification. Dedicated CI fuzz jobs remain absent.
+
+The final local commit records completion in documentation and its prose-
+consistency validator only. Codec sources, runtime tests, build and workflow
+remain identical to the qualified candidate. Record the
+actual tested SHA rather than claiming that the subsequent documentation/validator commit
+has its own exact-SHA hosted success. No additional complete CI is needed for
+this work record, and no push is performed. Later implementation changes or
+release candidates must satisfy their own applicable validation policy.

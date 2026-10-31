@@ -10,7 +10,15 @@ marc-interoperability-windows-msvc-x64
 marc-interoperability-ubuntu-ninja-x64
 ```
 
-The current local schema-85 bundle contains the same generated `input.bin`, the
+The current qualified bundle is schema92 (`marc-cli-v92`) with102 profiles.
+The stage-one refactoring candidate `fa925da4` passed exact-candidate complete
+Windows/MSVC and Ubuntu/Ninja CI and the four installed-package configurations
+in [run41131424716](https://github.com/Masa-tam/marc/actions/runs/41131424716), attempt1. Both published bundles match
+frozen v0.8.0 bytes and pass the four Windows consumer routes recorded at IX-0121.
+
+### Historical schema-85 qualification
+
+The historical local schema-85 bundle contains the same generated `input.bin`, the
 frozen 42 stable-profile archives, twenty-five preceding experimental Format 2
 archives, seven position-distance Dynamic Range archives, seven
 position-distance rANS archives, seven position-distance tANS archives,
@@ -19,8 +27,8 @@ and `manifest.json`. The manifest declares codec set `marc-cli-v85` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.
 
-The latest maintainer-confirmed hosted CI and external four-route result is
-schema78 with88 archives (IX-0096). Schema79 adds the first Blocked Huffman
+At that historical checkpoint, the maintainer-confirmed hosted CI and external
+four-route result was schema78 with88 archives (IX-0096). Schema79 adds the first Blocked Huffman
 profile locally (IX-0097). Schema80/81/82 append the one/four/eight-MiB profiles
 (IX-0098/0099/0100). Schema83 appends the sixteen-MiB profile, qualified through
 four local routes and all historical/admission checks at IX-0101. Schema84
@@ -2925,3 +2933,24 @@ Each reported102 archives verified at the same revision. This closes the
 hosted/external gate for the local qualification recorded in IX-0119. Fuzz
 remains bounded by the committed harness and its recorded sanitizer campaign;
 no unbounded campaign or local-environment disclosure is implied.
+
+
+### IX-0121: 2026-10-31 — stage-one refactoring final exchange receipts
+
+CI [run41131424716](https://github.com/Masa-tam/marc/actions/runs/41131424716), attempt1, completes successfully at
+fa925da4308a169d1a08e1c33e02b638e22e3573. Public API receipts verify both
+Windows/MSVC and Ubuntu/Ninja complete suites, all four static/shared package
+consumers and the complete-validation marker. Both producers publish schema92,
+marc-cli-v92 bundles with102 profiles at that exact SHA. Their ZIP SHA-256 values
+match GitHub artifact metadata (TVG-1678), and every manifest size/hash/profile
+and input/archive byte matches the frozen v0.8.0 bundle.
+
+Each producer bundle passes all102 restoration and byte-identical re-encoding
+cases through the current Windows/MSVC CLI and existing Clang C client using
+the same current MSVC DLL: four Windows consumer routes. No extra Linux/Clang
+consumer run is claimed; Linux runtime and installed consumption are qualified
+by the complete hosted jobs. Historical restore-only exceptions remain intact.
+Together with the frozen ABI/resource/publication evidence and six-phase audit,
+these receipts close the stage-one refactoring exchange gate. The final local
+commit records this result in documentation and its prose-consistency check; no format/release is added
+and no further full CI is requested merely for the receipt.

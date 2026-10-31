@@ -44465,3 +44465,25 @@ completion. No implementation, public API, format, independent oracle, build or
 workflow registration changes. This is documented process/evidence, not a legal
 guarantee. Keep the goal/final preservation gate open and request only the one
 integrated exact-candidate complete checkpoint authorized by DD-1650/DD-1658.
+
+
+### CR-2057: 2026-10-31 — stage-one final qualification and completion
+
+Author/reviewer: Codex. Task: audit and close the six-phase refactoring plan
+after the maintainer reports exact-candidate manual complete CI success.
+IR-1403/DD-1659/TVG-1678 identify public API receipts for run41131424716,
+attempt1, atfa925da4308a169d1a08e1c33e02b638e22e3573. Corroborate both complete
+platform suites, four installed-package combinations and the complete marker.
+Obtain only the two published data bundles, verify their GitHub ZIP digests,
+and prove all102 streams/input identical to frozen v0.8.0. Four Windows consumer
+verification routes restore and re-encode all102; the existing Clang client
+uses the current MSVC DLL. Record the unavailable optional WSL probe separately;
+Linux evidence is the successful complete hosted workflow. ABI/resource/header/
+export and final source-role/retirement evidence remain intact. No external
+implementation, new codec/format/API or global mutable runtime state is added.
+Close the plan based on combined scoped local and exact-candidate hosted evidence;
+do not present overlapping test counts as a new suite or claim a legal guarantee,
+performance gain, v1.0 release or exact-SHA hosted result for the later
+documentation/prose-validator receipt commit. TVG-1678 records the initial stale
+schema85 current-wording assertion failure and narrowly strengthens it for the
+current schema92 and preserved history; codec/runtime-test coverage is unchanged. Preserve provenance and intentionally independent reference code.

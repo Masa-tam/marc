@@ -1,4 +1,7 @@
-# Stage-one refactoring: source roles and remaining work
+# Stage-one refactoring: source roles and completion
+
+Status: complete at the qualified implementation candidate `fa925da4`; final
+hosted/exchange receipts appear below. Historical local audit snapshot follows.
 
 Audit date: 2026-10-31. Source snapshot: `58b12eda`, after the public rANS
 owner/frame/stream consolidation. This is a local source-role audit, not the
@@ -247,3 +250,29 @@ previously unbuilt test commands now resolve to their existing executables;
 all other receipt fields match exactly. Documentation layout, ten-case offline
 CI history policy and regular/deep partition checks pass. This remains local
 evidence and does not close the pending exact-candidate complete hosted gate.
+
+
+## Final completion qualification (2026-10-31)
+
+DD-1659/TVG-1678/CR-2057/IX-0121 close the last stage-one gate at
+fa925da4308a169d1a08e1c33e02b638e22e3573. The maintainer's manual full_validation
+report is corroborated by [run41131424716](https://github.com/Masa-tam/marc/actions/runs/41131424716), attempt1. Both
+Windows/MSVC and Ubuntu/Ninja complete-test steps, all four installed static/
+shared package jobs, both bundle uploads and the complete marker succeed.
+
+The exact-candidate schema92 bundles each contain102 streams. ZIP digests match
+GitHub metadata; manifest/profile order, every size/hash and all input/archive
+bytes match frozen v0.8.0. Both producer bundles pass102 restoration/re-encoding
+cases through each Windows consumer (current MSVC CLI and existing Clang C
+client/current MSVC DLL). These are four Windows consumer routes. Linux runtime
+evidence is the complete hosted suite and package matrix. Frozen224 API/resource
+records,111 layouts, header hash and251 exports and the final inventory/role/
+retirement checks remain valid; there are no later implementation changes.
+
+All six phase rows above now have their required combined local/hosted evidence.
+The earlier open-gate descriptions document their original checkpoints. No
+stage-one item remains open. The new local commit records completion only in
+documentation and its prose-consistency assertion, with no exact-SHA CI claim
+for that later receipt commit.
+The scope remains refactoring completion, with original APIs/formats/oracles and
+historical restore-only policies preserved. It is not a v1.0 release declaration.
