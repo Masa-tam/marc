@@ -28671,3 +28671,30 @@ are closed with no unchecked item. The final diff is eight documentation files
 plus the exact prose-only assertion replacement; no new untracked file is
 included. Whitespace and final scope/evidence checks pass. Commit the completion
 receipt locally without pushing or requesting another complete run.
+
+
+### TVG-1679: proposed v1.0 stabilization plan and documentation checks
+
+Inspect d16bcb65 and the current release/readiness/API/format/build/fuzz/benchmark
+sources (IR-1404/DD-1660). Identify102 profiles versus older42/47/67-profile
+summaries, caller-owned versus owned-resource exceptions, experimental Format2
+labels, the0.x SameMinorVersion package policy and the open release-evidence
+assessment items. These observations motivate contract/documentation planning;
+they are not new runtime failure findings or proof that all past evidence is
+missing. Record the maintainer's d16bcb65 push/CI report with unspecified scope;
+do not invent a full run identity or repeat the previous integrated campaign.
+
+Create docs/design/v1-stabilization-stage-2.md with24 proposed work items across
+five packages, a three-stage remaining roadmap, priority/evidence distinctions,
+scope exclusions, explicit exit criteria and the first102-profile matrix/policy
+batch. Link it from the index, correct stage-one index entries to completed,
+and add only its path to the documentation validator's required-file list.
+Keep0.8.0, ABI1, existing bytes/profiles and all implementation/build/workflow/
+runtime-test files unchanged. The document is a plan, not an executed checklist.
+
+The retained marc_documentation_layout CTest passes (2.01 seconds test time,
+3.31 seconds total). Revalidate relative links/numbered records and whitespace
+after this evidence entry. Seven-file scope comprises six Markdown documents
+and one required-document-list addition. No implementation, sanitizer/benchmark
+campaign, new hosted CI, version/tag/publication or push is performed. The next
+stage remains proposed; the user requested planning rather than its execution.

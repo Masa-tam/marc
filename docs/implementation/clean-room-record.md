@@ -44487,3 +44487,19 @@ performance gain, v1.0 release or exact-SHA hosted result for the later
 documentation/prose-validator receipt commit. TVG-1678 records the initial stale
 schema85 current-wording assertion failure and narrowly strengthens it for the
 current schema92 and preserved history; codec/runtime-test coverage is unchanged. Preserve provenance and intentionally independent reference code.
+
+
+### CR-2058: 2026-10-31 — planning the next v1.0 stabilization stage
+
+Author/reviewer: Codex. Task: organize remaining v1.0 obligations and propose
+the next plan after the maintainer reports CI success throughd16bcb65.
+Use only the first-party documents/header/build rules and completed stage-one
+receipts (IR-1404/DD-1660). Keep reported generic CI separate from independently
+verified exact-candidate complete evidence. Propose a current102-profile matrix,
+compatibility/support decisions, current-guide reconciliation and bounded
+qualification/distribution recipes; preserve existing profiles, references,
+variants and outside-baseline extension boundaries. TVG-1679 records the passing
+documentation check. Six Markdown documents and one required-document path
+change; no external implementation, runtime/build/API/format change or new legal,
+performance, sanitizer or release qualification claim is introduced. The plan
+has not been executed. No new complete CI, push, tag or publication is requested.

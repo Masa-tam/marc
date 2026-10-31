@@ -126,8 +126,10 @@ navigate chronological development records.
 
 ## Validation and project operation
 
-- [Refactoring toward v1.0: stage 1](design/v1-refactoring-stage-1.md): active
-  cleanup and infrastructure-sharing plan, compatibility gates and progress.
+- [Toward v1.0: stage 2](design/v1-stabilization-stage-2.md): proposed public
+  compatibility contracts, documentation reconciliation and release-evidence plan.
+- [Refactoring toward v1.0: stage 1](design/v1-refactoring-stage-1.md): completed
+  cleanup and infrastructure sharing, compatibility gates and recorded results.
 - [Benchmarks](benchmarks.md): measurement contract and benchmark usage.
 - [Fuzzing](fuzzing.md): bounded fuzz targets, corpora, and sanitizer workflow.
 - [Interoperability](interoperability.md): CI bundles and cross-platform
@@ -147,7 +149,7 @@ produced; they are not additional public API or stream-format specifications.
 ## Project
 
 - [Stage-one refactoring audit](design/v1-refactoring-stage-1-audit.md): retained
-  source/tool/reference roles, remaining family work and validation scope.
+  source/tool/reference roles and final completion/validation evidence.
 - [Retired reproduction commands](design/v1-refactoring-retired-commands.md):
   historical target/runner identities and current measurement replacements.
 - [Contributing](../CONTRIBUTING.md): implementation sequence, provenance,

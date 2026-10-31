@@ -30,6 +30,7 @@ set(required_documents
     docs/design/lzss-sparse-hash-tree-snapshot-delta.md
     docs/design/lzss-sparse-hash-tree-snapshot-delta-budget.md
     docs/design/v1-refactoring-stage-1.md
+    docs/design/v1-stabilization-stage-2.md
     docs/design/v1-refactoring-stage-1-audit.md
     docs/design/v1-refactoring-retired-commands.md
     docs/implementation/README.md

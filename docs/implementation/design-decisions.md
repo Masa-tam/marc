@@ -35794,3 +35794,29 @@ actual tested SHA rather than claiming that the subsequent documentation/validat
 has its own exact-SHA hosted success. No additional complete CI is needed for
 this work record, and no push is performed. Later implementation changes or
 release candidates must satisfy their own applicable validation policy.
+
+
+### DD-1660: stage two prioritizes v1.0 contracts and evidence planning
+
+After the completed cleanup, recommend public-contract stabilization before
+another refactoring or codec extension. Keep102 existing profiles, ABI1,
+selectors, decoder-visible identities and frozen bytes while deciding the1.x
+compatibility policy. Distinguish42 baseline profiles from the60 additional
+Format2 profiles and review their stability claims explicitly. Do not remove
+public routes or promote experimental representations through a version bump.
+
+The proposed stage-two plan covers a current102-profile/evidence matrix,
+API/ABI/format/support/package policy, user-guide reconciliation, bounded
+qualification recipes and source-distribution/provenance/release preparation.
+Stage three executes justified campaigns/fixes; stage four qualifies and
+publishes an exact candidate. Non-x86-64 evidence, representative measurements
+and longer sanitizer evidence remain assessed tasks under the release procedure,
+not newly satisfied claims or an automatic expansion to every platform.
+
+Planning changes no version, runtime API, stream, package compatibility flag,
+CI trigger or fuzz-job policy. Keep deliberate future extensions outside the
+baseline and preserve the completed stage-one result. Batch hosted validation
+only at meaningful implementation/package boundaries and the final exact-SHA
+candidate; prose planning needs no additional full_validation. The current user
+request ends at a reviewable plan; execution, tagging and publication have not
+started, and the maintainer continues to perform pushes.

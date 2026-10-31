@@ -12527,3 +12527,17 @@ no external implementation or executable is imported. Compare every payload to
 the frozen v0.8.0 bundle and run the retained verifier with current MSVC CLI and
 the existing Clang C client using the current MSVC DLL. These four observed
 consumer routes run on Windows; hosted Ubuntu provides Linux runtime evidence.
+
+
+### IR-1404: v1.0 stabilization planning after stage-one completion
+
+Read first-party d16bcb657797da06779d833e2372ad38e9745b81: the completed
+stage-one plan/audit, current public header, C API/CLI/format/composition and
+readiness documents, release procedure, benchmark/fuzz contracts, CMake presets,
+library/install modules, changelog and notices. The maintainer reports push and
+successful CI throughd16bcb65; its scope/run identity is unspecified. Retain
+the independently verified fa925da4 complete qualification as the implementation
+baseline, without inventing another complete run. Identify concrete current
+summary inconsistencies and unresolved0.x-to1.x compatibility/support promises.
+No external algorithm implementation, standard update or new library reference
+is used. This task creates a proposed Markdown plan, not runtime changes.
