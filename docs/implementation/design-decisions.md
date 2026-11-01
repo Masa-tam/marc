@@ -35820,3 +35820,27 @@ only at meaningful implementation/package boundaries and the final exact-SHA
 candidate; prose planning needs no additional full_validation. The current user
 request ends at a reviewable plan; execution, tagging and publication have not
 started, and the maintainer continues to perform pushes.
+
+
+### DD-1661: execute the first inventory/draft batch without adopting1.x policy
+
+Following the maintainer's post-plan push/CI report, begin stage2.1 and the2.2
+draft. Preserve all runtime/header/build/workflow behavior. Publish an initial
+102-row readiness document with exact selectors, C binding/profile selector,
+wire tuple, C encoder initializer frame, storage shape and bare empty-query
+admission facts. Separate70 borrowed,28 owned and four split Range API shapes.
+Do not turn initializer/query inspection into allocation or round-trip evidence.
+Make baseline42 versus additional25 contextual/35 native identities explicit.
+
+Publish eight recommended compatibility decisions as a draft only. Preserve
+current experimental labels and0.x policy while the1.x promises are reviewed;
+keep the current exact-size validation distinct from hypothetical extensible
+struct-prefix support. Do not change CMake compatibility flags, SONAME, defaults,
+flags, public structs or codec IDs merely to match proposed wording.
+
+Close only stage2.1's inventory and gap-classification items. Per-family flag/
+decoder-default review and exact historical sanitizer/measurement receipt binding
+remain open, as do all2.2 adoption decisions and later work packages. Keep the
+completed stage-one result intact, use existing numbered ledgers, and request
+no per-document hosted checkpoint. This batch performs no fresh campaign or
+release action; subsequent work remains within the active stabilization plan.

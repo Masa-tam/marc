@@ -28698,3 +28698,55 @@ after this evidence entry. Seven-file scope comprises six Markdown documents
 and one required-document-list addition. No implementation, sanitizer/benchmark
 campaign, new hosted CI, version/tag/publication or push is performed. The next
 stage remains proposed; the user requested planning rather than its execution.
+
+
+### TVG-1680: initial current-profile inventory and compatibility draft
+
+The maintainer reports push and successful CI after7421ccec. Begin the first
+stage-two inventory/draft batch under IR-1405/DD-1661; preserve scope/run as
+unspecified rather than inventing a new complete qualification. Fresh read-only
+initializer/query capture of the existing MSVC DLL yields224 records,111 layouts
+and80 initializers. All configuration/query values/layouts and normalized-LF
+header hash agree with frozen v0.8.0. The DLL also matches the last qualified
+local DLL receipt; no new build or codec round-trip is inferred.
+
+Cross-check102 manifest-order names against current CLI/benchmark bindings,
+public prototypes and profile selectors. Read exact little-endian format,
+dictionary/context/entropy tuples from the retained102 archives and verify
+their hashes. Derive encoder C initializer frames and bare-query statuses from
+fresh receipts. Inspect actual create signatures and decoder buffer declarations:
+70 borrowed/borrowed,28 owned/owned and four split Range paths. All four split
+Range bare empty-config queries return InvalidArgument100 until caller policy
+is supplied, not a new constructor/runtime failure. Profile/config helper values
+and the special native1MiB rANS binding remain explicit.
+
+Initial generator setup compares raw CRLF header bytes against a normalized
+text receipt; align the checker with its documented text-hash convention.
+An independent row checker initially expects five positional decoder buffers;
+the actual public API uses a pointer to one size/ABI-tagged decoder_buffers
+structure containing five marc_buffer fields. Inspect and validate those exact
+fields and clarify the document; do not alter a public declaration to satisfy
+the helper. These are inspection-fixture findings, not failing codec tests.
+The final checker independently rereads all102 Markdown rows against public
+declarations, raw archive tuples and fresh frame/status records, verifies
+ownership counts, unchanged implementation/DLL and exactly two closed stage-two
+items. Existing runtime/build/workflow/source remain unchanged fromfa925da4.
+
+Create docs/v1-readiness.md with the102-row inventory, ownership/admission legend,
+scoped current/historical evidence and explicit R1..R8 gap ledger. Create
+docs/v1-compatibility.md with eight proposed decisions; no promise is adopted
+by publishing the draft. Mark stage2.1 inventory and gap classification done,
+leaving flags/decoder defaults and exact campaign/measurement SHA binding open.
+All2.2 adoption and later checklist items remain open: two of24 complete.
+Link the documents from the index/plan and add a current-inventory pointer to
+baseline-readiness without rewriting historical records. Add only the two
+paths to the documentation validator's required-file list.
+
+The retained documentation CTest passes in1.37 seconds (2.83 seconds total).
+Revalidate final links/number ordering, whitespace and ten-file scope after
+recording these results. Nine Markdown files plus two required-document paths
+in the existing validator; no public header, codec/build/runtime-test/workflow
+change. No sanitizer/performance campaign, new full CI, package policy/version,
+tag/publication or push is performed. Continue the unresolved per-family
+contract/evidence review and policy adoption locally, without a per-document
+hosted checkpoint.

@@ -126,8 +126,12 @@ navigate chronological development records.
 
 ## Validation and project operation
 
-- [Toward v1.0: stage 2](design/v1-stabilization-stage-2.md): proposed public
-  compatibility contracts, documentation reconciliation and release-evidence plan.
+- [Toward v1.0: stage 2](design/v1-stabilization-stage-2.md): active public
+  compatibility contracts, documentation reconciliation and release-evidence work.
+- [Current v1.0 readiness inventory](v1-readiness.md): all102 profile identities,
+  C bindings, initialization/storage facts and explicit evidence gaps.
+- [v1.0 compatibility draft](v1-compatibility.md): proposed stability, ABI,
+  resource, support and package decisions; not yet an adopted1.x guarantee.
 - [Refactoring toward v1.0: stage 1](design/v1-refactoring-stage-1.md): completed
   cleanup and infrastructure sharing, compatibility gates and recorded results.
 - [Benchmarks](benchmarks.md): measurement contract and benchmark usage.

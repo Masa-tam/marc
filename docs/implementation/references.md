@@ -12541,3 +12541,23 @@ baseline, without inventing another complete run. Identify concrete current
 summary inconsistencies and unresolved0.x-to1.x compatibility/support promises.
 No external algorithm implementation, standard update or new library reference
 is used. This task creates a proposed Markdown plan, not runtime changes.
+
+
+### IR-1405: initial102-profile inventory and compatibility draft sources
+
+Use first-party7421ccec: the stage-two plan, public C header/prototypes, CLI
+and common benchmark bindings, format/parser offsets, common config validator,
+current/historical readiness, fuzz/benchmark and stage-one qualification records.
+Read frozen v0.8.0/schema92 input/archive metadata retained outside tracked
+source, and capture a fresh read-only initializer/query receipt from the
+existing MSVC DLL. Compare all224 records,111 layouts and normalized-LF header
+text hash to the frozen snapshot. The initial helper compares raw checkout
+bytes to the normalized-text hash; correct that normalization mismatch without
+editing a header. No source/build/runtime behavior changes.
+
+The maintainer reports successful push/CI after7421ccec; record scope/run as
+unspecified. Do not claim another complete qualification. Keep actual evidence
+atfa925da4/run41131424716/attempt1 separate from the next release candidate.
+No external implementation or new algorithm reference is consulted. The matrix
+generator is an ignored local inspection tool, not a production registry or a
+new code-generation architecture.

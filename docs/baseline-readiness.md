@@ -1,5 +1,9 @@
 # Baseline readiness
 
+For the current102-profile inventory and v1.0 evidence/decision gaps, see
+[v1.0 readiness](v1-readiness.md). The42-profile baseline remains a defined subset;
+older schema summaries and chronological records below keep their original scope.
+
 This document separates locally verified implementation readiness from release
 evidence that must be produced by external CI, additional architectures, and
 representative measurements. It is a status index, not a replacement for the

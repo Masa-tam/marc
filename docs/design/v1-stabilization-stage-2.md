@@ -1,6 +1,7 @@
 # Toward v1.0: stage 2 — public contracts and release readiness
 
-Status: proposed plan; implementation has not started. Prepared 2026-10-31.
+Status: active; initial inventory and compatibility draft in progress (2026-11-02).
+Prepared 2026-10-31.
 Baseline: `d16bcb657797da06779d833e2372ad38e9745b81`, following the completed
 [stage-one cleanup](v1-refactoring-stage-1.md) and
 [source-role/completion audit](v1-refactoring-stage-1-audit.md).
@@ -60,18 +61,20 @@ these are additional v1.0 obligations rather than reasons to reopen that cleanup
 
 ### 2.1 Establish one current readiness matrix
 
-- [ ] Account for all102 profiles by CLI name, C factory/configuration, dictionary/
+- [x] Account for all102 profiles by CLI name, C factory/configuration, dictionary/
   context/entropy identity, format version/variant and current stability label.
 - [ ] Record encoder storage ownership, decoder storage ownership, known-size
   requirements, defaults, supported flags and validation/publication boundaries.
 - [ ] Map existing format, deterministic, malformed/chunking, resource, fuzz,
   measurement and exchange evidence to each family/profile. Mark evidence as
   current, historical, missing or needing a policy decision; include its SHA.
-- [ ] Separate confirmed gaps from unreviewed questions and historical “pending”
+- [x] Separate confirmed gaps from unreviewed questions and historical “pending”
   statements later closed by a numbered record.
 
-Suggested artifact: `docs/v1-readiness.md`, linked from the documentation index
-and baseline-readiness page. Reuse maintained inventories and validators; avoid
+Initial artifact: [current readiness inventory](../v1-readiness.md), linked from
+the documentation index and baseline-readiness page. Its102 rows and gap ledger
+close the first and fourth items. Flags/decoder-default review and exact historical
+campaign/measurement receipt mapping remain open. Reuse maintained inventories and validators; avoid
 creating a parallel registry or a speculative generator. The matrix records
 facts and decisions and must not manufacture missing coverage from a count.
 
@@ -103,8 +106,10 @@ facts and decisions and must not manufacture missing coverage from a count.
   consumer policy. ABI/SONAME, project version and source compatibility need
   separate reasoning; the existing0.x package policy must not change accidentally.
 
-Suggested artifact: `docs/v1-compatibility.md` plus a recorded decision resolving
-the choices. Preserve current behavior while drafting it. Proposed breaking
+Initial artifact: [compatibility draft](../v1-compatibility.md), with eight
+recommended decisions still awaiting adoption; no2.2 checkbox is closed merely
+by creating a draft. Record the decisions resolving these choices. Preserve
+current behavior while drafting it. Proposed breaking
 changes must be presented concretely for a separate scope decision before code
 is altered; do not assume that planning v1.0 authorizes them.
 

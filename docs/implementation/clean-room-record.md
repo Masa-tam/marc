@@ -44503,3 +44503,21 @@ documentation check. Six Markdown documents and one required-document path
 change; no external implementation, runtime/build/API/format change or new legal,
 performance, sanitizer or release qualification claim is introduced. The plan
 has not been executed. No new complete CI, push, tag or publication is requested.
+
+
+### CR-2059: 2026-11-02 — initial v1.0 inventory and proposed contract
+
+Author/reviewer: Codex. Task: proceed from the post-plan CI report to the first
+inventory/compatibility-draft batch (IR-1405/DD-1661). Use only first-party
+7421ccec bindings/header/specifications/history, frozen v0.8.0 archive data and
+a fresh read-only existing-DLL initializer/query receipt. Match all102 profile
+rows,224 records,111 layouts and explicit borrowed/owned/split APIs. TVG-1680
+records the initial CRLF/text-hash and positional-versus-struct-buffer checker
+assumptions and their corrections without implementation changes. Publish
+current facts, scoped evidence gaps and eight proposed policies; preserve the
+current API/variants/experimental labels and independent oracles. Two stage-two
+inventory items close; no1.x policy or entire stage is declared complete.
+Documentation checks pass; nine Markdown files and a required-path-only validator
+update change. No external implementation, new algorithm/API/format, runtime
+fix, legal guarantee, fresh fuzz/measurement evidence or release qualification
+is claimed. No push or hosted checkpoint is requested for this local batch.
